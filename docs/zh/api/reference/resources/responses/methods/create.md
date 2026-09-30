@@ -1,26 +1,26 @@
-> 查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 创建模型响应
 
 **post** `/responses`
 
-创建模型响应。提供 [文本](/api/docs/guides/text) 或
-[图像](/api/docs/guides/images-vision) 输入以生成 [文本](/api/docs/guides/text)
+创建模型响应。请提供 [text](/api/docs/guides/text) 或
+[image](/api/docs/guides/images-vision) 输入以生成 [text](/api/docs/guides/text)
 或 [JSON](/api/docs/guides/structured-outputs) 输出。让模型调用
-你自己的 [自定义代码](/api/docs/guides/function-calling) 或使用内置的
-[工具](/api/docs/guides/tools) ，例如 [网页搜索](/api/docs/guides/tools-web-search)
-或 [文件搜索](/api/docs/guides/tools-file-search) ，将你自己的数据用作
-模型响应的输入。
+你自己的 [custom code](/api/docs/guides/function-calling) 或使用内置的
+[tools](/api/docs/guides/tools) 如 [网页搜索](/api/docs/guides/tools-web-search)
+或 [文件搜索](/api/docs/guides/tools-file-search) 以使用你自己的数据
+作为模型响应的输入。
 
 ### 请求体参数
 
 - `access_programs: optional object { cyber }`
 
-  用于本次请求的领域专属访问计划。
+  用于此请求的领域专属访问程序。
 
   - `cyber: optional "standard" or "daybreak_blue" or "daybreak_red"`
 
-    用于本次请求的 Cyber 访问计划。支持的值包括 `standard`, `daybreak_blue`，以及 `daybreak_red`。如果省略，API 会根据模型的 Cyber 层级以及你的组织和项目访问权限来解析计划，但需遵守模型特定的资格限制。默认情况下，没有 Cyber 层级的模型使用 Standard。Blue 层级的模型在获得授权时使用 Daybreak Blue；否则，除非模型要求 Daybreak 访问权限，否则会回退到 Standard。Red 层级的模型使用 Daybreak Red 并且需要授权。需要但不可用的 Daybreak 访问权限的请求将返回 403。隐式的 Standard 回退在响应的 access_programs 字段中表示为 null，而不是显式的 Standard 选择。
+    用于此请求的 Cyber 访问程序。支持的值包括 `standard`, `daybreak_blue`，以及 `daybreak_red`。如果省略，API 会根据模型的 Cyber 等级以及你的组织和项目访问权限来解析该程序，但会受到模型特定资格限制的约束。默认情况下，没有 Cyber 等级的模型使用 Standard。Blue 等级模型在获得授权时使用 Daybreak Blue；否则除非模型需要 Daybreak 访问权限，否则会回退到 Standard。Red 等级模型使用 Daybreak Red 并且需要授权。需要使用但不可用的 Daybreak 访问权限的请求将返回 403。隐式的 Standard 回退在响应的 access_programs 字段中表示为 null，而不是显式的 Standard 选择。
 
     - `"standard"`
 
@@ -35,20 +35,20 @@
 
 - `context_management: optional array of object { type, compact_threshold }  or null`
 
-  本次请求的上下文管理配置。
+  此请求的上下文管理配置。
 
   - `type: string`
 
-    上下文管理条目类型。当前仅支持 'compaction'。
+    上下文管理条目类型。目前仅支持 'compaction'。
 
   - `compact_threshold: optional number or null`
 
-    触发此条目压缩的 token 阈值。
+    针对此条目触发压缩的 token 阈值。
 
 - `conversation: optional string or ResponseConversationParam or null`
 
-  本次响应所属的对话。此对话中的项目会前置到 `input_items` 中，用于本次响应请求。
-  本次响应中的输入项目和输出项目会在响应完成后自动添加到此对话中。
+  此响应所属的对话。该对话中的条目会被前置到 `input_items` 中，用于本次响应请求。
+  此响应完成后，本次响应的输入条目和输出条目会自动添加到此对话中。
 
   - `ConversationID = string`
 
@@ -56,7 +56,7 @@
 
   - `ResponseConversationParam object { id }`
 
-    本次响应所属的对话。
+    此响应所属的对话。
 
     - `id: string`
 
@@ -64,15 +64,15 @@
 
 - `include: optional array of ResponseIncludable or null`
 
-  指定要在模型响应中包含的其他输出数据。当前支持的值包括：
+  指定要包含在模型响应中的其他输出数据。目前支持的值包括：
 
   - `web_search_call.action.sources`：包含 网页搜索 工具调用的来源。
-  - `code_interpreter_call.outputs`：在代码解释器工具调用项目中包含 Python 代码执行的输出。
-  - `computer_call_output.output.image_url`：包含来自计算机调用输出的图片 URL。
+  - `code_interpreter_call.outputs`：在代码解释器工具调用条目中包含 Python 代码执行的输出。
+  - `computer_call_output.output.image_url`：包含来自计算机调用输出的图像 URL。
   - `file_search_call.results`：包含 文件搜索 工具调用的搜索结果。
-  - `message.input_image.image_url`：包含来自输入消息的图片 URL。
-  - `message.output_text.logprobs`: 在助手消息中包含 logprobs。
-  - `reasoning.encrypted_content`: 在推理项输出中包含推理令牌的加密版本。这使得在无状态使用 Responses API 时（例如当 `store` 参数设置为 `false`，或当组织已加入零数据保留计划时），推理项可以用于多轮对话。
+  - `message.input_image.image_url`：包含来自输入消息的图像 URL。
+  - `message.output_text.logprobs`：在助手消息中包含 logprobs。
+  - `reasoning.encrypted_content`：在推理项输出中包含推理令牌的加密版本。这使得在使用 Responses API 以无状态方式处理多轮对话时可以使用推理项（例如当 `store` 参数设置为 `false`，或当组织已加入零数据保留计划时）。
 
   - `"file_search_call.results"`
 
@@ -104,26 +104,26 @@
 
   - `TextInput = string`
 
-    提供给模型的文本输入，等价于使用
+    对模型的文本输入，等同于带有
     `user` 角色的文本输入。
 
   - `InputItemList = array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
-    包含一个或多个输入项的列表，这些输入项提供给模型，其中包含
+    提供给模型的一个或多个输入项的列表，其中包含
     不同的内容类型。
 
     - `EasyInputMessage object { content, role, phase, type }`
 
-      使用角色来指示指令优先级的模型消息输入。使用
-      或 `developer` 或 `system` 角色提供的指令优先于使用
-      角色提供的指令 `user` role。带有
-      `assistant` role 的消息被视为由模型在先前的
-      交互中生成。
+      对模型的消息输入，其角色用于指示指令的
+      优先级层级。使用 `developer` 或 `system` 角色给出的指令优先
+      于使用 `user` role。带有该
+      `assistant` role 的消息被视为模型在之前
+      交互中生成的内容。
 
       - `content: string or ResponseInputMessageContentList`
 
         发送给模型的文本、图像或音频输入，用于生成响应。
-        也可以包含先前的助手响应。
+        也可以包含之前的助手响应。
 
         - `TextInput = string`
 
@@ -144,23 +144,23 @@
 
             - `type: "input_text"`
 
-              输入项的类型。始终为 `input_text`.
+              输入项的类型，始终为 `input_text`.
 
               - `"input_text"`
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+              标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
               - `mode: "explicit"`
 
-                断点模式。始终为 `explicit`.
+                断点模式，始终为 `explicit`.
 
                 - `"explicit"`
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision).
+            发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision).
 
             - `detail: ImageDetail`
 
@@ -176,41 +176,41 @@
 
             - `type: "input_image"`
 
-              输入项的类型。始终为 `input_image`.
+              输入项的类型，始终为 `input_image`.
 
               - `"input_image"`
 
             - `file_id: optional string or null`
 
-              要发送给模型的文件的 ID。
+              要发送给模型的文件 ID。
 
             - `image_url: optional string or null`
 
-              要发送给模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
+              要发送给模型的图像 URL。完全限定的 URL，或在 data URL 中以 base64 编码的图像。
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+              标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
               - `mode: "explicit"`
 
-                断点模式。始终为 `explicit`.
+                断点模式，始终为 `explicit`.
 
                 - `"explicit"`
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            发送到模型的文件输入。
+            发送给模型的文件输入。
 
             - `type: "input_file"`
 
-              输入项的类型。始终为 `input_file`.
+              输入项的类型，始终为 `input_file`.
 
               - `"input_file"`
 
             - `detail: optional "auto" or "low" or "high"`
 
-              发送到模型的文件的细节级别。使用 `auto` 以让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 使用量。使用 `low` 以进行较低成本的渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+              发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 使用量。使用 `low` 可降低渲染成本，或使用 `high` 可使用更高质量渲染文件。默认为 `auto`.
 
               - `"auto"`
 
@@ -220,33 +220,33 @@
 
             - `file_data: optional string`
 
-              要发送到模型的文件内容。
+              发送给模型的文件内容。
 
             - `file_id: optional string or null`
 
-              要发送给模型的文件的 ID。
+              要发送给模型的文件 ID。
 
             - `file_url: optional string`
 
-              要发送到模型的文件的 URL。
+              发送给模型的文件的 URL。
 
             - `filename: optional string`
 
-              要发送到模型的文件的名称。
+              发送给模型的文件的名称。
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+              标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
               - `mode: "explicit"`
 
-                断点模式。始终为 `explicit`.
+                断点模式，始终为 `explicit`.
 
                 - `"explicit"`
 
       - `role: "user" or "assistant" or "system" or "developer"`
 
-        消息输入的角色。取值为 `user`, `assistant`, `system`，或
+        消息输入的角色。取值之一为 `user`, `assistant`, `system`，或
         `developer`.
 
         - `"user"`
@@ -259,9 +259,9 @@
 
       - `phase: optional "commentary" or "final_answer" or null`
 
-        将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-        对于像 `gpt-5.3-codex` 及更高的模型，在发送后续请求时，请保留并重新发送
-        阶段到所有助手消息上——丢弃它可能会降低性能。不用于用户消息。
+        将某条 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
+        对于类似 `gpt-5.3-codex` 及更高的模型，在发送后续请求时，保留并重新发送
+        阶段到所有助手消息上 —— 丢弃它可能会降低性能。不用于用户消息。
 
         - `"commentary"`
 
@@ -275,9 +275,9 @@
 
     - `Message object { content, role, status, type }`
 
-      使用角色来指示指令优先级的模型消息输入。使用
-      或 `developer` 或 `system` 角色提供的指令优先于使用
-      角色提供的指令 `user` 角色的文本输入。
+      对模型的消息输入，其角色用于指示指令的
+      优先级层级。使用 `developer` 或 `system` 角色给出的指令优先
+      于使用 `user` 角色的文本输入。
 
       - `content: ResponseInputMessageContentList`
 
@@ -286,7 +286,7 @@
 
       - `role: "user" or "system" or "developer"`
 
-        消息输入的角色。取值为 `user`, `system`，或 `developer`.
+        消息输入的角色。取值之一为 `user`, `system`，或 `developer`.
 
         - `"user"`
 
@@ -296,8 +296,8 @@
 
       - `status: optional "in_progress" or "completed" or "incomplete"`
 
-        item 的状态。取值为 `in_progress`, `completed`，或
-        `incomplete`。当通过 API 返回 item 时填充。
+        条目的状态。取值之一为 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -313,7 +313,7 @@
 
     - `ResponseOutputMessage object { id, content, role, 3 more }`
 
-      来自模型的一条输出消息。
+      来自模型的输出消息。
 
       - `id: string`
 
@@ -325,7 +325,7 @@
 
         - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-          模型生成的文本输出。
+          来自模型的文本输出。
 
           - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -341,11 +341,11 @@
 
               - `filename: string`
 
-                所引用文件的文件名。
+                被引用文件的文件名。
 
               - `index: number`
 
-                在输出文本中插入该文件引用的位置索引。
+                在输出文本中插入文件引用的索引位置。
 
               - `type: "file_citation"`
 
@@ -355,7 +355,7 @@
 
             - `URLCitation object { end_index, start_index, title, 2 more }`
 
-              用于生成模型响应的网页资源的引用。
+              用于生成模型回复的网络资源引用。
 
               - `end_index: number`
 
@@ -367,7 +367,7 @@
 
               - `title: string`
 
-                网页资源的标题。
+                网络资源的标题。
 
               - `type: "url_citation"`
 
@@ -377,11 +377,11 @@
 
               - `url: string`
 
-                网页资源的 URL。
+                网络资源的 URL。
 
             - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
-              用于生成模型响应的容器文件的引用。
+              用于生成模型回复的容器文件引用。
 
               - `container_id: string`
 
@@ -397,11 +397,11 @@
 
               - `filename: string`
 
-                所引用容器文件的文件名。
+                被引用容器文件的文件名。
 
               - `start_index: number`
 
-                消息中容器文件引用的起始字符索引。
+                容器文件引用在消息中的起始字符索引。
 
               - `type: "container_file_citation"`
 
@@ -419,7 +419,7 @@
 
               - `index: number`
 
-                文件在文件列表中的索引。
+                该文件在文件列表中的索引。
 
               - `type: "file_path"`
 
@@ -459,7 +459,7 @@
 
           - `refusal: string`
 
-            模型的拒绝说明。
+            模型给出的拒绝原因说明。
 
           - `type: "refusal"`
 
@@ -475,7 +475,7 @@
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        消息输入的状态。取值之一为 `in_progress`, `completed`，或
+        消息输入的状态。取值之一： `in_progress`, `completed`，或
         `incomplete`。当输入项通过 API 返回时填充。
 
         - `"in_progress"`
@@ -492,9 +492,9 @@
 
       - `phase: optional "commentary" or "final_answer" or null`
 
-        将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-        对于像 `gpt-5.3-codex` 及更高的模型，在发送后续请求时，请保留并重新发送
-        阶段到所有助手消息上——丢弃它可能会降低性能。不用于用户消息。
+        将某条 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
+        对于类似 `gpt-5.3-codex` 及更高的模型，在发送后续请求时，保留并重新发送
+        阶段到所有助手消息上 —— 丢弃它可能会降低性能。不用于用户消息。
 
         - `"commentary"`
 
@@ -502,8 +502,8 @@
 
     - `FileSearchCall object { id, queries, status, 2 more }`
 
-      文件搜索 工具调用的结果。详见
-      [文件搜索 指南](/api/docs/guides/tools-file-search) 。
+      文件搜索 工具调用的结果。请参阅
+      [文件搜索 指南](/api/docs/guides/tools-file-search) 了解更多信息。
 
       - `id: string`
 
@@ -515,7 +515,7 @@
 
       - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-        文件搜索 工具调用的状态。取值之一为 `in_progress`,
+        文件搜索 工具调用的状态。取值之一： `in_progress`,
         `searching`, `incomplete` 或 `failed`,
 
         - `"in_progress"`
@@ -530,21 +530,21 @@
 
       - `type: "file_search_call"`
 
-        文件搜索 工具调用的类型。始终为 `file_search_call`.
+        文件搜索工具调用的类型。始终 `file_search_call`.
 
         - `"file_search_call"`
 
       - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-        文件搜索 工具调用的结果。
+        文件搜索工具调用的结果。
 
         - `attributes: optional map[string or number or boolean] or null`
 
-          可以附加到对象的 16 组键值对。这可以
-          用于以结构化格式存储有关对象的附加信息，并通过
-          API 或仪表板查询对象。键为字符串，最长
-          64 个字符；值为字符串（最长 512 个字符）、布尔值或数字。
-          占位长度描述保持不变。
+          可附加到对象的 16 组键值对。可用于
+          以结构化格式存储有关对象的附加信息，
+          并通过 API 或仪表板查询对象。键为字符串，
+          最大长度为 64 个字符。值为字符串，最大
+          长度为 512 个字符、布尔值或数字。
 
           - `string`
 
@@ -571,7 +571,7 @@
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       对计算机使用工具的工具调用。参见
-      [计算机使用指南](/api/docs/guides/tools-computer-use) 。
+      [computer use guide](/api/docs/guides/tools-computer-use) 了解更多信息。
 
       - `id: string`
 
@@ -579,11 +579,11 @@
 
       - `call_id: string`
 
-        在向工具调用输出进行响应时使用的标识符。
+        使用输出响应工具调用时所用的标识符。
 
       - `pending_safety_checks: array of object { id, code, message }`
 
-        计算机调用待处理的安全检查。
+        该计算机调用的待处理安全检查。
 
         - `id: string`
 
@@ -599,8 +599,8 @@
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或
-        `incomplete`。当通过 API 返回 item 时填充。
+        该条目的状态。取值为 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -616,15 +616,15 @@
 
       - `action: optional ComputerAction`
 
-        单击操作。
+        一次点击动作。
 
         - `Click object { button, type, x, 2 more }`
 
-          单击操作。
+          一次点击动作。
 
           - `button: "left" or "right" or "wheel" or 2 more`
 
-            表示单击时按下的鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
+            表示点击时按下的鼠标按键。取值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
             - `"left"`
 
@@ -638,51 +638,51 @@
 
           - `type: "click"`
 
-            指定事件类型。对于单击操作，该属性始终为 `click`.
+            指定事件类型。对于点击动作，此属性始终为 `click`.
 
             - `"click"`
 
           - `x: number`
 
-            发生单击的 x 坐标。
+            点击发生的 x 坐标。
 
           - `y: number`
 
-            发生单击的 y 坐标。
+            点击发生的 y 坐标。
 
           - `keys: optional array of string or null`
 
-            单击时按住的按键。
+            点击时按住的键。
 
         - `DoubleClick object { keys, type, x, y }`
 
-          双击操作。
+          一次双击动作。
 
           - `keys: array of string or null`
 
-            双击时按住的按键。
+            双击时按住的键。
 
           - `type: "double_click"`
 
-            指定事件类型。对于双击操作，该属性始终设置为 `double_click`.
+            指定事件类型。对于双击动作，此属性始终设置为 `double_click`.
 
             - `"double_click"`
 
           - `x: number`
 
-            发生双击的 x 坐标。
+            双击发生的 x 坐标。
 
           - `y: number`
 
-            发生双击的 y 坐标。
+            双击发生的 y 坐标。
 
         - `Drag object { path, type, keys }`
 
-          拖动操作。
+          一次拖动动作。
 
           - `path: array of object { x, y }`
 
-            表示拖动操作路径的坐标数组。坐标将以对象数组的形式呈现，例如
+            表示拖动动作路径的坐标数组。坐标将以对象数组的形式呈现，例如
 
             ```
             [
@@ -701,21 +701,21 @@
 
           - `type: "drag"`
 
-            指定事件类型。对于拖动操作，该属性始终设置为 `drag`.
+            指定事件类型。对于拖动动作，此属性始终设置为 `drag`.
 
             - `"drag"`
 
           - `keys: optional array of string or null`
 
-            拖动鼠标时按住的按键。
+            拖动鼠标时按住的键。
 
         - `Keypress object { keys, type }`
 
-          模型希望执行的按键集合。
+          模型希望执行的一组按键操作。
 
           - `keys: array of string`
 
-            模型请求按下的按键组合。这是一个字符串数组，每个字符串表示一个按键。
+            模型请求按下的按键组合。这是一个字符串数组，每个字符串代表一个按键。
 
           - `type: "keypress"`
 
@@ -735,15 +735,15 @@
 
           - `x: number`
 
-            要移至的 x 坐标。
+            要移动到的 x 坐标。
 
           - `y: number`
 
-            要移至的 y 坐标。
+            要移动到的 y 坐标。
 
           - `keys: optional array of string or null`
 
-            鼠标移动时按住的按键。
+            移动鼠标时按住的按键。
 
         - `Screenshot object { type }`
 
@@ -775,11 +775,11 @@
 
           - `x: number`
 
-            发生滚动的 x 坐标。
+            发生滚动处的 x 坐标。
 
           - `y: number`
 
-            发生滚动的 y 坐标。
+            发生滚动处的 y 坐标。
 
           - `keys: optional array of string or null`
 
@@ -811,24 +811,24 @@
 
       - `actions: optional ComputerActionList`
 
-        批处理操作的扁平化列表，用于 `computer_use`。每个操作包含一个
-        `type` 判别字段和该操作特有的字段。
+        扁平化批处理操作，适用于 `computer_use`。每个操作都包含一个
+        `type` 判别字段和操作特定字段。
 
         - `Click object { button, type, x, 2 more }`
 
-          单击操作。
+          一次点击动作。
 
         - `DoubleClick object { keys, type, x, y }`
 
-          双击操作。
+          一次双击动作。
 
         - `Drag object { path, type, keys }`
 
-          拖动操作。
+          一次拖动动作。
 
         - `Keypress object { keys, type }`
 
-          模型希望执行的按键集合。
+          模型希望执行的一组按键操作。
 
         - `Move object { type, x, y, keys }`
 
@@ -852,44 +852,44 @@
 
     - `ComputerCallOutput object { call_id, output, type, 3 more }`
 
-      一次 computer 工具调用的输出。
+      计算机工具调用的输出。
 
       - `call_id: string`
 
-        产生该输出的 computer 工具调用的 ID。
+        生成该输出的计算机工具调用的 ID。
 
       - `output: ResponseComputerToolCallOutputScreenshot`
 
-        与 computer use 工具配合使用的计算机截图。
+        与计算机使用工具配合使用的计算机截图图像。
 
         - `type: "computer_screenshot"`
 
-          指定事件类型。对于计算机截图，该属性始终
-          设置为 `computer_screenshot`.
+          指定事件类型。对于计算机截图，此属性
+          始终设置为 `computer_screenshot`.
 
           - `"computer_screenshot"`
 
         - `file_id: optional string`
 
-          包含该截图的已上传文件的标识符。
+          包含截图的上传文件的标识符。
 
         - `image_url: optional string`
 
-          截图图片的 URL。
+          截图图像的 URL。
 
       - `type: "computer_call_output"`
 
-        computer 工具调用输出的类型。始终为 `computer_call_output`.
+        计算机工具调用输出的类型。始终为 `computer_call_output`.
 
         - `"computer_call_output"`
 
       - `id: optional string or null`
 
-        computer 工具调用输出的 ID。
+        计算机工具调用输出的 ID。
 
       - `acknowledged_safety_checks: optional array of object { id, code, message }  or null`
 
-        由 API 报告的、已被开发者确认的安全检查项。
+        已被开发者确认的 API 报告的安全检查。
 
         - `id: string`
 
@@ -905,7 +905,7 @@
 
       - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-        消息输入的状态。取值之一为 `in_progress`, `completed`，或 `incomplete`。当输入项通过 API 返回时填充。
+        消息输入的状态。取值之一： `in_progress`, `completed`，或 `incomplete`。当输入项通过 API 返回时填充。
 
         - `"in_progress"`
 
@@ -915,16 +915,16 @@
 
     - `WebSearchCall object { id, status, type, action }`
 
-      一次 网页搜索 工具调用的结果。参见
-      [网页搜索 指南](/api/docs/guides/tools-web-search) 。
+      网页搜索工具调用的结果。请参阅
+      [网页搜索指南](/api/docs/guides/tools-web-search) 了解更多信息。
 
       - `id: string`
 
-        该 网页搜索 工具调用的唯一 ID。
+        网页搜索工具调用的唯一 ID。
 
       - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-        该 网页搜索 工具调用的状态。
+        网页搜索工具调用的状态。
 
         - `"in_progress"`
 
@@ -938,18 +938,18 @@
 
       - `type: "web_search_call"`
 
-        该 网页搜索 工具调用的类型。始终为 `web_search_call`.
+        网页搜索工具调用的类型。始终为 `web_search_call`.
 
         - `"web_search_call"`
 
       - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-        描述本次 网页搜索 调用中所执行具体操作的对象。
-        包含模型如何使用网页的详细信息（搜索、open_page、find_in_page）。
+        描述此次 网页搜索调用中所执行具体操作的对象。
+        包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
         - `Search object { type, queries, query, sources }`
 
-          操作类型 "search" - 执行 网页搜索 查询。
+          操作类型 "search" - 执行一次网页搜索查询。
 
           - `type: "search"`
 
@@ -999,7 +999,7 @@
 
           - `pattern: string`
 
-            在页面内搜索的模式或文本。
+            要在页面内搜索的模式或文本。
 
           - `type: "find_in_page"`
 
@@ -1009,12 +1009,12 @@
 
           - `url: string`
 
-            搜索该模式的页面 URL。
+            在其中搜索模式的页面 URL。
 
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
-      用于运行函数的工具调用。参见
-      [函数调用指南](/api/docs/guides/function-calling) 。
+      用于运行函数的工具调用。参阅
+      [函数调用指南](/api/docs/guides/function-calling) 了解更多信息。
 
       - `arguments: string`
 
@@ -1022,7 +1022,7 @@
 
       - `call_id: string`
 
-        模型生成的功能工具调用的唯一 ID。
+        模型生成的函数工具调用的唯一 ID。
 
       - `name: string`
 
@@ -1030,21 +1030,21 @@
 
       - `type: "function_call"`
 
-        功能工具调用的类型。始终为 `function_call`.
+        函数工具调用的类型。始终为 `function_call`.
 
         - `"function_call"`
 
       - `id: optional string`
 
-        功能工具调用的唯一 ID。
+        函数工具调用的唯一 ID。
 
       - `async: optional boolean`
 
-        功能工具调用是否异步运行。
+        函数工具调用是否异步运行。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -1056,7 +1056,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -1068,8 +1068,8 @@
 
       - `status: optional "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或
-        `incomplete`。当通过 API 返回 item 时填充。
+        该条目的状态。取值为 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -1083,7 +1083,7 @@
 
       - `output: string or array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
-        函数工具调用的文本、图像或文件输出。
+        函数工具调用的文本、图片或文件输出。
 
         - `string`
 
@@ -1091,7 +1091,7 @@
 
         - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
-          函数工具调用的内容输出（文本、图像、文件）数组。
+          函数工具调用的内容输出（文本、图片、文件）数组。
 
           - `ResponseInputTextContent object { text, type, prompt_cache_breakpoint }`
 
@@ -1103,27 +1103,27 @@
 
             - `type: "input_text"`
 
-              输入项的类型。始终为 `input_text`.
+              输入项的类型，始终为 `input_text`.
 
               - `"input_text"`
 
             - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-              标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+              标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
               - `mode: "explicit"`
 
-                断点模式。始终为 `explicit`.
+                断点模式，始终为 `explicit`.
 
                 - `"explicit"`
 
           - `ResponseInputImageContent object { type, detail, file_id, 2 more }`
 
-            发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision)
+            发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision)
 
             - `type: "input_image"`
 
-              输入项的类型。始终为 `input_image`.
+              输入项的类型，始终为 `input_image`.
 
               - `"input_image"`
 
@@ -1133,35 +1133,35 @@
 
             - `file_id: optional string or null`
 
-              要发送给模型的文件的 ID。
+              要发送给模型的文件 ID。
 
             - `image_url: optional string or null`
 
-              要发送给模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
+              要发送给模型的图像 URL。完全限定的 URL，或在 data URL 中以 base64 编码的图像。
 
             - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-              标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+              标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
               - `mode: "explicit"`
 
-                断点模式。始终为 `explicit`.
+                断点模式，始终为 `explicit`.
 
                 - `"explicit"`
 
           - `ResponseInputFileContent object { type, detail, file_data, 4 more }`
 
-            发送到模型的文件输入。
+            发送给模型的文件输入。
 
             - `type: "input_file"`
 
-              输入项的类型。始终为 `input_file`.
+              输入项的类型，始终为 `input_file`.
 
               - `"input_file"`
 
             - `detail: optional "auto" or "low" or "high"`
 
-              发送到模型的文件的细节级别。使用 `auto` 以让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 使用量。使用 `low` 以进行较低成本的渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+              发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 使用量。使用 `low` 可降低渲染成本，或使用 `high` 可使用更高质量渲染文件。默认为 `auto`.
 
               - `"auto"`
 
@@ -1175,23 +1175,23 @@
 
             - `file_id: optional string or null`
 
-              要发送给模型的文件的 ID。
+              要发送给模型的文件 ID。
 
             - `file_url: optional string or null`
 
-              要发送到模型的文件的 URL。
+              发送给模型的文件的 URL。
 
             - `filename: optional string or null`
 
-              要发送到模型的文件的名称。
+              发送给模型的文件的名称。
 
             - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-              标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+              标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
               - `mode: "explicit"`
 
-                断点模式。始终为 `explicit`.
+                断点模式，始终为 `explicit`.
 
                 - `"explicit"`
 
@@ -1203,15 +1203,15 @@
 
       - `id: optional string or null`
 
-        函数工具调用输出的唯一 ID。当此项通过 API 返回时填充。
+        函数工具调用输出的唯一 ID。当通过 API 返回此条目时填充。
 
       - `call_id: optional string or null`
 
-        模型生成的功能工具调用的唯一 ID。
+        模型生成的函数工具调用的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -1225,7 +1225,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -1243,7 +1243,7 @@
 
       - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或 `incomplete`。当通过 API 返回 item 时填充。
+        该条目的状态。取值为 `in_progress`, `completed`，或 `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -1259,17 +1259,17 @@
 
       - `type: "tool_search_call"`
 
-        项类型。始终为 `tool_search_call`.
+        条目类型。始终为 `tool_search_call`.
 
         - `"tool_search_call"`
 
       - `id: optional string or null`
 
-        此次工具搜索调用的唯一 ID。
+        此工具搜索调用的唯一 ID。
 
       - `call_id: optional string or null`
 
-        模型生成的工具搜索调用的唯一 ID。
+        由模型生成的工具搜索调用的唯一 ID。
 
       - `execution: optional "server" or "client"`
 
@@ -1297,7 +1297,7 @@
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          在你自己代码中定义一个函数，模型可以选择调用它。了解更多关于 [函数调用](/api/docs/guides/function-calling).
+          定义你自己代码中的一个函数，模型可以选择调用它。了解更多关于 [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -1305,11 +1305,11 @@
 
           - `parameters: map[unknown] or null`
 
-            描述该函数参数的 JSON schema 对象。
+            用于描述函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否为此函数工具强制执行严格的参数校验。
+            是否对该函数工具强制执行严格的参数校验。
 
           - `type: "function"`
 
@@ -1329,19 +1329,19 @@
 
           - `defer_loading: optional boolean`
 
-            该函数是否被延迟加载，并通过工具搜索加载。
+            该函数是否被延迟，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            对函数的描述。供模型用于判断是否调用该函数。
+            对函数的描述，供模型用于判断是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
+            用于描述该函数字符串输出中 JSON 值结构的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          用于从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](/api/docs/guides/tools-file-search).
+          从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索 tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -1351,32 +1351,32 @@
 
           - `vector_store_ids: array of string`
 
-            要搜索的向量存储库的 ID。
+            要搜索的向量存储库 ID。
 
           - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-            要应用的筛选器。
+            要应用的筛选条件。
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+              用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
               - `key: string`
 
-                要与值进行比较的键。
+                用于与值进行比较的键。
 
               - `type: "eq" or "ne" or "gt" or 5 more`
 
                 指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                - `eq`：等于
-                - `ne`：不等于
+                - `eq`: equals
+                - `ne`: not equal
                 - `gt`: 大于
                 - `gte`: 大于或等于
                 - `lt`: 小于
                 - `lte`: 小于或等于
-                - `in`: 在
-                - `nin`: 不在
+                - `in`: 包含于
+                - `nin`: 不包含于
 
                 - `"eq"`
 
@@ -1396,7 +1396,7 @@
 
               - `value: string or number or boolean or array of string or number`
 
-                用于与属性键进行比较的值；支持字符串、数字或布尔类型。
+                用于与属性键比较的值；支持字符串、数字或布尔类型。
 
                 - `string`
 
@@ -1416,11 +1416,11 @@
 
               - `filters: array of ComparisonFilter or CompoundFilter`
 
-                要组合的筛选条件数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                 - `ComparisonFilter object { key, type, value }`
 
-                  用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+                  用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
                 - `CompoundFilter object { filters, type }`
 
@@ -1428,7 +1428,7 @@
 
               - `type: "and" or "or"`
 
-                操作类型: `and` 或 `or`.
+                操作类型： `and` 或 `or`.
 
                 - `"and"`
 
@@ -1436,7 +1436,7 @@
 
           - `max_num_results: optional number`
 
-            返回结果的最大数量。该数字应介于 1 到 50 之间（含两端）。
+            要返回的最大结果数。该数值应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -1444,15 +1444,15 @@
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
+              在启用混合搜索时，控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -1464,11 +1464,11 @@
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
+              文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
         - `Computer object { type }`
 
-          用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -1478,7 +1478,7 @@
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -1504,18 +1504,18 @@
 
           - `type: "computer_use_preview"`
 
-            计算机使用工具的类型。始终为 `computer_use_preview`.
+            computer use 工具的类型。始终为 `computer_use_preview`.
 
             - `"computer_use_preview"`
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          在互联网上搜索与提示相关的来源。详细了解
-          [网页搜索 工具](/api/docs/guides/tools-web-search).
+          通过互联网搜索与提示相关的来源。详细了解
+          [网页搜索工具](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索 工具的类型，取值为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型。取值为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -1523,22 +1523,22 @@
 
           - `external_web_access: optional boolean`
 
-            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当为 false 时，网页搜索 工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 访问实时互联网。省略时默认为 true。当设为 false 时，网页搜索 工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的过滤条件。
 
             - `allowed_domains: optional array of string or null`
 
               允许搜索的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也同样允许。
+              所提供域名的子域名也同样被允许。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+            用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -1548,9 +1548,9 @@
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            用户的近似位置。如果省略或为 null，则默认为
-            美国。若要避免此回退，请传入 `{"type": "approximate"}` 无需
-            位置字段。若要本地化结果，请提供相关的位置字段。
+            用户的大致位置。如果省略或为 null，则默认为
+            美国。若要避免此回退行为，请在 `{"type": "approximate"}` 不传
+            位置字段时传入。若要本地化结果，请提供相应的位置字段。
 
             - `city: optional string or null`
 
@@ -1558,15 +1558,15 @@
 
             - `country: optional string or null`
 
-              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+              两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
             - `region: optional string or null`
 
-              用户所在地区/区域的自由文本输入，例如 `California`.
+              用于用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
-              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
             - `type: optional "approximate"`
 
@@ -1576,8 +1576,8 @@
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol
-          （MCP）服务器授予模型对其他工具的访问权限。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+          通过远程模型上下文协议
+          （MCP）服务器为模型提供对其他工具的访问权限。 [详细了解 MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -1611,9 +1611,9 @@
 
               - `read_only: optional boolean`
 
-                指示某个工具是修改数据还是只读。如果某个
+                指示某个工具是否修改数据或为只读。如果某个
                 MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                ，则它将匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -1621,21 +1621,21 @@
 
           - `authorization: optional string`
 
-            可与远程 MCP 服务器配合使用的 OAuth 访问令牌，可以
-            配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-            必须自行处理 OAuth 授权流程，并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可用于
+            使用自定义 MCP 服务器 URL 或服务连接器。你的应用
+            必须处理 OAuth 授权流程，并在此处提供令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，例如 ChatGPT 中提供的那些。必须提供其中
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。了解更多
+            服务连接器的标识符，例如 ChatGPT 中可用的连接器。必须提供其中之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
             关于服务连接器的信息 [请参阅此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-            对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。
-            使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道进行
-            连接。
+            此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+            使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过
+            通过安全 MCP 隧道进行连接。
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
             - Dropbox： `connector_dropbox`
             - Gmail： `connector_gmail`
@@ -1673,13 +1673,13 @@
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-            指定 MCP 服务器中哪些工具需要批准。
+            指定 MCP 服务器中哪些工具需要审批。
 
             - `McpToolApprovalFilter object { always, never }`
 
-              指定 MCP 服务器中哪些工具需要批准。可以是
-              `always`, `never`，或与工具关联的过滤对象
-              ，用于指定需要批准的工具。
+              指定 MCP 服务器中哪些工具需要审批。可以是
+              `always`, `never`，或是与需要审批的工具相关联的过滤对象
+              。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -1687,9 +1687,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -1701,9 +1701,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -1711,9 +1711,9 @@
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定统一的批准策略。可选值为 `always` 或
-              `never`。当设置为 `always`，所有工具都需要审批。设置
-              为 `never`，所有工具都不需要审批。
+              为所有工具指定统一的审批策略。可选值之一为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
+              设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
 
@@ -1735,13 +1735,13 @@
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          运行 Python 代码以帮助生成对提示词回复的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，也可以是用于
-            指定可供你代码使用的已上传文件 ID 以及
-            optional `memory_limit` setting。
+            代码解释器容器。可以是容器 ID，或是用于
+            指定可供你的代码使用的已上传文件 ID 以及相应的
+            optional `memory_limit` setting.
 
             - `string`
 
@@ -1759,7 +1759,7 @@
 
               - `file_ids: optional array of string`
 
-                可供代码使用的已上传文件的可选列表。
+                一个可选的已上传文件列表，供你的代码使用。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -1799,19 +1799,19 @@
 
                   - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                    针对允许列表中域的可选域范围 secret。
+                    用于白名单域的可选域范围密钥。
 
                     - `domain: string`
 
-                      与 secret 关联的域。
+                      与该密钥关联的域。
 
                     - `name: string`
 
-                      为该域注入的 secret 名称。
+                      为该域注入的密钥名称。
 
                     - `value: string`
 
-                      为该域注入的 secret 值。
+                      为该域注入的密钥值。
 
           - `type: "code_interpreter"`
 
@@ -1847,7 +1847,7 @@
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是生成新图像还是编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑已有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -1857,12 +1857,12 @@
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值为 `transparent`, `opaque`,
-            或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，之一，包括
-            其 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
-            背景。支持透明背景的 GPT Image 模型可使用此功能。
-            模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持目前处于
-            预览阶段。使用 `transparent`，时，需将输出格式设置为 `png` 或 `webp`.
+            设置生成图片的背景。可选值包括 `transparent`, `opaque`,
+            或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括
+            它们的 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
+            背景。受支持的 GPT Image 模型可使用透明背景。对于
+            模型，此功能处于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，此支持为预览阶段。使用
+            时，将输出格式设置为 `transparent`。 `png` 或 `webp`.
             默认值： `auto`.
 
             - `"transparent"`
@@ -1873,7 +1873,7 @@
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。该参数仅在 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型中受支持，在 `gpt-image-1-mini`。中不受支持。支持 `high` 和 `low`。默认为 `low`.
+            控制模型在多大程度上匹配输入图像的风格和特征，尤其是面部特征。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持的值包括 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -1881,7 +1881,7 @@
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于局部重绘的可选蒙版。包含 `image_url`
+            用于修复的可选区域蒙版。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -1890,7 +1890,7 @@
 
             - `image_url: optional string`
 
-              Base64 编码的蒙版图像。
+              经过 Base64 编码的蒙版图像。
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -1932,7 +1932,7 @@
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -1944,7 +1944,7 @@
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。取值为 `png`, `webp`，或
             `jpeg`. 默认值： `png`.
 
             - `"png"`
@@ -1955,13 +1955,13 @@
 
           - `partial_images: optional number`
 
-            在流式模式下生成的局部图像数量，取值范围为 0（默认值）到 3。
+            在流式模式下生成的中间图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            生成图像的质量。GPT image 模型支持 `low`,
+            生成图像的质量。GPT 图像模型支持 `low`,
             `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
-            包括其 `2026-09-08` 快照，也支持 `xhigh` 和 `max`.
+            包括它们的 `2026-09-08` 快照，同样支持 `xhigh` 和 `max`.
             默认值： `auto`.
 
             - `"low"`
@@ -1978,13 +1978,13 @@
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -2034,7 +2034,7 @@
 
               - `file_ids: optional array of string`
 
-                可供代码使用的已上传文件的可选列表。
+                一个可选的已上传文件列表，供你的代码使用。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2058,13 +2058,13 @@
 
               - `skills: optional array of SkillReference or InlineSkill`
 
-                可选的技能列表，通过 id 或内联数据引用。
+                一个可选的技能列表，通过 id 或内联数据引用。
 
                 - `SkillReference object { skill_id, type, version }`
 
                   - `skill_id: string`
 
-                    所引用技能的 ID。
+                    被引用技能的 ID。
 
                   - `type: "skill_reference"`
 
@@ -2122,7 +2122,7 @@
 
               - `skills: optional array of LocalSkill`
 
-                可选的技能列表。
+                一个可选的技能列表。
 
                 - `description: string`
 
@@ -2134,13 +2134,13 @@
 
                 - `path: string`
 
-                  包含该技能的目录路径。
+                  指向包含该技能的目录的路径。
 
             - `ContainerReference object { container_id, type }`
 
               - `container_id: string`
 
-                所引用容器的 ID。
+                被引用容器的 ID。
 
               - `type: "container_reference"`
 
@@ -2172,11 +2172,11 @@
 
           - `async: optional boolean`
 
-            工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+            工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
           - `defer_loading: optional boolean`
 
-            此工具是否应延迟并通过工具搜索发现。
+            此工具是否应被延迟，并通过工具搜索来发现。
 
           - `description: optional string`
 
@@ -2184,7 +2184,7 @@
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认是无约束文本。
+            自定义工具的输入格式。默认为无约束文本。
 
             - `Text object { type }`
 
@@ -2206,7 +2206,7 @@
 
               - `syntax: "lark" or "regex"`
 
-                语法定义的语法。可选值为 `lark` 或 `regex`.
+                语法定义的语法。取值为 `lark` 或 `regex`.
 
                 - `"lark"`
 
@@ -2220,11 +2220,11 @@
 
         - `Namespace object { description, name, tools, type }`
 
-          在共享命名空间下对函数/自定义工具进行分组。
+          将函数/自定义工具分组到共享命名空间下。
 
           - `description: string`
 
-            向模型展示的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
@@ -2252,23 +2252,23 @@
 
               - `async: optional boolean`
 
-                工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                此函数是否应被延迟，并通过工具搜索来发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                用于描述此函数工具中以字符串形式输出的 JSON 值的 JSON Schema。这不描述 content 数组形式的输出。
+                描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。该字段不描述 content 数组输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制执行严格的参数校验。如果省略，响应接口 会在模式兼容时尝试使用严格校验，否则回退到非严格校验。
+                是否启用严格的参数校验。如果省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
@@ -2294,11 +2294,11 @@
 
               - `async: optional boolean`
 
-                工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
               - `defer_loading: optional boolean`
 
-                此工具是否应延迟并通过工具搜索发现。
+                此工具是否应被延迟，并通过工具搜索来发现。
 
               - `description: optional string`
 
@@ -2306,7 +2306,7 @@
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认是无约束文本。
+                自定义工具的输入格式。默认为无约束文本。
 
           - `type: "namespace"`
 
@@ -2338,15 +2338,15 @@
 
           - `parameters: optional unknown or null`
 
-            客户端执行的工具搜索工具的参数模式。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具会搜索网页以获取相关结果，用于在回复中使用。详细了解 [网页搜索 工具](/api/docs/guides/tools-web-search).
+          此工具会搜索网页以获取可在回复中使用的相关结果。详细了解 [网页搜索工具](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索 工具的类型，取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型。取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -2360,7 +2360,7 @@
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+            用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -2370,7 +2370,7 @@
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的大致位置。如果省略或为 null，则默认为美国。若要避免此回退，请传入 `{"type": "approximate"}` 不含位置字段。若要本地化结果，请提供相应的位置字段。
+            用户的大致位置。如果省略或为 null，则默认为美国。若希望避免该回退，可传入 `{"type": "approximate"}` 时不带位置字段。若要本地化结果，请提供相关的位置字段。
 
             - `type: "approximate"`
 
@@ -2384,19 +2384,19 @@
 
             - `country: optional string or null`
 
-              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+              两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
             - `region: optional string or null`
 
-              用户所在地区/区域的自由文本输入，例如 `California`.
+              用于用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
-              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用 unified diff 创建、删除或更新文件。
+          允许助手使用统一差异格式（unified diff）创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
@@ -2414,17 +2414,17 @@
 
       - `type: "tool_search_output"`
 
-        项类型。始终为 `tool_search_output`.
+        条目类型。始终为 `tool_search_output`.
 
         - `"tool_search_output"`
 
       - `id: optional string or null`
 
-        该工具搜索输出的唯一 ID。
+        此工具搜索输出的唯一 ID。
 
       - `call_id: optional string or null`
 
-        模型生成的工具搜索调用的唯一 ID。
+        由模型生成的工具搜索调用的唯一 ID。
 
       - `execution: optional "server" or "client"`
 
@@ -2454,11 +2454,11 @@
 
       - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-        在该条目上提供的额外工具列表。
+        此条目中可用的额外工具列表。
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          在你自己代码中定义一个函数，模型可以选择调用它。了解更多关于 [函数调用](/api/docs/guides/function-calling).
+          定义你自己代码中的一个函数，模型可以选择调用它。了解更多关于 [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -2466,11 +2466,11 @@
 
           - `parameters: map[unknown] or null`
 
-            描述该函数参数的 JSON schema 对象。
+            用于描述函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否为此函数工具强制执行严格的参数校验。
+            是否对该函数工具强制执行严格的参数校验。
 
           - `type: "function"`
 
@@ -2490,19 +2490,19 @@
 
           - `defer_loading: optional boolean`
 
-            该函数是否被延迟加载，并通过工具搜索加载。
+            该函数是否被延迟，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            对函数的描述。供模型用于判断是否调用该函数。
+            对函数的描述，供模型用于判断是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
+            用于描述该函数字符串输出中 JSON 值结构的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          用于从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](/api/docs/guides/tools-file-search).
+          从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索 tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -2512,15 +2512,15 @@
 
           - `vector_store_ids: array of string`
 
-            要搜索的向量存储库的 ID。
+            要搜索的向量存储库 ID。
 
           - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-            要应用的筛选器。
+            要应用的筛选条件。
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+              用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
             - `CompoundFilter object { filters, type }`
 
@@ -2528,7 +2528,7 @@
 
           - `max_num_results: optional number`
 
-            返回结果的最大数量。该数字应介于 1 到 50 之间（含两端）。
+            要返回的最大结果数。该数值应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -2536,15 +2536,15 @@
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
+              在启用混合搜索时，控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -2556,11 +2556,11 @@
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
+              文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
         - `Computer object { type }`
 
-          用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -2570,7 +2570,7 @@
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -2596,18 +2596,18 @@
 
           - `type: "computer_use_preview"`
 
-            计算机使用工具的类型。始终为 `computer_use_preview`.
+            computer use 工具的类型。始终为 `computer_use_preview`.
 
             - `"computer_use_preview"`
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          在互联网上搜索与提示相关的来源。详细了解
-          [网页搜索 工具](/api/docs/guides/tools-web-search).
+          通过互联网搜索与提示相关的来源。详细了解
+          [网页搜索工具](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索 工具的类型，取值为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型。取值为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -2615,22 +2615,22 @@
 
           - `external_web_access: optional boolean`
 
-            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当为 false 时，网页搜索 工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 访问实时互联网。省略时默认为 true。当设为 false 时，网页搜索 工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的过滤条件。
 
             - `allowed_domains: optional array of string or null`
 
               允许搜索的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也同样允许。
+              所提供域名的子域名也同样被允许。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+            用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -2640,9 +2640,9 @@
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            用户的近似位置。如果省略或为 null，则默认为
-            美国。若要避免此回退，请传入 `{"type": "approximate"}` 无需
-            位置字段。若要本地化结果，请提供相关的位置字段。
+            用户的大致位置。如果省略或为 null，则默认为
+            美国。若要避免此回退行为，请在 `{"type": "approximate"}` 不传
+            位置字段时传入。若要本地化结果，请提供相应的位置字段。
 
             - `city: optional string or null`
 
@@ -2650,15 +2650,15 @@
 
             - `country: optional string or null`
 
-              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+              两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
             - `region: optional string or null`
 
-              用户所在地区/区域的自由文本输入，例如 `California`.
+              用于用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
-              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
             - `type: optional "approximate"`
 
@@ -2668,8 +2668,8 @@
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol
-          （MCP）服务器授予模型对其他工具的访问权限。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+          通过远程模型上下文协议
+          （MCP）服务器为模型提供对其他工具的访问权限。 [详细了解 MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -2703,9 +2703,9 @@
 
               - `read_only: optional boolean`
 
-                指示某个工具是修改数据还是只读。如果某个
+                指示某个工具是否修改数据或为只读。如果某个
                 MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                ，则它将匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -2713,21 +2713,21 @@
 
           - `authorization: optional string`
 
-            可与远程 MCP 服务器配合使用的 OAuth 访问令牌，可以
-            配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-            必须自行处理 OAuth 授权流程，并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可用于
+            使用自定义 MCP 服务器 URL 或服务连接器。你的应用
+            必须处理 OAuth 授权流程，并在此处提供令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，例如 ChatGPT 中提供的那些。必须提供其中
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。了解更多
+            服务连接器的标识符，例如 ChatGPT 中可用的连接器。必须提供其中之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
             关于服务连接器的信息 [请参阅此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-            对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。
-            使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道进行
-            连接。
+            此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+            使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过
+            通过安全 MCP 隧道进行连接。
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
             - Dropbox： `connector_dropbox`
             - Gmail： `connector_gmail`
@@ -2765,13 +2765,13 @@
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-            指定 MCP 服务器中哪些工具需要批准。
+            指定 MCP 服务器中哪些工具需要审批。
 
             - `McpToolApprovalFilter object { always, never }`
 
-              指定 MCP 服务器中哪些工具需要批准。可以是
-              `always`, `never`，或与工具关联的过滤对象
-              ，用于指定需要批准的工具。
+              指定 MCP 服务器中哪些工具需要审批。可以是
+              `always`, `never`，或是与需要审批的工具相关联的过滤对象
+              。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -2779,9 +2779,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -2793,9 +2793,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -2803,9 +2803,9 @@
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定统一的批准策略。可选值为 `always` 或
-              `never`。当设置为 `always`，所有工具都需要审批。设置
-              为 `never`，所有工具都不需要审批。
+              为所有工具指定统一的审批策略。可选值之一为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
+              设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
 
@@ -2827,13 +2827,13 @@
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          运行 Python 代码以帮助生成对提示词回复的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，也可以是用于
-            指定可供你代码使用的已上传文件 ID 以及
-            optional `memory_limit` setting。
+            代码解释器容器。可以是容器 ID，或是用于
+            指定可供你的代码使用的已上传文件 ID 以及相应的
+            optional `memory_limit` setting.
 
             - `string`
 
@@ -2851,7 +2851,7 @@
 
               - `file_ids: optional array of string`
 
-                可供代码使用的已上传文件的可选列表。
+                一个可选的已上传文件列表，供你的代码使用。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2907,7 +2907,7 @@
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是生成新图像还是编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑已有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -2917,12 +2917,12 @@
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值为 `transparent`, `opaque`,
-            或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，之一，包括
-            其 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
-            背景。支持透明背景的 GPT Image 模型可使用此功能。
-            模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持目前处于
-            预览阶段。使用 `transparent`，时，需将输出格式设置为 `png` 或 `webp`.
+            设置生成图片的背景。可选值包括 `transparent`, `opaque`,
+            或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括
+            它们的 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
+            背景。受支持的 GPT Image 模型可使用透明背景。对于
+            模型，此功能处于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，此支持为预览阶段。使用
+            时，将输出格式设置为 `transparent`。 `png` 或 `webp`.
             默认值： `auto`.
 
             - `"transparent"`
@@ -2933,7 +2933,7 @@
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。该参数仅在 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型中受支持，在 `gpt-image-1-mini`。中不受支持。支持 `high` 和 `low`。默认为 `low`.
+            控制模型在多大程度上匹配输入图像的风格和特征，尤其是面部特征。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持的值包括 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -2941,7 +2941,7 @@
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于局部重绘的可选蒙版。包含 `image_url`
+            用于修复的可选区域蒙版。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -2950,7 +2950,7 @@
 
             - `image_url: optional string`
 
-              Base64 编码的蒙版图像。
+              经过 Base64 编码的蒙版图像。
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -2992,7 +2992,7 @@
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -3004,7 +3004,7 @@
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。取值为 `png`, `webp`，或
             `jpeg`. 默认值： `png`.
 
             - `"png"`
@@ -3015,13 +3015,13 @@
 
           - `partial_images: optional number`
 
-            在流式模式下生成的局部图像数量，取值范围为 0（默认值）到 3。
+            在流式模式下生成的中间图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            生成图像的质量。GPT image 模型支持 `low`,
+            生成图像的质量。GPT 图像模型支持 `low`,
             `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
-            包括其 `2026-09-08` 快照，也支持 `xhigh` 和 `max`.
+            包括它们的 `2026-09-08` 快照，同样支持 `xhigh` 和 `max`.
             默认值： `auto`.
 
             - `"low"`
@@ -3038,13 +3038,13 @@
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -3114,11 +3114,11 @@
 
           - `async: optional boolean`
 
-            工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+            工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
           - `defer_loading: optional boolean`
 
-            此工具是否应延迟并通过工具搜索发现。
+            此工具是否应被延迟，并通过工具搜索来发现。
 
           - `description: optional string`
 
@@ -3126,15 +3126,15 @@
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认是无约束文本。
+            自定义工具的输入格式。默认为无约束文本。
 
         - `Namespace object { description, name, tools, type }`
 
-          在共享命名空间下对函数/自定义工具进行分组。
+          将函数/自定义工具分组到共享命名空间下。
 
           - `description: string`
 
-            向模型展示的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
@@ -3162,23 +3162,23 @@
 
               - `async: optional boolean`
 
-                工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                此函数是否应被延迟，并通过工具搜索来发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                用于描述此函数工具中以字符串形式输出的 JSON 值的 JSON Schema。这不描述 content 数组形式的输出。
+                描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。该字段不描述 content 数组输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制执行严格的参数校验。如果省略，响应接口 会在模式兼容时尝试使用严格校验，否则回退到非严格校验。
+                是否启用严格的参数校验。如果省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
@@ -3204,11 +3204,11 @@
 
               - `async: optional boolean`
 
-                工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
               - `defer_loading: optional boolean`
 
-                此工具是否应延迟并通过工具搜索发现。
+                此工具是否应被延迟，并通过工具搜索来发现。
 
               - `description: optional string`
 
@@ -3216,7 +3216,7 @@
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认是无约束文本。
+                自定义工具的输入格式。默认为无约束文本。
 
           - `type: "namespace"`
 
@@ -3248,15 +3248,15 @@
 
           - `parameters: optional unknown or null`
 
-            客户端执行的工具搜索工具的参数模式。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具会搜索网页以获取相关结果，用于在回复中使用。详细了解 [网页搜索 工具](/api/docs/guides/tools-web-search).
+          此工具会搜索网页以获取可在回复中使用的相关结果。详细了解 [网页搜索工具](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索 工具的类型，取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型。取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -3270,7 +3270,7 @@
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+            用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -3280,7 +3280,7 @@
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的大致位置。如果省略或为 null，则默认为美国。若要避免此回退，请传入 `{"type": "approximate"}` 不含位置字段。若要本地化结果，请提供相应的位置字段。
+            用户的大致位置。如果省略或为 null，则默认为美国。若希望避免该回退，可传入 `{"type": "approximate"}` 时不带位置字段。若要本地化结果，请提供相关的位置字段。
 
             - `type: "approximate"`
 
@@ -3294,19 +3294,19 @@
 
             - `country: optional string or null`
 
-              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+              两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
             - `region: optional string or null`
 
-              用户所在地区/区域的自由文本输入，例如 `California`.
+              用于用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
-              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用 unified diff 创建、删除或更新文件。
+          允许助手使用统一差异格式（unified diff）创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
@@ -3324,38 +3324,38 @@
 
       - `type: "additional_tools"`
 
-        项类型。始终为 `additional_tools`.
+        条目类型。始终为 `additional_tools`.
 
         - `"additional_tools"`
 
       - `id: optional string or null`
 
-        该额外工具条目的唯一 ID。
+        此额外工具条目的唯一 ID。
 
     - `ConfigurationUpdate object { type, id, reasoning }`
 
-      对会话响应配置的更新。该配置
-      在后续响应中持续生效，直到被另一次
-      配置更新所取代。
+      对话回复配置的更新项。该配置
+      在后续回复中持续生效，直到被另一项
+      配置更新所替换。
 
       - `type: "configuration_update"`
 
-        项类型。始终为 `configuration_update`.
+        条目类型。始终为 `configuration_update`.
 
         - `"configuration_update"`
 
       - `id: optional string or null`
 
-        该配置更新条目的唯一 ID。
+        此配置更新条目的唯一 ID。
 
       - `reasoning: optional object { effort }`
 
-        对推理配置的更新。仅支持 effort。
+        推理配置的更新项。仅支持 effort。
 
         - `effort: optional ReasoningEffort or null`
 
-          后续响应所使用的推理努力程度，直到另有
-          配置更新将其替换为止。
+          后续响应所使用的推理努力程度，直到被另一个
+          配置更新替换为止。
 
           - `"none"`
 
@@ -3373,10 +3373,10 @@
 
     - `Reasoning object { id, summary, type, 3 more }`
 
-      对推理模型在生成响应时所用思维链的描述。在手动
-      管理上下文时，请务必将这些项包含在发给 Responses API `input` 的请求中，以便用于后续对话轮次。
-      后续响应所使用的推理努力程度，直到另有
-      [手动管理上下文](/api/docs/guides/conversation-state).
+      对推理模型在生成响应时所使用的思维链的描述。如果你是手动管理
+      上下文，请务必在对话的后续轮次中将这些项传回 `input` 到 Responses API
+      。
+      [管理上下文](/api/docs/guides/conversation-state).
 
       - `id: string`
 
@@ -3392,13 +3392,13 @@
 
         - `type: "summary_text"`
 
-          对象的类型。始终为 `summary_text`.
+          对象的类型，恒为 `summary_text`.
 
           - `"summary_text"`
 
       - `type: "reasoning"`
 
-        对象的类型。始终为 `reasoning`.
+        对象的类型，恒为 `reasoning`.
 
         - `"reasoning"`
 
@@ -3408,30 +3408,30 @@
 
         - `text: string`
 
-          来自模型的推理文本。
+          模型输出的推理文本。
 
         - `type: "reasoning_text"`
 
-          推理文本的类型。始终为 `reasoning_text`.
+          推理文本的类型，恒为 `reasoning_text`.
 
           - `"reasoning_text"`
 
       - `encrypted_content: optional string or null`
 
-        推理项的加密内容。默认情况下，这会由
-        以及 WebSocket `POST /v1/responses` 请求返回的推理项填充。
-        `response.create` 请求填充。
+        推理项的加密内容。该字段默认由以下请求返回的推理项填充：
+        以及 WebSocket `POST /v1/responses` 请求。
+        `response.create` 在使用流式传输时，可使用已完成的推理项及其。
 
-        在流式传输时，请使用已完成的推理项及其
-        `encrypted_content` 来自 `response.output_item.done` event in
-        subsequent requests. The `encrypted_content` in
-        `response.output_item.added` may be incomplete. This is especially
-        important when `store` is `false` or when using Zero Data Retention.
+        ，从
+        `encrypted_content` 中获取。 `response.output_item.done` event in
+        后续请求中。 `encrypted_content` 中的
+        `response.output_item.added` 可能不完整。这一点在
+        时尤为 `store` 重要 `false` ，或在使用 Zero Data Retention 时也是如此。
 
       - `status: optional "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或
-        `incomplete`。当通过 API 返回 item 时填充。
+        该条目的状态。取值为 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -3441,37 +3441,37 @@
 
     - `Compaction object { encrypted_content, type, id }`
 
-      A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
+      由 [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
       - `encrypted_content: string`
 
-        The encrypted content of the compaction summary.
+        压缩摘要的加密内容。
 
       - `type: "compaction"`
 
-        The type of the item. Always `compaction`.
+        item 的类型，始终为 `compaction`.
 
         - `"compaction"`
 
       - `id: optional string or null`
 
-        The ID of the compaction item.
+        压缩项的 ID。
 
     - `ImageGenerationCall object { id, result, status, 7 more }`
 
-      An image generation request made by the model.
+      由模型发起的图像生成请求。
 
       - `id: string`
 
-        The unique ID of the image generation call.
+        图像生成调用的唯一 ID。
 
       - `result: string or null`
 
-        The generated image encoded in base64.
+        以 base64 编码的生成图像。
 
       - `status: "in_progress" or "completed" or "generating" or "failed"`
 
-        The status of the image generation call.
+        图像生成调用的状态。
 
         - `"in_progress"`
 
@@ -3483,13 +3483,13 @@
 
       - `type: "image_generation_call"`
 
-        The type of the image generation call. Always `image_generation_call`.
+        图像生成调用的类型，始终为 `image_generation_call`.
 
         - `"image_generation_call"`
 
       - `action: optional "generate" or "edit" or "auto" or null`
 
-        The action used for image generation.
+        用于图像生成的操作。
 
         - `"generate"`
 
@@ -3499,7 +3499,7 @@
 
       - `background: optional "transparent" or "opaque" or "auto" or null`
 
-        The background setting used for generation.
+        用于生成的背景设置。
 
         - `"transparent"`
 
@@ -3509,7 +3509,7 @@
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
-        The output format used for generation.
+        用于生成的输出格式。
 
         - `"png"`
 
@@ -3519,7 +3519,7 @@
 
       - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
-        图像生成工具调用所生成图像的质量。可选值为 `low`, `medium`, `high`, `xhigh`, `max`，或 `auto`.
+        图像生成工具调用所生成图像的质量。取值为 `low`, `medium`, `high`, `xhigh`, `max`，或 `auto`.
 
         - `"low"`
 
@@ -3535,17 +3535,17 @@
 
       - `revised_prompt: optional string or null`
 
-        经过任何模型提示词重写后使用的提示词。
+        经过任何模型提示词改写后使用的提示词。
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
 
-        以 `WIDTHxHEIGHT` 字符串表示的图像尺寸，例如 `1536x864`.
+        以字符串形式表示的图像尺寸，例如 `WIDTHxHEIGHT` string, for example `1536x864`.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024"`
 
-          以 `WIDTHxHEIGHT` 字符串表示的图像尺寸，例如 `1536x864`.
+          以字符串形式表示的图像尺寸，例如 `WIDTHxHEIGHT` string, for example `1536x864`.
 
           - `"1024x1024"`
 
@@ -3572,7 +3572,7 @@
       - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
         代码解释器生成的输出，例如日志或图像。
-        如果没有可用输出，则可为 null。
+        若没有可用输出，可为 null。
 
         - `Logs object { logs, type }`
 
@@ -3654,11 +3654,11 @@
 
         - `user: optional string or null`
 
-          运行命令所用的可选用户。
+          运行命令时使用的可选用户。
 
         - `working_directory: optional string or null`
 
-          运行命令所用的可选工作目录。
+          运行命令时使用的可选工作目录。
 
       - `call_id: string`
 
@@ -3700,7 +3700,7 @@
 
       - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或 `incomplete`.
+        该条目的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -3710,15 +3710,15 @@
 
     - `ShellCall object { action, call_id, type, 4 more }`
 
-      表示执行一条或多条 shell 命令请求的工具。
+      表示执行一个或多个 shell 命令请求的工具。
 
       - `action: object { commands, max_output_length, timeout_ms }`
 
-        描述如何运行该工具调用的 shell 命令及其限制。
+        描述如何运行该工具调用的 shell 命令和限制。
 
         - `commands: array of string`
 
-          供执行环境按顺序运行的 shell 命令。
+          由执行环境运行的有序 shell 命令。
 
         - `max_output_length: optional number or null`
 
@@ -3734,7 +3734,7 @@
 
       - `type: "shell_call"`
 
-        The type of the item. Always `shell_call`.
+        item 的类型，始终为 `shell_call`.
 
         - `"shell_call"`
 
@@ -3744,7 +3744,7 @@
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -3758,7 +3758,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -3768,7 +3768,7 @@
 
       - `environment: optional LocalEnvironment or ContainerReference or null`
 
-        执行 shell 命令所用的环境。
+        执行 shell 命令的环境。
 
         - `LocalEnvironment object { type, skills }`
 
@@ -3776,7 +3776,7 @@
 
       - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-        shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
+        shell 调用的状态。取值之一 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -3786,7 +3786,7 @@
 
     - `ShellCallOutput object { call_id, output, type, 4 more }`
 
-      由 shell 工具调用发出的流式输出项。
+      shell 工具调用发出的流式输出项。
 
       - `call_id: string`
 
@@ -3794,7 +3794,7 @@
 
       - `output: array of ResponseFunctionShellCallOutputContent`
 
-        捕获的 stdout 和 stderr 输出块及其关联结果。
+        捕获的 stdout 和 stderr 输出块及其关联的结果。
 
         - `outcome: object { type }  or object { exit_code, type }`
 
@@ -3802,7 +3802,7 @@
 
           - `Timeout object { type }`
 
-            表示 shell 调用超过了其配置的时间限制。
+            表示 shell 调用超出了其配置的时间限制。
 
             - `type: "timeout"`
 
@@ -3834,17 +3834,17 @@
 
       - `type: "shell_call_output"`
 
-        The type of the item. Always `shell_call_output`.
+        item 的类型，始终为 `shell_call_output`.
 
         - `"shell_call_output"`
 
       - `id: optional string or null`
 
-        shell 工具调用输出的唯一 ID。当该项通过 API 返回时填充。
+        shell 工具调用输出的唯一 ID。当该输出项通过 API 返回时填充。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -3858,7 +3858,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -3868,7 +3868,7 @@
 
       - `max_output_length: optional number or null`
 
-        为该 shell 调用的合并输出捕获的最大 UTF-8 字符数。
+        此 shell 调用合并输出所捕获的最大 UTF-8 字符数。
 
       - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -3898,7 +3898,7 @@
 
           - `diff: string`
 
-            创建文件时要应用的 unified diff 内容。
+            创建文件时应用的统一 diff 内容。
 
           - `path: string`
 
@@ -3912,7 +3912,7 @@
 
         - `DeleteFile object { path, type }`
 
-          通过 apply_patch 工具删除现有文件的指令。
+          通过 apply_patch 工具删除已有文件的指令。
 
           - `path: string`
 
@@ -3944,7 +3944,7 @@
 
       - `status: "in_progress" or "completed"`
 
-        apply patch 工具调用的状态。值为以下之一 `in_progress` 或 `completed`.
+        apply patch 工具调用的状态。其值为 `in_progress` 或 `completed`.
 
         - `"in_progress"`
 
@@ -3952,17 +3952,17 @@
 
       - `type: "apply_patch_call"`
 
-        The type of the item. Always `apply_patch_call`.
+        item 的类型，始终为 `apply_patch_call`.
 
         - `"apply_patch_call"`
 
       - `id: optional string or null`
 
-        apply patch 工具调用的唯一 ID。当此项通过 API 返回时被填充。
+        apply patch 工具调用的唯一 ID。当通过 API 返回此条目时填充。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -3976,7 +3976,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -3994,7 +3994,7 @@
 
       - `status: "completed" or "failed"`
 
-        apply patch 工具调用输出的状态。值为以下之一 `completed` 或 `failed`.
+        apply patch 工具调用输出的状态。其值为 `completed` 或 `failed`.
 
         - `"completed"`
 
@@ -4002,17 +4002,17 @@
 
       - `type: "apply_patch_call_output"`
 
-        The type of the item. Always `apply_patch_call_output`.
+        item 的类型，始终为 `apply_patch_call_output`.
 
         - `"apply_patch_call_output"`
 
       - `id: optional string or null`
 
-        apply patch 工具调用输出的唯一 ID。当此项通过 API 返回时被填充。
+        apply patch 工具调用输出的唯一 ID。当通过 API 返回此条目时填充。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -4026,7 +4026,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -4036,7 +4036,7 @@
 
       - `output: optional string or null`
 
-        apply patch 工具返回的可选人类可读日志文本（例如补丁结果或错误）。
+        apply patch 工具的可选人类可读日志文本（例如补丁结果或错误）。
 
     - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -4044,7 +4044,7 @@
 
       - `id: string`
 
-        该列表的唯一 ID。
+        此列表的唯一 ID。
 
       - `server_label: string`
 
@@ -4060,25 +4060,25 @@
 
         - `name: string`
 
-          该工具的名称。
+          工具的名称。
 
         - `annotations: optional unknown or null`
 
-          有关该工具的其他注释。
+          关于该工具的附加注解。
 
         - `description: optional string or null`
 
-          该工具的描述。
+          工具的描述。
 
       - `type: "mcp_list_tools"`
 
-        The type of the item. Always `mcp_list_tools`.
+        item 的类型，始终为 `mcp_list_tools`.
 
         - `"mcp_list_tools"`
 
       - `error: optional string or null`
 
-        当服务器无法列出工具时的错误信息。
+        服务器无法列出工具时的错误消息。
 
     - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
@@ -4094,7 +4094,7 @@
 
       - `name: string`
 
-        要运行的工具名称。
+        要运行的工具的名称。
 
       - `server_label: string`
 
@@ -4102,7 +4102,7 @@
 
       - `type: "mcp_approval_request"`
 
-        The type of the item. Always `mcp_approval_request`.
+        item 的类型，始终为 `mcp_approval_request`.
 
         - `"mcp_approval_request"`
 
@@ -4112,15 +4112,15 @@
 
       - `approval_request_id: string`
 
-        正在应答的审批请求的 ID。
+        正在回复的审批请求的 ID。
 
       - `approve: boolean`
 
-        请求是否已批准。
+        请求是否已被批准。
 
       - `type: "mcp_approval_response"`
 
-        The type of the item. Always `mcp_approval_response`.
+        item 的类型，始终为 `mcp_approval_response`.
 
         - `"mcp_approval_response"`
 
@@ -4134,7 +4134,7 @@
 
     - `McpCall object { id, arguments, name, 6 more }`
 
-      对 MCP 服务器上某个工具的调用。
+      在 MCP 服务器上对工具的调用。
 
       - `id: string`
 
@@ -4146,7 +4146,7 @@
 
       - `name: string`
 
-        已运行工具的名称。
+        已运行的工具的名称。
 
       - `server_label: string`
 
@@ -4154,18 +4154,18 @@
 
       - `type: "mcp_call"`
 
-        The type of the item. Always `mcp_call`.
+        item 的类型，始终为 `mcp_call`.
 
         - `"mcp_call"`
 
       - `approval_request_id: optional string or null`
 
         MCP 工具调用审批请求的唯一标识符。
-        在后续的 `mcp_approval_response` 输入中包含此值以批准或拒绝相应的工具调用。
+        在后续的 `mcp_approval_response` 输入中携带此值，以批准或拒绝对应的工具调用。
 
       - `error: optional McpToolCallError or null`
 
-        工具调用的错误（如果有）。
+        工具调用产生的错误（若有）。
 
         - `McpProtocolError object { code, message, type }`
 
@@ -4215,11 +4215,11 @@
 
     - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-      你代码中自定义工具调用的输出，被发送回模型。
+      来自你代码的自定义工具调用的输出，将被发送回模型。
 
       - `call_id: string`
 
-        调用 ID，用于将此自定义工具调用的输出映射到自定义工具调用。
+        调用 ID，用于将此自定义工具调用输出映射到自定义工具调用。
 
       - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -4240,11 +4240,11 @@
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision).
+            发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            发送到模型的文件输入。
+            发送给模型的文件输入。
 
       - `type: "custom_tool_call_output"`
 
@@ -4254,11 +4254,11 @@
 
       - `id: optional string`
 
-        在 OpenAI 平台中该自定义工具调用输出的唯一 ID。
+        在 OpenAI 平台中自定义工具调用输出的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -4272,7 +4272,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -4294,7 +4294,7 @@
 
       - `name: string`
 
-        被调用的自定义工具的名称。
+        正在调用的自定义工具的名称。
 
       - `type: "custom_tool_call"`
 
@@ -4304,7 +4304,7 @@
 
       - `id: optional string`
 
-        在 OpenAI 平台中该自定义工具调用的唯一 ID。
+        在 OpenAI 平台中自定义工具调用的唯一 ID。
 
       - `async: optional boolean`
 
@@ -4312,7 +4312,7 @@
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -4324,7 +4324,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -4332,15 +4332,15 @@
 
       - `namespace: optional string`
 
-        被调用的自定义工具的命名空间。
+        正在调用的自定义工具的命名空间。
 
     - `CompactionTrigger object { type, id }`
 
-      压缩当前上下文。必须是最后一个输入项。
+      压缩当前上下文。必须作为最终的输入项。
 
       - `type: "compaction_trigger"`
 
-        The type of the item. Always `compaction_trigger`.
+        item 的类型，始终为 `compaction_trigger`.
 
         - `"compaction_trigger"`
 
@@ -4350,15 +4350,15 @@
 
     - `ItemReference object { id, type }`
 
-      用于引用某个条目的内部标识符。
+      用于引用某个项的内部标识符。
 
       - `id: string`
 
-        被引用条目的 ID。
+        要引用的项的 ID。
 
       - `type: optional "item_reference" or null`
 
-        要引用的项目类型。始终为 `item_reference`.
+        引用的条目类型。始终为 `item_reference`.
 
         - `"item_reference"`
 
@@ -4366,23 +4366,23 @@
 
       - `id: string`
 
-        此程序项的唯一 ID。
+        此程序条目的唯一 ID。
 
       - `call_id: string`
 
-        程序项的稳定调用 ID。
+        程序条目的稳定调用 ID。
 
       - `code: string`
 
-        由程序化工具调用执行的 JavaScript 源代码。
+        由程序化工具调用执行的 JavaScript 源码。
 
       - `fingerprint: string`
 
-        必须往返透传的不透明程序回放指纹。
+        必须可往返传输的不透明程序重放指纹。
 
       - `type: "program"`
 
-        项类型。始终为 `program`.
+        条目类型。始终为 `program`.
 
         - `"program"`
 
@@ -4390,19 +4390,19 @@
 
       - `id: string`
 
-        此程序输出项的唯一 ID。
+        此程序输出条目的唯一 ID。
 
       - `call_id: string`
 
-        程序项的调用 ID。
+        程序条目的调用 ID。
 
       - `result: string`
 
-        程序项生成的结果。
+        程序条目产生的结果。
 
       - `status: "completed" or "incomplete"`
 
-        程序输出的终止状态。
+        程序输出的最终状态。
 
         - `"completed"`
 
@@ -4410,7 +4410,7 @@
 
       - `type: "program_output"`
 
-        项类型。始终为 `program_output`.
+        条目类型。始终为 `program_output`.
 
         - `"program_output"`
 
@@ -4418,39 +4418,41 @@
 
   插入到模型上下文中的系统（或开发者）消息。
 
-  当与 `previous_response_id`，配合使用时，来自上一次
-  响应的指令将不会延续到下一次响应。这样可以方便
-  地在新响应中替换系统（或开发者）消息。
+  当与 `previous_response_id`，一起使用时，来自上一次
+  响应的指令不会被延续到下一次响应。这使得在新的响应中替换系统（或开发者）消息变得简单
+  。
 
 - `max_output_tokens: optional number or null`
 
-  响应可生成 token 总数的上限，包括可见输出 token 和 [推理 token](/api/docs/guides/reasoning).
+  可在一次响应中生成的 token 数上限，包括可见输出 token 和 [推理 token](/api/docs/guides/reasoning).
 
 - `max_tool_calls: optional number or null`
 
-  在一次响应中可以处理的内置工具调用总次数上限。该上限适用于所有内置工具调用，而非单个工具。模型任何进一步调用工具的尝试都将被忽略。
+  在一次响应中可处理的内置工具调用总次数上限。此上限适用于所有内置工具调用，而非按单个工具计算。模型后续任何进一步的工具调用尝试都将被忽略。
 
 - `metadata: optional Metadata or null`
 
-  可以附加到对象的 16 组键值对。这可以
-  用于以结构化格式存储有关对象的附加信息，并通过
+  可附加到对象的 16 组键值对。可用于
+  以结构化格式存储有关对象的附加信息，
   格式，以及通过 API 或控制台查询对象。
 
-  键为字符串，最大长度为 64 个字符。值为字符串，
-  最大长度为 512 个字符。
+  键为字符串，最大长度为 64 个字符。值为字符串
+  ，最大长度为 512 个字符。
 
 - `model: optional ResponsesModel`
 
-  用于生成响应的模型 ID，例如 `gpt-6-astra`。OpenAI
-  提供了众多具有不同能力、性能
-  特性和定价的模型。请参阅 [模型指南](/api/docs/models)
-  以浏览和比较可用的模型。
+  用于生成响应的模型 ID，例如 `gpt-6-astra`。 OpenAI
+  提供了具有不同能力、性能
+  特征和价位的多种模型。请参阅 [模型指南](/api/docs/models)
+  以浏览和比较可用模型。
 
   - `string`
 
-  - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+  - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
     - `"gpt-6-astra"`
+
+    - `"gpt-6.1-sol"`
 
     - `"gpt-6-sol"`
 
@@ -4670,19 +4672,19 @@
 
 - `moderation: optional object { model, policy }  or null`
 
-  用于对此响应的输入和输出运行内容审核的配置。
+  用于对本次响应的输入和输出运行审核的配置。
 
   - `model: string`
 
-    用于已审核补全的审核模型，例如 'omni-moderation-latest'。
+    用于审核补全的审核模型，例如 'omni-moderation-latest'。
 
   - `policy: optional object { input, output }  or null`
 
-    应用于已审核响应输入和输出的策略。
+    应用于审核响应输入和输出的策略。
 
     - `input: optional object { mode }  or null`
 
-      响应输入的审核策略。
+      用于响应输入的审核策略。
 
       - `mode: "score" or "block"`
 
@@ -4692,7 +4694,7 @@
 
     - `output: optional object { mode }  or null`
 
-      响应输出的审核策略。
+      用于响应输出的审核策略。
 
       - `mode: "score" or "block"`
 
@@ -4706,9 +4708,9 @@
 
 - `previous_response_id: optional string or null`
 
-  发送给模型的上一条响应的唯一 ID。使用它可以
+  上一次模型响应的唯一 ID。使用它来
   创建多轮对话。了解更多关于
-  [对话状态](/api/docs/guides/conversation-state)。的信息。不能与 `conversation`.
+  [对话状态](/api/docs/guides/conversation-state)。的信息。不能与以下参数同时使用： `conversation`.
 
 - `prompt: optional ResponsePrompt or null`
 
@@ -4721,8 +4723,8 @@
 
   - `variables: optional map[string or ResponseInputText or ResponseInputImage or ResponseInputFile] or null`
 
-    要替换的变量值的可选映射，替换你的
-    提示中的变量。替换值可以是字符串，也可以是其他
+    用于在你的
+    提示中替换变量的可选值映射。替换值可以是字符串，也可以是其他
     Response 输入类型，例如图像或文件。
 
     - `string`
@@ -4733,11 +4735,11 @@
 
     - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-      发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision).
+      发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision).
 
     - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-      发送到模型的文件输入。
+      发送给模型的文件输入。
 
   - `version: optional string or null`
 
@@ -4745,19 +4747,19 @@
 
 - `prompt_cache_key: optional string or null`
 
-  由 OpenAI 用于为类似请求缓存响应，以优化你的缓存命中率。取代 `user` 字段。 [了解更多](/api/docs/guides/prompt-caching).
+  由 OpenAI 用于为相似请求缓存响应，以优化你的缓存命中率。取代 `user` 字段。 [了解更多](/api/docs/guides/prompt-caching).
 
 - `prompt_cache_options: optional object { comparison_response_id, mode, prewarm, ttl }`
 
-  提示缓存的选项。支持 `gpt-5.6` 及更高版本的模型。默认情况下，OpenAI 会自动选择一个隐式缓存断点。你可以使用 `prompt_cache_breakpoint`。为内容块添加显式断点。每个请求最多可以写入四个断点。对于缓存匹配，OpenAI 会考虑对话中最多最近的 80 个断点，且对内容块没有回溯限制。将 `mode` 通过安全 MCP 隧道进行 `explicit` 设置为 `ttl` 即可禁用隐式断点。 `30m`，默认为 [提示缓存指南](/api/docs/guides/prompt-caching) 以了解当前详情。
+  提示缓存的选项。支持 `gpt-5.6` 及更高版本的模型。默认情况下，OpenAI 会自动选择一个隐式缓存断点。你可以通过 `prompt_cache_breakpoint`。在内容块上添加显式断点。每个请求最多可写入四个断点。对于缓存匹配，OpenAI 会考虑对话中最多最近的 80 个断点，且不限制内容块回溯。将 `mode` 通过 `explicit` 设置为可禁用隐式断点。 `ttl` 默认为 `30m`，这是目前唯一支持的值。参见 [提示缓存指南](/api/docs/guides/prompt-caching) 了解当前详情。
 
   - `comparison_response_id: optional string or null`
 
-    用于诊断提示缓存复用情况时所比较的响应 ID。提供此字段会在启用相应功能时请求提示缓存诊断。
+    用于在诊断提示缓存复用时所比较的响应 ID。提供此字段会在该功能启用时请求提示缓存诊断。
 
   - `mode: optional "implicit" or "explicit"`
 
-    控制 OpenAI 是否自动创建隐式缓存断点。默认为 `implicit`。当设置为 `implicit`，时，OpenAI 会创建一个隐式断点，并在请求中写入最多最近的三个显式断点。当设置为 `explicit`，时，OpenAI 不会创建隐式断点，并写入最多最近的四个显式断点。如果不存在显式断点，则该请求不会使用提示缓存。
+    控制 OpenAI 是否自动创建隐式缓存断点。默认为 `implicit`。使用 `implicit`，OpenAI 会创建一个隐式断点，并在请求中写入最多最近的三个显式断点。使用 `explicit`，OpenAI 不会创建隐式断点，并写入最多最近的四个显式断点。如果没有显式断点，则该请求不使用提示缓存。
 
     - `"implicit"`
 
@@ -4765,28 +4767,28 @@
 
   - `prewarm: optional boolean`
 
-    预热提示缓存但不生成输出。默认为 `false`。当设置为 `true`，会覆盖 `generate` 字段为 `false`.
+    准备提示缓存而不生成输出。默认为 `false`。当设置为 `true`，覆盖 `generate` 字段为 `false`.
 
   - `ttl: optional "30m"`
 
-    应用于该请求写入的每个隐式和显式缓存断点的最短生命周期。默认为 `30m`，这是当前唯一受支持的值。后端可能会将缓存条目保留更长时间。
+    应用于请求中每个隐式和显式缓存断点的最短生命周期。默认为 `30m`，这是当前唯一支持的值。后端可能会保留缓存条目更长时间。
 
     - `"30m"`
 
 - `prompt_cache_retention: optional "in_memory" or "24h" or null`
 
-  已弃用。请使用 `prompt_cache_options.ttl` 代替。
+  已废弃。请使用 `prompt_cache_options.ttl` 代替。
 
-  提示缓存的保留策略。设置为 `24h` 以启用扩展提示缓存，使缓存的前缀保持更长时间的活跃状态，最长可达 24 小时。 [了解更多](/api/docs/guides/prompt-caching#prompt-cache-retention).
-  该字段表示最大保留策略，而
-  `prompt_cache_options.ttl` 表示最短缓存生命周期。这两个
-  字段是独立的，不会相互影响。
-  对于 `gpt-5.5`, `gpt-5.5-pro`，及未来模型，仅 `24h` 。
+  提示缓存的保留策略。设置为 `24h` 可启用扩展提示缓存，使缓存前缀保持更长时间的激活状态，最长可达 24 小时。 [了解更多](/api/docs/guides/prompt-caching#prompt-cache-retention).
+  此字段表示最长保留策略，而
+  `prompt_cache_options.ttl` 表示最短缓存生命周期。两个
+  字段相互独立，不会互相影响。
+  对于 `gpt-5.5`, `gpt-5.5-pro`，及未来模型，仅支持 `24h` 。
 
-  对于同时支持 `in_memory` 和 `24h`，的旧模型，默认值取决于你的组织的数据保留策略：
+  对于同时支持 `in_memory` 和 `24h`，的较旧模型，默认值取决于你所在组织的数据保留策略：
 
   - 未启用 ZDR 的组织默认为 `24h`.
-  - 已启用 ZDR 的组织默认为 `in_memory` 当 `prompt_cache_retention` 未指定时使用。
+  - 已启用 ZDR 的组织默认为 `in_memory` 当未指定 `prompt_cache_retention` 时使用。
 
   - `"in_memory"`
 
@@ -4794,18 +4796,18 @@
 
 - `reasoning: optional Reasoning or null`
 
-  针对
+  的配置选项
   [推理模型](/api/docs/guides/reasoning).
 
   - `context: optional "auto" or "current_turn" or "all_turns" or null`
 
-    控制在后续轮次中向模型回显哪些推理项。
-    如果省略或设置为 `auto`，则由模型决定上下文模式。该
-    `gpt-5.6` 模型系列默认为 `all_turns`；较早的模型默认为
+    控制哪些推理项在后续轮次中回传给模型。
+    如果省略或设置为 `auto`，模型将决定上下文模式。模型系列默认为
+    `gpt-5.6` 模型系列默认为 `all_turns`；早期模型默认为
     `current_turn`.
 
-    在响应中返回时，这是该响应所使用
-    的有效推理上下文模式。
+    在响应中返回时，这是响应所使用的有效推理上下文模式
+    用于响应的。
 
     - `"auto"`
 
@@ -4815,20 +4817,20 @@
 
   - `effort: optional ReasoningEffort or null`
 
-    限制推理模型的推理努力程度。当前支持
+    对推理模型的推理工作量施加约束。当前支持
     的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-    降低推理努力程度可以带来更快的响应，并减少
-    响应中用于推理的 token 数量。并非所有推理模型都支持每个
+    降低推理工作量可以让响应更快，并在响应中减少用于推理的 token
+    。并非所有推理模型都支持每个
     值。请参阅
     [推理指南](/api/docs/guides/reasoning)
-    了解各模型的支持情况。
+    了解特定模型的支持情况。
 
   - `generate_summary: optional "auto" or "concise" or "detailed" or null`
 
     **已弃用：** 使用 `summary` 代替。
 
-    模型执行的推理摘要。这可以
-    有助于调试和理解模型的推理过程。
+    对模型所执行推理的摘要。这对于调试和理解模型的
+    推理过程可能很有用。
     以下之一 `auto`, `concise`，或 `detailed`.
 
     - `"auto"`
@@ -4857,11 +4859,11 @@
 
   - `summary: optional "auto" or "concise" or "detailed" or null`
 
-    模型执行的推理摘要。这可以
-    有助于调试和理解模型的推理过程。
+    对模型所执行推理的摘要。这对于调试和理解模型的
+    推理过程可能很有用。
     以下之一 `auto`, `concise`，或 `detailed`.
 
-    `concise` 支持以下模型： `computer-use-preview` 模型以及之后发布的所有推理模型 `gpt-5`.
+    `concise` 支持的模型有 `computer-use-preview` 模型以及之后所有的推理模型 `gpt-5`.
 
     - `"auto"`
 
@@ -4871,21 +4873,21 @@
 
 - `safety_identifier: optional string or null`
 
-  用于帮助检测可能违反OpenAI使用政策的应用用户的稳定标识符。
-  ID 应为字符串，用于唯一标识每位用户，最大长度为 64 个字符。我们建议对其用户名或电子邮件地址进行哈希处理，以避免向我们发送任何可识别信息。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+  一个稳定的标识符，用于帮助检测可能违反 OpenAI 使用政策的应用用户。
+  该 ID 应为一个能唯一标识每位用户的字符串，最大长度为 64 个字符。我们建议对其用户名或电子邮件地址进行哈希处理，以避免向我们发送任何可识别身份的信息。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 - `service_tier: optional ServiceTier or null`
 
-  指定用于处理请求的服务等级。
+  指定用于处理该请求的处理类型。
 
-  - 若设置为 'auto'，则请求将使用项目设置中配置的服务等级进行处理。除非另行配置，否则项目将使用 'default'。
-  - 若设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-  - 若设置为 '[flex](/api/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务等级进行处理。
-  - 若要在请求级别启用 [快速模式](/api/docs/guides/fast-mode) ，请在 Responses 或 Chat Completions 中包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定了 `service_tier=fast` 或 `priority` 。
-  - 若设置为 'ultrafast'，则请求将使用受访问控制的 Ultrafast Processing 服务等级进行处理。该等级目前可用于 `gpt-5.6-sol`；通过该等级返回的响应将显示 `service_tier=ultrafast`.
+  - 如果设置为 'auto'，则该请求将使用在项目设置中配置的服务层级进行处理。除非另行配置，否则该项目将使用 'default'。
+  - 如果设置为 'default'，则该请求将以所选模型的标准定价和性能进行处理。
+  - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级进行处理。
+  - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请在 Responses 或 Chat Completions 中传入 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+  - 如果设置为 'ultrafast'，则该请求将使用受访问控制的 Ultrafast Processing 服务层级进行处理。该层级当前可用于 `gpt-5.6-sol`；通过该层级返回的响应将显示 `service_tier=ultrafast`.
   - 未设置时，默认行为为 'auto'。
 
-  当 `service_tier` 参数已设置，响应体中将包含基于 `service_tier` 实际用于处理该请求的处理模式的值。该响应值可能与参数中设置的值不同。
+  当 `service_tier` parameter is set, the response body will include the `service_tier` value based on the processing mode actually used to serve the request. This response value may be different from the value set in the parameter.
 
   - `"auto"`
 
@@ -4903,41 +4905,41 @@
 
 - `store: optional boolean or null`
 
-  是否存储生成的模型响应，以便稍后通过
-  API 进行检索。
-  省略时默认为 true。
-  如果设置为 true，响应数据将至少存储 30 天，但须遵守 [数据保留例外情况](/api/docs/guides/your-data#v1responses).
+  Whether to store the generated model response for later retrieval via
+  API.
+  Defaults to true when omitted.
+  If set to true, response data will be stored for at least 30 days, subject to the [data retention exceptions](/api/docs/guides/your-data#v1responses).
 
 - `stream: optional boolean or null`
 
-  如果设置为 true，模型响应数据将通过
-  以流式方式发送到客户端 [服务端发送事件](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
-  参见下面的 [流式传输部分](/api/reference/resources/responses/streaming-events)
-  。
+  If set to true, the model response data will be streamed to the client
+  as it is generated using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
+  See the [Streaming section below](/api/reference/resources/responses/streaming-events)
+  了解更多信息。
 
 - `stream_options: optional object { include_obfuscation }  or null`
 
-  流式响应选项。仅在设置 `stream: true`.
+  流式响应选项。仅当你设置了 `stream: true`.
 
   - `include_obfuscation: optional boolean`
 
-    当为 true 时，将启用流混淆。流混淆会向
-    字段添加随机字符，以规范化 `obfuscation` 流式增量事件的负载大小
-    作为对某些侧信道攻击的缓解措施。
-    默认情况下会包含这些混淆字段，但会给数据流带来少量
-    开销。如果信任 `include_obfuscation` 通过安全 MCP 隧道进行
-    之间的网络链路，可以设置为 false 以优化带宽
+    When true, stream obfuscation will be enabled. Stream obfuscation adds
+    random characters to an `obfuscation` field on streaming delta events to
+    normalize payload sizes as a mitigation to certain side-channel attacks.
+    These obfuscation fields are included by default, but add a small amount
+    of overhead to the data stream. You can set `include_obfuscation` 通过
+    false to optimize for bandwidth if you trust the network links between
     你的应用与 OpenAI API 之间。
 
 - `temperature: optional number or null`
 
-  使用的采样温度，介于 0 到 2 之间。较高的值（如 0.8）会使输出更加随机，而较低的值（如 0.2）会使输出更加聚焦和确定。
-  我们通常建议修改该参数或 `top_p` ，但不要同时修改两者。
+  使用的采样温度，介于 0 和 2 之间。较高的值（如 0.8）会使输出更加随机，而较低的值（如 0.2）会使输出更加聚焦和确定。
+  我们通常建议修改此参数或 `top_p` 但不要同时修改两者。
 
 - `text: optional ResponseTextConfig`
 
   模型文本响应的配置选项。可以是纯
-  文本，也可以是结构化的 JSON 数据。了解详情：
+  文本或结构化的 JSON 数据。了解更多：
 
   - [文本输入与输出](/api/docs/guides/text)
   - [结构化输出](/api/docs/guides/structured-outputs)
@@ -4947,16 +4949,16 @@
     指定模型必须输出的格式的对象。
 
     配置 `{ "type": "json_schema" }` 会启用结构化输出，
-    从而确保模型的输出与你提供的 JSON schema 相匹配。详情请参阅
+    它确保模型的输出匹配你提供的 JSON schema。更多信息请参阅
     [结构化输出指南](/api/docs/guides/structured-outputs).
 
-    默认格式为 `{ "type": "text" }` ，不包含其他选项。
+    默认格式为 `{ "type": "text" }` 且不包含其他选项。
 
-    **不推荐用于 gpt-4o 及更新的模型：**
+    **不建议在 gpt-4o 及更新的模型上使用：**
 
-    将 `{ "type": "json_object" }` 设置为
-    会启用旧的 JSON 模式，该模式 `json_schema`
-    可确保模型生成的消息是合法的 JSON。对于支持该参数的模型，推荐使用。
+    将其设置为 `{ "type": "json_object" }` 会启用旧的 JSON 模式，该模式
+    可确保模型生成的消息是有效的 JSON。对于支持 `json_schema`
+    的模型，建议优先使用后者。
 
     - `ResponseFormatText object { type }`
 
@@ -4964,14 +4966,14 @@
 
       - `type: "text"`
 
-        所定义的响应格式的类型。始终为 `text`.
+        正在定义的响应格式的类型。始终为 `text`.
 
         - `"text"`
 
     - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
       JSON Schema 响应格式。用于生成结构化的 JSON 响应。
-      了解更多关于 [Structured Outputs](/api/docs/guides/structured-outputs).
+      详细了解 [结构化输出](/api/docs/guides/structured-outputs).
 
       - `name: string`
 
@@ -4981,45 +4983,45 @@
       - `schema: map[unknown]`
 
         响应格式的 schema，以 JSON Schema 对象描述。
-        了解如何构建 JSON schemas [请参阅此处](https://json-schema.org/).
+        了解如何构建 JSON schema [请参阅此处](https://json-schema.org/).
 
       - `type: "json_schema"`
 
-        所定义的响应格式的类型。始终为 `json_schema`.
+        正在定义的响应格式的类型。始终为 `json_schema`.
 
         - `"json_schema"`
 
       - `description: optional string`
 
-        响应格式用途的描述，模型会根据该描述
+        响应格式用途的描述，供模型用于
         确定如何按该格式进行响应。
 
       - `strict: optional boolean or null`
 
-        是否在生成输出时启用严格的 schema 遵循。
-        如果设置为 true，模型将始终遵循
-        字段中定义的精确 schema。当 `schema` 时，仅支持 JSON Schema 的一个子集。
-        `strict` is `true`。为时，要了解更多信息，请参阅 [Structured Outputs
-        guide](/api/docs/guides/structured-outputs).
+        是否在生成输出时启用严格模式遵循 schema。
+        如果设置为 true，模型将始终遵循在 text_format
+        字段中定义的精确 `schema` schema。使用 strict 时，仅支持 JSON Schema 的子集；
+        `strict` 重要 `true`。要了解更多信息，请参阅 [结构化输出
+        指南](/api/docs/guides/structured-outputs).
 
     - `ResponseFormatJSONObject object { type }`
 
-      JSON 对象响应格式。一种较旧的 JSON 响应生成方法。
-      使用 `json_schema` 对于支持它的模型是推荐的方式。请注意，
+      JSON 对象响应格式。生成 JSON 响应的一种较旧方法。
+      对于 `json_schema` 支持它的模型，建议使用 json_object。请注意，
       模型在没有系统或用户消息指示的情况下不会生成 JSON
-      这样做。
+      以实现该目的。
 
       - `type: "json_object"`
 
-        所定义的响应格式的类型。始终为 `json_object`.
+        正在定义的响应格式的类型。始终为 `json_object`.
 
         - `"json_object"`
 
   - `verbosity: optional "low" or "medium" or "high" or null`
 
-    限制模型响应的详细程度。较低的值会产生
-    更简洁的响应，而较高的值会产生更详细的响应。
-    目前支持的值包括 `low`, `medium`，以及 `high`。默认值为
+    约束模型响应的详细程度。较低的值会生成
+    更简洁的响应，而较高的值会生成更详细的响应。
+    当前支持的值包括 `low`, `medium`，以及 `high`。默认值为
     `medium`.
 
     - `"low"`
@@ -5030,18 +5032,18 @@
 
 - `tool_choice: optional ToolChoiceOptions or ToolChoiceAllowed or ToolChoiceTypes or 6 more`
 
-  模型在生成响应时应该如何选择要使用的工具。参见
-  参数，了解如何指定 `tools` 模型可以调用的工具。
-  以上各项。
+  指定模型在生成响应时如何选择要使用的工具。
+  请参阅 `tools` 参数了解如何指定可调用
+  的工具。
 
   - `ToolChoiceOptions = "none" or "auto" or "required"`
 
-    控制模型调用哪个工具（如果有的话）。
+    控制模型调用哪些工具（如果有）。
 
     `none` 表示模型将不调用任何工具，而是生成一条消息。
 
-    `auto` 表示模型可以在生成消息和调用一个或
-    多个工具之间进行选择。
+    `auto` 表示模型可以在生成消息与调用一个或
+    多个工具之间选择。
 
     `required` 表示模型必须调用一个或多个工具。
 
@@ -5059,8 +5061,8 @@
 
       将模型可用的工具限制为预定义的集合。
 
-      `auto` 允许模型从允许的工具中进行选择并生成
-      一条消息。
+      `auto` 允许模型从允许的工具中选择并生成一条
+      消息。
 
       `required` 要求模型调用一个或多个允许的工具。
 
@@ -5070,9 +5072,9 @@
 
     - `tools: array of map[unknown]`
 
-      模型应允许调用的工具定义列表。
+      允许模型调用的工具定义列表。
 
-      对于Responses API，工具定义列表可能如下所示：
+      对于 Responses API，工具定义列表可能如下所示：
 
       ```json
       [
@@ -5090,12 +5092,12 @@
 
   - `ToolChoiceTypes object { type }`
 
-    指示模型应使用内置工具来生成回复。
+    指示模型应使用内置工具生成响应。
     [了解有关内置工具的更多信息](/api/docs/guides/tools).
 
     - `type: "file_search" or "web_search_preview" or "computer" or 5 more`
 
-      模型应使用的托管工具类型。了解有关
+      模型应使用的托管工具的类型。了解更多关于
       [内置工具](/api/docs/guides/tools).
 
       允许的值为：
@@ -5126,7 +5128,7 @@
 
   - `ToolChoiceFunction object { name, type }`
 
-    使用此选项可强制模型调用特定的函数。
+    使用此选项可以强制模型调用特定函数。
 
     - `name: string`
 
@@ -5140,7 +5142,7 @@
 
   - `ToolChoiceMcp object { server_label, type, name }`
 
-    使用此选项可强制模型在远程 MCP 服务器上调用特定工具。
+    使用此选项可以强制模型调用远程 MCP 服务器上的特定工具。
 
     - `server_label: string`
 
@@ -5158,7 +5160,7 @@
 
   - `ToolChoiceCustom object { name, type }`
 
-    使用此选项可强制模型调用特定的自定义工具。
+    使用此选项可以强制模型调用特定的自定义工具。
 
     - `name: string`
 
@@ -5200,27 +5202,27 @@
 
 - `tools: optional array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-  模型在生成回复时可以调用的工具数组。你
-  可以通过设置 `tool_choice` 参数。
+  模型在生成响应时可以调用的工具数组。你
+  可以通过设置来指定要使用的工具 `tool_choice` parameter.
 
   我们支持以下类别的工具：
 
   - **内置工具**：由 OpenAI 提供的工具，用于扩展模型的
     能力，例如 [网页搜索](/api/docs/guides/tools-web-search)
-    或 [文件搜索](/api/docs/guides/tools-file-search)。了解更多关于
+    或 [文件搜索](/api/docs/guides/tools-file-search)。详细了解
     [内置工具](/api/docs/guides/tools).
-  - **MCP 工具**：通过自定义 MCP 服务器与第三方系统集成，
-    或使用 Google Drive 和 SharePoint 等预定义连接器。了解更多关于
+  - **MCP 工具**：通过自定义 MCP 服务器与第三方系统集成
+    或使用预定义连接器，例如 Google Drive 和 SharePoint。详细了解
     [MCP 工具](/api/docs/guides/tools-connectors-mcp).
   - **函数调用（自定义工具）**：由你定义的函数，
-    使模型能够使用强类型参数和返回值调用你自己的代码。了解更多关于
-    。你也可以使用
-    [函数调用](/api/docs/guides/function-calling)。你也可以使用
+    使模型能够使用强类型参数调用你自己的代码
+    并返回结果。详细了解
+    [function calling](/api/docs/guides/function-calling)。你还可以使用
     自定义工具来调用你自己的代码。
 
   - `Function object { name, parameters, strict, 6 more }`
 
-    在你自己代码中定义一个函数，模型可以选择调用它。了解更多关于 [函数调用](/api/docs/guides/function-calling).
+    定义你自己代码中的一个函数，模型可以选择调用它。了解更多关于 [function calling](/api/docs/guides/function-calling).
 
     - `name: string`
 
@@ -5228,11 +5230,11 @@
 
     - `parameters: map[unknown] or null`
 
-      描述该函数参数的 JSON schema 对象。
+      用于描述函数参数的 JSON schema 对象。
 
     - `strict: boolean or null`
 
-      是否为此函数工具强制执行严格的参数校验。
+      是否对该函数工具强制执行严格的参数校验。
 
     - `type: "function"`
 
@@ -5252,19 +5254,19 @@
 
     - `defer_loading: optional boolean`
 
-      该函数是否被延迟加载，并通过工具搜索加载。
+      该函数是否被延迟，并通过工具搜索加载。
 
     - `description: optional string or null`
 
-      对函数的描述。供模型用于判断是否调用该函数。
+      对函数的描述，供模型用于判断是否调用该函数。
 
     - `output_schema: optional map[unknown] or null`
 
-      描述此函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
+      用于描述该函数字符串输出中 JSON 值结构的 JSON schema 对象。
 
   - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-    用于从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](/api/docs/guides/tools-file-search).
+    从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索 tool](/api/docs/guides/tools-file-search).
 
     - `type: "file_search"`
 
@@ -5274,15 +5276,15 @@
 
     - `vector_store_ids: array of string`
 
-      要搜索的向量存储库的 ID。
+      要搜索的向量存储库 ID。
 
     - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-      要应用的筛选器。
+      要应用的筛选条件。
 
       - `ComparisonFilter object { key, type, value }`
 
-        用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+        用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
       - `CompoundFilter object { filters, type }`
 
@@ -5290,7 +5292,7 @@
 
     - `max_num_results: optional number`
 
-      返回结果的最大数量。该数字应介于 1 到 50 之间（含两端）。
+      要返回的最大结果数。该数值应介于 1 到 50 之间（含两端）。
 
     - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -5298,15 +5300,15 @@
 
       - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-        在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
+        在启用混合搜索时，控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
         - `embedding_weight: number`
 
-          嵌入在倒数排名融合中的权重。
+          倒数排名融合中嵌入的权重。
 
         - `text_weight: number`
 
-          文本在倒数排名融合中的权重。
+          倒数排名融合中文本的权重。
 
       - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -5318,11 +5320,11 @@
 
       - `score_threshold: optional number`
 
-        文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
+        文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
   - `Computer object { type }`
 
-    用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+    用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
     - `type: "computer"`
 
@@ -5332,7 +5334,7 @@
 
   - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-    用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+    用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
     - `display_height: number`
 
@@ -5358,18 +5360,18 @@
 
     - `type: "computer_use_preview"`
 
-      计算机使用工具的类型。始终为 `computer_use_preview`.
+      computer use 工具的类型。始终为 `computer_use_preview`.
 
       - `"computer_use_preview"`
 
   - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-    在互联网上搜索与提示相关的来源。详细了解
-    [网页搜索 工具](/api/docs/guides/tools-web-search).
+    通过互联网搜索与提示相关的来源。详细了解
+    [网页搜索工具](/api/docs/guides/tools-web-search).
 
     - `type: "web_search" or "web_search_2025_08_26"`
 
-      网页搜索 工具的类型，取值为 `web_search` 或 `web_search_2025_08_26`.
+      网页搜索工具的类型。取值为 `web_search` 或 `web_search_2025_08_26`.
 
       - `"web_search"`
 
@@ -5377,22 +5379,22 @@
 
     - `external_web_access: optional boolean`
 
-      允许 网页搜索 进行实时互联网访问。省略时默认为 true。当为 false 时，网页搜索 工具以离线/仅缓存模式运行，不会获取新的外部内容。
+      允许 网页搜索 访问实时互联网。省略时默认为 true。当设为 false 时，网页搜索 工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
     - `filters: optional object { allowed_domains }  or null`
 
-      搜索的过滤器。
+      搜索的过滤条件。
 
       - `allowed_domains: optional array of string or null`
 
         允许搜索的域名。如果未提供，则允许所有域名。
-        所提供域名的子域名也同样允许。
+        所提供域名的子域名也同样被允许。
 
         示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
     - `search_context_size: optional "low" or "medium" or "high"`
 
-      用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+      用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
       - `"low"`
 
@@ -5402,9 +5404,9 @@
 
     - `user_location: optional object { city, country, region, 2 more }  or null`
 
-      用户的近似位置。如果省略或为 null，则默认为
-      美国。若要避免此回退，请传入 `{"type": "approximate"}` 无需
-      位置字段。若要本地化结果，请提供相关的位置字段。
+      用户的大致位置。如果省略或为 null，则默认为
+      美国。若要避免此回退行为，请在 `{"type": "approximate"}` 不传
+      位置字段时传入。若要本地化结果，请提供相应的位置字段。
 
       - `city: optional string or null`
 
@@ -5412,15 +5414,15 @@
 
       - `country: optional string or null`
 
-        两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+        两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
       - `region: optional string or null`
 
-        用户所在地区/区域的自由文本输入，例如 `California`.
+        用于用户所在地区的自由文本输入，例如 `California`.
 
       - `timezone: optional string or null`
 
-        该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+        该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
       - `type: optional "approximate"`
 
@@ -5430,8 +5432,8 @@
 
   - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-    通过远程 Model Context Protocol
-    （MCP）服务器授予模型对其他工具的访问权限。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+    通过远程模型上下文协议
+    （MCP）服务器为模型提供对其他工具的访问权限。 [详细了解 MCP](/api/docs/guides/tools-connectors-mcp).
 
     - `server_label: string`
 
@@ -5465,9 +5467,9 @@
 
         - `read_only: optional boolean`
 
-          指示某个工具是修改数据还是只读。如果某个
+          指示某个工具是否修改数据或为只读。如果某个
           MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-          ，它将匹配此过滤器。
+          ，则它将匹配此过滤器。
 
         - `tool_names: optional array of string`
 
@@ -5475,21 +5477,21 @@
 
     - `authorization: optional string`
 
-      可与远程 MCP 服务器配合使用的 OAuth 访问令牌，可以
-      配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-      必须自行处理 OAuth 授权流程，并在此处提供令牌。
+      可用于远程 MCP 服务器的 OAuth 访问令牌，可用于
+      使用自定义 MCP 服务器 URL 或服务连接器。你的应用
+      必须处理 OAuth 授权流程，并在此处提供令牌。
 
     - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-      服务连接器的标识符，例如 ChatGPT 中提供的那些。必须提供其中
-      `server_url`, `connector_id`，或 `tunnel_id` 之一。了解更多
+      服务连接器的标识符，例如 ChatGPT 中可用的连接器。必须提供其中之一。
+      `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
       关于服务连接器的信息 [请参阅此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-      对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。
-      使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道进行
-      连接。
+      此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+      使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过
+      通过安全 MCP 隧道进行连接。
 
-      当前支持的值 `connector_id` 包括：
+      当前支持 `connector_id` 的值为：
 
       - Dropbox： `connector_dropbox`
       - Gmail： `connector_gmail`
@@ -5527,13 +5529,13 @@
 
     - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-      指定 MCP 服务器中哪些工具需要批准。
+      指定 MCP 服务器中哪些工具需要审批。
 
       - `McpToolApprovalFilter object { always, never }`
 
-        指定 MCP 服务器中哪些工具需要批准。可以是
-        `always`, `never`，或与工具关联的过滤对象
-        ，用于指定需要批准的工具。
+        指定 MCP 服务器中哪些工具需要审批。可以是
+        `always`, `never`，或是与需要审批的工具相关联的过滤对象
+        。
 
         - `always: optional object { read_only, tool_names }`
 
@@ -5541,9 +5543,9 @@
 
           - `read_only: optional boolean`
 
-            指示某个工具是修改数据还是只读。如果某个
+            指示某个工具是否修改数据或为只读。如果某个
             MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-            ，它将匹配此过滤器。
+            ，则它将匹配此过滤器。
 
           - `tool_names: optional array of string`
 
@@ -5555,9 +5557,9 @@
 
           - `read_only: optional boolean`
 
-            指示某个工具是修改数据还是只读。如果某个
+            指示某个工具是否修改数据或为只读。如果某个
             MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-            ，它将匹配此过滤器。
+            ，则它将匹配此过滤器。
 
           - `tool_names: optional array of string`
 
@@ -5565,9 +5567,9 @@
 
       - `McpToolApprovalSetting = "always" or "never"`
 
-        为所有工具指定统一的批准策略。可选值为 `always` 或
-        `never`。当设置为 `always`，所有工具都需要审批。设置
-        为 `never`，所有工具都不需要审批。
+        为所有工具指定统一的审批策略。可选值之一为 `always` 或
+        `never`。当设置为 `always`，时，所有工具都需要审批。当
+        设置为 `never`，时，所有工具都不需要审批。
 
         - `"always"`
 
@@ -5589,13 +5591,13 @@
 
   - `CodeInterpreter object { container, type, allowed_callers }`
 
-    运行 Python 代码以帮助生成对提示词回复的工具。
+    运行 Python 代码以帮助生成对提示词响应的工具。
 
     - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-      代码解释器容器。可以是容器 ID，也可以是用于
-      指定可供你代码使用的已上传文件 ID 以及
-      optional `memory_limit` setting。
+      代码解释器容器。可以是容器 ID，或是用于
+      指定可供你的代码使用的已上传文件 ID 以及相应的
+      optional `memory_limit` setting.
 
       - `string`
 
@@ -5613,7 +5615,7 @@
 
         - `file_ids: optional array of string`
 
-          可供代码使用的已上传文件的可选列表。
+          一个可选的已上传文件列表，供你的代码使用。
 
         - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -5669,7 +5671,7 @@
 
     - `action: optional "generate" or "edit" or "auto"`
 
-      是生成新图像还是编辑现有图像。默认值： `auto`.
+      是生成新图像还是编辑已有图像。默认值： `auto`.
 
       - `"generate"`
 
@@ -5679,12 +5681,12 @@
 
     - `background: optional "transparent" or "opaque" or "auto"`
 
-      设置生成图像的背景。可选值为 `transparent`, `opaque`,
-      或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，之一，包括
-      其 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
-      背景。支持透明背景的 GPT Image 模型可使用此功能。
-      模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持目前处于
-      预览阶段。使用 `transparent`，时，需将输出格式设置为 `png` 或 `webp`.
+      设置生成图片的背景。可选值包括 `transparent`, `opaque`,
+      或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括
+      它们的 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
+      背景。受支持的 GPT Image 模型可使用透明背景。对于
+      模型，此功能处于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，此支持为预览阶段。使用
+      时，将输出格式设置为 `transparent`。 `png` 或 `webp`.
       默认值： `auto`.
 
       - `"transparent"`
@@ -5695,7 +5697,7 @@
 
     - `input_fidelity: optional "high" or "low" or null`
 
-      控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。该参数仅在 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型中受支持，在 `gpt-image-1-mini`。中不受支持。支持 `high` 和 `low`。默认为 `low`.
+      控制模型在多大程度上匹配输入图像的风格和特征，尤其是面部特征。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持的值包括 `high` 和 `low`。默认为 `low`.
 
       - `"high"`
 
@@ -5703,7 +5705,7 @@
 
     - `input_image_mask: optional object { file_id, image_url }`
 
-      用于局部重绘的可选蒙版。包含 `image_url`
+      用于修复的可选区域蒙版。包含 `image_url`
       （字符串，可选）和 `file_id` （字符串，可选）。
 
       - `file_id: optional string`
@@ -5712,7 +5714,7 @@
 
       - `image_url: optional string`
 
-        Base64 编码的蒙版图像。
+        经过 Base64 编码的蒙版图像。
 
     - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -5754,7 +5756,7 @@
 
     - `moderation: optional "auto" or "low"`
 
-      生成图像的审核级别。默认值： `auto`.
+      生成图像的内容审核级别。默认值： `auto`.
 
       - `"auto"`
 
@@ -5766,7 +5768,7 @@
 
     - `output_format: optional "png" or "webp" or "jpeg"`
 
-      生成图像的输出格式。可选值之一 `png`, `webp`，或
+      生成图像的输出格式。取值为 `png`, `webp`，或
       `jpeg`. 默认值： `png`.
 
       - `"png"`
@@ -5777,13 +5779,13 @@
 
     - `partial_images: optional number`
 
-      在流式模式下生成的局部图像数量，取值范围为 0（默认值）到 3。
+      在流式模式下生成的中间图像数量，取值范围为 0（默认值）到 3。
 
     - `quality: optional "low" or "medium" or "high" or 3 more`
 
-      生成图像的质量。GPT image 模型支持 `low`,
+      生成图像的质量。GPT 图像模型支持 `low`,
       `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
-      包括其 `2026-09-08` 快照，也支持 `xhigh` 和 `max`.
+      包括它们的 `2026-09-08` 快照，同样支持 `xhigh` 和 `max`.
       默认值： `auto`.
 
       - `"low"`
@@ -5800,13 +5802,13 @@
 
     - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-      生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+      生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
       - `string`
 
       - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+        生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
         - `"1024x1024"`
 
@@ -5876,11 +5878,11 @@
 
     - `async: optional boolean`
 
-      工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+      工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
     - `defer_loading: optional boolean`
 
-      此工具是否应延迟并通过工具搜索发现。
+      此工具是否应被延迟，并通过工具搜索来发现。
 
     - `description: optional string`
 
@@ -5888,15 +5890,15 @@
 
     - `format: optional CustomToolInputFormat`
 
-      自定义工具的输入格式。默认是无约束文本。
+      自定义工具的输入格式。默认为无约束文本。
 
   - `Namespace object { description, name, tools, type }`
 
-    在共享命名空间下对函数/自定义工具进行分组。
+    将函数/自定义工具分组到共享命名空间下。
 
     - `description: string`
 
-      向模型展示的命名空间描述。
+      展示给模型的命名空间描述。
 
     - `name: string`
 
@@ -5924,23 +5926,23 @@
 
         - `async: optional boolean`
 
-          工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+          工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
         - `defer_loading: optional boolean`
 
-          此函数是否应延迟并通过工具搜索发现。
+          此函数是否应被延迟，并通过工具搜索来发现。
 
         - `description: optional string or null`
 
         - `output_schema: optional map[unknown] or null`
 
-          用于描述此函数工具中以字符串形式输出的 JSON 值的 JSON Schema。这不描述 content 数组形式的输出。
+          描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。该字段不描述 content 数组输出。
 
         - `parameters: optional unknown or null`
 
         - `strict: optional boolean or null`
 
-          是否强制执行严格的参数校验。如果省略，响应接口 会在模式兼容时尝试使用严格校验，否则回退到非严格校验。
+          是否启用严格的参数校验。如果省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
@@ -5966,11 +5968,11 @@
 
         - `async: optional boolean`
 
-          工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+          工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
         - `defer_loading: optional boolean`
 
-          此工具是否应延迟并通过工具搜索发现。
+          此工具是否应被延迟，并通过工具搜索来发现。
 
         - `description: optional string`
 
@@ -5978,7 +5980,7 @@
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认是无约束文本。
+          自定义工具的输入格式。默认为无约束文本。
 
     - `type: "namespace"`
 
@@ -6010,15 +6012,15 @@
 
     - `parameters: optional unknown or null`
 
-      客户端执行的工具搜索工具的参数模式。
+      客户端执行的工具搜索工具的参数 schema。
 
   - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-    此工具会搜索网页以获取相关结果，用于在回复中使用。详细了解 [网页搜索 工具](/api/docs/guides/tools-web-search).
+    此工具会搜索网页以获取可在回复中使用的相关结果。详细了解 [网页搜索工具](/api/docs/guides/tools-web-search).
 
     - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-      网页搜索 工具的类型，取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+      网页搜索工具的类型。取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
       - `"web_search_preview"`
 
@@ -6032,7 +6034,7 @@
 
     - `search_context_size: optional "low" or "medium" or "high"`
 
-      用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+      用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
       - `"low"`
 
@@ -6042,7 +6044,7 @@
 
     - `user_location: optional object { type, city, country, 2 more }  or null`
 
-      用户的大致位置。如果省略或为 null，则默认为美国。若要避免此回退，请传入 `{"type": "approximate"}` 不含位置字段。若要本地化结果，请提供相应的位置字段。
+      用户的大致位置。如果省略或为 null，则默认为美国。若希望避免该回退，可传入 `{"type": "approximate"}` 时不带位置字段。若要本地化结果，请提供相关的位置字段。
 
       - `type: "approximate"`
 
@@ -6056,19 +6058,19 @@
 
       - `country: optional string or null`
 
-        两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+        两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
       - `region: optional string or null`
 
-        用户所在地区/区域的自由文本输入，例如 `California`.
+        用于用户所在地区的自由文本输入，例如 `California`.
 
       - `timezone: optional string or null`
 
-        该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+        该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
   - `ApplyPatch object { type, allowed_callers }`
 
-    允许助手使用 unified diff 创建、删除或更新文件。
+    允许助手使用统一差异格式（unified diff）创建、删除或更新文件。
 
     - `type: "apply_patch"`
 
@@ -6086,27 +6088,27 @@
 
 - `top_logprobs: optional number or null`
 
-  一个介于 0 到 20 之间的整数，指定在每个 token 位置返回的最大最可能
-  token 数量，每个 token 都带有对应的对数
-  概率。在某些情况下，返回的 token 数量可能少于
+  一个介于 0 到 20 之间的整数，用于指定在每个 token 位置返回的最多可能的
+  token 数量，每个 token 都附带一个对数
+  probability。在某些情况下，返回的 token 数量可能会少于
   请求的数量。
 
 - `top_p: optional number or null`
 
-  一种称为 nucleus 采样的温度采样替代方法，
-  模型会考虑具有 top_p 概率质量的 token 的结果。
-  因此 0.1 表示只考虑构成前 10% 概率质量的 token。
-  会被纳入考虑。
+  温度采样的替代方法，称为核采样（nucleus sampling），
+  模型会考虑具有 top_p 概率质量的 token
+  的结果。因此 0.1 表示仅考虑构成前 10% 概率质量的 token。
+  会被考虑。
 
-  我们通常建议修改该参数或 `temperature` ，但不要同时修改两者。
+  我们通常建议修改此参数或 `temperature` 但不要同时修改两者。
 
 - `truncation: optional "auto" or "disabled" or null`
 
   用于模型响应的截断策略。
 
   - `auto`：如果此 Response 的输入超出
-    模型的上下文窗口大小，模型将通过从对话开头丢弃条目来截断
-    响应以适应上下文窗口。
+    模型的上下文窗口大小，模型将截断
+    响应以适应上下文窗口，从对话的开头丢弃条目。
   - `disabled` （默认）：如果输入大小将超出模型的上下文窗口
     大小，请求将失败并返回 400 错误。
 
@@ -6116,11 +6118,11 @@
 
 - `user: optional string or null`
 
-  此字段正在被 `safety_identifier` 和 `prompt_cache_key`。取代。请使用 `prompt_cache_key` 以维持缓存优化。
-  你的最终用户的稳定标识符。
+  此字段正在被替换为 `safety_identifier` 和 `prompt_cache_key`。请使用 `prompt_cache_key` 以维持缓存优化效果。
+  用于标识最终用户的稳定标识符。
   用于通过更好地对相似请求进行分桶来提高缓存命中率，并帮助 OpenAI 检测和防止滥用。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
-### Returns
+### 返回值
 
 - `Response object { id, access_programs, created_at, 34 more }`
 
@@ -6142,15 +6144,15 @@
 
   - `created_at: number`
 
-    创建此 Response 时的 Unix 时间戳（以秒为单位）。
+    此 Response 创建时的 Unix 时间戳（以秒为单位）。
 
   - `error: ResponseError or null`
 
-    当模型未能生成 Response 时返回的错误对象。
+    模型生成 Response 失败时返回的错误对象。
 
     - `code: "server_error" or "rate_limit_exceeded" or "invalid_prompt" or 18 more`
 
-      此响应的错误代码。
+      响应的错误代码。
 
       - `"server_error"`
 
@@ -6202,17 +6204,17 @@
 
       - `detailed_explanation: optional string`
 
-        此 block 的公开说明。
+        该 block 的公开说明。
 
       - `error_type: optional string or "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-        可选的分类；客户端必须接受其他值。
+        可选的分类；客户端必须接受其他取值。
 
         - `string`
 
         - `SafetyAlertErrorType = "potentially_unintended_data_transfer" or "potentially_unintended_data_access" or "potentially_unintended_destructive_activity" or "other"`
 
-          可选的分类；客户端必须接受其他值。
+          可选的分类；客户端必须接受其他取值。
 
           - `"potentially_unintended_data_transfer"`
 
@@ -6232,14 +6234,14 @@
 
   - `incomplete_details: object { reason }  or null`
 
-    有关响应不完整的详细原因。
+    响应不完整的相关详情。
 
     - `reason: optional "max_output_tokens" or "max_messages" or "content_filter" or "steered"`
 
       响应不完整的原因。 `steered` 表示
-      响应在 WebSocket 事件之后于安全输出边界处停止。然后服务端可以使用排队的输入自动创建
-      WebSocket `response.steer` 事件后，服务器随后可以创建
-      使用排队输入自动生成的后续响应。
+      响应在一个
+      WebSocket `response.steer` 事件之后的安全输出边界处停止。然后服务器可以使用排队中的输入自动创建一个
+      后续响应。
 
       - `"max_output_tokens"`
 
@@ -6253,32 +6255,32 @@
 
     插入到模型上下文中的系统（或开发者）消息。
 
-    当与 `previous_response_id`，配合使用时，来自上一次
-    响应的指令将不会延续到下一次响应。这样可以方便
-    地在新响应中替换系统（或开发者）消息。
+    当与 `previous_response_id`，一起使用时，来自上一次
+    响应的指令不会被延续到下一次响应。这使得在新的响应中替换系统（或开发者）消息变得简单
+    。
 
     - `string`
 
-      提供给模型的文本输入，等价于使用
+      对模型的文本输入，等同于带有
       `developer` 角色的文本输入。
 
     - `InputItemList = array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
-      包含一个或多个输入项的列表，这些输入项提供给模型，其中包含
+      提供给模型的一个或多个输入项的列表，其中包含
       不同的内容类型。
 
       - `EasyInputMessage object { content, role, phase, type }`
 
-        使用角色来指示指令优先级的模型消息输入。使用
-        或 `developer` 或 `system` 角色提供的指令优先于使用
-        角色提供的指令 `user` role。带有
-        `assistant` role 的消息被视为由模型在先前的
-        交互中生成。
+        对模型的消息输入，其角色用于指示指令的
+        优先级层级。使用 `developer` 或 `system` 角色给出的指令优先
+        于使用 `user` role。带有该
+        `assistant` role 的消息被视为模型在之前
+        交互中生成的内容。
 
         - `content: string or ResponseInputMessageContentList`
 
           发送给模型的文本、图像或音频输入，用于生成响应。
-          也可以包含先前的助手响应。
+          也可以包含之前的助手响应。
 
           - `TextInput = string`
 
@@ -6299,23 +6301,23 @@
 
               - `type: "input_text"`
 
-                输入项的类型。始终为 `input_text`.
+                输入项的类型，始终为 `input_text`.
 
                 - `"input_text"`
 
               - `prompt_cache_breakpoint: optional object { mode }`
 
-                标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+                标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
                 - `mode: "explicit"`
 
-                  断点模式。始终为 `explicit`.
+                  断点模式，始终为 `explicit`.
 
                   - `"explicit"`
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-              发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision).
+              发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision).
 
               - `detail: ImageDetail`
 
@@ -6331,41 +6333,41 @@
 
               - `type: "input_image"`
 
-                输入项的类型。始终为 `input_image`.
+                输入项的类型，始终为 `input_image`.
 
                 - `"input_image"`
 
               - `file_id: optional string or null`
 
-                要发送给模型的文件的 ID。
+                要发送给模型的文件 ID。
 
               - `image_url: optional string or null`
 
-                要发送给模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
+                要发送给模型的图像 URL。完全限定的 URL，或在 data URL 中以 base64 编码的图像。
 
               - `prompt_cache_breakpoint: optional object { mode }`
 
-                标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+                标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
                 - `mode: "explicit"`
 
-                  断点模式。始终为 `explicit`.
+                  断点模式，始终为 `explicit`.
 
                   - `"explicit"`
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-              发送到模型的文件输入。
+              发送给模型的文件输入。
 
               - `type: "input_file"`
 
-                输入项的类型。始终为 `input_file`.
+                输入项的类型，始终为 `input_file`.
 
                 - `"input_file"`
 
               - `detail: optional "auto" or "low" or "high"`
 
-                发送到模型的文件的细节级别。使用 `auto` 以让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 使用量。使用 `low` 以进行较低成本的渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 使用量。使用 `low` 可降低渲染成本，或使用 `high` 可使用更高质量渲染文件。默认为 `auto`.
 
                 - `"auto"`
 
@@ -6375,33 +6377,33 @@
 
               - `file_data: optional string`
 
-                要发送到模型的文件内容。
+                发送给模型的文件内容。
 
               - `file_id: optional string or null`
 
-                要发送给模型的文件的 ID。
+                要发送给模型的文件 ID。
 
               - `file_url: optional string`
 
-                要发送到模型的文件的 URL。
+                发送给模型的文件的 URL。
 
               - `filename: optional string`
 
-                要发送到模型的文件的名称。
+                发送给模型的文件的名称。
 
               - `prompt_cache_breakpoint: optional object { mode }`
 
-                标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+                标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
                 - `mode: "explicit"`
 
-                  断点模式。始终为 `explicit`.
+                  断点模式，始终为 `explicit`.
 
                   - `"explicit"`
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。取值为 `user`, `assistant`, `system`，或
+          消息输入的角色。取值之一为 `user`, `assistant`, `system`，或
           `developer`.
 
           - `"user"`
@@ -6414,9 +6416,9 @@
 
         - `phase: optional "commentary" or "final_answer" or null`
 
-          将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-          对于像 `gpt-5.3-codex` 及更高的模型，在发送后续请求时，请保留并重新发送
-          阶段到所有助手消息上——丢弃它可能会降低性能。不用于用户消息。
+          将某条 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
+          对于类似 `gpt-5.3-codex` 及更高的模型，在发送后续请求时，保留并重新发送
+          阶段到所有助手消息上 —— 丢弃它可能会降低性能。不用于用户消息。
 
           - `"commentary"`
 
@@ -6430,9 +6432,9 @@
 
       - `Message object { content, role, status, type }`
 
-        使用角色来指示指令优先级的模型消息输入。使用
-        或 `developer` 或 `system` 角色提供的指令优先于使用
-        角色提供的指令 `user` 角色的文本输入。
+        对模型的消息输入，其角色用于指示指令的
+        优先级层级。使用 `developer` 或 `system` 角色给出的指令优先
+        于使用 `user` 角色的文本输入。
 
         - `content: ResponseInputMessageContentList`
 
@@ -6441,7 +6443,7 @@
 
         - `role: "user" or "system" or "developer"`
 
-          消息输入的角色。取值为 `user`, `system`，或 `developer`.
+          消息输入的角色。取值之一为 `user`, `system`，或 `developer`.
 
           - `"user"`
 
@@ -6451,8 +6453,8 @@
 
         - `status: optional "in_progress" or "completed" or "incomplete"`
 
-          item 的状态。取值为 `in_progress`, `completed`，或
-          `incomplete`。当通过 API 返回 item 时填充。
+          条目的状态。取值之一为 `in_progress`, `completed`，或
+          `incomplete`。当通过 API 返回条目时填充。
 
           - `"in_progress"`
 
@@ -6468,7 +6470,7 @@
 
       - `ResponseOutputMessage object { id, content, role, 3 more }`
 
-        来自模型的一条输出消息。
+        来自模型的输出消息。
 
         - `id: string`
 
@@ -6480,7 +6482,7 @@
 
           - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-            模型生成的文本输出。
+            来自模型的文本输出。
 
             - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
 
@@ -6496,11 +6498,11 @@
 
                 - `filename: string`
 
-                  所引用文件的文件名。
+                  被引用文件的文件名。
 
                 - `index: number`
 
-                  在输出文本中插入该文件引用的位置索引。
+                  在输出文本中插入文件引用的索引位置。
 
                 - `type: "file_citation"`
 
@@ -6510,7 +6512,7 @@
 
               - `URLCitation object { end_index, start_index, title, 2 more }`
 
-                用于生成模型响应的网页资源的引用。
+                用于生成模型回复的网络资源引用。
 
                 - `end_index: number`
 
@@ -6522,7 +6524,7 @@
 
                 - `title: string`
 
-                  网页资源的标题。
+                  网络资源的标题。
 
                 - `type: "url_citation"`
 
@@ -6532,11 +6534,11 @@
 
                 - `url: string`
 
-                  网页资源的 URL。
+                  网络资源的 URL。
 
               - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
-                用于生成模型响应的容器文件的引用。
+                用于生成模型回复的容器文件引用。
 
                 - `container_id: string`
 
@@ -6552,11 +6554,11 @@
 
                 - `filename: string`
 
-                  所引用容器文件的文件名。
+                  被引用容器文件的文件名。
 
                 - `start_index: number`
 
-                  消息中容器文件引用的起始字符索引。
+                  容器文件引用在消息中的起始字符索引。
 
                 - `type: "container_file_citation"`
 
@@ -6574,7 +6576,7 @@
 
                 - `index: number`
 
-                  文件在文件列表中的索引。
+                  该文件在文件列表中的索引。
 
                 - `type: "file_path"`
 
@@ -6614,7 +6616,7 @@
 
             - `refusal: string`
 
-              模型的拒绝说明。
+              模型给出的拒绝原因说明。
 
             - `type: "refusal"`
 
@@ -6630,7 +6632,7 @@
 
         - `status: "in_progress" or "completed" or "incomplete"`
 
-          消息输入的状态。取值之一为 `in_progress`, `completed`，或
+          消息输入的状态。取值之一： `in_progress`, `completed`，或
           `incomplete`。当输入项通过 API 返回时填充。
 
           - `"in_progress"`
@@ -6647,9 +6649,9 @@
 
         - `phase: optional "commentary" or "final_answer" or null`
 
-          将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-          对于像 `gpt-5.3-codex` 及更高的模型，在发送后续请求时，请保留并重新发送
-          阶段到所有助手消息上——丢弃它可能会降低性能。不用于用户消息。
+          将某条 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
+          对于类似 `gpt-5.3-codex` 及更高的模型，在发送后续请求时，保留并重新发送
+          阶段到所有助手消息上 —— 丢弃它可能会降低性能。不用于用户消息。
 
           - `"commentary"`
 
@@ -6657,8 +6659,8 @@
 
       - `FileSearchCall object { id, queries, status, 2 more }`
 
-        文件搜索 工具调用的结果。详见
-        [文件搜索 指南](/api/docs/guides/tools-file-search) 。
+        文件搜索 工具调用的结果。请参阅
+        [文件搜索 指南](/api/docs/guides/tools-file-search) 了解更多信息。
 
         - `id: string`
 
@@ -6670,7 +6672,7 @@
 
         - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-          文件搜索 工具调用的状态。取值之一为 `in_progress`,
+          文件搜索 工具调用的状态。取值之一： `in_progress`,
           `searching`, `incomplete` 或 `failed`,
 
           - `"in_progress"`
@@ -6685,21 +6687,21 @@
 
         - `type: "file_search_call"`
 
-          文件搜索 工具调用的类型。始终为 `file_search_call`.
+          文件搜索工具调用的类型。始终 `file_search_call`.
 
           - `"file_search_call"`
 
         - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-          文件搜索 工具调用的结果。
+          文件搜索工具调用的结果。
 
           - `attributes: optional map[string or number or boolean] or null`
 
-            可以附加到对象的 16 组键值对。这可以
-            用于以结构化格式存储有关对象的附加信息，并通过
-            API 或仪表板查询对象。键为字符串，最长
-            64 个字符；值为字符串（最长 512 个字符）、布尔值或数字。
-            占位长度描述保持不变。
+            可附加到对象的 16 组键值对。可用于
+            以结构化格式存储有关对象的附加信息，
+            并通过 API 或仪表板查询对象。键为字符串，
+            最大长度为 64 个字符。值为字符串，最大
+            长度为 512 个字符、布尔值或数字。
 
             - `string`
 
@@ -6726,7 +6728,7 @@
       - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
         对计算机使用工具的工具调用。参见
-        [计算机使用指南](/api/docs/guides/tools-computer-use) 。
+        [computer use guide](/api/docs/guides/tools-computer-use) 了解更多信息。
 
         - `id: string`
 
@@ -6734,11 +6736,11 @@
 
         - `call_id: string`
 
-          在向工具调用输出进行响应时使用的标识符。
+          使用输出响应工具调用时所用的标识符。
 
         - `pending_safety_checks: array of object { id, code, message }`
 
-          计算机调用待处理的安全检查。
+          该计算机调用的待处理安全检查。
 
           - `id: string`
 
@@ -6754,8 +6756,8 @@
 
         - `status: "in_progress" or "completed" or "incomplete"`
 
-          条目的状态。可选值之一 `in_progress`, `completed`，或
-          `incomplete`。当通过 API 返回 item 时填充。
+          该条目的状态。取值为 `in_progress`, `completed`，或
+          `incomplete`。当通过 API 返回条目时填充。
 
           - `"in_progress"`
 
@@ -6771,15 +6773,15 @@
 
         - `action: optional ComputerAction`
 
-          单击操作。
+          一次点击动作。
 
           - `Click object { button, type, x, 2 more }`
 
-            单击操作。
+            一次点击动作。
 
             - `button: "left" or "right" or "wheel" or 2 more`
 
-              表示单击时按下的鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
+              表示点击时按下的鼠标按键。取值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
               - `"left"`
 
@@ -6793,51 +6795,51 @@
 
             - `type: "click"`
 
-              指定事件类型。对于单击操作，该属性始终为 `click`.
+              指定事件类型。对于点击动作，此属性始终为 `click`.
 
               - `"click"`
 
             - `x: number`
 
-              发生单击的 x 坐标。
+              点击发生的 x 坐标。
 
             - `y: number`
 
-              发生单击的 y 坐标。
+              点击发生的 y 坐标。
 
             - `keys: optional array of string or null`
 
-              单击时按住的按键。
+              点击时按住的键。
 
           - `DoubleClick object { keys, type, x, y }`
 
-            双击操作。
+            一次双击动作。
 
             - `keys: array of string or null`
 
-              双击时按住的按键。
+              双击时按住的键。
 
             - `type: "double_click"`
 
-              指定事件类型。对于双击操作，该属性始终设置为 `double_click`.
+              指定事件类型。对于双击动作，此属性始终设置为 `double_click`.
 
               - `"double_click"`
 
             - `x: number`
 
-              发生双击的 x 坐标。
+              双击发生的 x 坐标。
 
             - `y: number`
 
-              发生双击的 y 坐标。
+              双击发生的 y 坐标。
 
           - `Drag object { path, type, keys }`
 
-            拖动操作。
+            一次拖动动作。
 
             - `path: array of object { x, y }`
 
-              表示拖动操作路径的坐标数组。坐标将以对象数组的形式呈现，例如
+              表示拖动动作路径的坐标数组。坐标将以对象数组的形式呈现，例如
 
               ```
               [
@@ -6856,21 +6858,21 @@
 
             - `type: "drag"`
 
-              指定事件类型。对于拖动操作，该属性始终设置为 `drag`.
+              指定事件类型。对于拖动动作，此属性始终设置为 `drag`.
 
               - `"drag"`
 
             - `keys: optional array of string or null`
 
-              拖动鼠标时按住的按键。
+              拖动鼠标时按住的键。
 
           - `Keypress object { keys, type }`
 
-            模型希望执行的按键集合。
+            模型希望执行的一组按键操作。
 
             - `keys: array of string`
 
-              模型请求按下的按键组合。这是一个字符串数组，每个字符串表示一个按键。
+              模型请求按下的按键组合。这是一个字符串数组，每个字符串代表一个按键。
 
             - `type: "keypress"`
 
@@ -6890,15 +6892,15 @@
 
             - `x: number`
 
-              要移至的 x 坐标。
+              要移动到的 x 坐标。
 
             - `y: number`
 
-              要移至的 y 坐标。
+              要移动到的 y 坐标。
 
             - `keys: optional array of string or null`
 
-              鼠标移动时按住的按键。
+              移动鼠标时按住的按键。
 
           - `Screenshot object { type }`
 
@@ -6930,11 +6932,11 @@
 
             - `x: number`
 
-              发生滚动的 x 坐标。
+              发生滚动处的 x 坐标。
 
             - `y: number`
 
-              发生滚动的 y 坐标。
+              发生滚动处的 y 坐标。
 
             - `keys: optional array of string or null`
 
@@ -6966,24 +6968,24 @@
 
         - `actions: optional ComputerActionList`
 
-          批处理操作的扁平化列表，用于 `computer_use`。每个操作包含一个
-          `type` 判别字段和该操作特有的字段。
+          扁平化批处理操作，适用于 `computer_use`。每个操作都包含一个
+          `type` 判别字段和操作特定字段。
 
           - `Click object { button, type, x, 2 more }`
 
-            单击操作。
+            一次点击动作。
 
           - `DoubleClick object { keys, type, x, y }`
 
-            双击操作。
+            一次双击动作。
 
           - `Drag object { path, type, keys }`
 
-            拖动操作。
+            一次拖动动作。
 
           - `Keypress object { keys, type }`
 
-            模型希望执行的按键集合。
+            模型希望执行的一组按键操作。
 
           - `Move object { type, x, y, keys }`
 
@@ -7007,44 +7009,44 @@
 
       - `ComputerCallOutput object { call_id, output, type, 3 more }`
 
-        一次 computer 工具调用的输出。
+        计算机工具调用的输出。
 
         - `call_id: string`
 
-          产生该输出的 computer 工具调用的 ID。
+          生成该输出的计算机工具调用的 ID。
 
         - `output: ResponseComputerToolCallOutputScreenshot`
 
-          与 computer use 工具配合使用的计算机截图。
+          与计算机使用工具配合使用的计算机截图图像。
 
           - `type: "computer_screenshot"`
 
-            指定事件类型。对于计算机截图，该属性始终
-            设置为 `computer_screenshot`.
+            指定事件类型。对于计算机截图，此属性
+            始终设置为 `computer_screenshot`.
 
             - `"computer_screenshot"`
 
           - `file_id: optional string`
 
-            包含该截图的已上传文件的标识符。
+            包含截图的上传文件的标识符。
 
           - `image_url: optional string`
 
-            截图图片的 URL。
+            截图图像的 URL。
 
         - `type: "computer_call_output"`
 
-          computer 工具调用输出的类型。始终为 `computer_call_output`.
+          计算机工具调用输出的类型。始终为 `computer_call_output`.
 
           - `"computer_call_output"`
 
         - `id: optional string or null`
 
-          computer 工具调用输出的 ID。
+          计算机工具调用输出的 ID。
 
         - `acknowledged_safety_checks: optional array of object { id, code, message }  or null`
 
-          由 API 报告的、已被开发者确认的安全检查项。
+          已被开发者确认的 API 报告的安全检查。
 
           - `id: string`
 
@@ -7060,7 +7062,7 @@
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-          消息输入的状态。取值之一为 `in_progress`, `completed`，或 `incomplete`。当输入项通过 API 返回时填充。
+          消息输入的状态。取值之一： `in_progress`, `completed`，或 `incomplete`。当输入项通过 API 返回时填充。
 
           - `"in_progress"`
 
@@ -7070,16 +7072,16 @@
 
       - `WebSearchCall object { id, status, type, action }`
 
-        一次 网页搜索 工具调用的结果。参见
-        [网页搜索 指南](/api/docs/guides/tools-web-search) 。
+        网页搜索工具调用的结果。请参阅
+        [网页搜索指南](/api/docs/guides/tools-web-search) 了解更多信息。
 
         - `id: string`
 
-          该 网页搜索 工具调用的唯一 ID。
+          网页搜索工具调用的唯一 ID。
 
         - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-          该 网页搜索 工具调用的状态。
+          网页搜索工具调用的状态。
 
           - `"in_progress"`
 
@@ -7093,18 +7095,18 @@
 
         - `type: "web_search_call"`
 
-          该 网页搜索 工具调用的类型。始终为 `web_search_call`.
+          网页搜索工具调用的类型。始终为 `web_search_call`.
 
           - `"web_search_call"`
 
         - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-          描述本次 网页搜索 调用中所执行具体操作的对象。
-          包含模型如何使用网页的详细信息（搜索、open_page、find_in_page）。
+          描述此次 网页搜索调用中所执行具体操作的对象。
+          包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
           - `Search object { type, queries, query, sources }`
 
-            操作类型 "search" - 执行 网页搜索 查询。
+            操作类型 "search" - 执行一次网页搜索查询。
 
             - `type: "search"`
 
@@ -7154,7 +7156,7 @@
 
             - `pattern: string`
 
-              在页面内搜索的模式或文本。
+              要在页面内搜索的模式或文本。
 
             - `type: "find_in_page"`
 
@@ -7164,12 +7166,12 @@
 
             - `url: string`
 
-              搜索该模式的页面 URL。
+              在其中搜索模式的页面 URL。
 
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
-        用于运行函数的工具调用。参见
-        [函数调用指南](/api/docs/guides/function-calling) 。
+        用于运行函数的工具调用。参阅
+        [函数调用指南](/api/docs/guides/function-calling) 了解更多信息。
 
         - `arguments: string`
 
@@ -7177,7 +7179,7 @@
 
         - `call_id: string`
 
-          模型生成的功能工具调用的唯一 ID。
+          模型生成的函数工具调用的唯一 ID。
 
         - `name: string`
 
@@ -7185,21 +7187,21 @@
 
         - `type: "function_call"`
 
-          功能工具调用的类型。始终为 `function_call`.
+          函数工具调用的类型。始终为 `function_call`.
 
           - `"function_call"`
 
         - `id: optional string`
 
-          功能工具调用的唯一 ID。
+          函数工具调用的唯一 ID。
 
         - `async: optional boolean`
 
-          功能工具调用是否异步运行。
+          函数工具调用是否异步运行。
 
         - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-          产生此次工具调用的执行上下文。
+          产生此工具调用的执行上下文。
 
           - `Direct object { type }`
 
@@ -7211,7 +7213,7 @@
 
             - `caller_id: string`
 
-              产生此次工具调用的程序项的调用 ID。
+              产生此工具调用的程序项的调用 ID。
 
             - `type: "program"`
 
@@ -7223,8 +7225,8 @@
 
         - `status: optional "in_progress" or "completed" or "incomplete"`
 
-          条目的状态。可选值之一 `in_progress`, `completed`，或
-          `incomplete`。当通过 API 返回 item 时填充。
+          该条目的状态。取值为 `in_progress`, `completed`，或
+          `incomplete`。当通过 API 返回条目时填充。
 
           - `"in_progress"`
 
@@ -7238,7 +7240,7 @@
 
         - `output: string or array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
-          函数工具调用的文本、图像或文件输出。
+          函数工具调用的文本、图片或文件输出。
 
           - `string`
 
@@ -7246,7 +7248,7 @@
 
           - `array of ResponseInputTextContent or ResponseInputImageContent or ResponseInputFileContent`
 
-            函数工具调用的内容输出（文本、图像、文件）数组。
+            函数工具调用的内容输出（文本、图片、文件）数组。
 
             - `ResponseInputTextContent object { text, type, prompt_cache_breakpoint }`
 
@@ -7258,27 +7260,27 @@
 
               - `type: "input_text"`
 
-                输入项的类型。始终为 `input_text`.
+                输入项的类型，始终为 `input_text`.
 
                 - `"input_text"`
 
               - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-                标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+                标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
                 - `mode: "explicit"`
 
-                  断点模式。始终为 `explicit`.
+                  断点模式，始终为 `explicit`.
 
                   - `"explicit"`
 
             - `ResponseInputImageContent object { type, detail, file_id, 2 more }`
 
-              发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision)
+              发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision)
 
               - `type: "input_image"`
 
-                输入项的类型。始终为 `input_image`.
+                输入项的类型，始终为 `input_image`.
 
                 - `"input_image"`
 
@@ -7288,35 +7290,35 @@
 
               - `file_id: optional string or null`
 
-                要发送给模型的文件的 ID。
+                要发送给模型的文件 ID。
 
               - `image_url: optional string or null`
 
-                要发送给模型的图像的 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
+                要发送给模型的图像 URL。完全限定的 URL，或在 data URL 中以 base64 编码的图像。
 
               - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-                标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+                标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
                 - `mode: "explicit"`
 
-                  断点模式。始终为 `explicit`.
+                  断点模式，始终为 `explicit`.
 
                   - `"explicit"`
 
             - `ResponseInputFileContent object { type, detail, file_data, 4 more }`
 
-              发送到模型的文件输入。
+              发送给模型的文件输入。
 
               - `type: "input_file"`
 
-                输入项的类型。始终为 `input_file`.
+                输入项的类型，始终为 `input_file`.
 
                 - `"input_file"`
 
               - `detail: optional "auto" or "low" or "high"`
 
-                发送到模型的文件的细节级别。使用 `auto` 以让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 使用量。使用 `low` 以进行较低成本的渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+                发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 使用量。使用 `low` 可降低渲染成本，或使用 `high` 可使用更高质量渲染文件。默认为 `auto`.
 
                 - `"auto"`
 
@@ -7330,23 +7332,23 @@
 
               - `file_id: optional string or null`
 
-                要发送给模型的文件的 ID。
+                要发送给模型的文件 ID。
 
               - `file_url: optional string or null`
 
-                要发送到模型的文件的 URL。
+                发送给模型的文件的 URL。
 
               - `filename: optional string or null`
 
-                要发送到模型的文件的名称。
+                发送给模型的文件的名称。
 
               - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-                标记可复用提示前缀的确切结束位置。该断点继承请求的 `prompt_cache_options.ttl`；的 TTL；边界不会对齐到 token 块。
+                标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
                 - `mode: "explicit"`
 
-                  断点模式。始终为 `explicit`.
+                  断点模式，始终为 `explicit`.
 
                   - `"explicit"`
 
@@ -7358,15 +7360,15 @@
 
         - `id: optional string or null`
 
-          函数工具调用输出的唯一 ID。当此项通过 API 返回时填充。
+          函数工具调用输出的唯一 ID。当通过 API 返回此条目时填充。
 
         - `call_id: optional string or null`
 
-          模型生成的功能工具调用的唯一 ID。
+          模型生成的函数工具调用的唯一 ID。
 
         - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-          产生此次工具调用的执行上下文。
+          产生此工具调用的执行上下文。
 
           - `Direct object { type }`
 
@@ -7380,7 +7382,7 @@
 
             - `caller_id: string`
 
-              产生此次工具调用的程序项的调用 ID。
+              产生此工具调用的程序项的调用 ID。
 
             - `type: "program"`
 
@@ -7398,7 +7400,7 @@
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-          条目的状态。可选值之一 `in_progress`, `completed`，或 `incomplete`。当通过 API 返回 item 时填充。
+          该条目的状态。取值为 `in_progress`, `completed`，或 `incomplete`。当通过 API 返回条目时填充。
 
           - `"in_progress"`
 
@@ -7414,17 +7416,17 @@
 
         - `type: "tool_search_call"`
 
-          项类型。始终为 `tool_search_call`.
+          条目类型。始终为 `tool_search_call`.
 
           - `"tool_search_call"`
 
         - `id: optional string or null`
 
-          此次工具搜索调用的唯一 ID。
+          此工具搜索调用的唯一 ID。
 
         - `call_id: optional string or null`
 
-          模型生成的工具搜索调用的唯一 ID。
+          由模型生成的工具搜索调用的唯一 ID。
 
         - `execution: optional "server" or "client"`
 
@@ -7452,7 +7454,7 @@
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            在你自己代码中定义一个函数，模型可以选择调用它。了解更多关于 [函数调用](/api/docs/guides/function-calling).
+            定义你自己代码中的一个函数，模型可以选择调用它。了解更多关于 [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -7460,11 +7462,11 @@
 
             - `parameters: map[unknown] or null`
 
-              描述该函数参数的 JSON schema 对象。
+              用于描述函数参数的 JSON schema 对象。
 
             - `strict: boolean or null`
 
-              是否为此函数工具强制执行严格的参数校验。
+              是否对该函数工具强制执行严格的参数校验。
 
             - `type: "function"`
 
@@ -7484,19 +7486,19 @@
 
             - `defer_loading: optional boolean`
 
-              该函数是否被延迟加载，并通过工具搜索加载。
+              该函数是否被延迟，并通过工具搜索加载。
 
             - `description: optional string or null`
 
-              对函数的描述。供模型用于判断是否调用该函数。
+              对函数的描述，供模型用于判断是否调用该函数。
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
+              用于描述该函数字符串输出中 JSON 值结构的 JSON schema 对象。
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            用于从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](/api/docs/guides/tools-file-search).
+            从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索 tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -7506,32 +7508,32 @@
 
             - `vector_store_ids: array of string`
 
-              要搜索的向量存储库的 ID。
+              要搜索的向量存储库 ID。
 
             - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-              要应用的筛选器。
+              要应用的筛选条件。
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+                用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
                 - `key: string`
 
-                  要与值进行比较的键。
+                  用于与值进行比较的键。
 
                 - `type: "eq" or "ne" or "gt" or 5 more`
 
                   指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-                  - `eq`：等于
-                  - `ne`：不等于
+                  - `eq`: equals
+                  - `ne`: not equal
                   - `gt`: 大于
                   - `gte`: 大于或等于
                   - `lt`: 小于
                   - `lte`: 小于或等于
-                  - `in`: 在
-                  - `nin`: 不在
+                  - `in`: 包含于
+                  - `nin`: 不包含于
 
                   - `"eq"`
 
@@ -7551,7 +7553,7 @@
 
                 - `value: string or number or boolean or array of string or number`
 
-                  用于与属性键进行比较的值；支持字符串、数字或布尔类型。
+                  用于与属性键比较的值；支持字符串、数字或布尔类型。
 
                   - `string`
 
@@ -7571,11 +7573,11 @@
 
                 - `filters: array of ComparisonFilter or CompoundFilter`
 
-                  要组合的筛选条件数组。条目可以是 `ComparisonFilter` 或 `CompoundFilter`.
+                  要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
                   - `ComparisonFilter object { key, type, value }`
 
-                    用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+                    用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
                   - `CompoundFilter object { filters, type }`
 
@@ -7583,7 +7585,7 @@
 
                 - `type: "and" or "or"`
 
-                  操作类型: `and` 或 `or`.
+                  操作类型： `and` 或 `or`.
 
                   - `"and"`
 
@@ -7591,7 +7593,7 @@
 
             - `max_num_results: optional number`
 
-              返回结果的最大数量。该数字应介于 1 到 50 之间（含两端）。
+              要返回的最大结果数。该数值应介于 1 到 50 之间（含两端）。
 
             - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -7599,15 +7601,15 @@
 
               - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-                在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
+                在启用混合搜索时，控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
                 - `embedding_weight: number`
 
-                  嵌入在倒数排名融合中的权重。
+                  倒数排名融合中嵌入的权重。
 
                 - `text_weight: number`
 
-                  文本在倒数排名融合中的权重。
+                  倒数排名融合中文本的权重。
 
               - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -7619,11 +7621,11 @@
 
               - `score_threshold: optional number`
 
-                文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
+                文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
           - `Computer object { type }`
 
-            用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -7633,7 +7635,7 @@
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -7659,18 +7661,18 @@
 
             - `type: "computer_use_preview"`
 
-              计算机使用工具的类型。始终为 `computer_use_preview`.
+              computer use 工具的类型。始终为 `computer_use_preview`.
 
               - `"computer_use_preview"`
 
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-            在互联网上搜索与提示相关的来源。详细了解
-            [网页搜索 工具](/api/docs/guides/tools-web-search).
+            通过互联网搜索与提示相关的来源。详细了解
+            [网页搜索工具](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
-              网页搜索 工具的类型，取值为 `web_search` 或 `web_search_2025_08_26`.
+              网页搜索工具的类型。取值为 `web_search` 或 `web_search_2025_08_26`.
 
               - `"web_search"`
 
@@ -7678,22 +7680,22 @@
 
             - `external_web_access: optional boolean`
 
-              允许 网页搜索 进行实时互联网访问。省略时默认为 true。当为 false 时，网页搜索 工具以离线/仅缓存模式运行，不会获取新的外部内容。
+              允许 网页搜索 访问实时互联网。省略时默认为 true。当设为 false 时，网页搜索 工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
             - `filters: optional object { allowed_domains }  or null`
 
-              搜索的过滤器。
+              搜索的过滤条件。
 
               - `allowed_domains: optional array of string or null`
 
                 允许搜索的域名。如果未提供，则允许所有域名。
-                所提供域名的子域名也同样允许。
+                所提供域名的子域名也同样被允许。
 
                 示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+              用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -7703,9 +7705,9 @@
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              用户的近似位置。如果省略或为 null，则默认为
-              美国。若要避免此回退，请传入 `{"type": "approximate"}` 无需
-              位置字段。若要本地化结果，请提供相关的位置字段。
+              用户的大致位置。如果省略或为 null，则默认为
+              美国。若要避免此回退行为，请在 `{"type": "approximate"}` 不传
+              位置字段时传入。若要本地化结果，请提供相应的位置字段。
 
               - `city: optional string or null`
 
@@ -7713,15 +7715,15 @@
 
               - `country: optional string or null`
 
-                两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+                两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
               - `region: optional string or null`
 
-                用户所在地区/区域的自由文本输入，例如 `California`.
+                用于用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
-                该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+                该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
               - `type: optional "approximate"`
 
@@ -7731,8 +7733,8 @@
 
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-            通过远程 Model Context Protocol
-            （MCP）服务器授予模型对其他工具的访问权限。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+            通过远程模型上下文协议
+            （MCP）服务器为模型提供对其他工具的访问权限。 [详细了解 MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -7766,9 +7768,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -7776,21 +7778,21 @@
 
             - `authorization: optional string`
 
-              可与远程 MCP 服务器配合使用的 OAuth 访问令牌，可以
-              配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-              必须自行处理 OAuth 授权流程，并在此处提供令牌。
+              可用于远程 MCP 服务器的 OAuth 访问令牌，可用于
+              使用自定义 MCP 服务器 URL 或服务连接器。你的应用
+              必须处理 OAuth 授权流程，并在此处提供令牌。
 
             - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-              服务连接器的标识符，例如 ChatGPT 中提供的那些。必须提供其中
-              `server_url`, `connector_id`，或 `tunnel_id` 之一。了解更多
+              服务连接器的标识符，例如 ChatGPT 中可用的连接器。必须提供其中之一。
+              `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
               关于服务连接器的信息 [请参阅此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-              对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。
-              使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道进行
-              连接。
+              此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+              使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过
+              通过安全 MCP 隧道进行连接。
 
-              当前支持的值 `connector_id` 包括：
+              当前支持 `connector_id` 的值为：
 
               - Dropbox： `connector_dropbox`
               - Gmail： `connector_gmail`
@@ -7828,13 +7830,13 @@
 
             - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-              指定 MCP 服务器中哪些工具需要批准。
+              指定 MCP 服务器中哪些工具需要审批。
 
               - `McpToolApprovalFilter object { always, never }`
 
-                指定 MCP 服务器中哪些工具需要批准。可以是
-                `always`, `never`，或与工具关联的过滤对象
-                ，用于指定需要批准的工具。
+                指定 MCP 服务器中哪些工具需要审批。可以是
+                `always`, `never`，或是与需要审批的工具相关联的过滤对象
+                。
 
                 - `always: optional object { read_only, tool_names }`
 
@@ -7842,9 +7844,9 @@
 
                   - `read_only: optional boolean`
 
-                    指示某个工具是修改数据还是只读。如果某个
+                    指示某个工具是否修改数据或为只读。如果某个
                     MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    ，它将匹配此过滤器。
+                    ，则它将匹配此过滤器。
 
                   - `tool_names: optional array of string`
 
@@ -7856,9 +7858,9 @@
 
                   - `read_only: optional boolean`
 
-                    指示某个工具是修改数据还是只读。如果某个
+                    指示某个工具是否修改数据或为只读。如果某个
                     MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    ，它将匹配此过滤器。
+                    ，则它将匹配此过滤器。
 
                   - `tool_names: optional array of string`
 
@@ -7866,9 +7868,9 @@
 
               - `McpToolApprovalSetting = "always" or "never"`
 
-                为所有工具指定统一的批准策略。可选值为 `always` 或
-                `never`。当设置为 `always`，所有工具都需要审批。设置
-                为 `never`，所有工具都不需要审批。
+                为所有工具指定统一的审批策略。可选值之一为 `always` 或
+                `never`。当设置为 `always`，时，所有工具都需要审批。当
+                设置为 `never`，时，所有工具都不需要审批。
 
                 - `"always"`
 
@@ -7890,13 +7892,13 @@
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
-            运行 Python 代码以帮助生成对提示词回复的工具。
+            运行 Python 代码以帮助生成对提示词响应的工具。
 
             - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器。可以是容器 ID，也可以是用于
-              指定可供你代码使用的已上传文件 ID 以及
-              optional `memory_limit` setting。
+              代码解释器容器。可以是容器 ID，或是用于
+              指定可供你的代码使用的已上传文件 ID 以及相应的
+              optional `memory_limit` setting.
 
               - `string`
 
@@ -7914,7 +7916,7 @@
 
                 - `file_ids: optional array of string`
 
-                  可供代码使用的已上传文件的可选列表。
+                  一个可选的已上传文件列表，供你的代码使用。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -7954,19 +7956,19 @@
 
                     - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                      针对允许列表中域的可选域范围 secret。
+                      用于白名单域的可选域范围密钥。
 
                       - `domain: string`
 
-                        与 secret 关联的域。
+                        与该密钥关联的域。
 
                       - `name: string`
 
-                        为该域注入的 secret 名称。
+                        为该域注入的密钥名称。
 
                       - `value: string`
 
-                        为该域注入的 secret 值。
+                        为该域注入的密钥值。
 
             - `type: "code_interpreter"`
 
@@ -8002,7 +8004,7 @@
 
             - `action: optional "generate" or "edit" or "auto"`
 
-              是生成新图像还是编辑现有图像。默认值： `auto`.
+              是生成新图像还是编辑已有图像。默认值： `auto`.
 
               - `"generate"`
 
@@ -8012,12 +8014,12 @@
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              设置生成图像的背景。可选值为 `transparent`, `opaque`,
-              或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，之一，包括
-              其 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
-              背景。支持透明背景的 GPT Image 模型可使用此功能。
-              模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持目前处于
-              预览阶段。使用 `transparent`，时，需将输出格式设置为 `png` 或 `webp`.
+              设置生成图片的背景。可选值包括 `transparent`, `opaque`,
+              或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括
+              它们的 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
+              背景。受支持的 GPT Image 模型可使用透明背景。对于
+              模型，此功能处于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，此支持为预览阶段。使用
+              时，将输出格式设置为 `transparent`。 `png` 或 `webp`.
               默认值： `auto`.
 
               - `"transparent"`
@@ -8028,7 +8030,7 @@
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。该参数仅在 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型中受支持，在 `gpt-image-1-mini`。中不受支持。支持 `high` 和 `low`。默认为 `low`.
+              控制模型在多大程度上匹配输入图像的风格和特征，尤其是面部特征。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持的值包括 `high` 和 `low`。默认为 `low`.
 
               - `"high"`
 
@@ -8036,7 +8038,7 @@
 
             - `input_image_mask: optional object { file_id, image_url }`
 
-              用于局部重绘的可选蒙版。包含 `image_url`
+              用于修复的可选区域蒙版。包含 `image_url`
               （字符串，可选）和 `file_id` （字符串，可选）。
 
               - `file_id: optional string`
@@ -8045,7 +8047,7 @@
 
               - `image_url: optional string`
 
-                Base64 编码的蒙版图像。
+                经过 Base64 编码的蒙版图像。
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -8087,7 +8089,7 @@
 
             - `moderation: optional "auto" or "low"`
 
-              生成图像的审核级别。默认值： `auto`.
+              生成图像的内容审核级别。默认值： `auto`.
 
               - `"auto"`
 
@@ -8099,7 +8101,7 @@
 
             - `output_format: optional "png" or "webp" or "jpeg"`
 
-              生成图像的输出格式。可选值之一 `png`, `webp`，或
+              生成图像的输出格式。取值为 `png`, `webp`，或
               `jpeg`. 默认值： `png`.
 
               - `"png"`
@@ -8110,13 +8112,13 @@
 
             - `partial_images: optional number`
 
-              在流式模式下生成的局部图像数量，取值范围为 0（默认值）到 3。
+              在流式模式下生成的中间图像数量，取值范围为 0（默认值）到 3。
 
             - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              生成图像的质量。GPT image 模型支持 `low`,
+              生成图像的质量。GPT 图像模型支持 `low`,
               `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
-              包括其 `2026-09-08` 快照，也支持 `xhigh` 和 `max`.
+              包括它们的 `2026-09-08` 快照，同样支持 `xhigh` 和 `max`.
               默认值： `auto`.
 
               - `"low"`
@@ -8133,13 +8135,13 @@
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+                生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -8189,7 +8191,7 @@
 
                 - `file_ids: optional array of string`
 
-                  可供代码使用的已上传文件的可选列表。
+                  一个可选的已上传文件列表，供你的代码使用。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -8213,13 +8215,13 @@
 
                 - `skills: optional array of SkillReference or InlineSkill`
 
-                  可选的技能列表，通过 id 或内联数据引用。
+                  一个可选的技能列表，通过 id 或内联数据引用。
 
                   - `SkillReference object { skill_id, type, version }`
 
                     - `skill_id: string`
 
-                      所引用技能的 ID。
+                      被引用技能的 ID。
 
                     - `type: "skill_reference"`
 
@@ -8277,7 +8279,7 @@
 
                 - `skills: optional array of LocalSkill`
 
-                  可选的技能列表。
+                  一个可选的技能列表。
 
                   - `description: string`
 
@@ -8289,13 +8291,13 @@
 
                   - `path: string`
 
-                    包含该技能的目录路径。
+                    指向包含该技能的目录的路径。
 
               - `ContainerReference object { container_id, type }`
 
                 - `container_id: string`
 
-                  所引用容器的 ID。
+                  被引用容器的 ID。
 
                 - `type: "container_reference"`
 
@@ -8327,11 +8329,11 @@
 
             - `async: optional boolean`
 
-              工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+              工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
             - `defer_loading: optional boolean`
 
-              此工具是否应延迟并通过工具搜索发现。
+              此工具是否应被延迟，并通过工具搜索来发现。
 
             - `description: optional string`
 
@@ -8339,7 +8341,7 @@
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认是无约束文本。
+              自定义工具的输入格式。默认为无约束文本。
 
               - `Text object { type }`
 
@@ -8361,7 +8363,7 @@
 
                 - `syntax: "lark" or "regex"`
 
-                  语法定义的语法。可选值为 `lark` 或 `regex`.
+                  语法定义的语法。取值为 `lark` 或 `regex`.
 
                   - `"lark"`
 
@@ -8375,11 +8377,11 @@
 
           - `Namespace object { description, name, tools, type }`
 
-            在共享命名空间下对函数/自定义工具进行分组。
+            将函数/自定义工具分组到共享命名空间下。
 
             - `description: string`
 
-              向模型展示的命名空间描述。
+              展示给模型的命名空间描述。
 
             - `name: string`
 
@@ -8407,23 +8409,23 @@
 
                 - `async: optional boolean`
 
-                  工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                  工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
                 - `defer_loading: optional boolean`
 
-                  此函数是否应延迟并通过工具搜索发现。
+                  此函数是否应被延迟，并通过工具搜索来发现。
 
                 - `description: optional string or null`
 
                 - `output_schema: optional map[unknown] or null`
 
-                  用于描述此函数工具中以字符串形式输出的 JSON 值的 JSON Schema。这不描述 content 数组形式的输出。
+                  描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。该字段不描述 content 数组输出。
 
                 - `parameters: optional unknown or null`
 
                 - `strict: optional boolean or null`
 
-                  是否强制执行严格的参数校验。如果省略，响应接口 会在模式兼容时尝试使用严格校验，否则回退到非严格校验。
+                  是否启用严格的参数校验。如果省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
@@ -8449,11 +8451,11 @@
 
                 - `async: optional boolean`
 
-                  工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                  工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
                 - `defer_loading: optional boolean`
 
-                  此工具是否应延迟并通过工具搜索发现。
+                  此工具是否应被延迟，并通过工具搜索来发现。
 
                 - `description: optional string`
 
@@ -8461,7 +8463,7 @@
 
                 - `format: optional CustomToolInputFormat`
 
-                  自定义工具的输入格式。默认是无约束文本。
+                  自定义工具的输入格式。默认为无约束文本。
 
             - `type: "namespace"`
 
@@ -8493,15 +8495,15 @@
 
             - `parameters: optional unknown or null`
 
-              客户端执行的工具搜索工具的参数模式。
+              客户端执行的工具搜索工具的参数 schema。
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            此工具会搜索网页以获取相关结果，用于在回复中使用。详细了解 [网页搜索 工具](/api/docs/guides/tools-web-search).
+            此工具会搜索网页以获取可在回复中使用的相关结果。详细了解 [网页搜索工具](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-              网页搜索 工具的类型，取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+              网页搜索工具的类型。取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
               - `"web_search_preview"`
 
@@ -8515,7 +8517,7 @@
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+              用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -8525,7 +8527,7 @@
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              用户的大致位置。如果省略或为 null，则默认为美国。若要避免此回退，请传入 `{"type": "approximate"}` 不含位置字段。若要本地化结果，请提供相应的位置字段。
+              用户的大致位置。如果省略或为 null，则默认为美国。若希望避免该回退，可传入 `{"type": "approximate"}` 时不带位置字段。若要本地化结果，请提供相关的位置字段。
 
               - `type: "approximate"`
 
@@ -8539,19 +8541,19 @@
 
               - `country: optional string or null`
 
-                两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+                两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
               - `region: optional string or null`
 
-                用户所在地区/区域的自由文本输入，例如 `California`.
+                用于用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
-                该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+                该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
           - `ApplyPatch object { type, allowed_callers }`
 
-            允许助手使用 unified diff 创建、删除或更新文件。
+            允许助手使用统一差异格式（unified diff）创建、删除或更新文件。
 
             - `type: "apply_patch"`
 
@@ -8569,17 +8571,17 @@
 
         - `type: "tool_search_output"`
 
-          项类型。始终为 `tool_search_output`.
+          条目类型。始终为 `tool_search_output`.
 
           - `"tool_search_output"`
 
         - `id: optional string or null`
 
-          该工具搜索输出的唯一 ID。
+          此工具搜索输出的唯一 ID。
 
         - `call_id: optional string or null`
 
-          模型生成的工具搜索调用的唯一 ID。
+          由模型生成的工具搜索调用的唯一 ID。
 
         - `execution: optional "server" or "client"`
 
@@ -8609,11 +8611,11 @@
 
         - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-          在该条目上提供的额外工具列表。
+          此条目中可用的额外工具列表。
 
           - `Function object { name, parameters, strict, 6 more }`
 
-            在你自己代码中定义一个函数，模型可以选择调用它。了解更多关于 [函数调用](/api/docs/guides/function-calling).
+            定义你自己代码中的一个函数，模型可以选择调用它。了解更多关于 [function calling](/api/docs/guides/function-calling).
 
             - `name: string`
 
@@ -8621,11 +8623,11 @@
 
             - `parameters: map[unknown] or null`
 
-              描述该函数参数的 JSON schema 对象。
+              用于描述函数参数的 JSON schema 对象。
 
             - `strict: boolean or null`
 
-              是否为此函数工具强制执行严格的参数校验。
+              是否对该函数工具强制执行严格的参数校验。
 
             - `type: "function"`
 
@@ -8645,19 +8647,19 @@
 
             - `defer_loading: optional boolean`
 
-              该函数是否被延迟加载，并通过工具搜索加载。
+              该函数是否被延迟，并通过工具搜索加载。
 
             - `description: optional string or null`
 
-              对函数的描述。供模型用于判断是否调用该函数。
+              对函数的描述，供模型用于判断是否调用该函数。
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
+              用于描述该函数字符串输出中 JSON 值结构的 JSON schema 对象。
 
           - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-            用于从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](/api/docs/guides/tools-file-search).
+            从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索 tool](/api/docs/guides/tools-file-search).
 
             - `type: "file_search"`
 
@@ -8667,15 +8669,15 @@
 
             - `vector_store_ids: array of string`
 
-              要搜索的向量存储库的 ID。
+              要搜索的向量存储库 ID。
 
             - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-              要应用的筛选器。
+              要应用的筛选条件。
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+                用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
               - `CompoundFilter object { filters, type }`
 
@@ -8683,7 +8685,7 @@
 
             - `max_num_results: optional number`
 
-              返回结果的最大数量。该数字应介于 1 到 50 之间（含两端）。
+              要返回的最大结果数。该数值应介于 1 到 50 之间（含两端）。
 
             - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -8691,15 +8693,15 @@
 
               - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-                在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
+                在启用混合搜索时，控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
                 - `embedding_weight: number`
 
-                  嵌入在倒数排名融合中的权重。
+                  倒数排名融合中嵌入的权重。
 
                 - `text_weight: number`
 
-                  文本在倒数排名融合中的权重。
+                  倒数排名融合中文本的权重。
 
               - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -8711,11 +8713,11 @@
 
               - `score_threshold: optional number`
 
-                文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
+                文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
           - `Computer object { type }`
 
-            用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
             - `type: "computer"`
 
@@ -8725,7 +8727,7 @@
 
           - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-            用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+            用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
             - `display_height: number`
 
@@ -8751,18 +8753,18 @@
 
             - `type: "computer_use_preview"`
 
-              计算机使用工具的类型。始终为 `computer_use_preview`.
+              computer use 工具的类型。始终为 `computer_use_preview`.
 
               - `"computer_use_preview"`
 
           - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-            在互联网上搜索与提示相关的来源。详细了解
-            [网页搜索 工具](/api/docs/guides/tools-web-search).
+            通过互联网搜索与提示相关的来源。详细了解
+            [网页搜索工具](/api/docs/guides/tools-web-search).
 
             - `type: "web_search" or "web_search_2025_08_26"`
 
-              网页搜索 工具的类型，取值为 `web_search` 或 `web_search_2025_08_26`.
+              网页搜索工具的类型。取值为 `web_search` 或 `web_search_2025_08_26`.
 
               - `"web_search"`
 
@@ -8770,22 +8772,22 @@
 
             - `external_web_access: optional boolean`
 
-              允许 网页搜索 进行实时互联网访问。省略时默认为 true。当为 false 时，网页搜索 工具以离线/仅缓存模式运行，不会获取新的外部内容。
+              允许 网页搜索 访问实时互联网。省略时默认为 true。当设为 false 时，网页搜索 工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
             - `filters: optional object { allowed_domains }  or null`
 
-              搜索的过滤器。
+              搜索的过滤条件。
 
               - `allowed_domains: optional array of string or null`
 
                 允许搜索的域名。如果未提供，则允许所有域名。
-                所提供域名的子域名也同样允许。
+                所提供域名的子域名也同样被允许。
 
                 示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+              用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -8795,9 +8797,9 @@
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              用户的近似位置。如果省略或为 null，则默认为
-              美国。若要避免此回退，请传入 `{"type": "approximate"}` 无需
-              位置字段。若要本地化结果，请提供相关的位置字段。
+              用户的大致位置。如果省略或为 null，则默认为
+              美国。若要避免此回退行为，请在 `{"type": "approximate"}` 不传
+              位置字段时传入。若要本地化结果，请提供相应的位置字段。
 
               - `city: optional string or null`
 
@@ -8805,15 +8807,15 @@
 
               - `country: optional string or null`
 
-                两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+                两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
               - `region: optional string or null`
 
-                用户所在地区/区域的自由文本输入，例如 `California`.
+                用于用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
-                该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+                该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
               - `type: optional "approximate"`
 
@@ -8823,8 +8825,8 @@
 
           - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-            通过远程 Model Context Protocol
-            （MCP）服务器授予模型对其他工具的访问权限。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+            通过远程模型上下文协议
+            （MCP）服务器为模型提供对其他工具的访问权限。 [详细了解 MCP](/api/docs/guides/tools-connectors-mcp).
 
             - `server_label: string`
 
@@ -8858,9 +8860,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -8868,21 +8870,21 @@
 
             - `authorization: optional string`
 
-              可与远程 MCP 服务器配合使用的 OAuth 访问令牌，可以
-              配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-              必须自行处理 OAuth 授权流程，并在此处提供令牌。
+              可用于远程 MCP 服务器的 OAuth 访问令牌，可用于
+              使用自定义 MCP 服务器 URL 或服务连接器。你的应用
+              必须处理 OAuth 授权流程，并在此处提供令牌。
 
             - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-              服务连接器的标识符，例如 ChatGPT 中提供的那些。必须提供其中
-              `server_url`, `connector_id`，或 `tunnel_id` 之一。了解更多
+              服务连接器的标识符，例如 ChatGPT 中可用的连接器。必须提供其中之一。
+              `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
               关于服务连接器的信息 [请参阅此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-              对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。
-              使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道进行
-              连接。
+              此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+              使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过
+              通过安全 MCP 隧道进行连接。
 
-              当前支持的值 `connector_id` 包括：
+              当前支持 `connector_id` 的值为：
 
               - Dropbox： `connector_dropbox`
               - Gmail： `connector_gmail`
@@ -8920,13 +8922,13 @@
 
             - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-              指定 MCP 服务器中哪些工具需要批准。
+              指定 MCP 服务器中哪些工具需要审批。
 
               - `McpToolApprovalFilter object { always, never }`
 
-                指定 MCP 服务器中哪些工具需要批准。可以是
-                `always`, `never`，或与工具关联的过滤对象
-                ，用于指定需要批准的工具。
+                指定 MCP 服务器中哪些工具需要审批。可以是
+                `always`, `never`，或是与需要审批的工具相关联的过滤对象
+                。
 
                 - `always: optional object { read_only, tool_names }`
 
@@ -8934,9 +8936,9 @@
 
                   - `read_only: optional boolean`
 
-                    指示某个工具是修改数据还是只读。如果某个
+                    指示某个工具是否修改数据或为只读。如果某个
                     MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    ，它将匹配此过滤器。
+                    ，则它将匹配此过滤器。
 
                   - `tool_names: optional array of string`
 
@@ -8948,9 +8950,9 @@
 
                   - `read_only: optional boolean`
 
-                    指示某个工具是修改数据还是只读。如果某个
+                    指示某个工具是否修改数据或为只读。如果某个
                     MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                    ，它将匹配此过滤器。
+                    ，则它将匹配此过滤器。
 
                   - `tool_names: optional array of string`
 
@@ -8958,9 +8960,9 @@
 
               - `McpToolApprovalSetting = "always" or "never"`
 
-                为所有工具指定统一的批准策略。可选值为 `always` 或
-                `never`。当设置为 `always`，所有工具都需要审批。设置
-                为 `never`，所有工具都不需要审批。
+                为所有工具指定统一的审批策略。可选值之一为 `always` 或
+                `never`。当设置为 `always`，时，所有工具都需要审批。当
+                设置为 `never`，时，所有工具都不需要审批。
 
                 - `"always"`
 
@@ -8982,13 +8984,13 @@
 
           - `CodeInterpreter object { container, type, allowed_callers }`
 
-            运行 Python 代码以帮助生成对提示词回复的工具。
+            运行 Python 代码以帮助生成对提示词响应的工具。
 
             - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-              代码解释器容器。可以是容器 ID，也可以是用于
-              指定可供你代码使用的已上传文件 ID 以及
-              optional `memory_limit` setting。
+              代码解释器容器。可以是容器 ID，或是用于
+              指定可供你的代码使用的已上传文件 ID 以及相应的
+              optional `memory_limit` setting.
 
               - `string`
 
@@ -9006,7 +9008,7 @@
 
                 - `file_ids: optional array of string`
 
-                  可供代码使用的已上传文件的可选列表。
+                  一个可选的已上传文件列表，供你的代码使用。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -9062,7 +9064,7 @@
 
             - `action: optional "generate" or "edit" or "auto"`
 
-              是生成新图像还是编辑现有图像。默认值： `auto`.
+              是生成新图像还是编辑已有图像。默认值： `auto`.
 
               - `"generate"`
 
@@ -9072,12 +9074,12 @@
 
             - `background: optional "transparent" or "opaque" or "auto"`
 
-              设置生成图像的背景。可选值为 `transparent`, `opaque`,
-              或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，之一，包括
-              其 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
-              背景。支持透明背景的 GPT Image 模型可使用此功能。
-              模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持目前处于
-              预览阶段。使用 `transparent`，时，需将输出格式设置为 `png` 或 `webp`.
+              设置生成图片的背景。可选值包括 `transparent`, `opaque`,
+              或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括
+              它们的 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
+              背景。受支持的 GPT Image 模型可使用透明背景。对于
+              模型，此功能处于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，此支持为预览阶段。使用
+              时，将输出格式设置为 `transparent`。 `png` 或 `webp`.
               默认值： `auto`.
 
               - `"transparent"`
@@ -9088,7 +9090,7 @@
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。该参数仅在 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型中受支持，在 `gpt-image-1-mini`。中不受支持。支持 `high` 和 `low`。默认为 `low`.
+              控制模型在多大程度上匹配输入图像的风格和特征，尤其是面部特征。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持的值包括 `high` 和 `low`。默认为 `low`.
 
               - `"high"`
 
@@ -9096,7 +9098,7 @@
 
             - `input_image_mask: optional object { file_id, image_url }`
 
-              用于局部重绘的可选蒙版。包含 `image_url`
+              用于修复的可选区域蒙版。包含 `image_url`
               （字符串，可选）和 `file_id` （字符串，可选）。
 
               - `file_id: optional string`
@@ -9105,7 +9107,7 @@
 
               - `image_url: optional string`
 
-                Base64 编码的蒙版图像。
+                经过 Base64 编码的蒙版图像。
 
             - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -9147,7 +9149,7 @@
 
             - `moderation: optional "auto" or "low"`
 
-              生成图像的审核级别。默认值： `auto`.
+              生成图像的内容审核级别。默认值： `auto`.
 
               - `"auto"`
 
@@ -9159,7 +9161,7 @@
 
             - `output_format: optional "png" or "webp" or "jpeg"`
 
-              生成图像的输出格式。可选值之一 `png`, `webp`，或
+              生成图像的输出格式。取值为 `png`, `webp`，或
               `jpeg`. 默认值： `png`.
 
               - `"png"`
@@ -9170,13 +9172,13 @@
 
             - `partial_images: optional number`
 
-              在流式模式下生成的局部图像数量，取值范围为 0（默认值）到 3。
+              在流式模式下生成的中间图像数量，取值范围为 0（默认值）到 3。
 
             - `quality: optional "low" or "medium" or "high" or 3 more`
 
-              生成图像的质量。GPT image 模型支持 `low`,
+              生成图像的质量。GPT 图像模型支持 `low`,
               `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
-              包括其 `2026-09-08` 快照，也支持 `xhigh` 和 `max`.
+              包括它们的 `2026-09-08` 快照，同样支持 `xhigh` 和 `max`.
               默认值： `auto`.
 
               - `"low"`
@@ -9193,13 +9195,13 @@
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+                生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
                 - `"1024x1024"`
 
@@ -9269,11 +9271,11 @@
 
             - `async: optional boolean`
 
-              工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+              工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
             - `defer_loading: optional boolean`
 
-              此工具是否应延迟并通过工具搜索发现。
+              此工具是否应被延迟，并通过工具搜索来发现。
 
             - `description: optional string`
 
@@ -9281,15 +9283,15 @@
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认是无约束文本。
+              自定义工具的输入格式。默认为无约束文本。
 
           - `Namespace object { description, name, tools, type }`
 
-            在共享命名空间下对函数/自定义工具进行分组。
+            将函数/自定义工具分组到共享命名空间下。
 
             - `description: string`
 
-              向模型展示的命名空间描述。
+              展示给模型的命名空间描述。
 
             - `name: string`
 
@@ -9317,23 +9319,23 @@
 
                 - `async: optional boolean`
 
-                  工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                  工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
                 - `defer_loading: optional boolean`
 
-                  此函数是否应延迟并通过工具搜索发现。
+                  此函数是否应被延迟，并通过工具搜索来发现。
 
                 - `description: optional string or null`
 
                 - `output_schema: optional map[unknown] or null`
 
-                  用于描述此函数工具中以字符串形式输出的 JSON 值的 JSON Schema。这不描述 content 数组形式的输出。
+                  描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。该字段不描述 content 数组输出。
 
                 - `parameters: optional unknown or null`
 
                 - `strict: optional boolean or null`
 
-                  是否强制执行严格的参数校验。如果省略，响应接口 会在模式兼容时尝试使用严格校验，否则回退到非严格校验。
+                  是否启用严格的参数校验。如果省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
 
               - `Custom object { name, type, allowed_callers, 4 more }`
 
@@ -9359,11 +9361,11 @@
 
                 - `async: optional boolean`
 
-                  工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                  工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
                 - `defer_loading: optional boolean`
 
-                  此工具是否应延迟并通过工具搜索发现。
+                  此工具是否应被延迟，并通过工具搜索来发现。
 
                 - `description: optional string`
 
@@ -9371,7 +9373,7 @@
 
                 - `format: optional CustomToolInputFormat`
 
-                  自定义工具的输入格式。默认是无约束文本。
+                  自定义工具的输入格式。默认为无约束文本。
 
             - `type: "namespace"`
 
@@ -9403,15 +9405,15 @@
 
             - `parameters: optional unknown or null`
 
-              客户端执行的工具搜索工具的参数模式。
+              客户端执行的工具搜索工具的参数 schema。
 
           - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-            此工具会搜索网页以获取相关结果，用于在回复中使用。详细了解 [网页搜索 工具](/api/docs/guides/tools-web-search).
+            此工具会搜索网页以获取可在回复中使用的相关结果。详细了解 [网页搜索工具](/api/docs/guides/tools-web-search).
 
             - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-              网页搜索 工具的类型，取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+              网页搜索工具的类型。取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
               - `"web_search_preview"`
 
@@ -9425,7 +9427,7 @@
 
             - `search_context_size: optional "low" or "medium" or "high"`
 
-              用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+              用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
               - `"low"`
 
@@ -9435,7 +9437,7 @@
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              用户的大致位置。如果省略或为 null，则默认为美国。若要避免此回退，请传入 `{"type": "approximate"}` 不含位置字段。若要本地化结果，请提供相应的位置字段。
+              用户的大致位置。如果省略或为 null，则默认为美国。若希望避免该回退，可传入 `{"type": "approximate"}` 时不带位置字段。若要本地化结果，请提供相关的位置字段。
 
               - `type: "approximate"`
 
@@ -9449,19 +9451,19 @@
 
               - `country: optional string or null`
 
-                两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+                两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
               - `region: optional string or null`
 
-                用户所在地区/区域的自由文本输入，例如 `California`.
+                用于用户所在地区的自由文本输入，例如 `California`.
 
               - `timezone: optional string or null`
 
-                该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+                该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
           - `ApplyPatch object { type, allowed_callers }`
 
-            允许助手使用 unified diff 创建、删除或更新文件。
+            允许助手使用统一差异格式（unified diff）创建、删除或更新文件。
 
             - `type: "apply_patch"`
 
@@ -9479,38 +9481,38 @@
 
         - `type: "additional_tools"`
 
-          项类型。始终为 `additional_tools`.
+          条目类型。始终为 `additional_tools`.
 
           - `"additional_tools"`
 
         - `id: optional string or null`
 
-          该额外工具条目的唯一 ID。
+          此额外工具条目的唯一 ID。
 
       - `ConfigurationUpdate object { type, id, reasoning }`
 
-        对会话响应配置的更新。该配置
-        在后续响应中持续生效，直到被另一次
-        配置更新所取代。
+        对话回复配置的更新项。该配置
+        在后续回复中持续生效，直到被另一项
+        配置更新所替换。
 
         - `type: "configuration_update"`
 
-          项类型。始终为 `configuration_update`.
+          条目类型。始终为 `configuration_update`.
 
           - `"configuration_update"`
 
         - `id: optional string or null`
 
-          该配置更新条目的唯一 ID。
+          此配置更新条目的唯一 ID。
 
         - `reasoning: optional object { effort }`
 
-          对推理配置的更新。仅支持 effort。
+          推理配置的更新项。仅支持 effort。
 
           - `effort: optional ReasoningEffort or null`
 
-            后续响应所使用的推理努力程度，直到另有
-            配置更新将其替换为止。
+            后续响应所使用的推理努力程度，直到被另一个
+            配置更新替换为止。
 
             - `"none"`
 
@@ -9528,10 +9530,10 @@
 
       - `Reasoning object { id, summary, type, 3 more }`
 
-        对推理模型在生成响应时所用思维链的描述。在手动
-        管理上下文时，请务必将这些项包含在发给 Responses API `input` 的请求中，以便用于后续对话轮次。
-        后续响应所使用的推理努力程度，直到另有
-        [手动管理上下文](/api/docs/guides/conversation-state).
+        对推理模型在生成响应时所使用的思维链的描述。如果你是手动管理
+        上下文，请务必在对话的后续轮次中将这些项传回 `input` 到 Responses API
+        。
+        [管理上下文](/api/docs/guides/conversation-state).
 
         - `id: string`
 
@@ -9547,13 +9549,13 @@
 
           - `type: "summary_text"`
 
-            对象的类型。始终为 `summary_text`.
+            对象的类型，恒为 `summary_text`.
 
             - `"summary_text"`
 
         - `type: "reasoning"`
 
-          对象的类型。始终为 `reasoning`.
+          对象的类型，恒为 `reasoning`.
 
           - `"reasoning"`
 
@@ -9563,30 +9565,30 @@
 
           - `text: string`
 
-            来自模型的推理文本。
+            模型输出的推理文本。
 
           - `type: "reasoning_text"`
 
-            推理文本的类型。始终为 `reasoning_text`.
+            推理文本的类型，恒为 `reasoning_text`.
 
             - `"reasoning_text"`
 
         - `encrypted_content: optional string or null`
 
-          推理项的加密内容。默认情况下，这会由
-          以及 WebSocket `POST /v1/responses` 请求返回的推理项填充。
-          `response.create` 请求填充。
+          推理项的加密内容。该字段默认由以下请求返回的推理项填充：
+          以及 WebSocket `POST /v1/responses` 请求。
+          `response.create` 在使用流式传输时，可使用已完成的推理项及其。
 
-          在流式传输时，请使用已完成的推理项及其
-          `encrypted_content` 来自 `response.output_item.done` event in
-          subsequent requests. The `encrypted_content` in
-          `response.output_item.added` may be incomplete. This is especially
-          important when `store` is `false` or when using Zero Data Retention.
+          ，从
+          `encrypted_content` 中获取。 `response.output_item.done` event in
+          后续请求中。 `encrypted_content` 中的
+          `response.output_item.added` 可能不完整。这一点在
+          时尤为 `store` 重要 `false` ，或在使用 Zero Data Retention 时也是如此。
 
         - `status: optional "in_progress" or "completed" or "incomplete"`
 
-          条目的状态。可选值之一 `in_progress`, `completed`，或
-          `incomplete`。当通过 API 返回 item 时填充。
+          该条目的状态。取值为 `in_progress`, `completed`，或
+          `incomplete`。当通过 API 返回条目时填充。
 
           - `"in_progress"`
 
@@ -9596,37 +9598,37 @@
 
       - `Compaction object { encrypted_content, type, id }`
 
-        A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
+        由 [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
         - `encrypted_content: string`
 
-          The encrypted content of the compaction summary.
+          压缩摘要的加密内容。
 
         - `type: "compaction"`
 
-          The type of the item. Always `compaction`.
+          item 的类型，始终为 `compaction`.
 
           - `"compaction"`
 
         - `id: optional string or null`
 
-          The ID of the compaction item.
+          压缩项的 ID。
 
       - `ImageGenerationCall object { id, result, status, 7 more }`
 
-        An image generation request made by the model.
+        由模型发起的图像生成请求。
 
         - `id: string`
 
-          The unique ID of the image generation call.
+          图像生成调用的唯一 ID。
 
         - `result: string or null`
 
-          The generated image encoded in base64.
+          以 base64 编码的生成图像。
 
         - `status: "in_progress" or "completed" or "generating" or "failed"`
 
-          The status of the image generation call.
+          图像生成调用的状态。
 
           - `"in_progress"`
 
@@ -9638,13 +9640,13 @@
 
         - `type: "image_generation_call"`
 
-          The type of the image generation call. Always `image_generation_call`.
+          图像生成调用的类型，始终为 `image_generation_call`.
 
           - `"image_generation_call"`
 
         - `action: optional "generate" or "edit" or "auto" or null`
 
-          The action used for image generation.
+          用于图像生成的操作。
 
           - `"generate"`
 
@@ -9654,7 +9656,7 @@
 
         - `background: optional "transparent" or "opaque" or "auto" or null`
 
-          The background setting used for generation.
+          用于生成的背景设置。
 
           - `"transparent"`
 
@@ -9664,7 +9666,7 @@
 
         - `output_format: optional "png" or "webp" or "jpeg" or null`
 
-          The output format used for generation.
+          用于生成的输出格式。
 
           - `"png"`
 
@@ -9674,7 +9676,7 @@
 
         - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
-          图像生成工具调用所生成图像的质量。可选值为 `low`, `medium`, `high`, `xhigh`, `max`，或 `auto`.
+          图像生成工具调用所生成图像的质量。取值为 `low`, `medium`, `high`, `xhigh`, `max`，或 `auto`.
 
           - `"low"`
 
@@ -9690,17 +9692,17 @@
 
         - `revised_prompt: optional string or null`
 
-          经过任何模型提示词重写后使用的提示词。
+          经过任何模型提示词改写后使用的提示词。
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
 
-          以 `WIDTHxHEIGHT` 字符串表示的图像尺寸，例如 `1536x864`.
+          以字符串形式表示的图像尺寸，例如 `WIDTHxHEIGHT` string, for example `1536x864`.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024"`
 
-            以 `WIDTHxHEIGHT` 字符串表示的图像尺寸，例如 `1536x864`.
+            以字符串形式表示的图像尺寸，例如 `WIDTHxHEIGHT` string, for example `1536x864`.
 
             - `"1024x1024"`
 
@@ -9727,7 +9729,7 @@
         - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
           代码解释器生成的输出，例如日志或图像。
-          如果没有可用输出，则可为 null。
+          若没有可用输出，可为 null。
 
           - `Logs object { logs, type }`
 
@@ -9809,11 +9811,11 @@
 
           - `user: optional string or null`
 
-            运行命令所用的可选用户。
+            运行命令时使用的可选用户。
 
           - `working_directory: optional string or null`
 
-            运行命令所用的可选工作目录。
+            运行命令时使用的可选工作目录。
 
         - `call_id: string`
 
@@ -9855,7 +9857,7 @@
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-          条目的状态。可选值之一 `in_progress`, `completed`，或 `incomplete`.
+          该条目的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
 
           - `"in_progress"`
 
@@ -9865,15 +9867,15 @@
 
       - `ShellCall object { action, call_id, type, 4 more }`
 
-        表示执行一条或多条 shell 命令请求的工具。
+        表示执行一个或多个 shell 命令请求的工具。
 
         - `action: object { commands, max_output_length, timeout_ms }`
 
-          描述如何运行该工具调用的 shell 命令及其限制。
+          描述如何运行该工具调用的 shell 命令和限制。
 
           - `commands: array of string`
 
-            供执行环境按顺序运行的 shell 命令。
+            由执行环境运行的有序 shell 命令。
 
           - `max_output_length: optional number or null`
 
@@ -9889,7 +9891,7 @@
 
         - `type: "shell_call"`
 
-          The type of the item. Always `shell_call`.
+          item 的类型，始终为 `shell_call`.
 
           - `"shell_call"`
 
@@ -9899,7 +9901,7 @@
 
         - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-          产生此次工具调用的执行上下文。
+          产生此工具调用的执行上下文。
 
           - `Direct object { type }`
 
@@ -9913,7 +9915,7 @@
 
             - `caller_id: string`
 
-              产生此次工具调用的程序项的调用 ID。
+              产生此工具调用的程序项的调用 ID。
 
             - `type: "program"`
 
@@ -9923,7 +9925,7 @@
 
         - `environment: optional LocalEnvironment or ContainerReference or null`
 
-          执行 shell 命令所用的环境。
+          执行 shell 命令的环境。
 
           - `LocalEnvironment object { type, skills }`
 
@@ -9931,7 +9933,7 @@
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-          shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
+          shell 调用的状态。取值之一 `in_progress`, `completed`，或 `incomplete`.
 
           - `"in_progress"`
 
@@ -9941,7 +9943,7 @@
 
       - `ShellCallOutput object { call_id, output, type, 4 more }`
 
-        由 shell 工具调用发出的流式输出项。
+        shell 工具调用发出的流式输出项。
 
         - `call_id: string`
 
@@ -9949,7 +9951,7 @@
 
         - `output: array of ResponseFunctionShellCallOutputContent`
 
-          捕获的 stdout 和 stderr 输出块及其关联结果。
+          捕获的 stdout 和 stderr 输出块及其关联的结果。
 
           - `outcome: object { type }  or object { exit_code, type }`
 
@@ -9957,7 +9959,7 @@
 
             - `Timeout object { type }`
 
-              表示 shell 调用超过了其配置的时间限制。
+              表示 shell 调用超出了其配置的时间限制。
 
               - `type: "timeout"`
 
@@ -9989,17 +9991,17 @@
 
         - `type: "shell_call_output"`
 
-          The type of the item. Always `shell_call_output`.
+          item 的类型，始终为 `shell_call_output`.
 
           - `"shell_call_output"`
 
         - `id: optional string or null`
 
-          shell 工具调用输出的唯一 ID。当该项通过 API 返回时填充。
+          shell 工具调用输出的唯一 ID。当该输出项通过 API 返回时填充。
 
         - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-          产生此次工具调用的执行上下文。
+          产生此工具调用的执行上下文。
 
           - `Direct object { type }`
 
@@ -10013,7 +10015,7 @@
 
             - `caller_id: string`
 
-              产生此次工具调用的程序项的调用 ID。
+              产生此工具调用的程序项的调用 ID。
 
             - `type: "program"`
 
@@ -10023,7 +10025,7 @@
 
         - `max_output_length: optional number or null`
 
-          为该 shell 调用的合并输出捕获的最大 UTF-8 字符数。
+          此 shell 调用合并输出所捕获的最大 UTF-8 字符数。
 
         - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -10053,7 +10055,7 @@
 
             - `diff: string`
 
-              创建文件时要应用的 unified diff 内容。
+              创建文件时应用的统一 diff 内容。
 
             - `path: string`
 
@@ -10067,7 +10069,7 @@
 
           - `DeleteFile object { path, type }`
 
-            通过 apply_patch 工具删除现有文件的指令。
+            通过 apply_patch 工具删除已有文件的指令。
 
             - `path: string`
 
@@ -10099,7 +10101,7 @@
 
         - `status: "in_progress" or "completed"`
 
-          apply patch 工具调用的状态。值为以下之一 `in_progress` 或 `completed`.
+          apply patch 工具调用的状态。其值为 `in_progress` 或 `completed`.
 
           - `"in_progress"`
 
@@ -10107,17 +10109,17 @@
 
         - `type: "apply_patch_call"`
 
-          The type of the item. Always `apply_patch_call`.
+          item 的类型，始终为 `apply_patch_call`.
 
           - `"apply_patch_call"`
 
         - `id: optional string or null`
 
-          apply patch 工具调用的唯一 ID。当此项通过 API 返回时被填充。
+          apply patch 工具调用的唯一 ID。当通过 API 返回此条目时填充。
 
         - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-          产生此次工具调用的执行上下文。
+          产生此工具调用的执行上下文。
 
           - `Direct object { type }`
 
@@ -10131,7 +10133,7 @@
 
             - `caller_id: string`
 
-              产生此次工具调用的程序项的调用 ID。
+              产生此工具调用的程序项的调用 ID。
 
             - `type: "program"`
 
@@ -10149,7 +10151,7 @@
 
         - `status: "completed" or "failed"`
 
-          apply patch 工具调用输出的状态。值为以下之一 `completed` 或 `failed`.
+          apply patch 工具调用输出的状态。其值为 `completed` 或 `failed`.
 
           - `"completed"`
 
@@ -10157,17 +10159,17 @@
 
         - `type: "apply_patch_call_output"`
 
-          The type of the item. Always `apply_patch_call_output`.
+          item 的类型，始终为 `apply_patch_call_output`.
 
           - `"apply_patch_call_output"`
 
         - `id: optional string or null`
 
-          apply patch 工具调用输出的唯一 ID。当此项通过 API 返回时被填充。
+          apply patch 工具调用输出的唯一 ID。当通过 API 返回此条目时填充。
 
         - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-          产生此次工具调用的执行上下文。
+          产生此工具调用的执行上下文。
 
           - `Direct object { type }`
 
@@ -10181,7 +10183,7 @@
 
             - `caller_id: string`
 
-              产生此次工具调用的程序项的调用 ID。
+              产生此工具调用的程序项的调用 ID。
 
             - `type: "program"`
 
@@ -10191,7 +10193,7 @@
 
         - `output: optional string or null`
 
-          apply patch 工具返回的可选人类可读日志文本（例如补丁结果或错误）。
+          apply patch 工具的可选人类可读日志文本（例如补丁结果或错误）。
 
       - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -10199,7 +10201,7 @@
 
         - `id: string`
 
-          该列表的唯一 ID。
+          此列表的唯一 ID。
 
         - `server_label: string`
 
@@ -10215,25 +10217,25 @@
 
           - `name: string`
 
-            该工具的名称。
+            工具的名称。
 
           - `annotations: optional unknown or null`
 
-            有关该工具的其他注释。
+            关于该工具的附加注解。
 
           - `description: optional string or null`
 
-            该工具的描述。
+            工具的描述。
 
         - `type: "mcp_list_tools"`
 
-          The type of the item. Always `mcp_list_tools`.
+          item 的类型，始终为 `mcp_list_tools`.
 
           - `"mcp_list_tools"`
 
         - `error: optional string or null`
 
-          当服务器无法列出工具时的错误信息。
+          服务器无法列出工具时的错误消息。
 
       - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
@@ -10249,7 +10251,7 @@
 
         - `name: string`
 
-          要运行的工具名称。
+          要运行的工具的名称。
 
         - `server_label: string`
 
@@ -10257,7 +10259,7 @@
 
         - `type: "mcp_approval_request"`
 
-          The type of the item. Always `mcp_approval_request`.
+          item 的类型，始终为 `mcp_approval_request`.
 
           - `"mcp_approval_request"`
 
@@ -10267,15 +10269,15 @@
 
         - `approval_request_id: string`
 
-          正在应答的审批请求的 ID。
+          正在回复的审批请求的 ID。
 
         - `approve: boolean`
 
-          请求是否已批准。
+          请求是否已被批准。
 
         - `type: "mcp_approval_response"`
 
-          The type of the item. Always `mcp_approval_response`.
+          item 的类型，始终为 `mcp_approval_response`.
 
           - `"mcp_approval_response"`
 
@@ -10289,7 +10291,7 @@
 
       - `McpCall object { id, arguments, name, 6 more }`
 
-        对 MCP 服务器上某个工具的调用。
+        在 MCP 服务器上对工具的调用。
 
         - `id: string`
 
@@ -10301,7 +10303,7 @@
 
         - `name: string`
 
-          已运行工具的名称。
+          已运行的工具的名称。
 
         - `server_label: string`
 
@@ -10309,18 +10311,18 @@
 
         - `type: "mcp_call"`
 
-          The type of the item. Always `mcp_call`.
+          item 的类型，始终为 `mcp_call`.
 
           - `"mcp_call"`
 
         - `approval_request_id: optional string or null`
 
           MCP 工具调用审批请求的唯一标识符。
-          在后续的 `mcp_approval_response` 输入中包含此值以批准或拒绝相应的工具调用。
+          在后续的 `mcp_approval_response` 输入中携带此值，以批准或拒绝对应的工具调用。
 
         - `error: optional McpToolCallError or null`
 
-          工具调用的错误（如果有）。
+          工具调用产生的错误（若有）。
 
           - `McpProtocolError object { code, message, type }`
 
@@ -10370,11 +10372,11 @@
 
       - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-        你代码中自定义工具调用的输出，被发送回模型。
+        来自你代码的自定义工具调用的输出，将被发送回模型。
 
         - `call_id: string`
 
-          调用 ID，用于将此自定义工具调用的输出映射到自定义工具调用。
+          调用 ID，用于将此自定义工具调用输出映射到自定义工具调用。
 
         - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -10395,11 +10397,11 @@
 
             - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-              发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision).
+              发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision).
 
             - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-              发送到模型的文件输入。
+              发送给模型的文件输入。
 
         - `type: "custom_tool_call_output"`
 
@@ -10409,11 +10411,11 @@
 
         - `id: optional string`
 
-          在 OpenAI 平台中该自定义工具调用输出的唯一 ID。
+          在 OpenAI 平台中自定义工具调用输出的唯一 ID。
 
         - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-          产生此次工具调用的执行上下文。
+          产生此工具调用的执行上下文。
 
           - `Direct object { type }`
 
@@ -10427,7 +10429,7 @@
 
             - `caller_id: string`
 
-              产生此次工具调用的程序项的调用 ID。
+              产生此工具调用的程序项的调用 ID。
 
             - `type: "program"`
 
@@ -10449,7 +10451,7 @@
 
         - `name: string`
 
-          被调用的自定义工具的名称。
+          正在调用的自定义工具的名称。
 
         - `type: "custom_tool_call"`
 
@@ -10459,7 +10461,7 @@
 
         - `id: optional string`
 
-          在 OpenAI 平台中该自定义工具调用的唯一 ID。
+          在 OpenAI 平台中自定义工具调用的唯一 ID。
 
         - `async: optional boolean`
 
@@ -10467,7 +10469,7 @@
 
         - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-          产生此次工具调用的执行上下文。
+          产生此工具调用的执行上下文。
 
           - `Direct object { type }`
 
@@ -10479,7 +10481,7 @@
 
             - `caller_id: string`
 
-              产生此次工具调用的程序项的调用 ID。
+              产生此工具调用的程序项的调用 ID。
 
             - `type: "program"`
 
@@ -10487,15 +10489,15 @@
 
         - `namespace: optional string`
 
-          被调用的自定义工具的命名空间。
+          正在调用的自定义工具的命名空间。
 
       - `CompactionTrigger object { type, id }`
 
-        压缩当前上下文。必须是最后一个输入项。
+        压缩当前上下文。必须作为最终的输入项。
 
         - `type: "compaction_trigger"`
 
-          The type of the item. Always `compaction_trigger`.
+          item 的类型，始终为 `compaction_trigger`.
 
           - `"compaction_trigger"`
 
@@ -10505,15 +10507,15 @@
 
       - `ItemReference object { id, type }`
 
-        用于引用某个条目的内部标识符。
+        用于引用某个项的内部标识符。
 
         - `id: string`
 
-          被引用条目的 ID。
+          要引用的项的 ID。
 
         - `type: optional "item_reference" or null`
 
-          要引用的项目类型。始终为 `item_reference`.
+          引用的条目类型。始终为 `item_reference`.
 
           - `"item_reference"`
 
@@ -10521,23 +10523,23 @@
 
         - `id: string`
 
-          此程序项的唯一 ID。
+          此程序条目的唯一 ID。
 
         - `call_id: string`
 
-          程序项的稳定调用 ID。
+          程序条目的稳定调用 ID。
 
         - `code: string`
 
-          由程序化工具调用执行的 JavaScript 源代码。
+          由程序化工具调用执行的 JavaScript 源码。
 
         - `fingerprint: string`
 
-          必须往返透传的不透明程序回放指纹。
+          必须可往返传输的不透明程序重放指纹。
 
         - `type: "program"`
 
-          项类型。始终为 `program`.
+          条目类型。始终为 `program`.
 
           - `"program"`
 
@@ -10545,19 +10547,19 @@
 
         - `id: string`
 
-          此程序输出项的唯一 ID。
+          此程序输出条目的唯一 ID。
 
         - `call_id: string`
 
-          程序项的调用 ID。
+          程序条目的调用 ID。
 
         - `result: string`
 
-          程序项生成的结果。
+          程序条目产生的结果。
 
         - `status: "completed" or "incomplete"`
 
-          程序输出的终止状态。
+          程序输出的最终状态。
 
           - `"completed"`
 
@@ -10565,31 +10567,33 @@
 
         - `type: "program_output"`
 
-          项类型。始终为 `program_output`.
+          条目类型。始终为 `program_output`.
 
           - `"program_output"`
 
   - `metadata: Metadata or null`
 
-    可以附加到对象的 16 组键值对。这可以
-    用于以结构化格式存储有关对象的附加信息，并通过
+    可附加到对象的 16 组键值对。可用于
+    以结构化格式存储有关对象的附加信息，
     格式，以及通过 API 或控制台查询对象。
 
-    键为字符串，最大长度为 64 个字符。值为字符串，
-    最大长度为 512 个字符。
+    键为字符串，最大长度为 64 个字符。值为字符串
+    ，最大长度为 512 个字符。
 
   - `model: ResponsesModel`
 
-    用于生成响应的模型 ID，例如 `gpt-6-astra`。OpenAI
-    提供了众多具有不同能力、性能
-    特性和定价的模型。请参阅 [模型指南](/api/docs/models)
-    以浏览和比较可用的模型。
+    用于生成响应的模型 ID，例如 `gpt-6-astra`。 OpenAI
+    提供了具有不同能力、性能
+    特征和价位的多种模型。请参阅 [模型指南](/api/docs/models)
+    以浏览和比较可用模型。
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -10809,29 +10813,29 @@
 
   - `object: "response"`
 
-    此资源的对象类型 - 始终设置为 `response`.
+    此资源的对象类型，始终设置为 `response`.
 
     - `"response"`
 
   - `output: array of ResponseOutputItem`
 
-    由模型生成的内容项数组。
+    模型生成的内容项数组。
 
-    - 以下数组中各项的长度和顺序： `output` 数组取决于
-      模型的响应。
-    - 你可以考虑使用 `output` 属性，而不是直接访问
-      数组中的第一项 `assistant` 并假定它是一条包含
-      模型生成内容的消息 `output_text` 属性（在
-      SDK 支持时）。
+    - 中各项的长度和顺序 `output` 数组是依赖于
+      模型的响应的。
+    - 与其访问 `output` 数组中的第一个
+      项并假设它是 `assistant` 由模型生成内容的
+      消息，不如考虑使用 开发工具包 中支持的 `output_text` 属性，在受支持的
+      SDK 中该属性是受支持的。
 
     - `ResponseOutputMessage object { id, content, role, 3 more }`
 
-      来自模型的一条输出消息。
+      来自模型的输出消息。
 
     - `FileSearchCall object { id, queries, status, 2 more }`
 
-      文件搜索 工具调用的结果。详见
-      [文件搜索 指南](/api/docs/guides/tools-file-search) 。
+      文件搜索 工具调用的结果。请参阅
+      [文件搜索 指南](/api/docs/guides/tools-file-search) 了解更多信息。
 
       - `id: string`
 
@@ -10843,7 +10847,7 @@
 
       - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-        文件搜索 工具调用的状态。取值之一为 `in_progress`,
+        文件搜索 工具调用的状态。取值之一： `in_progress`,
         `searching`, `incomplete` 或 `failed`,
 
         - `"in_progress"`
@@ -10858,21 +10862,21 @@
 
       - `type: "file_search_call"`
 
-        文件搜索 工具调用的类型。始终为 `file_search_call`.
+        文件搜索工具调用的类型。始终 `file_search_call`.
 
         - `"file_search_call"`
 
       - `results: optional array of object { attributes, file_id, filename, 2 more }  or null`
 
-        文件搜索 工具调用的结果。
+        文件搜索工具调用的结果。
 
         - `attributes: optional map[string or number or boolean] or null`
 
-          可以附加到对象的 16 组键值对。这可以
-          用于以结构化格式存储有关对象的附加信息，并通过
-          API 或仪表板查询对象。键为字符串，最长
-          64 个字符；值为字符串（最长 512 个字符）、布尔值或数字。
-          占位长度描述保持不变。
+          可附加到对象的 16 组键值对。可用于
+          以结构化格式存储有关对象的附加信息，
+          并通过 API 或仪表板查询对象。键为字符串，
+          最大长度为 64 个字符。值为字符串，最大
+          长度为 512 个字符、布尔值或数字。
 
           - `string`
 
@@ -10898,8 +10902,8 @@
 
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
-      用于运行函数的工具调用。参见
-      [函数调用指南](/api/docs/guides/function-calling) 。
+      用于运行函数的工具调用。参阅
+      [函数调用指南](/api/docs/guides/function-calling) 了解更多信息。
 
       - `arguments: string`
 
@@ -10907,7 +10911,7 @@
 
       - `call_id: string`
 
-        模型生成的功能工具调用的唯一 ID。
+        模型生成的函数工具调用的唯一 ID。
 
       - `name: string`
 
@@ -10915,21 +10919,21 @@
 
       - `type: "function_call"`
 
-        功能工具调用的类型。始终为 `function_call`.
+        函数工具调用的类型。始终为 `function_call`.
 
         - `"function_call"`
 
       - `id: optional string`
 
-        功能工具调用的唯一 ID。
+        函数工具调用的唯一 ID。
 
       - `async: optional boolean`
 
-        功能工具调用是否异步运行。
+        函数工具调用是否异步运行。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -10941,7 +10945,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -10953,8 +10957,8 @@
 
       - `status: optional "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或
-        `incomplete`。当通过 API 返回 item 时填充。
+        该条目的状态。取值为 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -10987,16 +10991,16 @@
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision).
+            发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            发送到模型的文件输入。
+            发送给模型的文件输入。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或
-        `incomplete`。当通过 API 返回 item 时填充。
+        该条目的状态。取值为 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -11012,11 +11016,11 @@
 
       - `call_id: optional string`
 
-        模型生成的功能工具调用的唯一 ID。
+        模型生成的函数工具调用的唯一 ID。
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -11030,7 +11034,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -11040,7 +11044,7 @@
 
       - `created_by: optional string`
 
-        创建该条目的参与方的标识符。
+        创建该条目的参与者的标识符。
 
       - `name: optional string`
 
@@ -11052,16 +11056,16 @@
 
     - `WebSearchCall object { id, status, type, action }`
 
-      一次 网页搜索 工具调用的结果。参见
-      [网页搜索 指南](/api/docs/guides/tools-web-search) 。
+      网页搜索工具调用的结果。请参阅
+      [网页搜索指南](/api/docs/guides/tools-web-search) 了解更多信息。
 
       - `id: string`
 
-        该 网页搜索 工具调用的唯一 ID。
+        网页搜索工具调用的唯一 ID。
 
       - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-        该 网页搜索 工具调用的状态。
+        网页搜索工具调用的状态。
 
         - `"in_progress"`
 
@@ -11075,18 +11079,18 @@
 
       - `type: "web_search_call"`
 
-        该 网页搜索 工具调用的类型。始终为 `web_search_call`.
+        网页搜索工具调用的类型。始终为 `web_search_call`.
 
         - `"web_search_call"`
 
       - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
-        描述本次 网页搜索 调用中所执行具体操作的对象。
-        包含模型如何使用网页的详细信息（搜索、open_page、find_in_page）。
+        描述此次 网页搜索调用中所执行具体操作的对象。
+        包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
 
         - `Search object { type, queries, query, sources }`
 
-          操作类型 "search" - 执行 网页搜索 查询。
+          操作类型 "search" - 执行一次网页搜索查询。
 
           - `type: "search"`
 
@@ -11136,7 +11140,7 @@
 
           - `pattern: string`
 
-            在页面内搜索的模式或文本。
+            要在页面内搜索的模式或文本。
 
           - `type: "find_in_page"`
 
@@ -11146,12 +11150,12 @@
 
           - `url: string`
 
-            搜索该模式的页面 URL。
+            在其中搜索模式的页面 URL。
 
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       对计算机使用工具的工具调用。参见
-      [计算机使用指南](/api/docs/guides/tools-computer-use) 。
+      [computer use guide](/api/docs/guides/tools-computer-use) 了解更多信息。
 
       - `id: string`
 
@@ -11159,11 +11163,11 @@
 
       - `call_id: string`
 
-        在向工具调用输出进行响应时使用的标识符。
+        使用输出响应工具调用时所用的标识符。
 
       - `pending_safety_checks: array of object { id, code, message }`
 
-        计算机调用待处理的安全检查。
+        该计算机调用的待处理安全检查。
 
         - `id: string`
 
@@ -11179,8 +11183,8 @@
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或
-        `incomplete`。当通过 API 返回 item 时填充。
+        该条目的状态。取值为 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -11196,12 +11200,12 @@
 
       - `action: optional ComputerAction`
 
-        单击操作。
+        一次点击动作。
 
       - `actions: optional ComputerActionList`
 
-        批处理操作的扁平化列表，用于 `computer_use`。每个操作包含一个
-        `type` 判别字段和该操作特有的字段。
+        扁平化批处理操作，适用于 `computer_use`。每个操作都包含一个
+        `type` 判别字段和操作特定字段。
 
     - `ComputerCallOutput object { id, call_id, output, 4 more }`
 
@@ -11211,15 +11215,15 @@
 
       - `call_id: string`
 
-        产生该输出的 computer 工具调用的 ID。
+        生成该输出的计算机工具调用的 ID。
 
       - `output: ResponseComputerToolCallOutputScreenshot`
 
-        与 computer use 工具配合使用的计算机截图。
+        与计算机使用工具配合使用的计算机截图图像。
 
       - `status: "completed" or "incomplete" or "failed" or "in_progress"`
 
-        消息输入的状态。取值之一为 `in_progress`, `completed`，或
+        消息输入的状态。取值之一： `in_progress`, `completed`，或
         `incomplete`。当输入项通过 API 返回时填充。
 
         - `"completed"`
@@ -11232,13 +11236,13 @@
 
       - `type: "computer_call_output"`
 
-        computer 工具调用输出的类型。始终为 `computer_call_output`.
+        计算机工具调用输出的类型。始终为 `computer_call_output`.
 
         - `"computer_call_output"`
 
       - `acknowledged_safety_checks: optional array of object { id, code, message }`
 
-        由 API 报告并已被
+        由 API 报告的、且已被
         开发者确认的安全检查。
 
         - `id: string`
@@ -11255,14 +11259,14 @@
 
       - `created_by: optional string`
 
-        创建该条目的参与方的标识符。
+        创建该条目的参与者的标识符。
 
     - `Reasoning object { id, summary, type, 3 more }`
 
-      对推理模型在生成响应时所用思维链的描述。在手动
-      管理上下文时，请务必将这些项包含在发给 Responses API `input` 的请求中，以便用于后续对话轮次。
-      后续响应所使用的推理努力程度，直到另有
-      [手动管理上下文](/api/docs/guides/conversation-state).
+      对推理模型在生成响应时所使用的思维链的描述。如果你是手动管理
+      上下文，请务必在对话的后续轮次中将这些项传回 `input` 到 Responses API
+      。
+      [管理上下文](/api/docs/guides/conversation-state).
 
       - `id: string`
 
@@ -11278,11 +11282,11 @@
 
         - `type: "summary_text"`
 
-          对象的类型。始终为 `summary_text`.
+          对象的类型，恒为 `summary_text`.
 
       - `type: "reasoning"`
 
-        对象的类型。始终为 `reasoning`.
+        对象的类型，恒为 `reasoning`.
 
         - `"reasoning"`
 
@@ -11292,30 +11296,30 @@
 
         - `text: string`
 
-          来自模型的推理文本。
+          模型输出的推理文本。
 
         - `type: "reasoning_text"`
 
-          推理文本的类型。始终为 `reasoning_text`.
+          推理文本的类型，恒为 `reasoning_text`.
 
           - `"reasoning_text"`
 
       - `encrypted_content: optional string or null`
 
-        推理项的加密内容。默认情况下，这会由
-        以及 WebSocket `POST /v1/responses` 请求返回的推理项填充。
-        `response.create` 请求填充。
+        推理项的加密内容。该字段默认由以下请求返回的推理项填充：
+        以及 WebSocket `POST /v1/responses` 请求。
+        `response.create` 在使用流式传输时，可使用已完成的推理项及其。
 
-        在流式传输时，请使用已完成的推理项及其
-        `encrypted_content` 来自 `response.output_item.done` event in
-        subsequent requests. The `encrypted_content` in
-        `response.output_item.added` may be incomplete. This is especially
-        important when `store` is `false` or when using Zero Data Retention.
+        ，从
+        `encrypted_content` 中获取。 `response.output_item.done` event in
+        后续请求中。 `encrypted_content` 中的
+        `response.output_item.added` 可能不完整。这一点在
+        时尤为 `store` 重要 `false` ，或在使用 Zero Data Retention 时也是如此。
 
       - `status: optional "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或
-        `incomplete`。当通过 API 返回 item 时填充。
+        该条目的状态。取值为 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -11331,19 +11335,19 @@
 
       - `call_id: string`
 
-        程序项的稳定调用 ID。
+        程序条目的稳定调用 ID。
 
       - `code: string`
 
-        由程序化工具调用执行的 JavaScript 源代码。
+        由程序化工具调用执行的 JavaScript 源码。
 
       - `fingerprint: string`
 
-        必须往返透传的不透明程序回放指纹。
+        必须可往返传输的不透明程序重放指纹。
 
       - `type: "program"`
 
-        The type of the item. Always `program`.
+        item 的类型，始终为 `program`.
 
         - `"program"`
 
@@ -11355,11 +11359,11 @@
 
       - `call_id: string`
 
-        程序项的调用 ID。
+        程序条目的调用 ID。
 
       - `result: string`
 
-        程序项生成的结果。
+        程序条目产生的结果。
 
       - `status: "completed" or "incomplete"`
 
@@ -11371,7 +11375,7 @@
 
       - `type: "program_output"`
 
-        The type of the item. Always `program_output`.
+        item 的类型，始终为 `program_output`.
 
         - `"program_output"`
 
@@ -11387,7 +11391,7 @@
 
       - `call_id: string or null`
 
-        模型生成的工具搜索调用的唯一 ID。
+        由模型生成的工具搜索调用的唯一 ID。
 
       - `execution: "server" or "client"`
 
@@ -11409,13 +11413,13 @@
 
       - `type: "tool_search_call"`
 
-        The type of the item. Always `tool_search_call`.
+        item 的类型，始终为 `tool_search_call`.
 
         - `"tool_search_call"`
 
       - `created_by: optional string`
 
-        创建该条目的参与方的标识符。
+        创建该条目的参与者的标识符。
 
     - `ToolSearchOutput object { id, call_id, execution, 4 more }`
 
@@ -11425,7 +11429,7 @@
 
       - `call_id: string or null`
 
-        模型生成的工具搜索调用的唯一 ID。
+        由模型生成的工具搜索调用的唯一 ID。
 
       - `execution: "server" or "client"`
 
@@ -11451,7 +11455,7 @@
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          在你自己代码中定义一个函数，模型可以选择调用它。了解更多关于 [函数调用](/api/docs/guides/function-calling).
+          定义你自己代码中的一个函数，模型可以选择调用它。了解更多关于 [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -11459,11 +11463,11 @@
 
           - `parameters: map[unknown] or null`
 
-            描述该函数参数的 JSON schema 对象。
+            用于描述函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否为此函数工具强制执行严格的参数校验。
+            是否对该函数工具强制执行严格的参数校验。
 
           - `type: "function"`
 
@@ -11483,19 +11487,19 @@
 
           - `defer_loading: optional boolean`
 
-            该函数是否被延迟加载，并通过工具搜索加载。
+            该函数是否被延迟，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            对函数的描述。供模型用于判断是否调用该函数。
+            对函数的描述，供模型用于判断是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
+            用于描述该函数字符串输出中 JSON 值结构的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          用于从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](/api/docs/guides/tools-file-search).
+          从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索 tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -11505,15 +11509,15 @@
 
           - `vector_store_ids: array of string`
 
-            要搜索的向量存储库的 ID。
+            要搜索的向量存储库 ID。
 
           - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-            要应用的筛选器。
+            要应用的筛选条件。
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+              用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
             - `CompoundFilter object { filters, type }`
 
@@ -11521,7 +11525,7 @@
 
           - `max_num_results: optional number`
 
-            返回结果的最大数量。该数字应介于 1 到 50 之间（含两端）。
+            要返回的最大结果数。该数值应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -11529,15 +11533,15 @@
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
+              在启用混合搜索时，控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -11549,11 +11553,11 @@
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
+              文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
         - `Computer object { type }`
 
-          用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -11563,7 +11567,7 @@
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -11589,18 +11593,18 @@
 
           - `type: "computer_use_preview"`
 
-            计算机使用工具的类型。始终为 `computer_use_preview`.
+            computer use 工具的类型。始终为 `computer_use_preview`.
 
             - `"computer_use_preview"`
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          在互联网上搜索与提示相关的来源。详细了解
-          [网页搜索 工具](/api/docs/guides/tools-web-search).
+          通过互联网搜索与提示相关的来源。详细了解
+          [网页搜索工具](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索 工具的类型，取值为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型。取值为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -11608,22 +11612,22 @@
 
           - `external_web_access: optional boolean`
 
-            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当为 false 时，网页搜索 工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 访问实时互联网。省略时默认为 true。当设为 false 时，网页搜索 工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的过滤条件。
 
             - `allowed_domains: optional array of string or null`
 
               允许搜索的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也同样允许。
+              所提供域名的子域名也同样被允许。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+            用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -11633,9 +11637,9 @@
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            用户的近似位置。如果省略或为 null，则默认为
-            美国。若要避免此回退，请传入 `{"type": "approximate"}` 无需
-            位置字段。若要本地化结果，请提供相关的位置字段。
+            用户的大致位置。如果省略或为 null，则默认为
+            美国。若要避免此回退行为，请在 `{"type": "approximate"}` 不传
+            位置字段时传入。若要本地化结果，请提供相应的位置字段。
 
             - `city: optional string or null`
 
@@ -11643,15 +11647,15 @@
 
             - `country: optional string or null`
 
-              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+              两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
             - `region: optional string or null`
 
-              用户所在地区/区域的自由文本输入，例如 `California`.
+              用于用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
-              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
             - `type: optional "approximate"`
 
@@ -11661,8 +11665,8 @@
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol
-          （MCP）服务器授予模型对其他工具的访问权限。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+          通过远程模型上下文协议
+          （MCP）服务器为模型提供对其他工具的访问权限。 [详细了解 MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -11696,9 +11700,9 @@
 
               - `read_only: optional boolean`
 
-                指示某个工具是修改数据还是只读。如果某个
+                指示某个工具是否修改数据或为只读。如果某个
                 MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                ，则它将匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -11706,21 +11710,21 @@
 
           - `authorization: optional string`
 
-            可与远程 MCP 服务器配合使用的 OAuth 访问令牌，可以
-            配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-            必须自行处理 OAuth 授权流程，并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可用于
+            使用自定义 MCP 服务器 URL 或服务连接器。你的应用
+            必须处理 OAuth 授权流程，并在此处提供令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，例如 ChatGPT 中提供的那些。必须提供其中
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。了解更多
+            服务连接器的标识符，例如 ChatGPT 中可用的连接器。必须提供其中之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
             关于服务连接器的信息 [请参阅此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-            对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。
-            使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道进行
-            连接。
+            此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+            使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过
+            通过安全 MCP 隧道进行连接。
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
             - Dropbox： `connector_dropbox`
             - Gmail： `connector_gmail`
@@ -11758,13 +11762,13 @@
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-            指定 MCP 服务器中哪些工具需要批准。
+            指定 MCP 服务器中哪些工具需要审批。
 
             - `McpToolApprovalFilter object { always, never }`
 
-              指定 MCP 服务器中哪些工具需要批准。可以是
-              `always`, `never`，或与工具关联的过滤对象
-              ，用于指定需要批准的工具。
+              指定 MCP 服务器中哪些工具需要审批。可以是
+              `always`, `never`，或是与需要审批的工具相关联的过滤对象
+              。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -11772,9 +11776,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -11786,9 +11790,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -11796,9 +11800,9 @@
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定统一的批准策略。可选值为 `always` 或
-              `never`。当设置为 `always`，所有工具都需要审批。设置
-              为 `never`，所有工具都不需要审批。
+              为所有工具指定统一的审批策略。可选值之一为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
+              设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
 
@@ -11820,13 +11824,13 @@
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          运行 Python 代码以帮助生成对提示词回复的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，也可以是用于
-            指定可供你代码使用的已上传文件 ID 以及
-            optional `memory_limit` setting。
+            代码解释器容器。可以是容器 ID，或是用于
+            指定可供你的代码使用的已上传文件 ID 以及相应的
+            optional `memory_limit` setting.
 
             - `string`
 
@@ -11844,7 +11848,7 @@
 
               - `file_ids: optional array of string`
 
-                可供代码使用的已上传文件的可选列表。
+                一个可选的已上传文件列表，供你的代码使用。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -11900,7 +11904,7 @@
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是生成新图像还是编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑已有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -11910,12 +11914,12 @@
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值为 `transparent`, `opaque`,
-            或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，之一，包括
-            其 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
-            背景。支持透明背景的 GPT Image 模型可使用此功能。
-            模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持目前处于
-            预览阶段。使用 `transparent`，时，需将输出格式设置为 `png` 或 `webp`.
+            设置生成图片的背景。可选值包括 `transparent`, `opaque`,
+            或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括
+            它们的 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
+            背景。受支持的 GPT Image 模型可使用透明背景。对于
+            模型，此功能处于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，此支持为预览阶段。使用
+            时，将输出格式设置为 `transparent`。 `png` 或 `webp`.
             默认值： `auto`.
 
             - `"transparent"`
@@ -11926,7 +11930,7 @@
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。该参数仅在 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型中受支持，在 `gpt-image-1-mini`。中不受支持。支持 `high` 和 `low`。默认为 `low`.
+            控制模型在多大程度上匹配输入图像的风格和特征，尤其是面部特征。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持的值包括 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -11934,7 +11938,7 @@
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于局部重绘的可选蒙版。包含 `image_url`
+            用于修复的可选区域蒙版。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -11943,7 +11947,7 @@
 
             - `image_url: optional string`
 
-              Base64 编码的蒙版图像。
+              经过 Base64 编码的蒙版图像。
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -11985,7 +11989,7 @@
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -11997,7 +12001,7 @@
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。取值为 `png`, `webp`，或
             `jpeg`. 默认值： `png`.
 
             - `"png"`
@@ -12008,13 +12012,13 @@
 
           - `partial_images: optional number`
 
-            在流式模式下生成的局部图像数量，取值范围为 0（默认值）到 3。
+            在流式模式下生成的中间图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            生成图像的质量。GPT image 模型支持 `low`,
+            生成图像的质量。GPT 图像模型支持 `low`,
             `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
-            包括其 `2026-09-08` 快照，也支持 `xhigh` 和 `max`.
+            包括它们的 `2026-09-08` 快照，同样支持 `xhigh` 和 `max`.
             默认值： `auto`.
 
             - `"low"`
@@ -12031,13 +12035,13 @@
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -12107,11 +12111,11 @@
 
           - `async: optional boolean`
 
-            工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+            工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
           - `defer_loading: optional boolean`
 
-            此工具是否应延迟并通过工具搜索发现。
+            此工具是否应被延迟，并通过工具搜索来发现。
 
           - `description: optional string`
 
@@ -12119,15 +12123,15 @@
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认是无约束文本。
+            自定义工具的输入格式。默认为无约束文本。
 
         - `Namespace object { description, name, tools, type }`
 
-          在共享命名空间下对函数/自定义工具进行分组。
+          将函数/自定义工具分组到共享命名空间下。
 
           - `description: string`
 
-            向模型展示的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
@@ -12155,23 +12159,23 @@
 
               - `async: optional boolean`
 
-                工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                此函数是否应被延迟，并通过工具搜索来发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                用于描述此函数工具中以字符串形式输出的 JSON 值的 JSON Schema。这不描述 content 数组形式的输出。
+                描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。该字段不描述 content 数组输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制执行严格的参数校验。如果省略，响应接口 会在模式兼容时尝试使用严格校验，否则回退到非严格校验。
+                是否启用严格的参数校验。如果省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
@@ -12197,11 +12201,11 @@
 
               - `async: optional boolean`
 
-                工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
               - `defer_loading: optional boolean`
 
-                此工具是否应延迟并通过工具搜索发现。
+                此工具是否应被延迟，并通过工具搜索来发现。
 
               - `description: optional string`
 
@@ -12209,7 +12213,7 @@
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认是无约束文本。
+                自定义工具的输入格式。默认为无约束文本。
 
           - `type: "namespace"`
 
@@ -12241,15 +12245,15 @@
 
           - `parameters: optional unknown or null`
 
-            客户端执行的工具搜索工具的参数模式。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具会搜索网页以获取相关结果，用于在回复中使用。详细了解 [网页搜索 工具](/api/docs/guides/tools-web-search).
+          此工具会搜索网页以获取可在回复中使用的相关结果。详细了解 [网页搜索工具](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索 工具的类型，取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型。取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -12263,7 +12267,7 @@
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+            用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -12273,7 +12277,7 @@
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的大致位置。如果省略或为 null，则默认为美国。若要避免此回退，请传入 `{"type": "approximate"}` 不含位置字段。若要本地化结果，请提供相应的位置字段。
+            用户的大致位置。如果省略或为 null，则默认为美国。若希望避免该回退，可传入 `{"type": "approximate"}` 时不带位置字段。若要本地化结果，请提供相关的位置字段。
 
             - `type: "approximate"`
 
@@ -12287,19 +12291,19 @@
 
             - `country: optional string or null`
 
-              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+              两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
             - `region: optional string or null`
 
-              用户所在地区/区域的自由文本输入，例如 `California`.
+              用于用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
-              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用 unified diff 创建、删除或更新文件。
+          允许助手使用统一差异格式（unified diff）创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
@@ -12317,23 +12321,23 @@
 
       - `type: "tool_search_output"`
 
-        The type of the item. Always `tool_search_output`.
+        item 的类型，始终为 `tool_search_output`.
 
         - `"tool_search_output"`
 
       - `created_by: optional string`
 
-        创建该条目的参与方的标识符。
+        创建该条目的参与者的标识符。
 
     - `AdditionalTools object { id, role, tools, type }`
 
       - `id: string`
 
-        其他工具条目的唯一 ID。
+        附加工具条目的唯一 ID。
 
       - `role: "unknown" or "user" or "assistant" or 5 more`
 
-        提供这些其他工具的角色。
+        提供附加工具的角色。
 
         - `"unknown"`
 
@@ -12353,11 +12357,11 @@
 
       - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-        在该条目中可用的其他工具定义。
+        在此条目处可用的附加工具定义。
 
         - `Function object { name, parameters, strict, 6 more }`
 
-          在你自己代码中定义一个函数，模型可以选择调用它。了解更多关于 [函数调用](/api/docs/guides/function-calling).
+          定义你自己代码中的一个函数，模型可以选择调用它。了解更多关于 [function calling](/api/docs/guides/function-calling).
 
           - `name: string`
 
@@ -12365,11 +12369,11 @@
 
           - `parameters: map[unknown] or null`
 
-            描述该函数参数的 JSON schema 对象。
+            用于描述函数参数的 JSON schema 对象。
 
           - `strict: boolean or null`
 
-            是否为此函数工具强制执行严格的参数校验。
+            是否对该函数工具强制执行严格的参数校验。
 
           - `type: "function"`
 
@@ -12389,19 +12393,19 @@
 
           - `defer_loading: optional boolean`
 
-            该函数是否被延迟加载，并通过工具搜索加载。
+            该函数是否被延迟，并通过工具搜索加载。
 
           - `description: optional string or null`
 
-            对函数的描述。供模型用于判断是否调用该函数。
+            对函数的描述，供模型用于判断是否调用该函数。
 
           - `output_schema: optional map[unknown] or null`
 
-            描述此函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
+            用于描述该函数字符串输出中 JSON 值结构的 JSON schema 对象。
 
         - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-          用于从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](/api/docs/guides/tools-file-search).
+          从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索 tool](/api/docs/guides/tools-file-search).
 
           - `type: "file_search"`
 
@@ -12411,15 +12415,15 @@
 
           - `vector_store_ids: array of string`
 
-            要搜索的向量存储库的 ID。
+            要搜索的向量存储库 ID。
 
           - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-            要应用的筛选器。
+            要应用的筛选条件。
 
             - `ComparisonFilter object { key, type, value }`
 
-              用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+              用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
             - `CompoundFilter object { filters, type }`
 
@@ -12427,7 +12431,7 @@
 
           - `max_num_results: optional number`
 
-            返回结果的最大数量。该数字应介于 1 到 50 之间（含两端）。
+            要返回的最大结果数。该数值应介于 1 到 50 之间（含两端）。
 
           - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -12435,15 +12439,15 @@
 
             - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-              在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
+              在启用混合搜索时，控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
               - `embedding_weight: number`
 
-                嵌入在倒数排名融合中的权重。
+                倒数排名融合中嵌入的权重。
 
               - `text_weight: number`
 
-                文本在倒数排名融合中的权重。
+                倒数排名融合中文本的权重。
 
             - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -12455,11 +12459,11 @@
 
             - `score_threshold: optional number`
 
-              文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
+              文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
         - `Computer object { type }`
 
-          用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
           - `type: "computer"`
 
@@ -12469,7 +12473,7 @@
 
         - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-          用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+          用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
           - `display_height: number`
 
@@ -12495,18 +12499,18 @@
 
           - `type: "computer_use_preview"`
 
-            计算机使用工具的类型。始终为 `computer_use_preview`.
+            computer use 工具的类型。始终为 `computer_use_preview`.
 
             - `"computer_use_preview"`
 
         - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-          在互联网上搜索与提示相关的来源。详细了解
-          [网页搜索 工具](/api/docs/guides/tools-web-search).
+          通过互联网搜索与提示相关的来源。详细了解
+          [网页搜索工具](/api/docs/guides/tools-web-search).
 
           - `type: "web_search" or "web_search_2025_08_26"`
 
-            网页搜索 工具的类型，取值为 `web_search` 或 `web_search_2025_08_26`.
+            网页搜索工具的类型。取值为 `web_search` 或 `web_search_2025_08_26`.
 
             - `"web_search"`
 
@@ -12514,22 +12518,22 @@
 
           - `external_web_access: optional boolean`
 
-            允许 网页搜索 进行实时互联网访问。省略时默认为 true。当为 false 时，网页搜索 工具以离线/仅缓存模式运行，不会获取新的外部内容。
+            允许 网页搜索 访问实时互联网。省略时默认为 true。当设为 false 时，网页搜索 工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
           - `filters: optional object { allowed_domains }  or null`
 
-            搜索的过滤器。
+            搜索的过滤条件。
 
             - `allowed_domains: optional array of string or null`
 
               允许搜索的域名。如果未提供，则允许所有域名。
-              所提供域名的子域名也同样允许。
+              所提供域名的子域名也同样被允许。
 
               示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+            用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -12539,9 +12543,9 @@
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            用户的近似位置。如果省略或为 null，则默认为
-            美国。若要避免此回退，请传入 `{"type": "approximate"}` 无需
-            位置字段。若要本地化结果，请提供相关的位置字段。
+            用户的大致位置。如果省略或为 null，则默认为
+            美国。若要避免此回退行为，请在 `{"type": "approximate"}` 不传
+            位置字段时传入。若要本地化结果，请提供相应的位置字段。
 
             - `city: optional string or null`
 
@@ -12549,15 +12553,15 @@
 
             - `country: optional string or null`
 
-              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+              两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
             - `region: optional string or null`
 
-              用户所在地区/区域的自由文本输入，例如 `California`.
+              用于用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
-              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
             - `type: optional "approximate"`
 
@@ -12567,8 +12571,8 @@
 
         - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-          通过远程 Model Context Protocol
-          （MCP）服务器授予模型对其他工具的访问权限。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+          通过远程模型上下文协议
+          （MCP）服务器为模型提供对其他工具的访问权限。 [详细了解 MCP](/api/docs/guides/tools-connectors-mcp).
 
           - `server_label: string`
 
@@ -12602,9 +12606,9 @@
 
               - `read_only: optional boolean`
 
-                指示某个工具是修改数据还是只读。如果某个
+                指示某个工具是否修改数据或为只读。如果某个
                 MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤器。
+                ，则它将匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -12612,21 +12616,21 @@
 
           - `authorization: optional string`
 
-            可与远程 MCP 服务器配合使用的 OAuth 访问令牌，可以
-            配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-            必须自行处理 OAuth 授权流程，并在此处提供令牌。
+            可用于远程 MCP 服务器的 OAuth 访问令牌，可用于
+            使用自定义 MCP 服务器 URL 或服务连接器。你的应用
+            必须处理 OAuth 授权流程，并在此处提供令牌。
 
           - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-            服务连接器的标识符，例如 ChatGPT 中提供的那些。必须提供其中
-            `server_url`, `connector_id`，或 `tunnel_id` 之一。了解更多
+            服务连接器的标识符，例如 ChatGPT 中可用的连接器。必须提供其中之一。
+            `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
             关于服务连接器的信息 [请参阅此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-            对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。
-            使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道进行
-            连接。
+            此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+            使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过
+            通过安全 MCP 隧道进行连接。
 
-            当前支持的值 `connector_id` 包括：
+            当前支持 `connector_id` 的值为：
 
             - Dropbox： `connector_dropbox`
             - Gmail： `connector_gmail`
@@ -12664,13 +12668,13 @@
 
           - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-            指定 MCP 服务器中哪些工具需要批准。
+            指定 MCP 服务器中哪些工具需要审批。
 
             - `McpToolApprovalFilter object { always, never }`
 
-              指定 MCP 服务器中哪些工具需要批准。可以是
-              `always`, `never`，或与工具关联的过滤对象
-              ，用于指定需要批准的工具。
+              指定 MCP 服务器中哪些工具需要审批。可以是
+              `always`, `never`，或是与需要审批的工具相关联的过滤对象
+              。
 
               - `always: optional object { read_only, tool_names }`
 
@@ -12678,9 +12682,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -12692,9 +12696,9 @@
 
                 - `read_only: optional boolean`
 
-                  指示某个工具是修改数据还是只读。如果某个
+                  指示某个工具是否修改数据或为只读。如果某个
                   MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                  ，它将匹配此过滤器。
+                  ，则它将匹配此过滤器。
 
                 - `tool_names: optional array of string`
 
@@ -12702,9 +12706,9 @@
 
             - `McpToolApprovalSetting = "always" or "never"`
 
-              为所有工具指定统一的批准策略。可选值为 `always` 或
-              `never`。当设置为 `always`，所有工具都需要审批。设置
-              为 `never`，所有工具都不需要审批。
+              为所有工具指定统一的审批策略。可选值之一为 `always` 或
+              `never`。当设置为 `always`，时，所有工具都需要审批。当
+              设置为 `never`，时，所有工具都不需要审批。
 
               - `"always"`
 
@@ -12726,13 +12730,13 @@
 
         - `CodeInterpreter object { container, type, allowed_callers }`
 
-          运行 Python 代码以帮助生成对提示词回复的工具。
+          运行 Python 代码以帮助生成对提示词响应的工具。
 
           - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器。可以是容器 ID，也可以是用于
-            指定可供你代码使用的已上传文件 ID 以及
-            optional `memory_limit` setting。
+            代码解释器容器。可以是容器 ID，或是用于
+            指定可供你的代码使用的已上传文件 ID 以及相应的
+            optional `memory_limit` setting.
 
             - `string`
 
@@ -12750,7 +12754,7 @@
 
               - `file_ids: optional array of string`
 
-                可供代码使用的已上传文件的可选列表。
+                一个可选的已上传文件列表，供你的代码使用。
 
               - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -12806,7 +12810,7 @@
 
           - `action: optional "generate" or "edit" or "auto"`
 
-            是生成新图像还是编辑现有图像。默认值： `auto`.
+            是生成新图像还是编辑已有图像。默认值： `auto`.
 
             - `"generate"`
 
@@ -12816,12 +12820,12 @@
 
           - `background: optional "transparent" or "opaque" or "auto"`
 
-            设置生成图像的背景。可选值为 `transparent`, `opaque`,
-            或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，之一，包括
-            其 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
-            背景。支持透明背景的 GPT Image 模型可使用此功能。
-            模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持目前处于
-            预览阶段。使用 `transparent`，时，需将输出格式设置为 `png` 或 `webp`.
+            设置生成图片的背景。可选值包括 `transparent`, `opaque`,
+            或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括
+            它们的 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
+            背景。受支持的 GPT Image 模型可使用透明背景。对于
+            模型，此功能处于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，此支持为预览阶段。使用
+            时，将输出格式设置为 `transparent`。 `png` 或 `webp`.
             默认值： `auto`.
 
             - `"transparent"`
@@ -12832,7 +12836,7 @@
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。该参数仅在 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型中受支持，在 `gpt-image-1-mini`。中不受支持。支持 `high` 和 `low`。默认为 `low`.
+            控制模型在多大程度上匹配输入图像的风格和特征，尤其是面部特征。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持的值包括 `high` 和 `low`。默认为 `low`.
 
             - `"high"`
 
@@ -12840,7 +12844,7 @@
 
           - `input_image_mask: optional object { file_id, image_url }`
 
-            用于局部重绘的可选蒙版。包含 `image_url`
+            用于修复的可选区域蒙版。包含 `image_url`
             （字符串，可选）和 `file_id` （字符串，可选）。
 
             - `file_id: optional string`
@@ -12849,7 +12853,7 @@
 
             - `image_url: optional string`
 
-              Base64 编码的蒙版图像。
+              经过 Base64 编码的蒙版图像。
 
           - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -12891,7 +12895,7 @@
 
           - `moderation: optional "auto" or "low"`
 
-            生成图像的审核级别。默认值： `auto`.
+            生成图像的内容审核级别。默认值： `auto`.
 
             - `"auto"`
 
@@ -12903,7 +12907,7 @@
 
           - `output_format: optional "png" or "webp" or "jpeg"`
 
-            生成图像的输出格式。可选值之一 `png`, `webp`，或
+            生成图像的输出格式。取值为 `png`, `webp`，或
             `jpeg`. 默认值： `png`.
 
             - `"png"`
@@ -12914,13 +12918,13 @@
 
           - `partial_images: optional number`
 
-            在流式模式下生成的局部图像数量，取值范围为 0（默认值）到 3。
+            在流式模式下生成的中间图像数量，取值范围为 0（默认值）到 3。
 
           - `quality: optional "low" or "medium" or "high" or 3 more`
 
-            生成图像的质量。GPT image 模型支持 `low`,
+            生成图像的质量。GPT 图像模型支持 `low`,
             `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
-            包括其 `2026-09-08` 快照，也支持 `xhigh` 和 `max`.
+            包括它们的 `2026-09-08` 快照，同样支持 `xhigh` 和 `max`.
             默认值： `auto`.
 
             - `"low"`
@@ -12937,13 +12941,13 @@
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+              生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
               - `"1024x1024"`
 
@@ -13013,11 +13017,11 @@
 
           - `async: optional boolean`
 
-            工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+            工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
           - `defer_loading: optional boolean`
 
-            此工具是否应延迟并通过工具搜索发现。
+            此工具是否应被延迟，并通过工具搜索来发现。
 
           - `description: optional string`
 
@@ -13025,15 +13029,15 @@
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认是无约束文本。
+            自定义工具的输入格式。默认为无约束文本。
 
         - `Namespace object { description, name, tools, type }`
 
-          在共享命名空间下对函数/自定义工具进行分组。
+          将函数/自定义工具分组到共享命名空间下。
 
           - `description: string`
 
-            向模型展示的命名空间描述。
+            展示给模型的命名空间描述。
 
           - `name: string`
 
@@ -13061,23 +13065,23 @@
 
               - `async: optional boolean`
 
-                工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
               - `defer_loading: optional boolean`
 
-                此函数是否应延迟并通过工具搜索发现。
+                此函数是否应被延迟，并通过工具搜索来发现。
 
               - `description: optional string or null`
 
               - `output_schema: optional map[unknown] or null`
 
-                用于描述此函数工具中以字符串形式输出的 JSON 值的 JSON Schema。这不描述 content 数组形式的输出。
+                描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。该字段不描述 content 数组输出。
 
               - `parameters: optional unknown or null`
 
               - `strict: optional boolean or null`
 
-                是否强制执行严格的参数校验。如果省略，响应接口 会在模式兼容时尝试使用严格校验，否则回退到非严格校验。
+                是否启用严格的参数校验。如果省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
 
             - `Custom object { name, type, allowed_callers, 4 more }`
 
@@ -13103,11 +13107,11 @@
 
               - `async: optional boolean`
 
-                工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+                工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
               - `defer_loading: optional boolean`
 
-                此工具是否应延迟并通过工具搜索发现。
+                此工具是否应被延迟，并通过工具搜索来发现。
 
               - `description: optional string`
 
@@ -13115,7 +13119,7 @@
 
               - `format: optional CustomToolInputFormat`
 
-                自定义工具的输入格式。默认是无约束文本。
+                自定义工具的输入格式。默认为无约束文本。
 
           - `type: "namespace"`
 
@@ -13147,15 +13151,15 @@
 
           - `parameters: optional unknown or null`
 
-            客户端执行的工具搜索工具的参数模式。
+            客户端执行的工具搜索工具的参数 schema。
 
         - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-          此工具会搜索网页以获取相关结果，用于在回复中使用。详细了解 [网页搜索 工具](/api/docs/guides/tools-web-search).
+          此工具会搜索网页以获取可在回复中使用的相关结果。详细了解 [网页搜索工具](/api/docs/guides/tools-web-search).
 
           - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-            网页搜索 工具的类型，取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+            网页搜索工具的类型。取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
             - `"web_search_preview"`
 
@@ -13169,7 +13173,7 @@
 
           - `search_context_size: optional "low" or "medium" or "high"`
 
-            用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+            用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
             - `"low"`
 
@@ -13179,7 +13183,7 @@
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            用户的大致位置。如果省略或为 null，则默认为美国。若要避免此回退，请传入 `{"type": "approximate"}` 不含位置字段。若要本地化结果，请提供相应的位置字段。
+            用户的大致位置。如果省略或为 null，则默认为美国。若希望避免该回退，可传入 `{"type": "approximate"}` 时不带位置字段。若要本地化结果，请提供相关的位置字段。
 
             - `type: "approximate"`
 
@@ -13193,19 +13197,19 @@
 
             - `country: optional string or null`
 
-              两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+              两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
             - `region: optional string or null`
 
-              用户所在地区/区域的自由文本输入，例如 `California`.
+              用于用户所在地区的自由文本输入，例如 `California`.
 
             - `timezone: optional string or null`
 
-              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+              该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
         - `ApplyPatch object { type, allowed_callers }`
 
-          允许助手使用 unified diff 创建、删除或更新文件。
+          允许助手使用统一差异格式（unified diff）创建、删除或更新文件。
 
           - `type: "apply_patch"`
 
@@ -13223,13 +13227,13 @@
 
       - `type: "additional_tools"`
 
-        The type of the item. Always `additional_tools`.
+        item 的类型，始终为 `additional_tools`.
 
         - `"additional_tools"`
 
     - `Compaction object { id, encrypted_content, type, created_by }`
 
-      A compaction item generated by the [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
+      由 [`v1/responses/compact` API](/api/reference/resources/responses/methods/compact).
 
       - `id: string`
 
@@ -13241,29 +13245,29 @@
 
       - `type: "compaction"`
 
-        The type of the item. Always `compaction`.
+        item 的类型，始终为 `compaction`.
 
         - `"compaction"`
 
       - `created_by: optional string`
 
-        创建该条目的参与方的标识符。
+        创建该条目的参与者的标识符。
 
     - `ImageGenerationCall object { id, result, status, 7 more }`
 
-      An image generation request made by the model.
+      由模型发起的图像生成请求。
 
       - `id: string`
 
-        The unique ID of the image generation call.
+        图像生成调用的唯一 ID。
 
       - `result: string or null`
 
-        The generated image encoded in base64.
+        以 base64 编码的生成图像。
 
       - `status: "in_progress" or "completed" or "generating" or "failed"`
 
-        The status of the image generation call.
+        图像生成调用的状态。
 
         - `"in_progress"`
 
@@ -13275,13 +13279,13 @@
 
       - `type: "image_generation_call"`
 
-        The type of the image generation call. Always `image_generation_call`.
+        图像生成调用的类型，始终为 `image_generation_call`.
 
         - `"image_generation_call"`
 
       - `action: optional "generate" or "edit" or "auto" or null`
 
-        The action used for image generation.
+        用于图像生成的操作。
 
         - `"generate"`
 
@@ -13291,7 +13295,7 @@
 
       - `background: optional "transparent" or "opaque" or "auto" or null`
 
-        The background setting used for generation.
+        用于生成的背景设置。
 
         - `"transparent"`
 
@@ -13301,7 +13305,7 @@
 
       - `output_format: optional "png" or "webp" or "jpeg" or null`
 
-        The output format used for generation.
+        用于生成的输出格式。
 
         - `"png"`
 
@@ -13311,7 +13315,7 @@
 
       - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
-        图像生成工具调用所生成图像的质量。可选值为 `low`, `medium`, `high`, `xhigh`, `max`，或 `auto`.
+        图像生成工具调用所生成图像的质量。取值为 `low`, `medium`, `high`, `xhigh`, `max`，或 `auto`.
 
         - `"low"`
 
@@ -13327,17 +13331,17 @@
 
       - `revised_prompt: optional string or null`
 
-        经过任何模型提示词重写后使用的提示词。
+        经过任何模型提示词改写后使用的提示词。
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
 
-        以 `WIDTHxHEIGHT` 字符串表示的图像尺寸，例如 `1536x864`.
+        以字符串形式表示的图像尺寸，例如 `WIDTHxHEIGHT` string, for example `1536x864`.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024"`
 
-          以 `WIDTHxHEIGHT` 字符串表示的图像尺寸，例如 `1536x864`.
+          以字符串形式表示的图像尺寸，例如 `WIDTHxHEIGHT` string, for example `1536x864`.
 
           - `"1024x1024"`
 
@@ -13364,7 +13368,7 @@
       - `outputs: array of object { logs, type }  or object { type, url }  or null`
 
         代码解释器生成的输出，例如日志或图像。
-        如果没有可用输出，则可为 null。
+        若没有可用输出，可为 null。
 
         - `Logs object { logs, type }`
 
@@ -13446,11 +13450,11 @@
 
         - `user: optional string or null`
 
-          运行命令所用的可选用户。
+          运行命令时使用的可选用户。
 
         - `working_directory: optional string or null`
 
-          运行命令所用的可选工作目录。
+          运行命令时使用的可选工作目录。
 
       - `call_id: string`
 
@@ -13492,7 +13496,7 @@
 
       - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或 `incomplete`.
+        该条目的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -13502,7 +13506,7 @@
 
     - `ShellCall object { id, action, call_id, 5 more }`
 
-      在托管环境中执行一条或多条 shell 命令的工具调用。
+      在托管环境中运行一条或多条 shell 命令的工具调用。
 
       - `id: string`
 
@@ -13510,17 +13514,17 @@
 
       - `action: object { commands, max_output_length, timeout_ms }`
 
-        描述如何运行该工具调用的 shell 命令及其限制。
+        描述如何运行该工具调用的 shell 命令和限制。
 
         - `commands: array of string`
 
         - `max_output_length: number or null`
 
-          可选，每个命令返回的最大字符数。
+          可选的每个命令返回的最大字符数。
 
         - `timeout_ms: number or null`
 
-          可选，命令的超时时间（毫秒）。
+          命令的可选超时时间（毫秒）。
 
       - `call_id: string`
 
@@ -13542,7 +13546,7 @@
 
         - `ResponseContainerReference object { container_id, type }`
 
-          表示通过 /v1/containers 创建的容器。
+          表示使用 /v1/containers 创建的容器。
 
           - `container_id: string`
 
@@ -13554,7 +13558,7 @@
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        shell 调用的状态。取值之一： `in_progress`, `completed`，或 `incomplete`.
+        shell 调用的状态。取值之一 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -13564,13 +13568,13 @@
 
       - `type: "shell_call"`
 
-        The type of the item. Always `shell_call`.
+        item 的类型，始终为 `shell_call`.
 
         - `"shell_call"`
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -13582,7 +13586,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -13598,7 +13602,7 @@
 
       - `id: string`
 
-        shell 调用输出的唯一 ID。当该条目通过 API 返回时填充。
+        shell 调用输出的唯一 ID。当此条目通过 API 返回时填充。
 
       - `call_id: string`
 
@@ -13606,7 +13610,7 @@
 
       - `max_output_length: number or null`
 
-        shell 命令输出的最大长度。该值由模型生成,应与原始输出一起回传。
+        shell 命令输出的最大长度。该值由模型生成，并应与原始输出一起回传。
 
       - `output: array of object { outcome, stderr, stdout, created_by }`
 
@@ -13614,11 +13618,11 @@
 
         - `outcome: object { type }  or object { exit_code, type }`
 
-          表示 shell 调用输出块的退出结果(包含退出码)或超时结果。
+          表示 shell 调用输出块的退出结果（含退出码）或超时结果。
 
           - `Timeout object { type }`
 
-            表示 shell 调用超过了其配置的时间限制。
+            表示 shell 调用超出了其配置的时间限制。
 
             - `type: "timeout"`
 
@@ -13642,19 +13646,19 @@
 
         - `stderr: string`
 
-          已捕获的标准错误输出。
+          捕获到的标准错误输出。
 
         - `stdout: string`
 
-          已捕获的标准输出。
+          捕获到的标准输出。
 
         - `created_by: optional string`
 
-          创建该条目的参与方的标识符。
+          创建该条目的参与者的标识符。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        shell 调用输出的状态,取值之一 `in_progress`, `completed`，或 `incomplete`.
+        shell 调用输出的状态。其值为 `in_progress`, `completed`，或 `incomplete`.
 
         - `"in_progress"`
 
@@ -13664,13 +13668,13 @@
 
       - `type: "shell_call_output"`
 
-        shell 调用输出的类型,始终为 `shell_call_output`.
+        shell 调用输出的类型。始终为 `shell_call_output`.
 
         - `"shell_call_output"`
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -13682,7 +13686,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -13690,7 +13694,7 @@
 
       - `created_by: optional string`
 
-        创建该条目的参与方的标识符。
+        创建该条目的参与者的标识符。
 
     - `ApplyPatchCall object { id, call_id, operation, 4 more }`
 
@@ -13698,7 +13702,7 @@
 
       - `id: string`
 
-        apply patch 工具调用的唯一 ID。当此项通过 API 返回时被填充。
+        apply patch 工具调用的唯一 ID。当通过 API 返回此条目时填充。
 
       - `call_id: string`
 
@@ -13722,7 +13726,7 @@
 
           - `type: "create_file"`
 
-            使用提供的差异创建新文件。
+            使用提供的差异创建一个新文件。
 
             - `"create_file"`
 
@@ -13760,7 +13764,7 @@
 
       - `status: "in_progress" or "completed"`
 
-        apply patch 工具调用的状态。值为以下之一 `in_progress` 或 `completed`.
+        apply patch 工具调用的状态。其值为 `in_progress` 或 `completed`.
 
         - `"in_progress"`
 
@@ -13768,13 +13772,13 @@
 
       - `type: "apply_patch_call"`
 
-        The type of the item. Always `apply_patch_call`.
+        item 的类型，始终为 `apply_patch_call`.
 
         - `"apply_patch_call"`
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -13786,7 +13790,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -13798,11 +13802,11 @@
 
     - `ApplyPatchCallOutput object { id, call_id, status, 4 more }`
 
-      apply patch 工具调用所输出的内容。
+      apply patch 工具调用产生的输出。
 
       - `id: string`
 
-        apply patch 工具调用输出的唯一 ID。当此项通过 API 返回时被填充。
+        apply patch 工具调用输出的唯一 ID。当通过 API 返回此条目时填充。
 
       - `call_id: string`
 
@@ -13810,7 +13814,7 @@
 
       - `status: "completed" or "failed"`
 
-        apply patch 工具调用输出的状态。值为以下之一 `completed` 或 `failed`.
+        apply patch 工具调用输出的状态。其值为 `completed` 或 `failed`.
 
         - `"completed"`
 
@@ -13818,13 +13822,13 @@
 
       - `type: "apply_patch_call_output"`
 
-        The type of the item. Always `apply_patch_call_output`.
+        item 的类型，始终为 `apply_patch_call_output`.
 
         - `"apply_patch_call_output"`
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -13836,7 +13840,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -13852,7 +13856,7 @@
 
     - `McpCall object { id, arguments, name, 6 more }`
 
-      对 MCP 服务器上某个工具的调用。
+      在 MCP 服务器上对工具的调用。
 
       - `id: string`
 
@@ -13864,7 +13868,7 @@
 
       - `name: string`
 
-        已运行工具的名称。
+        已运行的工具的名称。
 
       - `server_label: string`
 
@@ -13872,18 +13876,18 @@
 
       - `type: "mcp_call"`
 
-        The type of the item. Always `mcp_call`.
+        item 的类型，始终为 `mcp_call`.
 
         - `"mcp_call"`
 
       - `approval_request_id: optional string or null`
 
         MCP 工具调用审批请求的唯一标识符。
-        在后续的 `mcp_approval_response` 输入中包含此值以批准或拒绝相应的工具调用。
+        在后续的 `mcp_approval_response` 输入中携带此值，以批准或拒绝对应的工具调用。
 
       - `error: optional McpToolCallError or null`
 
-        工具调用的错误（如果有）。
+        工具调用产生的错误（若有）。
 
       - `output: optional string or null`
 
@@ -13909,7 +13913,7 @@
 
       - `id: string`
 
-        该列表的唯一 ID。
+        此列表的唯一 ID。
 
       - `server_label: string`
 
@@ -13925,25 +13929,25 @@
 
         - `name: string`
 
-          该工具的名称。
+          工具的名称。
 
         - `annotations: optional unknown or null`
 
-          有关该工具的其他注释。
+          关于该工具的附加注解。
 
         - `description: optional string or null`
 
-          该工具的描述。
+          工具的描述。
 
       - `type: "mcp_list_tools"`
 
-        The type of the item. Always `mcp_list_tools`.
+        item 的类型，始终为 `mcp_list_tools`.
 
         - `"mcp_list_tools"`
 
       - `error: optional string or null`
 
-        当服务器无法列出工具时的错误信息。
+        服务器无法列出工具时的错误消息。
 
     - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
@@ -13959,7 +13963,7 @@
 
       - `name: string`
 
-        要运行的工具名称。
+        要运行的工具的名称。
 
       - `server_label: string`
 
@@ -13967,7 +13971,7 @@
 
       - `type: "mcp_approval_request"`
 
-        The type of the item. Always `mcp_approval_request`.
+        item 的类型，始终为 `mcp_approval_request`.
 
         - `"mcp_approval_request"`
 
@@ -13981,15 +13985,15 @@
 
       - `approval_request_id: string`
 
-        正在应答的审批请求的 ID。
+        正在回复的审批请求的 ID。
 
       - `approve: boolean`
 
-        请求是否已批准。
+        请求是否已被批准。
 
       - `type: "mcp_approval_response"`
 
-        The type of the item. Always `mcp_approval_response`.
+        item 的类型，始终为 `mcp_approval_response`.
 
         - `"mcp_approval_response"`
 
@@ -14011,7 +14015,7 @@
 
       - `name: string`
 
-        被调用的自定义工具的名称。
+        正在调用的自定义工具的名称。
 
       - `type: "custom_tool_call"`
 
@@ -14021,7 +14025,7 @@
 
       - `id: optional string`
 
-        在 OpenAI 平台中该自定义工具调用的唯一 ID。
+        在 OpenAI 平台中自定义工具调用的唯一 ID。
 
       - `async: optional boolean`
 
@@ -14029,7 +14033,7 @@
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -14041,7 +14045,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -14049,17 +14053,17 @@
 
       - `namespace: optional string`
 
-        被调用的自定义工具的命名空间。
+        正在调用的自定义工具的命名空间。
 
     - `CustomToolCallOutput object { id, call_id, output, 4 more }`
 
       - `id: string`
 
-        该自定义工具调用输出项的唯一 ID。
+        自定义工具调用输出项的唯一 ID。
 
       - `call_id: string`
 
-        调用 ID，用于将此自定义工具调用的输出映射到自定义工具调用。
+        调用 ID，用于将此自定义工具调用输出映射到自定义工具调用。
 
       - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
@@ -14080,16 +14084,16 @@
 
           - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-            发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision).
+            发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision).
 
           - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-            发送到模型的文件输入。
+            发送给模型的文件输入。
 
       - `status: "in_progress" or "completed" or "incomplete"`
 
-        条目的状态。可选值之一 `in_progress`, `completed`，或
-        `incomplete`。当通过 API 返回 item 时填充。
+        该条目的状态。取值为 `in_progress`, `completed`，或
+        `incomplete`。当通过 API 返回条目时填充。
 
         - `"in_progress"`
 
@@ -14105,7 +14109,7 @@
 
       - `caller: optional object { type }  or object { caller_id, type }  or null`
 
-        产生此次工具调用的执行上下文。
+        产生此工具调用的执行上下文。
 
         - `Direct object { type }`
 
@@ -14119,7 +14123,7 @@
 
           - `caller_id: string`
 
-            产生此次工具调用的程序项的调用 ID。
+            产生此工具调用的程序项的调用 ID。
 
           - `type: "program"`
 
@@ -14129,7 +14133,7 @@
 
       - `created_by: optional string`
 
-        创建该条目的参与方的标识符。
+        创建该条目的参与者的标识符。
 
   - `parallel_tool_calls: boolean`
 
@@ -14137,23 +14141,23 @@
 
   - `temperature: number or null`
 
-    使用的采样温度，介于 0 到 2 之间。较高的值（如 0.8）会使输出更加随机，而较低的值（如 0.2）会使输出更加聚焦和确定。
-    我们通常建议修改该参数或 `top_p` ，但不要同时修改两者。
+    使用的采样温度，介于 0 和 2 之间。较高的值（如 0.8）会使输出更加随机，而较低的值（如 0.2）会使输出更加聚焦和确定。
+    我们通常建议修改此参数或 `top_p` 但不要同时修改两者。
 
   - `tool_choice: ToolChoiceOptions or ToolChoiceAllowed or ToolChoiceTypes or 6 more`
 
-    模型在生成响应时应该如何选择要使用的工具。参见
-    参数，了解如何指定 `tools` 模型可以调用的工具。
-    以上各项。
+    指定模型在生成响应时如何选择要使用的工具。
+    请参阅 `tools` 参数了解如何指定可调用
+    的工具。
 
     - `ToolChoiceOptions = "none" or "auto" or "required"`
 
-      控制模型调用哪个工具（如果有的话）。
+      控制模型调用哪些工具（如果有）。
 
       `none` 表示模型将不调用任何工具，而是生成一条消息。
 
-      `auto` 表示模型可以在生成消息和调用一个或
-      多个工具之间进行选择。
+      `auto` 表示模型可以在生成消息与调用一个或
+      多个工具之间选择。
 
       `required` 表示模型必须调用一个或多个工具。
 
@@ -14171,8 +14175,8 @@
 
         将模型可用的工具限制为预定义的集合。
 
-        `auto` 允许模型从允许的工具中进行选择并生成
-        一条消息。
+        `auto` 允许模型从允许的工具中选择并生成一条
+        消息。
 
         `required` 要求模型调用一个或多个允许的工具。
 
@@ -14182,9 +14186,9 @@
 
       - `tools: array of map[unknown]`
 
-        模型应允许调用的工具定义列表。
+        允许模型调用的工具定义列表。
 
-        对于Responses API，工具定义列表可能如下所示：
+        对于 Responses API，工具定义列表可能如下所示：
 
         ```json
         [
@@ -14202,12 +14206,12 @@
 
     - `ToolChoiceTypes object { type }`
 
-      指示模型应使用内置工具来生成回复。
+      指示模型应使用内置工具生成响应。
       [了解有关内置工具的更多信息](/api/docs/guides/tools).
 
       - `type: "file_search" or "web_search_preview" or "computer" or 5 more`
 
-        模型应使用的托管工具类型。了解有关
+        模型应使用的托管工具的类型。了解更多关于
         [内置工具](/api/docs/guides/tools).
 
         允许的值为：
@@ -14238,7 +14242,7 @@
 
     - `ToolChoiceFunction object { name, type }`
 
-      使用此选项可强制模型调用特定的函数。
+      使用此选项可以强制模型调用特定函数。
 
       - `name: string`
 
@@ -14252,7 +14256,7 @@
 
     - `ToolChoiceMcp object { server_label, type, name }`
 
-      使用此选项可强制模型在远程 MCP 服务器上调用特定工具。
+      使用此选项可以强制模型调用远程 MCP 服务器上的特定工具。
 
       - `server_label: string`
 
@@ -14270,7 +14274,7 @@
 
     - `ToolChoiceCustom object { name, type }`
 
-      使用此选项可强制模型调用特定的自定义工具。
+      使用此选项可以强制模型调用特定的自定义工具。
 
       - `name: string`
 
@@ -14312,27 +14316,27 @@
 
   - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
 
-    模型在生成回复时可以调用的工具数组。你
-    可以通过设置 `tool_choice` 参数。
+    模型在生成响应时可以调用的工具数组。你
+    可以通过设置来指定要使用的工具 `tool_choice` parameter.
 
     我们支持以下类别的工具：
 
     - **内置工具**：由 OpenAI 提供的工具，用于扩展模型的
       能力，例如 [网页搜索](/api/docs/guides/tools-web-search)
-      或 [文件搜索](/api/docs/guides/tools-file-search)。了解更多关于
+      或 [文件搜索](/api/docs/guides/tools-file-search)。详细了解
       [内置工具](/api/docs/guides/tools).
-    - **MCP 工具**：通过自定义 MCP 服务器与第三方系统集成，
-      或使用 Google Drive 和 SharePoint 等预定义连接器。了解更多关于
+    - **MCP 工具**：通过自定义 MCP 服务器与第三方系统集成
+      或使用预定义连接器，例如 Google Drive 和 SharePoint。详细了解
       [MCP 工具](/api/docs/guides/tools-connectors-mcp).
     - **函数调用（自定义工具）**：由你定义的函数，
-      使模型能够使用强类型参数和返回值调用你自己的代码。了解更多关于
-      。你也可以使用
-      [函数调用](/api/docs/guides/function-calling)。你也可以使用
+      使模型能够使用强类型参数调用你自己的代码
+      并返回结果。详细了解
+      [function calling](/api/docs/guides/function-calling)。你还可以使用
       自定义工具来调用你自己的代码。
 
     - `Function object { name, parameters, strict, 6 more }`
 
-      在你自己代码中定义一个函数，模型可以选择调用它。了解更多关于 [函数调用](/api/docs/guides/function-calling).
+      定义你自己代码中的一个函数，模型可以选择调用它。了解更多关于 [function calling](/api/docs/guides/function-calling).
 
       - `name: string`
 
@@ -14340,11 +14344,11 @@
 
       - `parameters: map[unknown] or null`
 
-        描述该函数参数的 JSON schema 对象。
+        用于描述函数参数的 JSON schema 对象。
 
       - `strict: boolean or null`
 
-        是否为此函数工具强制执行严格的参数校验。
+        是否对该函数工具强制执行严格的参数校验。
 
       - `type: "function"`
 
@@ -14364,19 +14368,19 @@
 
       - `defer_loading: optional boolean`
 
-        该函数是否被延迟加载，并通过工具搜索加载。
+        该函数是否被延迟，并通过工具搜索加载。
 
       - `description: optional string or null`
 
-        对函数的描述。供模型用于判断是否调用该函数。
+        对函数的描述，供模型用于判断是否调用该函数。
 
       - `output_schema: optional map[unknown] or null`
 
-        描述此函数在字符串输出中所编码 JSON 值的 JSON schema 对象。
+        用于描述该函数字符串输出中 JSON 值结构的 JSON schema 对象。
 
     - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-      用于从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索工具](/api/docs/guides/tools-file-search).
+      从已上传文件中搜索相关内容的工具。了解更多关于 [文件搜索 tool](/api/docs/guides/tools-file-search).
 
       - `type: "file_search"`
 
@@ -14386,15 +14390,15 @@
 
       - `vector_store_ids: array of string`
 
-        要搜索的向量存储库的 ID。
+        要搜索的向量存储库 ID。
 
       - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-        要应用的筛选器。
+        要应用的筛选条件。
 
         - `ComparisonFilter object { key, type, value }`
 
-          用于将指定的属性键与给定值按定义的比较运算进行比较的筛选器。
+          用于将指定属性键与给定值按照定义的比较操作进行比较的筛选条件。
 
         - `CompoundFilter object { filters, type }`
 
@@ -14402,7 +14406,7 @@
 
       - `max_num_results: optional number`
 
-        返回结果的最大数量。该数字应介于 1 到 50 之间（含两端）。
+        要返回的最大结果数。该数值应介于 1 到 50 之间（含两端）。
 
       - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -14410,15 +14414,15 @@
 
         - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-          在启用混合搜索时，用于控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
+          在启用混合搜索时，控制倒数排名融合中语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
           - `embedding_weight: number`
 
-            嵌入在倒数排名融合中的权重。
+            倒数排名融合中嵌入的权重。
 
           - `text_weight: number`
 
-            文本在倒数排名融合中的权重。
+            倒数排名融合中文本的权重。
 
         - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -14430,11 +14434,11 @@
 
         - `score_threshold: optional number`
 
-          文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
+          文件搜索的分数阈值，取值介于 0 到 1 之间。越接近 1 的值会尝试仅返回最相关的结果，但返回的结果数量可能会更少。
 
     - `Computer object { type }`
 
-      用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+      用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
       - `type: "computer"`
 
@@ -14444,7 +14448,7 @@
 
     - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-      用于控制虚拟计算机的工具。了解更多关于 [计算机工具](/api/docs/guides/tools-computer-use).
+      用于控制虚拟计算机的工具。详细了解 [计算机工具](/api/docs/guides/tools-computer-use).
 
       - `display_height: number`
 
@@ -14470,18 +14474,18 @@
 
       - `type: "computer_use_preview"`
 
-        计算机使用工具的类型。始终为 `computer_use_preview`.
+        computer use 工具的类型。始终为 `computer_use_preview`.
 
         - `"computer_use_preview"`
 
     - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-      在互联网上搜索与提示相关的来源。详细了解
-      [网页搜索 工具](/api/docs/guides/tools-web-search).
+      通过互联网搜索与提示相关的来源。详细了解
+      [网页搜索工具](/api/docs/guides/tools-web-search).
 
       - `type: "web_search" or "web_search_2025_08_26"`
 
-        网页搜索 工具的类型，取值为 `web_search` 或 `web_search_2025_08_26`.
+        网页搜索工具的类型。取值为 `web_search` 或 `web_search_2025_08_26`.
 
         - `"web_search"`
 
@@ -14489,22 +14493,22 @@
 
       - `external_web_access: optional boolean`
 
-        允许 网页搜索 进行实时互联网访问。省略时默认为 true。当为 false 时，网页搜索 工具以离线/仅缓存模式运行，不会获取新的外部内容。
+        允许 网页搜索 访问实时互联网。省略时默认为 true。当设为 false 时，网页搜索 工具将以离线/仅缓存模式运行，不会获取新的外部内容。
 
       - `filters: optional object { allowed_domains }  or null`
 
-        搜索的过滤器。
+        搜索的过滤条件。
 
         - `allowed_domains: optional array of string or null`
 
           允许搜索的域名。如果未提供，则允许所有域名。
-          所提供域名的子域名也同样允许。
+          所提供域名的子域名也同样被允许。
 
           示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
       - `search_context_size: optional "low" or "medium" or "high"`
 
-        用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+        用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
         - `"low"`
 
@@ -14514,9 +14518,9 @@
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        用户的近似位置。如果省略或为 null，则默认为
-        美国。若要避免此回退，请传入 `{"type": "approximate"}` 无需
-        位置字段。若要本地化结果，请提供相关的位置字段。
+        用户的大致位置。如果省略或为 null，则默认为
+        美国。若要避免此回退行为，请在 `{"type": "approximate"}` 不传
+        位置字段时传入。若要本地化结果，请提供相应的位置字段。
 
         - `city: optional string or null`
 
@@ -14524,15 +14528,15 @@
 
         - `country: optional string or null`
 
-          两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+          两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
         - `region: optional string or null`
 
-          用户所在地区/区域的自由文本输入，例如 `California`.
+          用于用户所在地区的自由文本输入，例如 `California`.
 
         - `timezone: optional string or null`
 
-          该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+          该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
         - `type: optional "approximate"`
 
@@ -14542,8 +14546,8 @@
 
     - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-      通过远程 Model Context Protocol
-      （MCP）服务器授予模型对其他工具的访问权限。 [了解更多关于 MCP 的信息](/api/docs/guides/tools-connectors-mcp).
+      通过远程模型上下文协议
+      （MCP）服务器为模型提供对其他工具的访问权限。 [详细了解 MCP](/api/docs/guides/tools-connectors-mcp).
 
       - `server_label: string`
 
@@ -14577,9 +14581,9 @@
 
           - `read_only: optional boolean`
 
-            指示某个工具是修改数据还是只读。如果某个
+            指示某个工具是否修改数据或为只读。如果某个
             MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-            ，它将匹配此过滤器。
+            ，则它将匹配此过滤器。
 
           - `tool_names: optional array of string`
 
@@ -14587,21 +14591,21 @@
 
       - `authorization: optional string`
 
-        可与远程 MCP 服务器配合使用的 OAuth 访问令牌，可以
-        配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-        必须自行处理 OAuth 授权流程，并在此处提供令牌。
+        可用于远程 MCP 服务器的 OAuth 访问令牌，可用于
+        使用自定义 MCP 服务器 URL 或服务连接器。你的应用
+        必须处理 OAuth 授权流程，并在此处提供令牌。
 
       - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-        服务连接器的标识符，例如 ChatGPT 中提供的那些。必须提供其中
-        `server_url`, `connector_id`，或 `tunnel_id` 之一。了解更多
+        服务连接器的标识符，例如 ChatGPT 中可用的连接器。必须提供其中之一。
+        `server_url`, `connector_id`，或 `tunnel_id` 必须提供。了解更多
         关于服务连接器的信息 [请参阅此处](/api/docs/guides/tools-connectors-mcp#connectors).
 
-        对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。
-        使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道进行
-        连接。
+        此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+        使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过
+        通过安全 MCP 隧道进行连接。
 
-        当前支持的值 `connector_id` 包括：
+        当前支持 `connector_id` 的值为：
 
         - Dropbox： `connector_dropbox`
         - Gmail： `connector_gmail`
@@ -14639,13 +14643,13 @@
 
       - `require_approval: optional object { always, never }  or "always" or "never" or null`
 
-        指定 MCP 服务器中哪些工具需要批准。
+        指定 MCP 服务器中哪些工具需要审批。
 
         - `McpToolApprovalFilter object { always, never }`
 
-          指定 MCP 服务器中哪些工具需要批准。可以是
-          `always`, `never`，或与工具关联的过滤对象
-          ，用于指定需要批准的工具。
+          指定 MCP 服务器中哪些工具需要审批。可以是
+          `always`, `never`，或是与需要审批的工具相关联的过滤对象
+          。
 
           - `always: optional object { read_only, tool_names }`
 
@@ -14653,9 +14657,9 @@
 
             - `read_only: optional boolean`
 
-              指示某个工具是修改数据还是只读。如果某个
+              指示某个工具是否修改数据或为只读。如果某个
               MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              ，则它将匹配此过滤器。
 
             - `tool_names: optional array of string`
 
@@ -14667,9 +14671,9 @@
 
             - `read_only: optional boolean`
 
-              指示某个工具是修改数据还是只读。如果某个
+              指示某个工具是否修改数据或为只读。如果某个
               MCP 服务器被 [标注为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤器。
+              ，则它将匹配此过滤器。
 
             - `tool_names: optional array of string`
 
@@ -14677,9 +14681,9 @@
 
         - `McpToolApprovalSetting = "always" or "never"`
 
-          为所有工具指定统一的批准策略。可选值为 `always` 或
-          `never`。当设置为 `always`，所有工具都需要审批。设置
-          为 `never`，所有工具都不需要审批。
+          为所有工具指定统一的审批策略。可选值之一为 `always` 或
+          `never`。当设置为 `always`，时，所有工具都需要审批。当
+          设置为 `never`，时，所有工具都不需要审批。
 
           - `"always"`
 
@@ -14701,13 +14705,13 @@
 
     - `CodeInterpreter object { container, type, allowed_callers }`
 
-      运行 Python 代码以帮助生成对提示词回复的工具。
+      运行 Python 代码以帮助生成对提示词响应的工具。
 
       - `container: string or object { type, file_ids, memory_limit, network_policy }`
 
-        代码解释器容器。可以是容器 ID，也可以是用于
-        指定可供你代码使用的已上传文件 ID 以及
-        optional `memory_limit` setting。
+        代码解释器容器。可以是容器 ID，或是用于
+        指定可供你的代码使用的已上传文件 ID 以及相应的
+        optional `memory_limit` setting.
 
         - `string`
 
@@ -14725,7 +14729,7 @@
 
           - `file_ids: optional array of string`
 
-            可供代码使用的已上传文件的可选列表。
+            一个可选的已上传文件列表，供你的代码使用。
 
           - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -14781,7 +14785,7 @@
 
       - `action: optional "generate" or "edit" or "auto"`
 
-        是生成新图像还是编辑现有图像。默认值： `auto`.
+        是生成新图像还是编辑已有图像。默认值： `auto`.
 
         - `"generate"`
 
@@ -14791,12 +14795,12 @@
 
       - `background: optional "transparent" or "opaque" or "auto"`
 
-        设置生成图像的背景。可选值为 `transparent`, `opaque`,
-        或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，之一，包括
-        其 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
-        背景。支持透明背景的 GPT Image 模型可使用此功能。
-        模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持目前处于
-        预览阶段。使用 `transparent`，时，需将输出格式设置为 `png` 或 `webp`.
+        设置生成图片的背景。可选值包括 `transparent`, `opaque`,
+        或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括
+        它们的 `2026-09-08` 快照，支持 `opaque` 和 `transparent`
+        背景。受支持的 GPT Image 模型可使用透明背景。对于
+        模型，此功能处于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，此支持为预览阶段。使用
+        时，将输出格式设置为 `transparent`。 `png` 或 `webp`.
         默认值： `auto`.
 
         - `"transparent"`
@@ -14807,7 +14811,7 @@
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。该参数仅在 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型中受支持，在 `gpt-image-1-mini`。中不受支持。支持 `high` 和 `low`。默认为 `low`.
+        控制模型在多大程度上匹配输入图像的风格和特征，尤其是面部特征。此参数仅支持 `gpt-image-1` 和 `gpt-image-1.5` 及更高版本的模型，不支持 `gpt-image-1-mini`。支持的值包括 `high` 和 `low`。默认为 `low`.
 
         - `"high"`
 
@@ -14815,7 +14819,7 @@
 
       - `input_image_mask: optional object { file_id, image_url }`
 
-        用于局部重绘的可选蒙版。包含 `image_url`
+        用于修复的可选区域蒙版。包含 `image_url`
         （字符串，可选）和 `file_id` （字符串，可选）。
 
         - `file_id: optional string`
@@ -14824,7 +14828,7 @@
 
         - `image_url: optional string`
 
-          Base64 编码的蒙版图像。
+          经过 Base64 编码的蒙版图像。
 
       - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -14866,7 +14870,7 @@
 
       - `moderation: optional "auto" or "low"`
 
-        生成图像的审核级别。默认值： `auto`.
+        生成图像的内容审核级别。默认值： `auto`.
 
         - `"auto"`
 
@@ -14878,7 +14882,7 @@
 
       - `output_format: optional "png" or "webp" or "jpeg"`
 
-        生成图像的输出格式。可选值之一 `png`, `webp`，或
+        生成图像的输出格式。取值为 `png`, `webp`，或
         `jpeg`. 默认值： `png`.
 
         - `"png"`
@@ -14889,13 +14893,13 @@
 
       - `partial_images: optional number`
 
-        在流式模式下生成的局部图像数量，取值范围为 0（默认值）到 3。
+        在流式模式下生成的中间图像数量，取值范围为 0（默认值）到 3。
 
       - `quality: optional "low" or "medium" or "high" or 3 more`
 
-        生成图像的质量。GPT image 模型支持 `low`,
+        生成图像的质量。GPT 图像模型支持 `low`,
         `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
-        包括其 `2026-09-08` 快照，也支持 `xhigh` 和 `max`.
+        包括它们的 `2026-09-08` 快照，同样支持 `xhigh` 和 `max`.
         默认值： `auto`.
 
         - `"low"`
@@ -14912,13 +14916,13 @@
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+        生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，以 `WIDTHxHEIGHT` 字符串形式指定，例如 `1536x864`。宽度和高度必须都能被 16 整除，且所请求的宽高比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，所支持的最高分辨率为 `3840x2160`。所请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 受 GPT image 模型支持； `auto` 支持用于允许自动调整尺寸的模型。对于 `dall-e-2`，请使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，请使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
+          生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持任意分辨率，例如 `WIDTHxHEIGHT` 的字符串形式，例如 `1536x864`。宽度和高度都必须能被 16 整除，且请求的长宽比必须在 1:3 到 3:1 之间。高于 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。GPT 图像模型支持的标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 由允许自动调整大小的模型支持。对于 `dall-e-2`，使用以下之一 `256x256`, `512x512`，或 `1024x1024`。对于 `dall-e-3`，使用以下之一 `1024x1024`, `1792x1024`，或 `1024x1792`.
 
           - `"1024x1024"`
 
@@ -14988,11 +14992,11 @@
 
       - `async: optional boolean`
 
-        工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+        工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
       - `defer_loading: optional boolean`
 
-        此工具是否应延迟并通过工具搜索发现。
+        此工具是否应被延迟，并通过工具搜索来发现。
 
       - `description: optional string`
 
@@ -15000,15 +15004,15 @@
 
       - `format: optional CustomToolInputFormat`
 
-        自定义工具的输入格式。默认是无约束文本。
+        自定义工具的输入格式。默认为无约束文本。
 
     - `Namespace object { description, name, tools, type }`
 
-      在共享命名空间下对函数/自定义工具进行分组。
+      将函数/自定义工具分组到共享命名空间下。
 
       - `description: string`
 
-        向模型展示的命名空间描述。
+        展示给模型的命名空间描述。
 
       - `name: string`
 
@@ -15036,23 +15040,23 @@
 
           - `async: optional boolean`
 
-            工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+            工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
           - `defer_loading: optional boolean`
 
-            此函数是否应延迟并通过工具搜索发现。
+            此函数是否应被延迟，并通过工具搜索来发现。
 
           - `description: optional string or null`
 
           - `output_schema: optional map[unknown] or null`
 
-            用于描述此函数工具中以字符串形式输出的 JSON 值的 JSON Schema。这不描述 content 数组形式的输出。
+            描述此函数工具的字符串输出中所编码 JSON 值的 JSON Schema。该字段不描述 content 数组输出。
 
           - `parameters: optional unknown or null`
 
           - `strict: optional boolean or null`
 
-            是否强制执行严格的参数校验。如果省略，响应接口 会在模式兼容时尝试使用严格校验，否则回退到非严格校验。
+            是否启用严格的参数校验。如果省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
 
         - `Custom object { name, type, allowed_callers, 4 more }`
 
@@ -15078,11 +15082,11 @@
 
           - `async: optional boolean`
 
-            工具响应是否可以异步返回，而不是在下一次创建响应时立即返回。
+            工具响应是否可以异步返回，还是在下次创建响应时立即返回。
 
           - `defer_loading: optional boolean`
 
-            此工具是否应延迟并通过工具搜索发现。
+            此工具是否应被延迟，并通过工具搜索来发现。
 
           - `description: optional string`
 
@@ -15090,7 +15094,7 @@
 
           - `format: optional CustomToolInputFormat`
 
-            自定义工具的输入格式。默认是无约束文本。
+            自定义工具的输入格式。默认为无约束文本。
 
       - `type: "namespace"`
 
@@ -15122,15 +15126,15 @@
 
       - `parameters: optional unknown or null`
 
-        客户端执行的工具搜索工具的参数模式。
+        客户端执行的工具搜索工具的参数 schema。
 
     - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-      此工具会搜索网页以获取相关结果，用于在回复中使用。详细了解 [网页搜索 工具](/api/docs/guides/tools-web-search).
+      此工具会搜索网页以获取可在回复中使用的相关结果。详细了解 [网页搜索工具](/api/docs/guides/tools-web-search).
 
       - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
-        网页搜索 工具的类型，取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
+        网页搜索工具的类型。取值为 `web_search_preview` 或 `web_search_preview_2025_03_11`.
 
         - `"web_search_preview"`
 
@@ -15144,7 +15148,7 @@
 
       - `search_context_size: optional "low" or "medium" or "high"`
 
-        用于搜索的上下文窗口空间的高级指导，取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
+        用于搜索的上下文窗口空间使用量的高级指导。取值为 `low`, `medium`，或 `high`. `medium` 为默认值。
 
         - `"low"`
 
@@ -15154,7 +15158,7 @@
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        用户的大致位置。如果省略或为 null，则默认为美国。若要避免此回退，请传入 `{"type": "approximate"}` 不含位置字段。若要本地化结果，请提供相应的位置字段。
+        用户的大致位置。如果省略或为 null，则默认为美国。若希望避免该回退，可传入 `{"type": "approximate"}` 时不带位置字段。若要本地化结果，请提供相关的位置字段。
 
         - `type: "approximate"`
 
@@ -15168,19 +15172,19 @@
 
         - `country: optional string or null`
 
-          两个字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 用户所在国家/地区，例如。 `US`.
+          两字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) 例如用户的。 `US`.
 
         - `region: optional string or null`
 
-          用户所在地区/区域的自由文本输入，例如 `California`.
+          用于用户所在地区的自由文本输入，例如 `California`.
 
         - `timezone: optional string or null`
 
-          该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 用户所在国家/地区，例如。 `America/Los_Angeles`.
+          该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) 例如用户的。 `America/Los_Angeles`.
 
     - `ApplyPatch object { type, allowed_callers }`
 
-      允许助手使用 unified diff 创建、删除或更新文件。
+      允许助手使用统一差异格式（unified diff）创建、删除或更新文件。
 
       - `type: "apply_patch"`
 
@@ -15198,12 +15202,12 @@
 
   - `top_p: number or null`
 
-    一种称为 nucleus 采样的温度采样替代方法，
-    模型会考虑具有 top_p 概率质量的 token 的结果。
-    因此 0.1 表示只考虑构成前 10% 概率质量的 token。
-    会被纳入考虑。
+    温度采样的替代方法，称为核采样（nucleus sampling），
+    模型会考虑具有 top_p 概率质量的 token
+    的结果。因此 0.1 表示仅考虑构成前 10% 概率质量的 token。
+    会被考虑。
 
-    我们通常建议修改该参数或 `temperature` ，但不要同时修改两者。
+    我们通常建议修改此参数或 `temperature` 但不要同时修改两者。
 
   - `background: optional boolean or null`
 
@@ -15212,44 +15216,44 @@
 
   - `completed_at: optional number or null`
 
-    该 Response 完成时的 Unix 时间戳（以秒为单位）。
-    仅在状态为 `completed`.
+    Response 完成时的 Unix 时间戳（以秒为单位）。
+    仅在状态为时出现 `completed`.
 
   - `conversation: optional object { id }  or null`
 
-    该 Response 所属的对话。该 Response 中的输入项和输出项已自动添加到该对话。
+    该 Response 所属的会话。本次 Response 的输入项和输出项会自动添加到此会话中。
 
     - `id: string`
 
-      与该 Response 关联的对话的唯一 ID。
+      该 Response 所关联的会话的唯一 ID。
 
   - `max_output_tokens: optional number or null`
 
-    响应可生成 token 总数的上限，包括可见输出 token 和 [推理 token](/api/docs/guides/reasoning).
+    可在一次响应中生成的 token 数上限，包括可见输出 token 和 [推理 token](/api/docs/guides/reasoning).
 
   - `max_tool_calls: optional number or null`
 
-    在一次响应中可以处理的内置工具调用总次数上限。该上限适用于所有内置工具调用，而非单个工具。模型任何进一步调用工具的尝试都将被忽略。
+    在一次响应中可处理的内置工具调用总次数上限。此上限适用于所有内置工具调用，而非按单个工具计算。模型后续任何进一步的工具调用尝试都将被忽略。
 
   - `moderation: optional object { input, output }  or null`
 
-    针对该 Response 输入和输出的审核结果（如果请求了已审核的补全）。
+    Response 输入和输出的审核结果（如果请求了带审核的补全）。
 
     - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
 
-      对该 Response 输入的审核。
+      针对 Response 输入的审核。
 
       - `ModerationResult object { categories, category_applied_input_types, category_scores, 3 more }`
 
-        针对该 Response 输入或输出生成的审核结果。
+        针对 Response 输入或输出产生的审核结果。
 
         - `categories: map[boolean]`
 
-          由审核类别映射到布尔值的字典，若输入在该类别下被标记则为 True。
+          审核类别到布尔值的字典；若输入被标记为属于该类别，则为 True。
 
         - `category_applied_input_types: map[array of "text" or "image"]`
 
-          每个类别的得分所对应的输入模态。
+          反映各类别评分的输入模态。
 
           - `"text"`
 
@@ -15257,11 +15261,11 @@
 
         - `category_scores: map[number]`
 
-          由审核类别映射到得分的字典。
+          审核类别到分数的字典。
 
         - `flagged: boolean`
 
-          指示内容是否被任意类别标记的布尔值。
+          指示内容是否被任一类别标记的布尔值。
 
         - `model: string`
 
@@ -15269,13 +15273,13 @@
 
         - `type: "moderation_result"`
 
-          对象类型，始终为 `moderation_result` （针对成功的审核结果）。
+          对象类型，始终为 `moderation_result` ，用于成功的审核结果。
 
           - `"moderation_result"`
 
       - `Error object { code, message, type }`
 
-        在对该 Response 输入或输出执行审核时产生的错误。
+        对 Response 输入或输出进行审核时产生的错误。
 
         - `code: string`
 
@@ -15283,11 +15287,11 @@
 
         - `message: string`
 
-          错误信息。
+          错误消息。
 
         - `type: "error"`
 
-          对象类型，始终为 `error` 用于审核失败情况。
+          对象类型，始终为 `error` 用于审核失败的情况。
 
           - `"error"`
 
@@ -15297,15 +15301,15 @@
 
       - `ModerationResult object { categories, category_applied_input_types, category_scores, 3 more }`
 
-        针对该 Response 输入或输出生成的审核结果。
+        针对 Response 输入或输出产生的审核结果。
 
         - `categories: map[boolean]`
 
-          由审核类别映射到布尔值的字典，若输入在该类别下被标记则为 True。
+          审核类别到布尔值的字典；若输入被标记为属于该类别，则为 True。
 
         - `category_applied_input_types: map[array of "text" or "image"]`
 
-          每个类别的得分所对应的输入模态。
+          反映各类别评分的输入模态。
 
           - `"text"`
 
@@ -15313,11 +15317,11 @@
 
         - `category_scores: map[number]`
 
-          由审核类别映射到得分的字典。
+          审核类别到分数的字典。
 
         - `flagged: boolean`
 
-          指示内容是否被任意类别标记的布尔值。
+          指示内容是否被任一类别标记的布尔值。
 
         - `model: string`
 
@@ -15325,13 +15329,13 @@
 
         - `type: "moderation_result"`
 
-          对象类型，始终为 `moderation_result` （针对成功的审核结果）。
+          对象类型，始终为 `moderation_result` ，用于成功的审核结果。
 
           - `"moderation_result"`
 
       - `Error object { code, message, type }`
 
-        在对该 Response 输入或输出执行审核时产生的错误。
+        对 Response 输入或输出进行审核时产生的错误。
 
         - `code: string`
 
@@ -15339,25 +15343,25 @@
 
         - `message: string`
 
-          错误信息。
+          错误消息。
 
         - `type: "error"`
 
-          对象类型，始终为 `error` 用于审核失败情况。
+          对象类型，始终为 `error` 用于审核失败的情况。
 
           - `"error"`
 
   - `output_text: optional string or null`
 
-    SDK 专属的便捷属性，包含来自所有
-    数组中所有 `output_text` 项的聚合文本输出（如果存在）。 `output` 如果存在的话。
-    支持 Python 和 JavaScript SDK。
+    SDK 专属的便捷属性，包含所有
+    项中的 `output_text` 聚合文本输出（如 `output` 数组中存在任意项）。
+    受 Python 和 JavaScript SDK 支持。
 
   - `previous_response_id: optional string or null`
 
-    发送给模型的上一条响应的唯一 ID。使用它可以
+    上一次模型响应的唯一 ID。使用它来
     创建多轮对话。了解更多关于
-    [对话状态](/api/docs/guides/conversation-state)。的信息。不能与 `conversation`.
+    [对话状态](/api/docs/guides/conversation-state)。的信息。不能与以下参数同时使用： `conversation`.
 
   - `prompt: optional ResponsePrompt or null`
 
@@ -15370,8 +15374,8 @@
 
     - `variables: optional map[string or ResponseInputText or ResponseInputImage or ResponseInputFile] or null`
 
-      要替换的变量值的可选映射，替换你的
-      提示中的变量。替换值可以是字符串，也可以是其他
+      用于在你的
+      提示中替换变量的可选值映射。替换值可以是字符串，也可以是其他
       Response 输入类型，例如图像或文件。
 
       - `string`
@@ -15382,11 +15386,11 @@
 
       - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-        发送给模型的图像输入。了解 [图像输入](/api/docs/guides/images-vision).
+        发送给模型的图像输入。了解关于 [图像输入](/api/docs/guides/images-vision).
 
       - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-        发送到模型的文件输入。
+        发送给模型的文件输入。
 
     - `version: optional string or null`
 
@@ -15394,17 +15398,17 @@
 
   - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
 
-    本次响应请求的提示缓存诊断信息。
+    本次响应所请求的提示缓存诊断信息。
 
     - `CacheMiss object { cache_missed_tokens, reason, type, comparison_reusable_tokens }`
 
       - `cache_missed_tokens: number`
 
-        在首次检测到的分歧之后，受影响的输入 token 的预估数量。
+        首次检测到不一致后，受影响的输入令牌预估数量。
 
       - `reason: "model_changed" or "prompt_cache_key_changed" or "tools_changed" or 6 more`
 
-        提示缓存未能复用的原因。
+        提示缓存复用未发生的原因。
 
         - `"model_changed"`
 
@@ -15430,7 +15434,7 @@
 
       - `comparison_reusable_tokens: optional number`
 
-        在对比响应中，可复用前缀的原始 token 数。
+        被比较响应中可复用前缀的原始 token 数。
 
     - `CacheHit object { type }`
 
@@ -15452,11 +15456,11 @@
 
   - `prompt_cache_key: optional string or null`
 
-    由 OpenAI 用于为类似请求缓存响应，以优化你的缓存命中率。取代 `user` 字段。 [了解更多](/api/docs/guides/prompt-caching).
+    由 OpenAI 用于为相似请求缓存响应，以优化你的缓存命中率。取代 `user` 字段。 [了解更多](/api/docs/guides/prompt-caching).
 
   - `prompt_cache_options: optional object { mode, ttl, comparison_response_id }`
 
-    应用于该响应的提示缓存选项。支持 `gpt-5.6` 及更高版本的模型。
+    应用于该响应的提示缓存选项。支持的模型为 `gpt-5.6` 及更高版本模型。
 
     - `mode: "implicit" or "explicit"`
 
@@ -15474,22 +15478,22 @@
 
     - `comparison_response_id: optional string or null`
 
-      作为提示缓存诊断对比依据提供的响应 ID。
+      作为提示缓存诊断比较所传入的响应 ID。
 
   - `prompt_cache_retention: optional "in_memory" or "24h" or null`
 
-    已弃用。请使用 `prompt_cache_options.ttl` 代替。
+    已废弃。请使用 `prompt_cache_options.ttl` 代替。
 
-    提示缓存的保留策略。设置为 `24h` 以启用扩展提示缓存，使缓存的前缀保持更长时间的活跃状态，最长可达 24 小时。 [了解更多](/api/docs/guides/prompt-caching#prompt-cache-retention).
-    该字段表示最大保留策略，而
-    `prompt_cache_options.ttl` 表示最短缓存生命周期。这两个
-    字段是独立的，不会相互影响。
-    对于 `gpt-5.5`, `gpt-5.5-pro`，及未来模型，仅 `24h` 。
+    提示缓存的保留策略。设置为 `24h` 可启用扩展提示缓存，使缓存前缀保持更长时间的激活状态，最长可达 24 小时。 [了解更多](/api/docs/guides/prompt-caching#prompt-cache-retention).
+    此字段表示最长保留策略，而
+    `prompt_cache_options.ttl` 表示最短缓存生命周期。两个
+    字段相互独立，不会互相影响。
+    对于 `gpt-5.5`, `gpt-5.5-pro`，及未来模型，仅支持 `24h` 。
 
-    对于同时支持 `in_memory` 和 `24h`，的旧模型，默认值取决于你的组织的数据保留策略：
+    对于同时支持 `in_memory` 和 `24h`，的较旧模型，默认值取决于你所在组织的数据保留策略：
 
     - 未启用 ZDR 的组织默认为 `24h`.
-    - 已启用 ZDR 的组织默认为 `in_memory` 当 `prompt_cache_retention` 未指定时使用。
+    - 已启用 ZDR 的组织默认为 `in_memory` 当未指定 `prompt_cache_retention` 时使用。
 
     - `"in_memory"`
 
@@ -15497,18 +15501,18 @@
 
   - `reasoning: optional Reasoning or null`
 
-    针对
+    的配置选项
     [推理模型](/api/docs/guides/reasoning).
 
     - `context: optional "auto" or "current_turn" or "all_turns" or null`
 
-      控制在后续轮次中向模型回显哪些推理项。
-      如果省略或设置为 `auto`，则由模型决定上下文模式。该
-      `gpt-5.6` 模型系列默认为 `all_turns`；较早的模型默认为
+      控制哪些推理项在后续轮次中回传给模型。
+      如果省略或设置为 `auto`，模型将决定上下文模式。模型系列默认为
+      `gpt-5.6` 模型系列默认为 `all_turns`；早期模型默认为
       `current_turn`.
 
-      在响应中返回时，这是该响应所使用
-      的有效推理上下文模式。
+      在响应中返回时，这是响应所使用的有效推理上下文模式
+      用于响应的。
 
       - `"auto"`
 
@@ -15518,20 +15522,20 @@
 
     - `effort: optional ReasoningEffort or null`
 
-      限制推理模型的推理努力程度。当前支持
+      对推理模型的推理工作量施加约束。当前支持
       的值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-      降低推理努力程度可以带来更快的响应，并减少
-      响应中用于推理的 token 数量。并非所有推理模型都支持每个
+      降低推理工作量可以让响应更快，并在响应中减少用于推理的 token
+      。并非所有推理模型都支持每个
       值。请参阅
       [推理指南](/api/docs/guides/reasoning)
-      了解各模型的支持情况。
+      了解特定模型的支持情况。
 
     - `generate_summary: optional "auto" or "concise" or "detailed" or null`
 
       **已弃用：** 使用 `summary` 代替。
 
-      模型执行的推理摘要。这可以
-      有助于调试和理解模型的推理过程。
+      对模型所执行推理的摘要。这对于调试和理解模型的
+      推理过程可能很有用。
       以下之一 `auto`, `concise`，或 `detailed`.
 
       - `"auto"`
@@ -15560,11 +15564,11 @@
 
     - `summary: optional "auto" or "concise" or "detailed" or null`
 
-      模型执行的推理摘要。这可以
-      有助于调试和理解模型的推理过程。
+      对模型所执行推理的摘要。这对于调试和理解模型的
+      推理过程可能很有用。
       以下之一 `auto`, `concise`，或 `detailed`.
 
-      `concise` 支持以下模型： `computer-use-preview` 模型以及之后发布的所有推理模型 `gpt-5`.
+      `concise` 支持的模型有 `computer-use-preview` 模型以及之后所有的推理模型 `gpt-5`.
 
       - `"auto"`
 
@@ -15574,21 +15578,21 @@
 
   - `safety_identifier: optional string or null`
 
-    用于帮助检测可能违反OpenAI使用政策的应用用户的稳定标识符。
-    ID 应为字符串，用于唯一标识每位用户，最大长度为 64 个字符。我们建议对其用户名或电子邮件地址进行哈希处理，以避免向我们发送任何可识别信息。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    一个稳定的标识符，用于帮助检测可能违反 OpenAI 使用政策的应用用户。
+    该 ID 应为一个能唯一标识每位用户的字符串，最大长度为 64 个字符。我们建议对其用户名或电子邮件地址进行哈希处理，以避免向我们发送任何可识别身份的信息。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
-    指定用于处理请求的服务等级。
+    指定用于处理该请求的处理类型。
 
-    - 若设置为 'auto'，则请求将使用项目设置中配置的服务等级进行处理。除非另行配置，否则项目将使用 'default'。
-    - 若设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-    - 若设置为 '[flex](/api/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务等级进行处理。
-    - 若要在请求级别启用 [快速模式](/api/docs/guides/fast-mode) ，请在 Responses 或 Chat Completions 中包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定了 `service_tier=fast` 或 `priority` 。
-    - 若设置为 'ultrafast'，则请求将使用受访问控制的 Ultrafast Processing 服务等级进行处理。该等级目前可用于 `gpt-5.6-sol`；通过该等级返回的响应将显示 `service_tier=ultrafast`.
+    - 如果设置为 'auto'，则该请求将使用在项目设置中配置的服务层级进行处理。除非另行配置，否则该项目将使用 'default'。
+    - 如果设置为 'default'，则该请求将以所选模型的标准定价和性能进行处理。
+    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级进行处理。
+    - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请在 Responses 或 Chat Completions 中传入 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+    - 如果设置为 'ultrafast'，则该请求将使用受访问控制的 Ultrafast Processing 服务层级进行处理。该层级当前可用于 `gpt-5.6-sol`；通过该层级返回的响应将显示 `service_tier=ultrafast`.
     - 未设置时，默认行为为 'auto'。
 
-    当 `service_tier` 参数已设置，响应体中将包含基于 `service_tier` 实际用于处理该请求的处理模式的值。该响应值可能与参数中设置的值不同。
+    当 `service_tier` parameter is set, the response body will include the `service_tier` value based on the processing mode actually used to serve the request. This response value may be different from the value set in the parameter.
 
     - `"auto"`
 
@@ -15606,7 +15610,7 @@
 
   - `status: optional ResponseStatus`
 
-    响应生成的状态。取值之一 `completed`, `failed`,
+    响应生成的状态。取值为 `completed`, `failed`,
     `in_progress`, `cancelled`, `queued`，或 `incomplete`.
 
     - `"completed"`
@@ -15624,7 +15628,7 @@
   - `text: optional ResponseTextConfig`
 
     模型文本响应的配置选项。可以是纯
-    文本，也可以是结构化的 JSON 数据。了解详情：
+    文本或结构化的 JSON 数据。了解更多：
 
     - [文本输入与输出](/api/docs/guides/text)
     - [结构化输出](/api/docs/guides/structured-outputs)
@@ -15634,16 +15638,16 @@
       指定模型必须输出的格式的对象。
 
       配置 `{ "type": "json_schema" }` 会启用结构化输出，
-      从而确保模型的输出与你提供的 JSON schema 相匹配。详情请参阅
+      它确保模型的输出匹配你提供的 JSON schema。更多信息请参阅
       [结构化输出指南](/api/docs/guides/structured-outputs).
 
-      默认格式为 `{ "type": "text" }` ，不包含其他选项。
+      默认格式为 `{ "type": "text" }` 且不包含其他选项。
 
-      **不推荐用于 gpt-4o 及更新的模型：**
+      **不建议在 gpt-4o 及更新的模型上使用：**
 
-      将 `{ "type": "json_object" }` 设置为
-      会启用旧的 JSON 模式，该模式 `json_schema`
-      可确保模型生成的消息是合法的 JSON。对于支持该参数的模型，推荐使用。
+      将其设置为 `{ "type": "json_object" }` 会启用旧的 JSON 模式，该模式
+      可确保模型生成的消息是有效的 JSON。对于支持 `json_schema`
+      的模型，建议优先使用后者。
 
       - `ResponseFormatText object { type }`
 
@@ -15651,14 +15655,14 @@
 
         - `type: "text"`
 
-          所定义的响应格式的类型。始终为 `text`.
+          正在定义的响应格式的类型。始终为 `text`.
 
           - `"text"`
 
       - `ResponseFormatTextJSONSchemaConfig object { name, schema, type, 2 more }`
 
         JSON Schema 响应格式。用于生成结构化的 JSON 响应。
-        了解更多关于 [Structured Outputs](/api/docs/guides/structured-outputs).
+        详细了解 [结构化输出](/api/docs/guides/structured-outputs).
 
         - `name: string`
 
@@ -15668,45 +15672,45 @@
         - `schema: map[unknown]`
 
           响应格式的 schema，以 JSON Schema 对象描述。
-          了解如何构建 JSON schemas [请参阅此处](https://json-schema.org/).
+          了解如何构建 JSON schema [请参阅此处](https://json-schema.org/).
 
         - `type: "json_schema"`
 
-          所定义的响应格式的类型。始终为 `json_schema`.
+          正在定义的响应格式的类型。始终为 `json_schema`.
 
           - `"json_schema"`
 
         - `description: optional string`
 
-          响应格式用途的描述，模型会根据该描述
+          响应格式用途的描述，供模型用于
           确定如何按该格式进行响应。
 
         - `strict: optional boolean or null`
 
-          是否在生成输出时启用严格的 schema 遵循。
-          如果设置为 true，模型将始终遵循
-          字段中定义的精确 schema。当 `schema` 时，仅支持 JSON Schema 的一个子集。
-          `strict` is `true`。为时，要了解更多信息，请参阅 [Structured Outputs
-          guide](/api/docs/guides/structured-outputs).
+          是否在生成输出时启用严格模式遵循 schema。
+          如果设置为 true，模型将始终遵循在 text_format
+          字段中定义的精确 `schema` schema。使用 strict 时，仅支持 JSON Schema 的子集；
+          `strict` 重要 `true`。要了解更多信息，请参阅 [结构化输出
+          指南](/api/docs/guides/structured-outputs).
 
       - `ResponseFormatJSONObject object { type }`
 
-        JSON 对象响应格式。一种较旧的 JSON 响应生成方法。
-        使用 `json_schema` 对于支持它的模型是推荐的方式。请注意，
+        JSON 对象响应格式。生成 JSON 响应的一种较旧方法。
+        对于 `json_schema` 支持它的模型，建议使用 json_object。请注意，
         模型在没有系统或用户消息指示的情况下不会生成 JSON
-        这样做。
+        以实现该目的。
 
         - `type: "json_object"`
 
-          所定义的响应格式的类型。始终为 `json_object`.
+          正在定义的响应格式的类型。始终为 `json_object`.
 
           - `"json_object"`
 
     - `verbosity: optional "low" or "medium" or "high" or null`
 
-      限制模型响应的详细程度。较低的值会产生
-      更简洁的响应，而较高的值会产生更详细的响应。
-      目前支持的值包括 `low`, `medium`，以及 `high`。默认值为
+      约束模型响应的详细程度。较低的值会生成
+      更简洁的响应，而较高的值会生成更详细的响应。
+      当前支持的值包括 `low`, `medium`，以及 `high`。默认值为
       `medium`.
 
       - `"low"`
@@ -15717,9 +15721,9 @@
 
   - `top_logprobs: optional number or null`
 
-    一个介于 0 到 20 之间的整数，指定在每个 token 位置返回的最大最可能
-    token 数量，每个 token 都带有对应的对数
-    概率。在某些情况下，返回的 token 数量可能少于
+    一个介于 0 到 20 之间的整数，用于指定在每个 token 位置返回的最多可能的
+    token 数量，每个 token 都附带一个对数
+    probability。在某些情况下，返回的 token 数量可能会少于
     请求的数量。
 
   - `truncation: optional "auto" or "disabled" or null`
@@ -15727,8 +15731,8 @@
     用于模型响应的截断策略。
 
     - `auto`：如果此 Response 的输入超出
-      模型的上下文窗口大小，模型将通过从对话开头丢弃条目来截断
-      响应以适应上下文窗口。
+      模型的上下文窗口大小，模型将截断
+      响应以适应上下文窗口，从对话的开头丢弃条目。
     - `disabled` （默认）：如果输入大小将超出模型的上下文窗口
       大小，请求将失败并返回 400 错误。
 
@@ -15738,8 +15742,8 @@
 
   - `usage: optional ResponseUsage or null`
 
-    表示 token 使用详情，包括输入 token、输出 token，
-    的细分以及所使用的 token 总数。
+    表示 token 使用详情，包括输入 token、输出 token、
+    输出 token 的明细以及使用的 token 总数。
 
     - `input_tokens: number`
 
@@ -15747,7 +15751,7 @@
 
     - `input_tokens_details: object { cache_write_tokens, cached_tokens }`
 
-      输入 token 的详细明细。
+      输入 token 的详细分类。
 
       - `cache_write_tokens: number`
 
@@ -15764,7 +15768,7 @@
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      输出 token 的详细明细。
+      输出 token 的详细分类。
 
       - `reasoning_tokens: number`
 
@@ -15776,8 +15780,8 @@
 
   - `user: optional string or null`
 
-    此字段正在被 `safety_identifier` 和 `prompt_cache_key`。取代。请使用 `prompt_cache_key` 以维持缓存优化。
-    你的最终用户的稳定标识符。
+    此字段正在被替换为 `safety_identifier` 和 `prompt_cache_key`。请使用 `prompt_cache_key` 以维持缓存优化效果。
+    用于标识最终用户的稳定标识符。
     用于通过更好地对相似请求进行分桶来提高缓存命中率，并帮助 OpenAI 检测和防止滥用。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 ### 示例

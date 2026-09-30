@@ -1,4 +1,4 @@
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 列出向量存储
 
@@ -10,25 +10,25 @@
 
 - `after: optional string`
 
-  分页时使用的游标。 `after` 是一个对象 ID，用于定义你在列表中所处的位置。例如，如果你发起列表请求并收到 100 个对象，最后一个对象是 obj_foo，那么后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页游标的对象。 `after` 是用于标识你在列表中所处位置的对象 ID。例如，如果你发起列表请求并收到 100 个对象，最后一个为 obj_foo，那么后续调用可以传入 after=obj_foo 以获取列表的下一页。
 
 - `before: optional string`
 
-  分页时使用的游标。 `before` 是一个对象 ID，用于定义你在列表中所处的位置。例如，如果你发起列表请求并收到 100 个对象，第一个对象是 obj_foo，那么后续调用可以包含 before=obj_foo 以获取列表的上一页。
+  用于分页游标的对象。 `before` 是用于标识你在列表中所处位置的对象 ID。例如，如果你发起列表请求并收到 100 个对象，第一个为 obj_foo，那么后续调用可以传入 before=obj_foo 以获取列表的上一页。
 
 - `limit: optional number`
 
-  要返回的对象数量上限。范围在 1 到 100 之间，默认值为 20。
+  返回对象的数量上限。范围为 1 到 100，默认为 20。
 
 - `order: optional "asc" or "desc"`
 
-  按对象的时间戳排序。 `created_at` 排序。 `asc` 表示升序， `desc` 表示降序。
+  按对象的 `created_at` 时间戳排序。 `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
   - `"desc"`
 
-### 返回
+### 返回值
 
 - `data: array of VectorStore`
 
@@ -60,17 +60,17 @@
 
     - `total: number`
 
-      文件总数。
+      文件的总数。
 
   - `last_active_at: number or null`
 
-    向量存储最后一次处于活跃状态时的 Unix 时间戳（以秒为单位）。
+    向量存储最近一次活跃时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: Metadata or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储有关对象的附加信息，并通过
-    API 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于
+    以结构化格式存储有关对象的附加信息，并通过 API 或控制面板查询对象。
+    格式，并通过 接口 或控制面板查询对象。
 
     键为字符串，最长 64 个字符。值为字符串，
     最长 512 个字符。
@@ -87,7 +87,7 @@
 
   - `status: "expired" or "in_progress" or "completed"`
 
-    向量存储的状态，可为 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示向量存储已可供使用。
+    向量存储的状态，可能为 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示向量存储已可供使用。
 
     - `"expired"`
 
@@ -97,7 +97,7 @@
 
   - `usage_bytes: number`
 
-    向量存储中文件占用的总字节数。
+    向量存储中文件使用的总字节数。
 
   - `expires_after: optional object { anchor, days }`
 
@@ -105,13 +105,13 @@
 
     - `anchor: "last_active_at"`
 
-      应用过期策略的锚点时间戳。支持以下锚点： `last_active_at`.
+      过期策略生效的锚定时间戳。支持以下锚定： `last_active_at`.
 
       - `"last_active_at"`
 
     - `days: number`
 
-      向量存储将在锚点时间之后指定天数后过期。
+      向量存储将在锚定时间之后过期的天数。
 
   - `expires_at: optional number or null`
 
@@ -191,29 +191,34 @@ curl https://api.openai.com/v1/vector_stores \
       "created_at": 1699061776,
       "name": "Support FAQ",
       "description": "Contains commonly asked questions and answers, organized by topic.",
-      "bytes": 139920,
       "file_counts": {
         "in_progress": 0,
         "completed": 3,
         "failed": 0,
         "cancelled": 0,
         "total": 3
-      }
+      },
+      "usage_bytes": 139920,
+      "status": "completed",
+      "last_active_at": null,
+      "metadata": {}
     },
     {
       "id": "vs_abc456",
       "object": "vector_store",
       "created_at": 1699061776,
       "name": "Support FAQ v2",
-      "description": null,
-      "bytes": 139920,
       "file_counts": {
         "in_progress": 0,
         "completed": 3,
         "failed": 0,
         "cancelled": 0,
         "total": 3
-      }
+      },
+      "usage_bytes": 139920,
+      "status": "completed",
+      "last_active_at": null,
+      "metadata": {}
     }
   ],
   "first_id": "vs_abc123",
