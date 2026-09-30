@@ -4001,7 +4001,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
 
 ## Cancel eval run
 
-**post** `/evals/{eval_id}/runs/{run_id}`
+**post** `/evals/{eval_id}/runs/{run_id}/cancel`
 
 Cancel an ongoing evaluation run.
 
@@ -6191,7 +6191,7 @@ Cancel an ongoing evaluation run.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID \
+curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID/cancel \
     -X POST \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```

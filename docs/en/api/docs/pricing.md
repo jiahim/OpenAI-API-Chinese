@@ -383,6 +383,10 @@ Batch
 | --- | --- | --- | --- | --- |
 | gpt-image-2 | Image | $4.00 | $1.00 | $15.00 |
 | gpt-image-2 | Text | $2.50 | $0.625 | - |
+| gpt-image-2.5-sunburst | Image | $4.00 | $1.00 | $15.00 |
+| gpt-image-2.5-sunburst | Text | $2.50 | $0.625 | - |
+| gpt-image-2.5-flare | Image | $4.00 | $1.00 | $15.00 |
+| gpt-image-2.5-flare | Text | $2.50 | $0.625 | - |
 | gpt-image-1.5 | Image | $4.00 | $1.00 | $16.00 |
 | gpt-image-1.5 | Text | $2.50 | $0.63 | $5.00 |
 | gpt-image-1-mini | Image | $1.25 | $0.13 | $4.00 |

@@ -667,6 +667,8 @@ openai batches list \
 
 Most models support the Batch API. Check the [model reference](https://developers.openai.com/api/docs/models) for your model. GPT-6 Sol and Luna support EU data residency with Standard, Flex, and Batch processing. See [data residency eligibility](https://developers.openai.com/api/docs/guides/your-data#which-models-and-features-are-eligible-for-data-residency).
 
+GPT Image 2.5 supports batch image generation and editing with `gpt-image-2.5-flare` and `gpt-image-2.5-sunburst`, including their `2026-09-08` snapshots. Use `/v1/images/generations` or `/v1/images/edits` and see [image generation pricing](https://developers.openai.com/api/docs/pricing?multimodal-image-pricing=batch#image-generation) for Batch rates.
+
 ## Rate limits
 
 Batch API rate limits are separate from existing per-model rate limits. The Batch API has three types of rate limits:

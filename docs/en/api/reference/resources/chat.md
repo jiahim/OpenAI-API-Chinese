@@ -2316,7 +2316,7 @@ curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6-sol",
     "messages": [
       {
         "role": "user",
@@ -2336,7 +2336,7 @@ curl https://api.openai.com/v1/chat/completions \
   "id": "chatcmpl-123",
   "object": "chat.completion",
   "created": 1702685778,
-  "model": "gpt-6-astra",
+  "model": "gpt-6-sol",
   "choices": [
     {
       "index": 0,

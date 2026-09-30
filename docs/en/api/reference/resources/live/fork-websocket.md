@@ -5176,6 +5176,118 @@ Schema name: `LiveSessionCloseParam`
 
 ## Server events
 
+<a id="transport.ringing"></a>
+
+### transport.ringing
+
+The outbound SIP provider leg is ringing or providing early media. Delivered only to sideband observers.
+
+#### Schema
+
+Schema name: `LiveTransportRinging`
+
+- `event_id: string`
+
+- `session_id: string`
+
+  The canonical Live session ID.
+
+- `type: "transport.ringing"`
+
+  - `"transport.ringing"`
+
+#### Example
+
+```json
+{
+  "type": "transport.ringing",
+  "event_id": "event_call_1",
+  "session_id": "live_u0_123"
+}
+```
+
+<a id="transport.answered"></a>
+
+### transport.answered
+
+The outbound SIP provider leg answered and media is established. Delivered only to sideband observers.
+
+#### Schema
+
+Schema name: `LiveTransportAnswered`
+
+- `event_id: string`
+
+- `session_id: string`
+
+  The canonical Live session ID.
+
+- `type: "transport.answered"`
+
+  - `"transport.answered"`
+
+#### Example
+
+```json
+{
+  "type": "transport.answered",
+  "event_id": "event_call_2",
+  "session_id": "live_u0_123"
+}
+```
+
+<a id="transport.failed"></a>
+
+### transport.failed
+
+An asynchronous outbound SIP setup failure. Delivered only to sideband observers.
+
+#### Schema
+
+Schema name: `LiveTransportFailed`
+
+- `error: object { code, message, type, param }`
+
+  - `code: string`
+
+    The call setup failure code.
+
+  - `message: string`
+
+  - `type: "call_error"`
+
+    - `"call_error"`
+
+  - `param: optional string`
+
+    The parameter related to the error, if any. Empty when no parameter applies.
+
+- `event_id: string`
+
+- `session_id: string`
+
+  The canonical Live session ID.
+
+- `type: "transport.failed"`
+
+  - `"transport.failed"`
+
+#### Example
+
+```json
+{
+  "type": "transport.failed",
+  "event_id": "event_call_4",
+  "session_id": "live_u0_123",
+  "error": {
+    "type": "call_error",
+    "code": "provider_invite_failed",
+    "message": "provider rejected the call",
+    "param": ""
+  }
+}
+```
+
 <a id="session.started"></a>
 
 ### session.started
@@ -7617,117 +7729,5 @@ Schema name: `LiveTransportDTMFSend`
   "type": "transport.dtmf.send",
   "event_id": "event_dtmf_2",
   "event": "#"
-}
-```
-
-<a id="transport.ringing"></a>
-
-### transport.ringing
-
-The outbound SIP provider leg is ringing or providing early media. Delivered only to sideband observers.
-
-#### Schema
-
-Schema name: `LiveTransportRinging`
-
-- `event_id: string`
-
-- `session_id: string`
-
-  The canonical Live session ID.
-
-- `type: "transport.ringing"`
-
-  - `"transport.ringing"`
-
-#### Example
-
-```json
-{
-  "type": "transport.ringing",
-  "event_id": "event_call_1",
-  "session_id": "live_u0_123"
-}
-```
-
-<a id="transport.answered"></a>
-
-### transport.answered
-
-The outbound SIP provider leg answered and media is established. Delivered only to sideband observers.
-
-#### Schema
-
-Schema name: `LiveTransportAnswered`
-
-- `event_id: string`
-
-- `session_id: string`
-
-  The canonical Live session ID.
-
-- `type: "transport.answered"`
-
-  - `"transport.answered"`
-
-#### Example
-
-```json
-{
-  "type": "transport.answered",
-  "event_id": "event_call_2",
-  "session_id": "live_u0_123"
-}
-```
-
-<a id="transport.failed"></a>
-
-### transport.failed
-
-An asynchronous outbound SIP setup failure. Delivered only to sideband observers.
-
-#### Schema
-
-Schema name: `LiveTransportFailed`
-
-- `error: object { code, message, type, param }`
-
-  - `code: string`
-
-    The call setup failure code.
-
-  - `message: string`
-
-  - `type: "call_error"`
-
-    - `"call_error"`
-
-  - `param: optional string`
-
-    The parameter related to the error, if any. Empty when no parameter applies.
-
-- `event_id: string`
-
-- `session_id: string`
-
-  The canonical Live session ID.
-
-- `type: "transport.failed"`
-
-  - `"transport.failed"`
-
-#### Example
-
-```json
-{
-  "type": "transport.failed",
-  "event_id": "event_call_4",
-  "session_id": "live_u0_123",
-  "error": {
-    "type": "call_error",
-    "code": "provider_invite_failed",
-    "message": "provider rejected the call",
-    "param": ""
-  }
 }
 ```
