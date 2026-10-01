@@ -10,14 +10,20 @@ Before using Daybreak, complete [organization approval and project setup](https:
 
 The `model` field selects the model. The `access_programs.cyber` field selects a supported access program for that request: `standard`, `daybreak_blue`, or `daybreak_red`.
 
-| Model                                    | Set `model` to                 | Set `access_programs.cyber` to | When to use                                                                                                                   |
-| ---------------------------------------- | ------------------------------ | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| Mainline model with standard safeguards  | `gpt-6-sol`                    | `standard`                     | General-purpose or security tasks with standard safeguards, even if you have Daybreak access.                                 |
-| Mainline model with Daybreak Blue        | `gpt-6-sol`                    | `daybreak_blue`                | Approved defensive security work with a specific mainline model.                                                              |
-| GPT-6.1 Sol or GPT-6 Astra with Daybreak | `gpt-6.1-sol` or `gpt-6-astra` | `daybreak_blue`                | Reduced refusals with either model. Requires Daybreak Red approval for your organization and access enabled for your project. |
-| Cyber model with Daybreak Red            | `gpt-5.6-cyber`                | `daybreak_red`                 | Advanced, authorized security work with a specific cyber model. Requires Daybreak Red approval.                               |
-| Daybreak Blue alias                      | `gpt-daybreak-blue-latest`     | `daybreak_blue`                | Approved defensive security work that follows updates to the Blue alias's underlying model.                                   |
-| Daybreak Red alias                       | `gpt-daybreak-red-latest`      | `daybreak_red`                 | Advanced, authorized security work that follows updates to the Red alias's underlying model. Requires Daybreak Red approval.  |
+
+
+
+| Model option                             | Model ID                       | Access program  | When to use                                                                                                                   |
+| ---------------------------------------- | ------------------------------ | --------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Mainline model with standard safeguards  | `gpt-6-sol`                    | `standard`      | General-purpose or security tasks with standard safeguards, even if you have Daybreak access.                                 |
+| Mainline model with Daybreak Blue        | `gpt-6-sol`                    | `daybreak_blue` | Approved defensive security work with a specific mainline model.                                                              |
+| GPT-6.1 Sol or GPT-6 Astra with Daybreak | `gpt-6.1-sol` or `gpt-6-astra` | `daybreak_blue` | Reduced refusals with either model. Requires Daybreak Red approval for your organization and access enabled for your project. |
+| Cyber model with Daybreak Red            | `gpt-5.6-cyber`                | `daybreak_red`  | Advanced, authorized security work with a specific cyber model. Requires Daybreak Red approval.                               |
+| Daybreak Blue alias                      | `gpt-daybreak-blue-latest`     | `daybreak_blue` | Approved defensive security work that follows updates to the Blue alias's underlying model.                                   |
+| Daybreak Red alias                       | `gpt-daybreak-red-latest`      | `daybreak_red`  | Advanced, authorized security work that follows updates to the Red alias's underlying model. Requires Daybreak Red approval.  |
+
+
+
 
 Match the request value to the model, not your organization's approval level. For example, when using `gpt-6-sol` with Daybreak, send `daybreak_blue` even if your organization has Daybreak Red approval. Sending `daybreak_red` with this model returns `invalid_access_program`.
 

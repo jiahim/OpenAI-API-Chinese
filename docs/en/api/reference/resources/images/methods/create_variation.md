@@ -4,7 +4,7 @@
 
 **post** `/images/variations`
 
-Creates a variation of a given image. This endpoint only supports `dall-e-2`.
+This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image. The request and response schemas below describe the legacy contract.
 
 ### Returns
 
@@ -30,15 +30,15 @@ Creates a variation of a given image. This endpoint only supports `dall-e-2`.
 
     - `b64_json: optional string`
 
-      The base64-encoded JSON of the generated image. Returned by default for the GPT image models, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
+      The base64-encoded JSON of the generated image. Returned by default for GPT image models, or when `response_format` is set to `b64_json` for models that support that parameter.
 
     - `revised_prompt: optional string`
 
-      For `dall-e-3` only, the revised prompt that was used to generate the image.
+      The revised prompt used to generate the image, for models that support prompt revision. Not returned by GPT image models.
 
     - `url: optional string`
 
-      When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for the GPT image models.
+      The URL of the generated image when `response_format` is set to `url` for models that support that parameter. Unsupported for GPT image models.
 
   - `output_format: optional "png" or "webp" or "jpeg"`
 

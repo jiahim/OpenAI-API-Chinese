@@ -505,13 +505,18 @@ List endpoints return one page at a time. Use SDK pagination helpers or the `aft
 
 ## How to recover a disconnected stream
 
-Streams do not replay missed events. To restore your application's view:
+Recover missed output from saved items. To restore your application's view:
 
 1. Open a new stream and buffer incoming events.
 2. Retrieve the session and its saved items while the stream stays connected.
 3. Restore your local state from those items, keyed by item ID.
 4. Apply buffered item updates using `item_id`. Discard updates for items that already reached their final state in the retrieved history.
 5. Resume handling live events.
+
+When you reconnect to a failed session, the stream reports the saved failure and closes.
+If the retrieved session has `status: "failed"` or you receive `agent.session.failed`,
+stop reconnecting and follow the
+[session recovery guidance](https://developers.openai.com/api/docs/guides/agents-api/errors#session-and-environment-errors).
 
 Restore pending input forms from the retrieved session's `required_actions`.
 Historical items don't indicate which requests still need a response. For

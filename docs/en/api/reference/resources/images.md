@@ -6,7 +6,7 @@
 
 **post** `/images/variations`
 
-Creates a variation of a given image. This endpoint only supports `dall-e-2`.
+This endpoint is retired and no longer available. Use the image edits endpoint with a GPT Image model and a prompt to create a variation of an image. The request and response schemas below describe the legacy contract.
 
 ### Returns
 
@@ -32,15 +32,15 @@ Creates a variation of a given image. This endpoint only supports `dall-e-2`.
 
     - `b64_json: optional string`
 
-      The base64-encoded JSON of the generated image. Returned by default for the GPT image models, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
+      The base64-encoded JSON of the generated image. Returned by default for GPT image models, or when `response_format` is set to `b64_json` for models that support that parameter.
 
     - `revised_prompt: optional string`
 
-      For `dall-e-3` only, the revised prompt that was used to generate the image.
+      The revised prompt used to generate the image, for models that support prompt revision. Not returned by GPT image models.
 
     - `url: optional string`
 
-      When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for the GPT image models.
+      The URL of the generated image when `response_format` is set to `url` for models that support that parameter. Unsupported for GPT image models.
 
   - `output_format: optional "png" or "webp" or "jpeg"`
 
@@ -197,7 +197,7 @@ curl https://api.openai.com/v1/images/variations \
 
 **post** `/images/edits`
 
-Creates an edited or extended image given one or more source images and a prompt. This endpoint supports GPT Image models and `dall-e-2`.
+Creates an edited or extended image given one or more source images and a prompt. This endpoint supports GPT Image models.
 
 ### Body Parameters
 
@@ -251,13 +251,13 @@ Creates an edited or extended image given one or more source images and a prompt
 
 - `model: optional string or "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 7 more or null`
 
-  The GPT image model to use for image editing, including `gpt-image-2`, its dated snapshot `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`.
+  The GPT image model to use for image editing, including `gpt-image-2`, its dated snapshot `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`. Defaults to `gpt-image-2.5-sunburst`.
 
   - `string`
 
   - `"gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 7 more`
 
-    The GPT image model to use for image editing, including `gpt-image-2`, its dated snapshot `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`.
+    The GPT image model to use for image editing, including `gpt-image-2`, its dated snapshot `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`. Defaults to `gpt-image-2.5-sunburst`.
 
     - `"gpt-image-1.5"`
 
@@ -383,15 +383,15 @@ Creates an edited or extended image given one or more source images and a prompt
 
     - `b64_json: optional string`
 
-      The base64-encoded JSON of the generated image. Returned by default for the GPT image models, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
+      The base64-encoded JSON of the generated image. Returned by default for GPT image models, or when `response_format` is set to `b64_json` for models that support that parameter.
 
     - `revised_prompt: optional string`
 
-      For `dall-e-3` only, the revised prompt that was used to generate the image.
+      The revised prompt used to generate the image, for models that support prompt revision. Not returned by GPT image models.
 
     - `url: optional string`
 
-      When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for the GPT image models.
+      The URL of the generated image when `response_format` is set to `url` for models that support that parameter. Unsupported for GPT image models.
 
   - `output_format: optional "png" or "webp" or "jpeg"`
 
@@ -567,13 +567,45 @@ data: {"type":"image_edit.completed","b64_json":"...","usage":{"total_tokens":10
 
 **post** `/images/generations`
 
-Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
+Creates an image given a prompt using a GPT Image model. [Learn more](/api/docs/guides/images-vision).
 
 ### Body Parameters
 
+- `model: string or ImageModel`
+
+  The GPT image model to use for image generation. Specify a model explicitly. Supported models include `gpt-image-1`, `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, `gpt-image-2.5-flare-2026-09-08`, and `chatgpt-image-latest`.
+
+  - `string`
+
+  - `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 9 more`
+
+    - `"gpt-image-1.5"`
+
+    - `"gpt-image-2"`
+
+    - `"gpt-image-2-2026-04-21"`
+
+    - `"gpt-image-2.5-sunburst"`
+
+    - `"gpt-image-2.5-sunburst-2026-09-08"`
+
+    - `"gpt-image-2.5-flare"`
+
+    - `"gpt-image-2.5-flare-2026-09-08"`
+
+    - `"gpt-image-1"`
+
+    - `"gpt-image-1-mini"`
+
+    - `"chatgpt-image-latest"`
+
+    - `"dall-e-2"`
+
+    - `"dall-e-3"`
+
 - `prompt: string`
 
-  A text description of the desired image(s). The maximum length is 32000 characters for the GPT image models, 1000 characters for `dall-e-2` and 4000 characters for `dall-e-3`.
+  A text description of the desired image(s). The maximum length is 32000 characters.
 
 - `background: optional "transparent" or "opaque" or "auto" or null`
 
@@ -594,36 +626,6 @@ Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
 
   - `"auto"`
 
-- `model: optional string or ImageModel or null`
-
-  The model to use for image generation. One of `dall-e-2`, `dall-e-3`, or a GPT image model (`gpt-image-1`, `gpt-image-1-mini`, `gpt-image-1.5`, `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, `gpt-image-2.5-flare-2026-09-08`). Defaults to `dall-e-2` unless a parameter specific to the GPT image models is used.
-
-  - `string`
-
-  - `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 8 more`
-
-    - `"gpt-image-1.5"`
-
-    - `"gpt-image-2"`
-
-    - `"gpt-image-2-2026-04-21"`
-
-    - `"gpt-image-2.5-sunburst"`
-
-    - `"gpt-image-2.5-sunburst-2026-09-08"`
-
-    - `"gpt-image-2.5-flare"`
-
-    - `"gpt-image-2.5-flare-2026-09-08"`
-
-    - `"dall-e-2"`
-
-    - `"dall-e-3"`
-
-    - `"gpt-image-1"`
-
-    - `"gpt-image-1-mini"`
-
 - `moderation: optional "low" or "auto" or null`
 
   Control the content-moderation level for images generated by the GPT image models. Must be either `low` for less restrictive filtering or `auto` (default value).
@@ -634,7 +636,7 @@ Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
 
 - `n: optional number or null`
 
-  The number of images to generate. Must be between 1 and 10. For `dall-e-3`, only `n=1` is supported.
+  The number of images to generate. Must be between 1 and 10.
 
 - `output_compression: optional number or null`
 
@@ -659,7 +661,7 @@ Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
   Note that the final image may be sent before the full number of partial images
   are generated if the full image is generated more quickly.
 
-- `quality: optional "standard" or "hd" or "low" or 5 more or null`
+- `quality: optional "low" or "medium" or "high" or 5 more or null`
 
   The quality of the image that will be generated.
 
@@ -668,12 +670,6 @@ Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
   - `high`, `medium` and `low` are supported for the GPT image models.
   - `gpt-image-2.5-sunburst` and `gpt-image-2.5-flare`, including their `2026-09-08`
     snapshots, also support `xhigh` and `max`.
-  - `hd` and `standard` are supported for `dall-e-3`.
-  - `standard` is the only option for `dall-e-2`.
-
-  - `"standard"`
-
-  - `"hd"`
 
   - `"low"`
 
@@ -687,9 +683,13 @@ Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
 
   - `"auto"`
 
+  - `"standard"`
+
+  - `"hd"`
+
 - `response_format: optional "url" or "b64_json" or null`
 
-  The format in which generated images with `dall-e-2` and `dall-e-3` are returned. Must be one of `url` or `b64_json`. URLs are only valid for 60 minutes after the image has been generated. This parameter isn't supported for the GPT image models, which always return base64-encoded images.
+  Legacy response format parameter for retired image models. Unsupported for GPT image models, which always return base64-encoded images.
 
   - `"url"`
 
@@ -697,13 +697,13 @@ Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
 
 - `size: optional string or "auto" or "1024x1024" or "1536x1024" or 5 more or null`
 
-  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+  The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
   - `string`
 
   - `"auto" or "1024x1024" or "1536x1024" or 5 more`
 
-    The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+    The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
     - `"auto"`
 
@@ -729,7 +729,7 @@ Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
 
 - `style: optional "vivid" or "natural" or null`
 
-  The style of the generated images. This parameter is only supported for `dall-e-3`. Must be one of `vivid` or `natural`. Vivid causes the model to lean towards generating hyper-real and dramatic images. Natural causes the model to produce more natural, less hyper-real looking images.
+  Legacy style parameter for retired image models. Unsupported for GPT image models; describe the desired style in the prompt instead.
 
   - `"vivid"`
 
@@ -763,15 +763,15 @@ Creates an image given a prompt. [Learn more](/api/docs/guides/images-vision).
 
     - `b64_json: optional string`
 
-      The base64-encoded JSON of the generated image. Returned by default for the GPT image models, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
+      The base64-encoded JSON of the generated image. Returned by default for GPT image models, or when `response_format` is set to `b64_json` for models that support that parameter.
 
     - `revised_prompt: optional string`
 
-      For `dall-e-3` only, the revised prompt that was used to generate the image.
+      The revised prompt used to generate the image, for models that support prompt revision. Not returned by GPT image models.
 
     - `url: optional string`
 
-      When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for the GPT image models.
+      The URL of the generated image when `response_format` is set to `url` for models that support that parameter. Unsupported for GPT image models.
 
   - `output_format: optional "png" or "webp" or "jpeg"`
 
@@ -860,6 +860,7 @@ curl https://api.openai.com/v1/images/generations \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
+          "model": "gpt-image-2.5-flare",
           "prompt": "A cute baby sea otter",
           "background": "transparent",
           "moderation": "low",
@@ -868,7 +869,6 @@ curl https://api.openai.com/v1/images/generations \
           "output_format": "png",
           "partial_images": 1,
           "quality": "medium",
-          "response_format": "url",
           "style": "vivid",
           "user": "user-1234"
         }'
@@ -978,15 +978,15 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
   - `b64_json: optional string`
 
-    The base64-encoded JSON of the generated image. Returned by default for the GPT image models, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
+    The base64-encoded JSON of the generated image. Returned by default for GPT image models, or when `response_format` is set to `b64_json` for models that support that parameter.
 
   - `revised_prompt: optional string`
 
-    For `dall-e-3` only, the revised prompt that was used to generate the image.
+    The revised prompt used to generate the image, for models that support prompt revision. Not returned by GPT image models.
 
   - `url: optional string`
 
-    When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for the GPT image models.
+    The URL of the generated image when `response_format` is set to `url` for models that support that parameter. Unsupported for GPT image models.
 
 ### Image Edit Completed Event
 
@@ -1714,7 +1714,7 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
 ### Image Model
 
-- `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 8 more`
+- `ImageModel = "gpt-image-1.5" or "gpt-image-2" or "gpt-image-2-2026-04-21" or 9 more`
 
   - `"gpt-image-1.5"`
 
@@ -1730,13 +1730,15 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
   - `"gpt-image-2.5-flare-2026-09-08"`
 
-  - `"dall-e-2"`
-
-  - `"dall-e-3"`
-
   - `"gpt-image-1"`
 
   - `"gpt-image-1-mini"`
+
+  - `"chatgpt-image-latest"`
+
+  - `"dall-e-2"`
+
+  - `"dall-e-3"`
 
 ### Images Response
 
@@ -1762,15 +1764,15 @@ data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_toke
 
     - `b64_json: optional string`
 
-      The base64-encoded JSON of the generated image. Returned by default for the GPT image models, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
+      The base64-encoded JSON of the generated image. Returned by default for GPT image models, or when `response_format` is set to `b64_json` for models that support that parameter.
 
     - `revised_prompt: optional string`
 
-      For `dall-e-3` only, the revised prompt that was used to generate the image.
+      The revised prompt used to generate the image, for models that support prompt revision. Not returned by GPT image models.
 
     - `url: optional string`
 
-      When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for the GPT image models.
+      The URL of the generated image when `response_format` is set to `url` for models that support that parameter. Unsupported for GPT image models.
 
   - `output_format: optional "png" or "webp" or "jpeg"`
 

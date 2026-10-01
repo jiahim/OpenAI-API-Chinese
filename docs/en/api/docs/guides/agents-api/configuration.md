@@ -153,6 +153,12 @@ puts result
 
 See the [Agents API reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents) for configuration fields and values. For setup, see [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions), [Computer use](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use), [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp), or [Multi-agent delegation](https://developers.openai.com/api/docs/guides/agents-api/multi-agent).
 
+### Configuration size
+
+Keep the combined size of your instructions and tool configuration below 4 MiB (4,194,304 bytes), leaving a little room for Agents API metadata. If session startup fails because this configuration is too large, create a new session with smaller instructions and tool configuration.
+
+Files uploaded to the environment follow separate [file limits](https://developers.openai.com/api/docs/guides/agents-api/environments/files#file-limits).
+
 ## Reuse an agent across sessions
 
 Save an agent to reuse its configuration across sessions. Create it once, then pass its ID as `agent_id` when starting each session:

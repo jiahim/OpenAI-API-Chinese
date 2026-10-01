@@ -182,6 +182,10 @@ client.beta.agents.sessions.events.create(session.id, events: [result])
 
 The harness continues the turn after it receives the required results. Follow [session events and items](https://developers.openai.com/api/docs/guides/agents-api/sessions/events) to check the turn's outcome and retrieve its output.
 
+### Result size
+
+If the API rejects a tool result as too large, reduce its size to less than 4 MiB (4,194,304 bytes), leaving a little room for Agents API metadata. Retry with the same `turn_id` and `call_id` while the call is still pending.
+
 ## Recover after a disconnect
 
 Retrieve the session to find pending actions. If you already ran a function, submit its saved result with the same `turn_id` and `call_id`.
