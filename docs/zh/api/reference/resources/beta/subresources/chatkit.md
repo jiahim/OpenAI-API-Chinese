@@ -1,6 +1,6 @@
 # ChatKit
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## Domain Types
 
@@ -8,15 +8,15 @@
 
 - `ChatKitWorkflow object { id, state_variables, tracing, version }`
 
-  为该会话返回的工作流元数据与状态。
+  为会话返回的工作流元数据和状态。
 
   - `id: string`
 
-    支撑该会话的工作流的标识符。
+    支持该会话的工作流的标识符。
 
   - `state_variables: map[string or boolean or number] or null`
 
-    调用工作流时应用的状态变量键值对。若未提供任何覆盖值，则默认为 null。
+    调用工作流时应用的状态变量键值对。未提供覆盖时默认为 null。
 
     - `string`
 
@@ -30,11 +30,11 @@
 
     - `enabled: boolean`
 
-      指示是否已启用追踪。
+      指示是否启用了追踪。
 
   - `version: string or null`
 
-    该会话所用的具体工作流版本。使用最新部署时，默认为 null。
+    会话使用的特定工作流版本。使用最新部署时默认为 null。
 
 # 会话
 
@@ -42,19 +42,19 @@
 
 **post** `/chatkit/sessions/{session_id}/cancel`
 
-取消一个处于活动状态的 ChatKit 会话，并返回其最近的元数据。
+取消一个活跃的 ChatKit 会话并返回其最新的元数据。
 
-取消后，新的请求将无法使用已签发的客户端密钥。
+取消后，将阻止新请求使用已颁发的客户端密钥。
 
 ### 路径参数
 
 - `session_id: string`
 
-### 返回
+### 返回值
 
 - `ChatSession object { id, chatkit_configuration, client_secret, 7 more }`
 
-  表示一个 ChatKit 会话及其解析后的配置。
+  表示一个 ChatKit 会话及其已解析的配置。
 
   - `id: string`
 
@@ -62,7 +62,7 @@
 
   - `chatkit_configuration: ChatSessionChatKitConfiguration`
 
-    为该会话解析后的 ChatKit 功能配置。
+    该会话已解析的 ChatKit 功能配置。
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
@@ -70,7 +70,7 @@
 
       - `enabled: boolean`
 
-        是否启用自动会话标题。
+        是否启用了自动会话标题。
 
     - `file_upload: ChatSessionFileUpload`
 
@@ -78,7 +78,7 @@
 
       - `enabled: boolean`
 
-        指示该会话是否启用了上传。
+        指示会话是否启用了上传功能。
 
       - `max_file_size: number or null`
 
@@ -94,19 +94,19 @@
 
       - `enabled: boolean`
 
-        指示该会话的聊天历史记录是否被持久化。
+        指示是否为该会话持久化聊天历史记录。
 
       - `recent_threads: number or null`
 
-        在历史记录视图中显示的先前会话数量。当保留全部历史记录时，默认为 null。
+        在历史记录视图中显示的过往会话数量。当保留所有历史记录时，默认为 null。
 
   - `client_secret: string`
 
-    用于验证会话请求的临时客户端密钥。
+    用于对会话请求进行认证的临时客户端密钥。
 
   - `expires_at: number`
 
-    会话过期的 Unix 时间戳（以秒为单位）。
+    会话过期时的 Unix 时间戳（以秒为单位）。
 
   - `max_requests_per_1_minute: number`
 
@@ -114,17 +114,17 @@
 
   - `object: "chatkit.session"`
 
-    始终为的类型判别字段 `chatkit.session`.
+    始终为的类型鉴别器 `chatkit.session`.
 
     - `"chatkit.session"`
 
   - `rate_limits: ChatSessionRateLimits`
 
-    解析后的速率限制值。
+    已解析的速率限制值。
 
     - `max_requests_per_1_minute: number`
 
-      一分钟时间窗口内允许的最大请求数。
+      一分钟窗口内允许的最大请求数。
 
   - `status: ChatSessionStatus`
 
@@ -138,19 +138,19 @@
 
   - `user: string`
 
-    与该会话关联的用户标识符。
+    与会话关联的用户标识符。
 
   - `workflow: ChatKitWorkflow`
 
-    会话的工作流元数据。
+    该会话的工作流元数据。
 
     - `id: string`
 
-      支撑该会话的工作流的标识符。
+      支持该会话的工作流的标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
-      调用工作流时应用的状态变量键值对。若未提供任何覆盖值，则默认为 null。
+      调用工作流时应用的状态变量键值对。未提供覆盖时默认为 null。
 
       - `string`
 
@@ -164,11 +164,11 @@
 
       - `enabled: boolean`
 
-        指示是否已启用追踪。
+        指示是否启用了追踪。
 
     - `version: string or null`
 
-      该会话所用的具体工作流版本。使用最新部署时，默认为 null。
+      会话使用的特定工作流版本。使用最新部署时默认为 null。
 
 ### 示例
 
@@ -183,39 +183,39 @@ curl https://api.openai.com/v1/chatkit/sessions/$SESSION_ID/cancel \
 
 ```json
 {
-  "id": "id",
+  "id": "cksess_123",
+  "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1712349876,
+  "workflow": {
+    "id": "workflow_alpha",
+    "version": "2024-10-01",
+    "state_variables": {
+      "message": "hello"
+    },
+    "tracing": {
+      "enabled": true
+    }
+  },
+  "user": "user_789",
+  "rate_limits": {
+    "max_requests_per_1_minute": 60
+  },
+  "max_requests_per_1_minute": 60,
+  "status": "cancelled",
   "chatkit_configuration": {
     "automatic_thread_titling": {
       "enabled": true
     },
     "file_upload": {
       "enabled": true,
-      "max_file_size": 0,
-      "max_files": 0
+      "max_file_size": 16,
+      "max_files": 20
     },
     "history": {
       "enabled": true,
-      "recent_threads": 0
+      "recent_threads": 10
     }
-  },
-  "client_secret": "client_secret",
-  "expires_at": 0,
-  "max_requests_per_1_minute": 0,
-  "object": "chatkit.session",
-  "rate_limits": {
-    "max_requests_per_1_minute": 0
-  },
-  "status": "active",
-  "user": "user",
-  "workflow": {
-    "id": "id",
-    "state_variables": {
-      "foo": "string"
-    },
-    "tracing": {
-      "enabled": true
-    },
-    "version": "version"
   }
 }
 ```
@@ -235,17 +235,36 @@ curl -X POST \
 {
   "id": "cksess_123",
   "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1735689600,
   "workflow": {
     "id": "workflow_alpha",
-    "version": "1"
+    "version": null,
+    "state_variables": null,
+    "tracing": {
+      "enabled": true
+    }
   },
-  "scope": {
-    "customer_id": "cust_456"
+  "user": "user_123",
+  "rate_limits": {
+    "max_requests_per_1_minute": 10
   },
-  "max_requests_per_1_minute": 30,
-  "ttl_seconds": 900,
+  "max_requests_per_1_minute": 10,
   "status": "cancelled",
-  "cancelled_at": 1712345678
+  "chatkit_configuration": {
+    "automatic_thread_titling": {
+      "enabled": true
+    },
+    "file_upload": {
+      "enabled": false,
+      "max_file_size": 512,
+      "max_files": 10
+    },
+    "history": {
+      "enabled": true,
+      "recent_threads": null
+    }
+  }
 }
 ```
 
@@ -255,23 +274,23 @@ curl -X POST \
 
 创建一个 ChatKit 会话。
 
-### Body Parameters
+### 请求体参数
 
 - `user: string`
 
-  一个自由格式的字符串，用于标识你的最终用户；确保此 Session 能够访问具有相同 `user` scope 的其他对象。
+  用于标识最终用户的自由格式字符串；确保该会话能够访问具有相同 `user` 作用域的对象。
 
 - `workflow: ChatSessionWorkflowParam`
 
-  为该会话提供动力的工作流。
+  为会话提供支持的工作流。
 
   - `id: string`
 
-    会话调用的工作流的标识符。
+    由会话调用的工作流的标识符。
 
   - `state_variables: optional map[string or boolean or number]`
 
-    转发到工作流的状态变量。键最多 64 个字符，值必须是基本类型，且该映射默认为空对象。
+    传递给工作流的状态变量。键名最多 64 个字符，值必须为基本类型，映射默认为空对象。
 
     - `string`
 
@@ -281,7 +300,7 @@ curl -X POST \
 
   - `tracing: optional object { enabled }`
 
-    追踪调用的可选工作流覆盖项。省略时，默认启用追踪。
+    针对工作流调用的可选追踪覆盖项。未提供时，默认启用追踪。
 
     - `enabled: optional boolean`
 
@@ -297,7 +316,7 @@ curl -X POST \
 
   - `automatic_thread_titling: optional object { enabled }`
 
-    自动线程标题配置。省略时，默认启用自动线程标题。
+    自动线程标题生成配置。未提供时，默认启用自动线程标题生成。
 
     - `enabled: optional boolean`
 
@@ -305,27 +324,27 @@ curl -X POST \
 
   - `file_upload: optional object { enabled, max_file_size, max_files }`
 
-    上传启用和限制的配置。省略时，默认禁用上传（max_files 10，max_file_size 512 MB）。
+    上传启用与限制的配置。未提供时，默认禁用上传（max_files 10，max_file_size 512 MB）。
 
     - `enabled: optional boolean`
 
-      为此会话启用上传。默认为 false。
+      为该会话启用上传。默认为 false。
 
     - `max_file_size: optional number`
 
-      每个上传文件的最大大小（以兆字节为单位）。默认为 512 MB，即最大允许大小。
+      每个上传文件的最大大小（以 MB 为单位）。默认为 512 MB，即允许的最大值。
 
     - `max_files: optional number`
 
-      可上传到该会话的最大文件数。默认为 10。
+      可上传至该会话的最大文件数。默认为 10。
 
   - `history: optional object { enabled, recent_threads }`
 
-    聊天历史记录保留配置。省略时，默认启用历史记录，且对 recent_threads 没有限制（null）。
+    聊天记录保留配置。未提供时，默认启用历史记录且对 recent_threads 不设上限（null）。
 
     - `enabled: optional boolean`
 
-      允许聊天用户访问之前的 ChatKit 线程。默认为 true。
+      允许聊天用户访问此前的 ChatKit 线程。默认为 true。
 
     - `recent_threads: optional number`
 
@@ -333,31 +352,31 @@ curl -X POST \
 
 - `expires_after: optional ChatSessionExpiresAfterParam`
 
-  会话过期时间的可选覆盖项，以创建起的秒数表示。默认为 10 分钟。
+  会话过期时间的可选覆盖项（以创建起算的秒数）。默认为 10 分钟。
 
   - `anchor: "created_at"`
 
-    用于计算过期时间的基础时间戳。目前固定为 `created_at`.
+    用于计算过期时间的基础时间戳。当前固定为 `created_at`.
 
     - `"created_at"`
 
   - `seconds: number`
 
-    会话过期的锚点之后的秒数。
+    会话在锚点之后过期的秒数。
 
 - `rate_limits: optional ChatSessionRateLimitsParam`
 
-  可选的每分钟请求限制覆盖。未指定时，默认为 10。
+  可选的每分钟请求限制覆盖值。未指定时，默认为 10。
 
   - `max_requests_per_1_minute: optional number`
 
     会话每分钟允许的最大请求数。默认为 10。
 
-### 返回
+### 返回值
 
 - `ChatSession object { id, chatkit_configuration, client_secret, 7 more }`
 
-  表示一个 ChatKit 会话及其解析后的配置。
+  表示一个 ChatKit 会话及其已解析的配置。
 
   - `id: string`
 
@@ -365,7 +384,7 @@ curl -X POST \
 
   - `chatkit_configuration: ChatSessionChatKitConfiguration`
 
-    为该会话解析后的 ChatKit 功能配置。
+    该会话已解析的 ChatKit 功能配置。
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
@@ -373,7 +392,7 @@ curl -X POST \
 
       - `enabled: boolean`
 
-        是否启用自动会话标题。
+        是否启用了自动会话标题。
 
     - `file_upload: ChatSessionFileUpload`
 
@@ -381,7 +400,7 @@ curl -X POST \
 
       - `enabled: boolean`
 
-        指示该会话是否启用了上传。
+        指示会话是否启用了上传功能。
 
       - `max_file_size: number or null`
 
@@ -397,19 +416,19 @@ curl -X POST \
 
       - `enabled: boolean`
 
-        指示该会话的聊天历史记录是否被持久化。
+        指示是否为该会话持久化聊天历史记录。
 
       - `recent_threads: number or null`
 
-        在历史记录视图中显示的先前会话数量。当保留全部历史记录时，默认为 null。
+        在历史记录视图中显示的过往会话数量。当保留所有历史记录时，默认为 null。
 
   - `client_secret: string`
 
-    用于验证会话请求的临时客户端密钥。
+    用于对会话请求进行认证的临时客户端密钥。
 
   - `expires_at: number`
 
-    会话过期的 Unix 时间戳（以秒为单位）。
+    会话过期时的 Unix 时间戳（以秒为单位）。
 
   - `max_requests_per_1_minute: number`
 
@@ -417,17 +436,17 @@ curl -X POST \
 
   - `object: "chatkit.session"`
 
-    始终为的类型判别字段 `chatkit.session`.
+    始终为的类型鉴别器 `chatkit.session`.
 
     - `"chatkit.session"`
 
   - `rate_limits: ChatSessionRateLimits`
 
-    解析后的速率限制值。
+    已解析的速率限制值。
 
     - `max_requests_per_1_minute: number`
 
-      一分钟时间窗口内允许的最大请求数。
+      一分钟窗口内允许的最大请求数。
 
   - `status: ChatSessionStatus`
 
@@ -441,19 +460,19 @@ curl -X POST \
 
   - `user: string`
 
-    与该会话关联的用户标识符。
+    与会话关联的用户标识符。
 
   - `workflow: ChatKitWorkflow`
 
-    会话的工作流元数据。
+    该会话的工作流元数据。
 
     - `id: string`
 
-      支撑该会话的工作流的标识符。
+      支持该会话的工作流的标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
-      调用工作流时应用的状态变量键值对。若未提供任何覆盖值，则默认为 null。
+      调用工作流时应用的状态变量键值对。未提供覆盖时默认为 null。
 
       - `string`
 
@@ -467,11 +486,11 @@ curl -X POST \
 
       - `enabled: boolean`
 
-        指示是否已启用追踪。
+        指示是否启用了追踪。
 
     - `version: string or null`
 
-      该会话所用的具体工作流版本。使用最新部署时，默认为 null。
+      会话使用的特定工作流版本。使用最新部署时默认为 null。
 
 ### 示例
 
@@ -492,39 +511,39 @@ curl https://api.openai.com/v1/chatkit/sessions \
 
 ```json
 {
-  "id": "id",
+  "id": "cksess_123",
   "chatkit_configuration": {
     "automatic_thread_titling": {
       "enabled": true
     },
     "file_upload": {
       "enabled": true,
-      "max_file_size": 0,
-      "max_files": 0
+      "max_file_size": 16,
+      "max_files": 20
     },
     "history": {
       "enabled": true,
-      "recent_threads": 0
+      "recent_threads": 10
     }
   },
-  "client_secret": "client_secret",
-  "expires_at": 0,
-  "max_requests_per_1_minute": 0,
+  "client_secret": "ek_token_123",
+  "expires_at": 1712349876,
+  "max_requests_per_1_minute": 60,
   "object": "chatkit.session",
   "rate_limits": {
-    "max_requests_per_1_minute": 0
+    "max_requests_per_1_minute": 60
   },
   "status": "active",
-  "user": "user",
+  "user": "user_789",
   "workflow": {
-    "id": "id",
+    "id": "workflow_alpha",
     "state_variables": {
-      "foo": "string"
+      "message": "hello"
     },
     "tracing": {
       "enabled": true
     },
-    "version": "version"
+    "version": "2024-10-01"
   }
 }
 ```
@@ -537,17 +556,8 @@ curl https://api.openai.com/v1/chatkit/sessions \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "OpenAI-Beta: chatkit_beta=v1" \
   -d '{
-    "workflow": {
-      "id": "workflow_alpha",
-      "version": "2024-10-01"
-    },
-    "scope": {
-      "project": "alpha",
-      "environment": "staging"
-    },
-    "expires_after": 1800,
-    "max_requests_per_1_minute": 60,
-    "max_requests_per_session": 500
+    "user": "user_123",
+    "workflow": {"id": "workflow_alpha"}
   }'
 ```
 
@@ -555,19 +565,38 @@ curl https://api.openai.com/v1/chatkit/sessions \
 
 ```json
 {
-  "client_secret": "chatkit_token_123",
+  "id": "cksess_123",
+  "object": "chatkit.session",
+  "client_secret": "ek_example_00eyJleHBpcmVzX2F0IjogMTczNTY4OTYwMH0=",
   "expires_at": 1735689600,
   "workflow": {
     "id": "workflow_alpha",
-    "version": "2024-10-01"
+    "version": null,
+    "state_variables": null,
+    "tracing": {
+      "enabled": true
+    }
   },
-  "scope": {
-    "project": "alpha",
-    "environment": "staging"
+  "user": "user_123",
+  "rate_limits": {
+    "max_requests_per_1_minute": 10
   },
-  "max_requests_per_1_minute": 60,
-  "max_requests_per_session": 500,
-  "status": "active"
+  "max_requests_per_1_minute": 10,
+  "status": "active",
+  "chatkit_configuration": {
+    "automatic_thread_titling": {
+      "enabled": true
+    },
+    "file_upload": {
+      "enabled": false,
+      "max_file_size": 512,
+      "max_files": 10
+    },
+    "history": {
+      "enabled": true,
+      "recent_threads": null
+    }
+  }
 }
 ```
 
@@ -577,13 +606,13 @@ curl https://api.openai.com/v1/chatkit/sessions \
 
 **delete** `/chatkit/threads/{thread_id}`
 
-删除一个 ChatKit 会话及其中的项和已存储的附件。
+删除一个 ChatKit 会话及其中的项目和已存储的附件。
 
 ### 路径参数
 
 - `thread_id: string`
 
-### 返回
+### 返回值
 
 - `id: string`
 
@@ -595,7 +624,7 @@ curl https://api.openai.com/v1/chatkit/sessions \
 
 - `object: "chatkit.thread.deleted"`
 
-  始终为的类型判别字段 `chatkit.thread.deleted`.
+  始终为的类型鉴别器 `chatkit.thread.deleted`.
 
   - `"chatkit.thread.deleted"`
 
@@ -622,25 +651,25 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID \
 
 **get** `/chatkit/threads`
 
-列出 ChatKit 会话线程，支持可选的分页和用户筛选。
+列出 ChatKit 线程，支持可选的分页和用户过滤条件。
 
-### Query Parameters
+### 查询参数
 
 - `after: optional string`
 
-  在此线程项 ID 之后创建的列表项。默认为 null 时表示第一页。
+  在该会话条目 ID 之后创建的列表项。对于第一页默认为 null。
 
 - `before: optional string`
 
-  在此线程项 ID 之前创建的列表项。默认为 null 时表示获取最新结果。
+  在该会话条目 ID 之前创建的列表项。对于最新结果默认为 null。
 
 - `limit: optional number`
 
-  返回的线程项最大数量。默认为 20。
+  要返回的最大会话条目数。默认为 20。
 
 - `order: optional "asc" or "desc"`
 
-  按创建时间排序的方式。默认为 `desc`.
+  按创建时间排序的结果顺序。默认为 `desc`.
 
   - `"asc"`
 
@@ -648,35 +677,35 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID \
 
 - `user: optional string`
 
-  筛选属于该用户标识符的线程。默认为 null 时表示返回所有用户。
+  筛选属于该用户标识符的会话。默认为 null 时返回所有用户。
 
-### 返回
+### 返回值
 
 - `data: array of ChatKitThread`
 
-  项列表
+  条目列表
 
   - `id: string`
 
-    线程的标识符。
+    会话的标识符。
 
   - `created_at: number`
 
-    线程创建时的 Unix 时间戳（以秒为单位）。
+    会话创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: "chatkit.thread"`
 
-    始终为的类型判别字段 `chatkit.thread`.
+    始终为的类型鉴别器 `chatkit.thread`.
 
     - `"chatkit.thread"`
 
   - `status: object { type }  or object { reason, type }  or object { reason, type }`
 
-    线程的当前状态。默认为 `active` ，适用于新创建的线程。
+    会话的当前状态。默认为 `active` ，适用于新创建的会话。
 
     - `Active object { type }`
 
-      表示线程处于活跃状态。
+      表示会话处于活跃状态。
 
       - `type: "active"`
 
@@ -686,11 +715,11 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID \
 
     - `Locked object { reason, type }`
 
-      表示线程已锁定，无法接受新的输入。
+      表示会话已锁定，无法接受新的输入。
 
       - `reason: string or null`
 
-        线程被锁定的原因。未记录原因时默认为 null。
+        会话被锁定的原因。未记录原因时默认为 null。
 
       - `type: "locked"`
 
@@ -700,11 +729,11 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID \
 
     - `Closed object { reason, type }`
 
-      表示线程已关闭。
+      表示会话已关闭。
 
       - `reason: string or null`
 
-        线程被关闭的原因。未记录原因时默认为 null。
+        会话被关闭的原因。未记录原因时默认为 null。
 
       - `type: "closed"`
 
@@ -714,11 +743,11 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID \
 
   - `title: string or null`
 
-    线程的可选人类可读标题。尚未生成标题时默认为 null。
+    会话的可选人类可读标题。未生成标题时默认为 null。
 
   - `user: string`
 
-    用于标识拥有该线程的最终用户的自由格式字符串。
+    用于标识拥有该会话的最终用户的自由格式字符串。
 
 - `first_id: string or null`
 
@@ -726,7 +755,7 @@ curl https://api.openai.com/v1/chatkit/threads/$THREAD_ID \
 
 - `has_more: boolean`
 
-  是否还有更多项可用。
+  是否还有更多可用项。
 
 - `last_id: string or null`
 
@@ -814,51 +843,51 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
 **get** `/chatkit/threads/{thread_id}/items`
 
-列出属于 ChatKit 会话线程的条目。
+列出属于某个 ChatKit 线程的项目。
 
 ### 路径参数
 
 - `thread_id: string`
 
-### Query Parameters
+### 查询参数
 
 - `after: optional string`
 
-  在此线程项 ID 之后创建的列表项。默认为 null 时表示第一页。
+  在该会话条目 ID 之后创建的列表项。对于第一页默认为 null。
 
 - `before: optional string`
 
-  在此线程项 ID 之前创建的列表项。默认为 null 时表示获取最新结果。
+  在该会话条目 ID 之前创建的列表项。对于最新结果默认为 null。
 
 - `limit: optional number`
 
-  返回的线程项最大数量。默认为 20。
+  要返回的最大会话条目数。默认为 20。
 
 - `order: optional "asc" or "desc"`
 
-  按创建时间排序的方式。默认为 `desc`.
+  按创建时间排序的结果顺序。默认为 `desc`.
 
   - `"asc"`
 
   - `"desc"`
 
-### 返回
+### 返回值
 
 - `ChatKitThreadItemList object { data, first_id, has_more, 2 more }`
 
-  为 ChatKit API 渲染的会话项的分页列表。
+  为 ChatKit API 渲染的线程项目的分页列表。
 
   - `data: array of ChatKitThreadUserMessageItem or ChatKitThreadAssistantMessageItem or ChatKitWidgetItem or 3 more`
 
-    项列表
+    条目列表
 
     - `ChatKitThreadUserMessageItem object { id, attachments, content, 5 more }`
 
-      会话中由用户撰写的消息。
+      线程中由用户撰写的消息。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `attachments: array of ChatKitAttachment`
 
@@ -890,11 +919,11 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
       - `content: array of object { text, type }  or object { text, type }`
 
-        由用户提供的内容元素的有序列表。
+        由用户提供的有序内容元素。
 
         - `InputText object { text, type }`
 
-          用户向会话贡献的文本块。
+          用户向线程贡献的文本块。
 
           - `text: string`
 
@@ -902,7 +931,7 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
           - `type: "input_text"`
 
-            始终为的类型判别字段 `input_text`.
+            始终为的类型鉴别器 `input_text`.
 
             - `"input_text"`
 
@@ -916,25 +945,25 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
           - `type: "quoted_text"`
 
-            始终为的类型判别字段 `quoted_text`.
+            始终为的类型鉴别器 `quoted_text`.
 
             - `"quoted_text"`
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `inference_options: object { model, tool_choice }  or null`
 
-        应用于该消息的推理覆盖设置。未设置时默认为 null。
+        应用于消息的推理覆盖。未设置时默认为 null。
 
         - `model: string or null`
 
-          生成该响应的模型名称。使用会话默认设置时默认为 null。
+          生成响应的模型名称。使用会话默认值时默认为 null。
 
         - `tool_choice: object { id }  or null`
 
-          首选调用的工具。当 ChatKit 应自动选择时默认为 null。
+          优先调用的工具。当 ChatKit 应自动选择时默认为 null。
 
           - `id: string`
 
@@ -942,13 +971,13 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.user_message"`
 
@@ -956,15 +985,15 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
     - `ChatKitThreadAssistantMessageItem object { id, content, created_at, 3 more }`
 
-      线程中由 Assistant 撰写的消息。
+      会话线程中由助手撰写的消息。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `content: array of ChatKitResponseOutputText`
 
-        有序的助手回复分段。
+        助手响应的有序片段。
 
         - `annotations: array of object { source, type }  or object { source, type }`
 
@@ -976,21 +1005,21 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
             - `source: object { filename, type }`
 
-              标注所引用的文件附件。
+              该标注引用的文件附件。
 
               - `filename: string`
 
-                标注所引用的文件名。
+                该标注引用的文件名。
 
               - `type: "file"`
 
-                始终为的类型判别字段 `file`.
+                始终为的类型鉴别器 `file`.
 
                 - `"file"`
 
             - `type: "file"`
 
-              始终为 `file` 此标注的固定类型判别字段。
+              类型鉴别器，始终为 `file` 此类标注的取值。
 
               - `"file"`
 
@@ -1000,21 +1029,21 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
             - `source: object { type, url }`
 
-              标注所引用的 URL。
+              该标注引用的 URL。
 
               - `type: "url"`
 
-                始终为的类型判别字段 `url`.
+                始终为的类型鉴别器 `url`.
 
                 - `"url"`
 
               - `url: string`
 
-                标注所引用的 URL。
+                该标注引用的 URL。
 
             - `type: "url"`
 
-              始终为 `url` 此标注的固定类型判别字段。
+              类型鉴别器，始终为 `url` 此类标注的取值。
 
               - `"url"`
 
@@ -1024,81 +1053,81 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
         - `type: "output_text"`
 
-          始终为的类型判别字段 `output_text`.
+          始终为的类型鉴别器 `output_text`.
 
           - `"output_text"`
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.assistant_message"`
 
-        始终为的类型判别字段 `chatkit.assistant_message`.
+        始终为的类型鉴别器 `chatkit.assistant_message`.
 
         - `"chatkit.assistant_message"`
 
     - `ChatKitWidgetItem object { id, created_at, object, 3 more }`
 
-      渲染小组件负载的线程项。
+      用于渲染小组件负载的线程项。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.widget"`
 
-        始终为的类型判别字段 `chatkit.widget`.
+        始终为的类型鉴别器 `chatkit.widget`.
 
         - `"chatkit.widget"`
 
       - `widget: string`
 
-        在 UI 中渲染的已序列化小组件负载。
+        在 UI 中渲染的序列化小组件负载。
 
     - `ChatKitClientToolCall object { id, arguments, call_id, 7 more }`
 
-      由助手发起的客户端工具调用记录。
+      助手发起的客户端工具调用记录。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `arguments: string`
 
-        发送到该工具的 JSON 编码参数。
+        发送给工具的 JSON 编码参数。
 
       - `call_id: string`
 
-        客户端工具调用的标识符。
+        该客户端工具调用的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `name: string`
 
@@ -1106,17 +1135,17 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
       - `output: string or null`
 
-        从工具捕获的 JSON 编码输出。在执行进行中时默认为 null。
+        从工具捕获的 JSON 编码输出。执行进行中时默认为 null。
 
       - `status: "in_progress" or "completed"`
 
-        工具调用的执行状态。
+        该工具调用的执行状态。
 
         - `"in_progress"`
 
@@ -1124,25 +1153,25 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.client_tool_call"`
 
-        始终为的类型判别字段 `chatkit.client_tool_call`.
+        始终为的类型鉴别器 `chatkit.client_tool_call`.
 
         - `"chatkit.client_tool_call"`
 
     - `ChatKitTask object { id, created_at, heading, 5 more }`
 
-      由工作流发出的用于展示进度和状态更新的任务。
+      由工作流发出用于展示进度和状态更新的任务。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `heading: string or null`
 
@@ -1150,7 +1179,7 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
@@ -1168,29 +1197,29 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.task"`
 
-        始终为的类型判别字段 `chatkit.task`.
+        始终为的类型鉴别器 `chatkit.task`.
 
         - `"chatkit.task"`
 
     - `ChatKitTaskGroup object { id, created_at, object, 3 more }`
 
-      在线程中分组到一起的 工作流 任务集合。
+      在对话中分组到一起的 工作流 任务集合。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
@@ -1216,11 +1245,11 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.task_group"`
 
-        始终为的类型判别字段 `chatkit.task_group`.
+        始终为的类型鉴别器 `chatkit.task_group`.
 
         - `"chatkit.task_group"`
 
@@ -1230,7 +1259,7 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
 
   - `has_more: boolean`
 
-    是否还有更多项可用。
+    是否还有更多可用项。
 
   - `last_id: string or null`
 
@@ -1345,39 +1374,39 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
 
 **get** `/chatkit/threads/{thread_id}`
 
-通过 ChatKit 线程的标识符检索该线程。
+通过标识符检索 ChatKit 会话。
 
 ### 路径参数
 
 - `thread_id: string`
 
-### 返回
+### 返回值
 
 - `ChatKitThread object { id, created_at, object, 3 more }`
 
-  表示一个 ChatKit 会话线程及其当前状态。
+  表示一个 ChatKit 会话及其当前状态。
 
   - `id: string`
 
-    线程的标识符。
+    会话的标识符。
 
   - `created_at: number`
 
-    线程创建时的 Unix 时间戳（以秒为单位）。
+    会话创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: "chatkit.thread"`
 
-    始终为的类型判别字段 `chatkit.thread`.
+    始终为的类型鉴别器 `chatkit.thread`.
 
     - `"chatkit.thread"`
 
   - `status: object { type }  or object { reason, type }  or object { reason, type }`
 
-    线程的当前状态。默认为 `active` ，适用于新创建的线程。
+    会话的当前状态。默认为 `active` ，适用于新创建的会话。
 
     - `Active object { type }`
 
-      表示线程处于活跃状态。
+      表示会话处于活跃状态。
 
       - `type: "active"`
 
@@ -1387,11 +1416,11 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
 
     - `Locked object { reason, type }`
 
-      表示线程已锁定，无法接受新的输入。
+      表示会话已锁定，无法接受新的输入。
 
       - `reason: string or null`
 
-        线程被锁定的原因。未记录原因时默认为 null。
+        会话被锁定的原因。未记录原因时默认为 null。
 
       - `type: "locked"`
 
@@ -1401,11 +1430,11 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
 
     - `Closed object { reason, type }`
 
-      表示线程已关闭。
+      表示会话已关闭。
 
       - `reason: string or null`
 
-        线程被关闭的原因。未记录原因时默认为 null。
+        会话被关闭的原因。未记录原因时默认为 null。
 
       - `type: "closed"`
 
@@ -1415,11 +1444,11 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
 
   - `title: string or null`
 
-    线程的可选人类可读标题。尚未生成标题时默认为 null。
+    会话的可选人类可读标题。未生成标题时默认为 null。
 
   - `user: string`
 
-    用于标识拥有该线程的最终用户的自由格式字符串。
+    用于标识拥有该会话的最终用户的自由格式字符串。
 
 ### 示例
 
@@ -1473,7 +1502,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
 - `ChatSession object { id, chatkit_configuration, client_secret, 7 more }`
 
-  表示一个 ChatKit 会话及其解析后的配置。
+  表示一个 ChatKit 会话及其已解析的配置。
 
   - `id: string`
 
@@ -1481,7 +1510,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `chatkit_configuration: ChatSessionChatKitConfiguration`
 
-    为该会话解析后的 ChatKit 功能配置。
+    该会话已解析的 ChatKit 功能配置。
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
@@ -1489,7 +1518,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `enabled: boolean`
 
-        是否启用自动会话标题。
+        是否启用了自动会话标题。
 
     - `file_upload: ChatSessionFileUpload`
 
@@ -1497,7 +1526,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `enabled: boolean`
 
-        指示该会话是否启用了上传。
+        指示会话是否启用了上传功能。
 
       - `max_file_size: number or null`
 
@@ -1513,19 +1542,19 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `enabled: boolean`
 
-        指示该会话的聊天历史记录是否被持久化。
+        指示是否为该会话持久化聊天历史记录。
 
       - `recent_threads: number or null`
 
-        在历史记录视图中显示的先前会话数量。当保留全部历史记录时，默认为 null。
+        在历史记录视图中显示的过往会话数量。当保留所有历史记录时，默认为 null。
 
   - `client_secret: string`
 
-    用于验证会话请求的临时客户端密钥。
+    用于对会话请求进行认证的临时客户端密钥。
 
   - `expires_at: number`
 
-    会话过期的 Unix 时间戳（以秒为单位）。
+    会话过期时的 Unix 时间戳（以秒为单位）。
 
   - `max_requests_per_1_minute: number`
 
@@ -1533,17 +1562,17 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `object: "chatkit.session"`
 
-    始终为的类型判别字段 `chatkit.session`.
+    始终为的类型鉴别器 `chatkit.session`.
 
     - `"chatkit.session"`
 
   - `rate_limits: ChatSessionRateLimits`
 
-    解析后的速率限制值。
+    已解析的速率限制值。
 
     - `max_requests_per_1_minute: number`
 
-      一分钟时间窗口内允许的最大请求数。
+      一分钟窗口内允许的最大请求数。
 
   - `status: ChatSessionStatus`
 
@@ -1557,19 +1586,19 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `user: string`
 
-    与该会话关联的用户标识符。
+    与会话关联的用户标识符。
 
   - `workflow: ChatKitWorkflow`
 
-    会话的工作流元数据。
+    该会话的工作流元数据。
 
     - `id: string`
 
-      支撑该会话的工作流的标识符。
+      支持该会话的工作流的标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
-      调用工作流时应用的状态变量键值对。若未提供任何覆盖值，则默认为 null。
+      调用工作流时应用的状态变量键值对。未提供覆盖时默认为 null。
 
       - `string`
 
@@ -1583,23 +1612,23 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `enabled: boolean`
 
-        指示是否已启用追踪。
+        指示是否启用了追踪。
 
     - `version: string or null`
 
-      该会话所用的具体工作流版本。使用最新部署时，默认为 null。
+      会话使用的特定工作流版本。使用最新部署时默认为 null。
 
-### 聊天会话自动线程命名
+### 聊天会话自动主题命名
 
 - `ChatSessionAutomaticThreadTitling object { enabled }`
 
-  当前会话的自动会话标题偏好。
+  会话的自动会话标题偏好设置。
 
   - `enabled: boolean`
 
-    是否启用自动会话标题。
+    是否启用了自动会话标题。
 
-### Chat Session ChatKit Configuration
+### Chat 会话 ChatKit 配置
 
 - `ChatSessionChatKitConfiguration object { automatic_thread_titling, file_upload, history }`
 
@@ -1611,7 +1640,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     - `enabled: boolean`
 
-      是否启用自动会话标题。
+      是否启用了自动会话标题。
 
   - `file_upload: ChatSessionFileUpload`
 
@@ -1619,7 +1648,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     - `enabled: boolean`
 
-      指示该会话是否启用了上传。
+      指示会话是否启用了上传功能。
 
     - `max_file_size: number or null`
 
@@ -1635,11 +1664,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     - `enabled: boolean`
 
-      指示该会话的聊天历史记录是否被持久化。
+      指示是否为该会话持久化聊天历史记录。
 
     - `recent_threads: number or null`
 
-      在历史记录视图中显示的先前会话数量。当保留全部历史记录时，默认为 null。
+      在历史记录视图中显示的过往会话数量。当保留所有历史记录时，默认为 null。
 
 ### Chat Session ChatKit Configuration Param
 
@@ -1649,7 +1678,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `automatic_thread_titling: optional object { enabled }`
 
-    自动线程标题配置。省略时，默认启用自动线程标题。
+    自动线程标题生成配置。未提供时，默认启用自动线程标题生成。
 
     - `enabled: optional boolean`
 
@@ -1657,27 +1686,27 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `file_upload: optional object { enabled, max_file_size, max_files }`
 
-    上传启用和限制的配置。省略时，默认禁用上传（max_files 10，max_file_size 512 MB）。
+    上传启用与限制的配置。未提供时，默认禁用上传（max_files 10，max_file_size 512 MB）。
 
     - `enabled: optional boolean`
 
-      为此会话启用上传。默认为 false。
+      为该会话启用上传。默认为 false。
 
     - `max_file_size: optional number`
 
-      每个上传文件的最大大小（以兆字节为单位）。默认为 512 MB，即最大允许大小。
+      每个上传文件的最大大小（以 MB 为单位）。默认为 512 MB，即允许的最大值。
 
     - `max_files: optional number`
 
-      可上传到该会话的最大文件数。默认为 10。
+      可上传至该会话的最大文件数。默认为 10。
 
   - `history: optional object { enabled, recent_threads }`
 
-    聊天历史记录保留配置。省略时，默认启用历史记录，且对 recent_threads 没有限制（null）。
+    聊天记录保留配置。未提供时，默认启用历史记录且对 recent_threads 不设上限（null）。
 
     - `enabled: optional boolean`
 
-      允许聊天用户访问之前的 ChatKit 线程。默认为 true。
+      允许聊天用户访问此前的 ChatKit 线程。默认为 true。
 
     - `recent_threads: optional number`
 
@@ -1687,27 +1716,27 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
 - `ChatSessionExpiresAfterParam object { anchor, seconds }`
 
-  控制会话相对于锚定时间戳的过期时机。
+  控制会话相对于锚定时间戳的过期时间。
 
   - `anchor: "created_at"`
 
-    用于计算过期时间的基础时间戳。目前固定为 `created_at`.
+    用于计算过期时间的基础时间戳。当前固定为 `created_at`.
 
     - `"created_at"`
 
   - `seconds: number`
 
-    会话过期的锚点之后的秒数。
+    会话在锚点之后过期的秒数。
 
 ### 聊天会话文件上传
 
 - `ChatSessionFileUpload object { enabled, max_file_size, max_files }`
 
-  应用于该会话的上传权限和限制。
+  应用于会话的上传权限和限制。
 
   - `enabled: boolean`
 
-    指示该会话是否启用了上传。
+    指示会话是否启用了上传功能。
 
   - `max_file_size: number or null`
 
@@ -1725,23 +1754,23 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `enabled: boolean`
 
-    指示该会话的聊天历史记录是否被持久化。
+    指示是否为该会话持久化聊天历史记录。
 
   - `recent_threads: number or null`
 
-    在历史记录视图中显示的先前会话数量。当保留全部历史记录时，默认为 null。
+    在历史记录视图中显示的过往会话数量。当保留所有历史记录时，默认为 null。
 
 ### 聊天会话速率限制
 
 - `ChatSessionRateLimits object { max_requests_per_1_minute }`
 
-  该会话的每分钟有效请求数上限。
+  本次会话每分钟的有效请求上限。
 
   - `max_requests_per_1_minute: number`
 
-    一分钟时间窗口内允许的最大请求数。
+    一分钟窗口内允许的最大请求数。
 
-### 聊天会话速率限制参数
+### Chat Session Rate Limits Param
 
 - `ChatSessionRateLimitsParam object { max_requests_per_1_minute }`
 
@@ -1769,11 +1798,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `id: string`
 
-    会话调用的工作流的标识符。
+    由会话调用的工作流的标识符。
 
   - `state_variables: optional map[string or boolean or number]`
 
-    转发到工作流的状态变量。键最多 64 个字符，值必须是基本类型，且该映射默认为空对象。
+    传递给工作流的状态变量。键名最多 64 个字符，值必须为基本类型，映射默认为空对象。
 
     - `string`
 
@@ -1783,7 +1812,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `tracing: optional object { enabled }`
 
-    追踪调用的可选工作流覆盖项。省略时，默认启用追踪。
+    针对工作流调用的可选追踪覆盖项。未提供时，默认启用追踪。
 
     - `enabled: optional boolean`
 
@@ -1797,7 +1826,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
 - `ChatKitAttachment object { id, mime_type, name, 2 more }`
 
-  在线程项中包含的附件元数据。
+  在线程项上附带的附件元数据。
 
   - `id: string`
 
@@ -1823,11 +1852,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     - `"file"`
 
-### ChatKit Response 输出文本
+### ChatKit 响应输出文本
 
 - `ChatKitResponseOutputText object { annotations, text, type }`
 
-  Assistant 响应文本，可附带可选的注释。
+  助手回复文本，可附带可选的标注。
 
   - `annotations: array of object { source, type }  or object { source, type }`
 
@@ -1839,21 +1868,21 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `source: object { filename, type }`
 
-        标注所引用的文件附件。
+        该标注引用的文件附件。
 
         - `filename: string`
 
-          标注所引用的文件名。
+          该标注引用的文件名。
 
         - `type: "file"`
 
-          始终为的类型判别字段 `file`.
+          始终为的类型鉴别器 `file`.
 
           - `"file"`
 
       - `type: "file"`
 
-        始终为 `file` 此标注的固定类型判别字段。
+        类型鉴别器，始终为 `file` 此类标注的取值。
 
         - `"file"`
 
@@ -1863,21 +1892,21 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `source: object { type, url }`
 
-        标注所引用的 URL。
+        该标注引用的 URL。
 
         - `type: "url"`
 
-          始终为的类型判别字段 `url`.
+          始终为的类型鉴别器 `url`.
 
           - `"url"`
 
         - `url: string`
 
-          标注所引用的 URL。
+          该标注引用的 URL。
 
       - `type: "url"`
 
-        始终为 `url` 此标注的固定类型判别字段。
+        类型鉴别器，始终为 `url` 此类标注的取值。
 
         - `"url"`
 
@@ -1887,7 +1916,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `type: "output_text"`
 
-    始终为的类型判别字段 `output_text`.
+    始终为的类型鉴别器 `output_text`.
 
     - `"output_text"`
 
@@ -1895,29 +1924,29 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
 - `ChatKitThread object { id, created_at, object, 3 more }`
 
-  表示一个 ChatKit 会话线程及其当前状态。
+  表示一个 ChatKit 会话及其当前状态。
 
   - `id: string`
 
-    线程的标识符。
+    会话的标识符。
 
   - `created_at: number`
 
-    线程创建时的 Unix 时间戳（以秒为单位）。
+    会话创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: "chatkit.thread"`
 
-    始终为的类型判别字段 `chatkit.thread`.
+    始终为的类型鉴别器 `chatkit.thread`.
 
     - `"chatkit.thread"`
 
   - `status: object { type }  or object { reason, type }  or object { reason, type }`
 
-    线程的当前状态。默认为 `active` ，适用于新创建的线程。
+    会话的当前状态。默认为 `active` ，适用于新创建的会话。
 
     - `Active object { type }`
 
-      表示线程处于活跃状态。
+      表示会话处于活跃状态。
 
       - `type: "active"`
 
@@ -1927,11 +1956,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     - `Locked object { reason, type }`
 
-      表示线程已锁定，无法接受新的输入。
+      表示会话已锁定，无法接受新的输入。
 
       - `reason: string or null`
 
-        线程被锁定的原因。未记录原因时默认为 null。
+        会话被锁定的原因。未记录原因时默认为 null。
 
       - `type: "locked"`
 
@@ -1941,11 +1970,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     - `Closed object { reason, type }`
 
-      表示线程已关闭。
+      表示会话已关闭。
 
       - `reason: string or null`
 
-        线程被关闭的原因。未记录原因时默认为 null。
+        会话被关闭的原因。未记录原因时默认为 null。
 
       - `type: "closed"`
 
@@ -1955,25 +1984,25 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `title: string or null`
 
-    线程的可选人类可读标题。尚未生成标题时默认为 null。
+    会话的可选人类可读标题。未生成标题时默认为 null。
 
   - `user: string`
 
-    用于标识拥有该线程的最终用户的自由格式字符串。
+    用于标识拥有该会话的最终用户的自由格式字符串。
 
 ### ChatKit Thread Assistant Message Item
 
 - `ChatKitThreadAssistantMessageItem object { id, content, created_at, 3 more }`
 
-  线程中由 Assistant 撰写的消息。
+  会话线程中由助手撰写的消息。
 
   - `id: string`
 
-    会话项的标识符。
+    线程项目的标识符。
 
   - `content: array of ChatKitResponseOutputText`
 
-    有序的助手回复分段。
+    助手响应的有序片段。
 
     - `annotations: array of object { source, type }  or object { source, type }`
 
@@ -1985,21 +2014,21 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         - `source: object { filename, type }`
 
-          标注所引用的文件附件。
+          该标注引用的文件附件。
 
           - `filename: string`
 
-            标注所引用的文件名。
+            该标注引用的文件名。
 
           - `type: "file"`
 
-            始终为的类型判别字段 `file`.
+            始终为的类型鉴别器 `file`.
 
             - `"file"`
 
         - `type: "file"`
 
-          始终为 `file` 此标注的固定类型判别字段。
+          类型鉴别器，始终为 `file` 此类标注的取值。
 
           - `"file"`
 
@@ -2009,21 +2038,21 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         - `source: object { type, url }`
 
-          标注所引用的 URL。
+          该标注引用的 URL。
 
           - `type: "url"`
 
-            始终为的类型判别字段 `url`.
+            始终为的类型鉴别器 `url`.
 
             - `"url"`
 
           - `url: string`
 
-            标注所引用的 URL。
+            该标注引用的 URL。
 
         - `type: "url"`
 
-          始终为 `url` 此标注的固定类型判别字段。
+          类型鉴别器，始终为 `url` 此类标注的取值。
 
           - `"url"`
 
@@ -2033,27 +2062,27 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     - `type: "output_text"`
 
-      始终为的类型判别字段 `output_text`.
+      始终为的类型鉴别器 `output_text`.
 
       - `"output_text"`
 
   - `created_at: number`
 
-    项创建时的 Unix 时间戳（以秒为单位）。
+    该项目创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: "chatkit.thread_item"`
 
-    始终为的类型判别字段 `chatkit.thread_item`.
+    始终为的类型鉴别器 `chatkit.thread_item`.
 
     - `"chatkit.thread_item"`
 
   - `thread_id: string`
 
-    父会话的标识符。
+    父线程的标识符。
 
   - `type: "chatkit.assistant_message"`
 
-    始终为的类型判别字段 `chatkit.assistant_message`.
+    始终为的类型鉴别器 `chatkit.assistant_message`.
 
     - `"chatkit.assistant_message"`
 
@@ -2061,19 +2090,19 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
 - `ChatKitThreadItemList object { data, first_id, has_more, 2 more }`
 
-  为 ChatKit API 渲染的会话项的分页列表。
+  为 ChatKit API 渲染的线程项目的分页列表。
 
   - `data: array of ChatKitThreadUserMessageItem or ChatKitThreadAssistantMessageItem or ChatKitWidgetItem or 3 more`
 
-    项列表
+    条目列表
 
     - `ChatKitThreadUserMessageItem object { id, attachments, content, 5 more }`
 
-      会话中由用户撰写的消息。
+      线程中由用户撰写的消息。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `attachments: array of ChatKitAttachment`
 
@@ -2105,11 +2134,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `content: array of object { text, type }  or object { text, type }`
 
-        由用户提供的内容元素的有序列表。
+        由用户提供的有序内容元素。
 
         - `InputText object { text, type }`
 
-          用户向会话贡献的文本块。
+          用户向线程贡献的文本块。
 
           - `text: string`
 
@@ -2117,7 +2146,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
           - `type: "input_text"`
 
-            始终为的类型判别字段 `input_text`.
+            始终为的类型鉴别器 `input_text`.
 
             - `"input_text"`
 
@@ -2131,25 +2160,25 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
           - `type: "quoted_text"`
 
-            始终为的类型判别字段 `quoted_text`.
+            始终为的类型鉴别器 `quoted_text`.
 
             - `"quoted_text"`
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `inference_options: object { model, tool_choice }  or null`
 
-        应用于该消息的推理覆盖设置。未设置时默认为 null。
+        应用于消息的推理覆盖。未设置时默认为 null。
 
         - `model: string or null`
 
-          生成该响应的模型名称。使用会话默认设置时默认为 null。
+          生成响应的模型名称。使用会话默认值时默认为 null。
 
         - `tool_choice: object { id }  or null`
 
-          首选调用的工具。当 ChatKit 应自动选择时默认为 null。
+          优先调用的工具。当 ChatKit 应自动选择时默认为 null。
 
           - `id: string`
 
@@ -2157,13 +2186,13 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.user_message"`
 
@@ -2171,15 +2200,15 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     - `ChatKitThreadAssistantMessageItem object { id, content, created_at, 3 more }`
 
-      线程中由 Assistant 撰写的消息。
+      会话线程中由助手撰写的消息。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `content: array of ChatKitResponseOutputText`
 
-        有序的助手回复分段。
+        助手响应的有序片段。
 
         - `annotations: array of object { source, type }  or object { source, type }`
 
@@ -2191,21 +2220,21 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
             - `source: object { filename, type }`
 
-              标注所引用的文件附件。
+              该标注引用的文件附件。
 
               - `filename: string`
 
-                标注所引用的文件名。
+                该标注引用的文件名。
 
               - `type: "file"`
 
-                始终为的类型判别字段 `file`.
+                始终为的类型鉴别器 `file`.
 
                 - `"file"`
 
             - `type: "file"`
 
-              始终为 `file` 此标注的固定类型判别字段。
+              类型鉴别器，始终为 `file` 此类标注的取值。
 
               - `"file"`
 
@@ -2215,21 +2244,21 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
             - `source: object { type, url }`
 
-              标注所引用的 URL。
+              该标注引用的 URL。
 
               - `type: "url"`
 
-                始终为的类型判别字段 `url`.
+                始终为的类型鉴别器 `url`.
 
                 - `"url"`
 
               - `url: string`
 
-                标注所引用的 URL。
+                该标注引用的 URL。
 
             - `type: "url"`
 
-              始终为 `url` 此标注的固定类型判别字段。
+              类型鉴别器，始终为 `url` 此类标注的取值。
 
               - `"url"`
 
@@ -2239,81 +2268,81 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         - `type: "output_text"`
 
-          始终为的类型判别字段 `output_text`.
+          始终为的类型鉴别器 `output_text`.
 
           - `"output_text"`
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.assistant_message"`
 
-        始终为的类型判别字段 `chatkit.assistant_message`.
+        始终为的类型鉴别器 `chatkit.assistant_message`.
 
         - `"chatkit.assistant_message"`
 
     - `ChatKitWidgetItem object { id, created_at, object, 3 more }`
 
-      渲染小组件负载的线程项。
+      用于渲染小组件负载的线程项。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.widget"`
 
-        始终为的类型判别字段 `chatkit.widget`.
+        始终为的类型鉴别器 `chatkit.widget`.
 
         - `"chatkit.widget"`
 
       - `widget: string`
 
-        在 UI 中渲染的已序列化小组件负载。
+        在 UI 中渲染的序列化小组件负载。
 
     - `ChatKitClientToolCall object { id, arguments, call_id, 7 more }`
 
-      由助手发起的客户端工具调用记录。
+      助手发起的客户端工具调用记录。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `arguments: string`
 
-        发送到该工具的 JSON 编码参数。
+        发送给工具的 JSON 编码参数。
 
       - `call_id: string`
 
-        客户端工具调用的标识符。
+        该客户端工具调用的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `name: string`
 
@@ -2321,17 +2350,17 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
       - `output: string or null`
 
-        从工具捕获的 JSON 编码输出。在执行进行中时默认为 null。
+        从工具捕获的 JSON 编码输出。执行进行中时默认为 null。
 
       - `status: "in_progress" or "completed"`
 
-        工具调用的执行状态。
+        该工具调用的执行状态。
 
         - `"in_progress"`
 
@@ -2339,25 +2368,25 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.client_tool_call"`
 
-        始终为的类型判别字段 `chatkit.client_tool_call`.
+        始终为的类型鉴别器 `chatkit.client_tool_call`.
 
         - `"chatkit.client_tool_call"`
 
     - `ChatKitTask object { id, created_at, heading, 5 more }`
 
-      由工作流发出的用于展示进度和状态更新的任务。
+      由工作流发出用于展示进度和状态更新的任务。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `heading: string or null`
 
@@ -2365,7 +2394,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
@@ -2383,29 +2412,29 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.task"`
 
-        始终为的类型判别字段 `chatkit.task`.
+        始终为的类型鉴别器 `chatkit.task`.
 
         - `"chatkit.task"`
 
     - `ChatKitTaskGroup object { id, created_at, object, 3 more }`
 
-      在线程中分组到一起的 工作流 任务集合。
+      在对话中分组到一起的 工作流 任务集合。
 
       - `id: string`
 
-        会话项的标识符。
+        线程项目的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该项目创建时的 Unix 时间戳（以秒为单位）。
 
       - `object: "chatkit.thread_item"`
 
-        始终为的类型判别字段 `chatkit.thread_item`.
+        始终为的类型鉴别器 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
@@ -2431,11 +2460,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `thread_id: string`
 
-        父会话的标识符。
+        父线程的标识符。
 
       - `type: "chatkit.task_group"`
 
-        始终为的类型判别字段 `chatkit.task_group`.
+        始终为的类型鉴别器 `chatkit.task_group`.
 
         - `"chatkit.task_group"`
 
@@ -2445,7 +2474,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `has_more: boolean`
 
-    是否还有更多项可用。
+    是否还有更多可用项。
 
   - `last_id: string or null`
 
@@ -2461,11 +2490,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
 - `ChatKitThreadUserMessageItem object { id, attachments, content, 5 more }`
 
-  会话中由用户撰写的消息。
+  线程中由用户撰写的消息。
 
   - `id: string`
 
-    会话项的标识符。
+    线程项目的标识符。
 
   - `attachments: array of ChatKitAttachment`
 
@@ -2497,11 +2526,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `content: array of object { text, type }  or object { text, type }`
 
-    由用户提供的内容元素的有序列表。
+    由用户提供的有序内容元素。
 
     - `InputText object { text, type }`
 
-      用户向会话贡献的文本块。
+      用户向线程贡献的文本块。
 
       - `text: string`
 
@@ -2509,7 +2538,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `type: "input_text"`
 
-        始终为的类型判别字段 `input_text`.
+        始终为的类型鉴别器 `input_text`.
 
         - `"input_text"`
 
@@ -2523,25 +2552,25 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `type: "quoted_text"`
 
-        始终为的类型判别字段 `quoted_text`.
+        始终为的类型鉴别器 `quoted_text`.
 
         - `"quoted_text"`
 
   - `created_at: number`
 
-    项创建时的 Unix 时间戳（以秒为单位）。
+    该项目创建时的 Unix 时间戳（以秒为单位）。
 
   - `inference_options: object { model, tool_choice }  or null`
 
-    应用于该消息的推理覆盖设置。未设置时默认为 null。
+    应用于消息的推理覆盖。未设置时默认为 null。
 
     - `model: string or null`
 
-      生成该响应的模型名称。使用会话默认设置时默认为 null。
+      生成响应的模型名称。使用会话默认值时默认为 null。
 
     - `tool_choice: object { id }  or null`
 
-      首选调用的工具。当 ChatKit 应自动选择时默认为 null。
+      优先调用的工具。当 ChatKit 应自动选择时默认为 null。
 
       - `id: string`
 
@@ -2549,13 +2578,13 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `object: "chatkit.thread_item"`
 
-    始终为的类型判别字段 `chatkit.thread_item`.
+    始终为的类型鉴别器 `chatkit.thread_item`.
 
     - `"chatkit.thread_item"`
 
   - `thread_id: string`
 
-    父会话的标识符。
+    父线程的标识符。
 
   - `type: "chatkit.user_message"`
 
@@ -2565,41 +2594,41 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
 - `ChatKitWidgetItem object { id, created_at, object, 3 more }`
 
-  渲染小组件负载的线程项。
+  用于渲染小组件负载的线程项。
 
   - `id: string`
 
-    会话项的标识符。
+    线程项目的标识符。
 
   - `created_at: number`
 
-    项创建时的 Unix 时间戳（以秒为单位）。
+    该项目创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: "chatkit.thread_item"`
 
-    始终为的类型判别字段 `chatkit.thread_item`.
+    始终为的类型鉴别器 `chatkit.thread_item`.
 
     - `"chatkit.thread_item"`
 
   - `thread_id: string`
 
-    父会话的标识符。
+    父线程的标识符。
 
   - `type: "chatkit.widget"`
 
-    始终为的类型判别字段 `chatkit.widget`.
+    始终为的类型鉴别器 `chatkit.widget`.
 
     - `"chatkit.widget"`
 
   - `widget: string`
 
-    在 UI 中渲染的已序列化小组件负载。
+    在 UI 中渲染的序列化小组件负载。
 
 ### Thread Delete Response
 
 - `ThreadDeleteResponse object { id, deleted, object }`
 
-  删除线程后返回的确认负载。
+  删除 thread 后返回的确认负载。
 
   - `id: string`
 
@@ -2611,6 +2640,6 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   - `object: "chatkit.thread.deleted"`
 
-    始终为的类型判别字段 `chatkit.thread.deleted`.
+    始终为的类型鉴别器 `chatkit.thread.deleted`.
 
     - `"chatkit.thread.deleted"`

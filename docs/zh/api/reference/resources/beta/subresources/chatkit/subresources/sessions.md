@@ -1,14 +1,14 @@
-# Sessions
+# 会话
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需 Markdown 版本的文档页面，可在页面 URL 末尾附加 `.md` 来获取。
 
 ## 取消 ChatKit 会话
 
 **post** `/chatkit/sessions/{session_id}/cancel`
 
-取消一个活跃的 ChatKit 会话，并返回其最新的元数据。
+取消一个处于活动状态的 ChatKit 会话，并返回其最近的元数据。
 
-取消后，已颁发的客户端密钥将无法用于新的请求。
+取消后，将阻止新请求使用已签发的客户端密钥。
 
 ### 路径参数
 
@@ -30,27 +30,27 @@
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
-      自动会话主题命名偏好。
+      自动线程标题偏好设置。
 
       - `enabled: boolean`
 
-        是否启用自动会话主题命名。
+        是否启用自动线程标题。
 
     - `file_upload: ChatSessionFileUpload`
 
-      该会话的上传设置。
+      会话的上传设置。
 
       - `enabled: boolean`
 
-        指示该会话是否启用了上传功能。
+        指示该会话是否启用了上传。
 
       - `max_file_size: number or null`
 
-        最大上传大小（以兆字节为单位）。
+        最大上传大小（以 MB 为单位）。
 
       - `max_files: number or null`
 
-        该会话期间允许的最大上传数量。
+        会话期间允许的最大上传数量。
 
     - `history: ChatSessionHistory`
 
@@ -62,11 +62,11 @@
 
       - `recent_threads: number or null`
 
-        在历史记录视图中展示的历史会话数量。当保留全部历史记录时，默认为 null。
+        历史记录视图中显示的先前线程数量。当保留所有历史记录时，默认为 null。
 
   - `client_secret: string`
 
-    用于验证会话请求的短期客户端密钥。
+    用于对会话请求进行身份验证的临时客户端密钥。
 
   - `expires_at: number`
 
@@ -102,7 +102,7 @@
 
   - `user: string`
 
-    与会话关联的用户标识符。
+    与该会话关联的用户标识符。
 
   - `workflow: ChatKitWorkflow`
 
@@ -110,7 +110,7 @@
 
     - `id: string`
 
-      支撑该会话的工作流的标识符。
+      支持该会话的工作流的标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
@@ -132,7 +132,7 @@
 
     - `version: string or null`
 
-      会话使用的特定工作流版本。使用最新部署时默认为 null。
+      用于该会话的特定工作流版本。使用最新部署时默认为 null。
 
 ### 示例
 
@@ -143,43 +143,43 @@ curl https://api.openai.com/v1/chatkit/sessions/$SESSION_ID/cancel \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
-  "id": "id",
+  "id": "cksess_123",
+  "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1712349876,
+  "workflow": {
+    "id": "workflow_alpha",
+    "version": "2024-10-01",
+    "state_variables": {
+      "message": "hello"
+    },
+    "tracing": {
+      "enabled": true
+    }
+  },
+  "user": "user_789",
+  "rate_limits": {
+    "max_requests_per_1_minute": 60
+  },
+  "max_requests_per_1_minute": 60,
+  "status": "cancelled",
   "chatkit_configuration": {
     "automatic_thread_titling": {
       "enabled": true
     },
     "file_upload": {
       "enabled": true,
-      "max_file_size": 0,
-      "max_files": 0
+      "max_file_size": 16,
+      "max_files": 20
     },
     "history": {
       "enabled": true,
-      "recent_threads": 0
+      "recent_threads": 10
     }
-  },
-  "client_secret": "client_secret",
-  "expires_at": 0,
-  "max_requests_per_1_minute": 0,
-  "object": "chatkit.session",
-  "rate_limits": {
-    "max_requests_per_1_minute": 0
-  },
-  "status": "active",
-  "user": "user",
-  "workflow": {
-    "id": "id",
-    "state_variables": {
-      "foo": "string"
-    },
-    "tracing": {
-      "enabled": true
-    },
-    "version": "version"
   }
 }
 ```
@@ -193,23 +193,42 @@ curl -X POST \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
   "id": "cksess_123",
   "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1735689600,
   "workflow": {
     "id": "workflow_alpha",
-    "version": "1"
+    "version": null,
+    "state_variables": null,
+    "tracing": {
+      "enabled": true
+    }
   },
-  "scope": {
-    "customer_id": "cust_456"
+  "user": "user_123",
+  "rate_limits": {
+    "max_requests_per_1_minute": 10
   },
-  "max_requests_per_1_minute": 30,
-  "ttl_seconds": 900,
+  "max_requests_per_1_minute": 10,
   "status": "cancelled",
-  "cancelled_at": 1712345678
+  "chatkit_configuration": {
+    "automatic_thread_titling": {
+      "enabled": true
+    },
+    "file_upload": {
+      "enabled": false,
+      "max_file_size": 512,
+      "max_files": 10
+    },
+    "history": {
+      "enabled": true,
+      "recent_threads": null
+    }
+  }
 }
 ```
 
@@ -223,19 +242,19 @@ curl -X POST \
 
 - `user: string`
 
-  用于标识你最终用户的自由格式字符串；可确保此 Session 能够访问具有相同 `user` scope 的其他对象。
+  用于标识最终用户的自由格式字符串；确保此 Session 可以访问具有相同 `user` scope。
 
 - `workflow: ChatSessionWorkflowParam`
 
-  为该会话提供动力的工作流。
+  驱动该会话的工作流。
 
   - `id: string`
 
-    由会话调用的工作流的标识符。
+    会话所调用 工作流 的标识符。
 
   - `state_variables: optional map[string or boolean or number]`
 
-    转发至工作流的状态变量。键最多 64 个字符，值必须为基本类型，且该映射默认为空对象。
+    转发给 工作流 的状态变量。键最多 64 个字符，值必须为基本类型，映射默认为空对象。
 
     - `string`
 
@@ -245,15 +264,15 @@ curl -X POST \
 
   - `tracing: optional object { enabled }`
 
-    针对追踪的工作流调用的可选覆盖项。当省略时，追踪默认启用。
+    追踪 调用的可选 工作流 覆盖项。省略时，追踪 默认启用。
 
     - `enabled: optional boolean`
 
-      会话期间是否启用追踪。默认为 true。
+      会话期间是否启用 追踪。默认为 true。
 
   - `version: optional string`
 
-    要运行的特定工作流版本。默认为最新部署的版本。
+    要运行的指定 工作流 版本。默认为最新部署的版本。
 
 - `chatkit_configuration: optional ChatSessionChatKitConfigurationParam`
 
@@ -261,7 +280,7 @@ curl -X POST \
 
   - `automatic_thread_titling: optional object { enabled }`
 
-    自动线程标题配置。当省略时，自动线程标题默认启用。
+    自动线程标题配置。省略时，默认启用自动线程标题。
 
     - `enabled: optional boolean`
 
@@ -269,7 +288,7 @@ curl -X POST \
 
   - `file_upload: optional object { enabled, max_file_size, max_files }`
 
-    上传启用和限制的配置。当省略时，上传默认禁用（max_files 10，max_file_size 512 MB）。
+    上传启用与限制的配置。省略时，默认禁用上传（max_files 为 10，max_file_size 为 512 MB）。
 
     - `enabled: optional boolean`
 
@@ -277,27 +296,27 @@ curl -X POST \
 
     - `max_file_size: optional number`
 
-      每个上传文件的最大大小（以 MB 为单位）。默认为 512 MB，即允许的最大大小。
+      每个上传文件的最大大小（以 MB 为单位）。默认为 512 MB，这也是允许的最大值。
 
     - `max_files: optional number`
 
-      可上传到该会话的最大文件数。默认为 10。
+      可上传至该会话的最大文件数。默认为 10。
 
   - `history: optional object { enabled, recent_threads }`
 
-    聊天历史记录保留配置。当省略时，历史记录默认启用，recent_threads 无限制（null）。
+    聊天记录保留配置。省略时，默认启用历史记录，recent_threads 不设上限（null）。
 
     - `enabled: optional boolean`
 
-      允许聊天用户访问之前的 ChatKit 线程。默认为 true。
+      允许聊天用户访问先前的 ChatKit 线程。默认为 true。
 
     - `recent_threads: optional number`
 
-      用户可访问的最近 ChatKit 线程数量。未设置时默认为无限制。
+      用户可访问的最近 ChatKit 线程数。未设置时默认为无限制。
 
 - `expires_after: optional ChatSessionExpiresAfterParam`
 
-  会话过期时间的可选覆盖（以秒为单位，从创建时起计算）。默认为 10 分钟。
+  会话过期时间的可选覆盖项，以创建时起计的秒数表示。默认为 10 分钟。
 
   - `anchor: "created_at"`
 
@@ -307,15 +326,15 @@ curl -X POST \
 
   - `seconds: number`
 
-    从锚点起经过多少秒后，会话过期。
+    会话过期前距锚点的秒数。
 
 - `rate_limits: optional ChatSessionRateLimitsParam`
 
-  可选，用于覆盖每分钟请求限制。省略时默认为 10。
+  用于覆盖每分钟请求限制的可选参数。若省略，默认值为 10。
 
   - `max_requests_per_1_minute: optional number`
 
-    会话每分钟允许的最大请求数。默认为 10。
+    会话允许的每分钟最大请求数。默认为 10。
 
 ### 返回值
 
@@ -333,27 +352,27 @@ curl -X POST \
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
-      自动会话主题命名偏好。
+      自动线程标题偏好设置。
 
       - `enabled: boolean`
 
-        是否启用自动会话主题命名。
+        是否启用自动线程标题。
 
     - `file_upload: ChatSessionFileUpload`
 
-      该会话的上传设置。
+      会话的上传设置。
 
       - `enabled: boolean`
 
-        指示该会话是否启用了上传功能。
+        指示该会话是否启用了上传。
 
       - `max_file_size: number or null`
 
-        最大上传大小（以兆字节为单位）。
+        最大上传大小（以 MB 为单位）。
 
       - `max_files: number or null`
 
-        该会话期间允许的最大上传数量。
+        会话期间允许的最大上传数量。
 
     - `history: ChatSessionHistory`
 
@@ -365,11 +384,11 @@ curl -X POST \
 
       - `recent_threads: number or null`
 
-        在历史记录视图中展示的历史会话数量。当保留全部历史记录时，默认为 null。
+        历史记录视图中显示的先前线程数量。当保留所有历史记录时，默认为 null。
 
   - `client_secret: string`
 
-    用于验证会话请求的短期客户端密钥。
+    用于对会话请求进行身份验证的临时客户端密钥。
 
   - `expires_at: number`
 
@@ -405,7 +424,7 @@ curl -X POST \
 
   - `user: string`
 
-    与会话关联的用户标识符。
+    与该会话关联的用户标识符。
 
   - `workflow: ChatKitWorkflow`
 
@@ -413,7 +432,7 @@ curl -X POST \
 
     - `id: string`
 
-      支撑该会话的工作流的标识符。
+      支持该会话的工作流的标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
@@ -435,7 +454,7 @@ curl -X POST \
 
     - `version: string or null`
 
-      会话使用的特定工作流版本。使用最新部署时默认为 null。
+      用于该会话的特定工作流版本。使用最新部署时默认为 null。
 
 ### 示例
 
@@ -452,43 +471,43 @@ curl https://api.openai.com/v1/chatkit/sessions \
         }'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
-  "id": "id",
+  "id": "cksess_123",
   "chatkit_configuration": {
     "automatic_thread_titling": {
       "enabled": true
     },
     "file_upload": {
       "enabled": true,
-      "max_file_size": 0,
-      "max_files": 0
+      "max_file_size": 16,
+      "max_files": 20
     },
     "history": {
       "enabled": true,
-      "recent_threads": 0
+      "recent_threads": 10
     }
   },
-  "client_secret": "client_secret",
-  "expires_at": 0,
-  "max_requests_per_1_minute": 0,
+  "client_secret": "ek_token_123",
+  "expires_at": 1712349876,
+  "max_requests_per_1_minute": 60,
   "object": "chatkit.session",
   "rate_limits": {
-    "max_requests_per_1_minute": 0
+    "max_requests_per_1_minute": 60
   },
   "status": "active",
-  "user": "user",
+  "user": "user_789",
   "workflow": {
-    "id": "id",
+    "id": "workflow_alpha",
     "state_variables": {
-      "foo": "string"
+      "message": "hello"
     },
     "tracing": {
       "enabled": true
     },
-    "version": "version"
+    "version": "2024-10-01"
   }
 }
 ```
@@ -501,36 +520,46 @@ curl https://api.openai.com/v1/chatkit/sessions \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "OpenAI-Beta: chatkit_beta=v1" \
   -d '{
-    "workflow": {
-      "id": "workflow_alpha",
-      "version": "2024-10-01"
-    },
-    "scope": {
-      "project": "alpha",
-      "environment": "staging"
-    },
-    "expires_after": 1800,
-    "max_requests_per_1_minute": 60,
-    "max_requests_per_session": 500
+    "user": "user_123",
+    "workflow": {"id": "workflow_alpha"}
   }'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
-  "client_secret": "chatkit_token_123",
+  "id": "cksess_123",
+  "object": "chatkit.session",
+  "client_secret": "ek_example_00eyJleHBpcmVzX2F0IjogMTczNTY4OTYwMH0=",
   "expires_at": 1735689600,
   "workflow": {
     "id": "workflow_alpha",
-    "version": "2024-10-01"
+    "version": null,
+    "state_variables": null,
+    "tracing": {
+      "enabled": true
+    }
   },
-  "scope": {
-    "project": "alpha",
-    "environment": "staging"
+  "user": "user_123",
+  "rate_limits": {
+    "max_requests_per_1_minute": 10
   },
-  "max_requests_per_1_minute": 60,
-  "max_requests_per_session": 500,
-  "status": "active"
+  "max_requests_per_1_minute": 10,
+  "status": "active",
+  "chatkit_configuration": {
+    "automatic_thread_titling": {
+      "enabled": true
+    },
+    "file_upload": {
+      "enabled": false,
+      "max_file_size": 512,
+      "max_files": 10
+    },
+    "history": {
+      "enabled": true,
+      "recent_threads": null
+    }
+  }
 }
 ```
