@@ -1,16 +1,16 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
 ## Create voice
 
 **post** `/audio/voices`
 
-根据文本提示或同意录音和音频样本创建语音。
+通过文本提示或同意录音加音频样本来创建语音。
 
-对于基于提示的创建，请发送 `type: "prompt"` 以及一个 `name` ，作为 `prompt` 的 JSON 或 multipart 表单数据。基于同意的创建需要 multipart 表单数据，并且在省略时默认为 `type` 。
+对于基于提示的创建，请发送 `type: "prompt"` 以及一个 `name` 和 `prompt` 作为 JSON 或 multipart 表单数据。对于从音频样本创建，请发送 `type: "audio_sample"` 以及一个 `name`, `audio_sample`，以及 `consent` 录音 ID 作为 multipart 表单数据。如果省略，类型默认为 `audio_sample` 。
 
-返回已保存语音的元数据。请在支持的音频输出端点中使用该语音 ID。响应中不包含预览音频。
+返回已保存语音的元数据。通过文本提示创建的语音仅在 Live 中受支持，在 Realtime 或语音接口中不受支持。响应中不包含预览音频。
 
-### Body 参数
+### Body Parameters
 
 - `name: string`
 
@@ -42,13 +42,13 @@
 
 - `script_hint: optional string`
 
-  语音在创建过程中朗读的可选文本。如果省略，则会根据提示生成脚本。去除首尾空白后不能为空；过短的脚本会被拒绝。
+  语音在创建过程中朗读的可选文本。若省略，则根据提示生成脚本。去除首尾空白后不能为空；过短的脚本将被拒绝。
 
-### 返回值
+### Returns
 
-- `Voice object { id, created_at, name, object }`
+- `Voice object { id, created_at, name, 2 more }`
 
-  可用于音频输出的自定义语音。
+  一个可用于音频输出的自定义语音。仅 Live 支持通过文本提示创建的语音。
 
   - `id: string`
 
@@ -56,7 +56,7 @@
 
   - `created_at: number`
 
-    语音创建时的 Unix 时间戳（以秒为单位）。
+    语音创建时的 Unix 时间戳（秒）。
 
   - `name: string`
 
@@ -67,6 +67,14 @@
     对象类型，始终为 `audio.voice`.
 
     - `"audio.voice"`
+
+  - `type: "audio_sample" or "prompt"`
+
+    语音的创建方式。仅 Live 支持通过文本提示创建的语音。
+
+    - `"audio_sample"`
+
+    - `"prompt"`
 
 ### 示例
 
@@ -88,7 +96,8 @@ curl https://api.openai.com/v1/audio/voices \
   "id": "id",
   "created_at": 0,
   "name": "name",
-  "object": "audio.voice"
+  "object": "audio.voice",
+  "type": "audio_sample"
 }
 ```
 
