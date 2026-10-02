@@ -41,8 +41,14 @@ const events = await client.beta.agents.sessions.create({
     "Release A: Search now supports filtering by date. Existing queries continue to work. Release B: The export endpoint now returns a download URL instead of file bytes. Update clients to fetch that URL.",
   stream: true,
 });
-for await (const event of events) {
-  console.log(JSON.stringify(event));
+events.withResultCollection();
+try {
+  for await (const event of events) {
+    console.log(JSON.stringify(event));
+  }
+  console.log((await events.finalResult()).output_text);
+} finally {
+  events.controller.abort();
 }
 ```
 
@@ -60,9 +66,11 @@ with client.beta.agents.sessions.create(
     environment={"type": "none"},
     input="Release A: Search now supports filtering by date. Existing queries continue to work. Release B: The export endpoint now returns a download URL instead of file bytes. Update clients to fetch that URL.",
     stream=True,
-) as events:
-    for event in events:
+).with_result_collection() as stream:
+    for event in stream:
         print(event.model_dump_json())
+    result = stream.get_final_result()
+print(result.output_text)
 ```
 
 ```go
@@ -81,12 +89,15 @@ events := client.Beta.Agents.Sessions.NewStreaming(ctx, openai.BetaAgentSessionN
 	Environment: openai.EnvironmentParamUnion{OfParamNone: &openai.EnvironmentParamNone{}},
 	Input:       openai.BetaAgentSessionNewParamsInputUnion{OfString: openai.String("Release A: Search now supports filtering by date. Existing queries continue to work. Release B: The export endpoint now returns a download URL instead of file bytes. Update clients to fetch that URL.")}})
 defer events.Close()
+openai.BetaAgentSessionWithResultCollection(events)
 for events.Next() {
 	fmt.Println(events.Current().RawJSON())
 }
-if err := events.Err(); err != nil {
+result, err := openai.BetaAgentSessionFinalResult(events)
+if err != nil {
 	panic(err)
 }
+fmt.Println(result.OutputText())
 ```
 
 ```java
@@ -94,6 +105,7 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.beta.agents.MultiAgentConfigParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import com.openai.services.beta.agents.AgentTurnResults;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 try (var events =
@@ -125,7 +137,9 @@ try (var events =
                         + " download URL instead of file bytes. Update clients to fetch that"
                         + " URL.")
                 .build())) {
+  AgentTurnResults.withResultCollection(events);
   events.stream().forEach(System.out::println);
+  System.out.println(AgentTurnResults.getFinalResult(events).outputText());
 }
 ```
 
@@ -148,7 +162,10 @@ events = client.beta.agents.sessions.create_streaming(
   input: "Release A: Search now supports filtering by date. Existing queries continue to work. Release B: The export endpoint now returns a download URL instead of file bytes. Update clients to fetch that URL."
 )
 begin
+  events.with_result_collection
   events.each { |event| puts JSON.generate(event.to_h) }
+  result = events.get_final_result
+  puts result.output_text
 ensure
   events.close
 end

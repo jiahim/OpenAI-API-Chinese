@@ -6,9 +6,9 @@
 
 Creates a voice from a text prompt or from a consent recording and an audio sample.
 
-For prompt-based creation, send `type: "prompt"` with a `name` and `prompt` as JSON or multipart form data. Consent-based creation requires multipart form data and is the default when `type` is omitted.
+For prompt-based creation, send `type: "prompt"` with a `name` and `prompt` as JSON or multipart form data. For creation from an audio sample, send `type: "audio_sample"` with a `name`, `audio_sample`, and `consent` recording ID as multipart form data. The type defaults to `audio_sample` when omitted.
 
-Returns the saved voice's metadata. Use the voice ID in supported audio output endpoints. The response does not include preview audio.
+Returns the saved voice's metadata. Voices created from text prompts are supported only in Live, not in Realtime or the speech endpoint. The response does not include preview audio.
 
 ### Body Parameters
 
@@ -46,9 +46,9 @@ Returns the saved voice's metadata. Use the voice ID in supported audio output e
 
 ### Returns
 
-- `Voice object { id, created_at, name, object }`
+- `Voice object { id, created_at, name, 2 more }`
 
-  A custom voice that can be used for audio output.
+  A custom voice that can be used for audio output. Voices created from text prompts are supported only in Live.
 
   - `id: string`
 
@@ -67,6 +67,14 @@ Returns the saved voice's metadata. Use the voice ID in supported audio output e
     The object type, which is always `audio.voice`.
 
     - `"audio.voice"`
+
+  - `type: "audio_sample" or "prompt"`
+
+    How the voice was created. Voices created from text prompts are supported only in Live.
+
+    - `"audio_sample"`
+
+    - `"prompt"`
 
 ### Example
 
@@ -88,7 +96,8 @@ curl https://api.openai.com/v1/audio/voices \
   "id": "id",
   "created_at": 0,
   "name": "name",
-  "object": "audio.voice"
+  "object": "audio.voice",
+  "type": "audio_sample"
 }
 ```
 

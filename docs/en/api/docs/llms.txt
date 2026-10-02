@@ -189,6 +189,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Running agents](https://developers.openai.com/api/docs/guides/agents/running-agents.md): Learn how to run agents, stream output, and choose the right conversation-state strategy in the OpenAI Agents SDK.
 - [Safety best practices](https://developers.openai.com/api/docs/guides/safety-best-practices.md): Learn how to implement safety measures like moderation, adversarial testing, human oversight, and prompt engineering to ensure responsible AI deployment.
 - [Safety classifiers](https://developers.openai.com/api/docs/guides/safety-checks.md): Learn how API safety classifiers identify potential abuse and how safety identifiers help limit disruption to other users.
+- [Safety enforcement notifications](https://developers.openai.com/api/docs/guides/safety-enforcement.md): Receive organization-level safety webhooks, retrieve case details, and connect enforcement notices to your application's users.
 - [Safety in building agents](https://developers.openai.com/api/docs/guides/agent-builder-safety.md): Minimize prompt injections and other risks when building agent workflows with OpenAI Agent Builder.
 - [Sandbox Agents](https://developers.openai.com/api/docs/guides/agents/sandboxes.md): Learn how sandboxes fit into Agents SDK workflows, when to use them, and how orchestration stays separate from execution.
 - [Sandbox lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle.md): Start, reconnect, and stop your agent's environment.

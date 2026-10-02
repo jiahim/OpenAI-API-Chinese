@@ -39,8 +39,6 @@ Models for realtime, speech, and audio workflows.
 - [GPT-4o Transcribe](/api/docs/models/gpt-4o-transcribe.md): Speech-to-text model powered by GPT-4o
 - [GPT-4o Mini Transcribe](/api/docs/models/gpt-4o-mini-transcribe.md): Speech-to-text model powered by GPT-4o Mini
 - [GPT-4o Transcribe Diarize](/api/docs/models/gpt-4o-transcribe-diarize.md): Transcription model that identifies who's speaking when
-- [TTS-1](/api/docs/models/tts-1.md): Text-to-speech model optimized for speed
-- [TTS-1 HD](/api/docs/models/tts-1-hd.md): Text-to-speech model optimized for quality
 - [Whisper](/api/docs/models/whisper-1.md): General-purpose speech recognition model
 - [GPT-4o Mini TTS](/api/docs/models/gpt-4o-mini-tts.md): Text-to-speech model powered by GPT-4o Mini
 
@@ -86,11 +84,8 @@ Diverse models for a variety of tasks.
 - [GPT-5.4](/api/docs/models/gpt-5.4.md): A more affordable model for coding and professional work.
 - [GPT-5.4 Pro](/api/docs/models/gpt-5.4-pro.md): Version of GPT-5.4 that produces smarter and more precise responses.
 - [GPT-5.4 Mini](/api/docs/models/gpt-5.4-mini.md): Our strongest mini model yet for coding, computer use, and subagents
-- [GPT-5.4 nano](/api/docs/models/gpt-5.4-nano.md): Our cheapest GPT-5.4-class model for simple high-volume tasks
-- [GPT-5.3-Codex](/api/docs/models/gpt-5.3-codex.md): The most capable agentic coding model to date.
 - [GPT-5.2](/api/docs/models/gpt-5.2.md): Previous flagship model for professional work with configurable reasoning effort
 - [GPT-5.2 Pro](/api/docs/models/gpt-5.2-pro.md): Previous pro model for professional work that produces smarter and more precise responses.
-- [GPT-5.1](/api/docs/models/gpt-5.1.md): The best model for coding and agentic tasks with configurable reasoning effort
 - [GPT-5](/api/docs/models/gpt-5.md): Previous intelligent reasoning model for coding and agentic tasks with configurable reasoning effort
 - [GPT-5 Mini](/api/docs/models/gpt-5-mini.md): Strong intelligence for cost sensitive, low latency, high volume workloads
 - [GPT-5 nano](/api/docs/models/gpt-5-nano.md): Fastest, most cost-efficient version of GPT-5
@@ -102,8 +97,13 @@ Diverse models for a variety of tasks.
 - [omni-moderation](/api/docs/models/omni-moderation-latest.md): Identify potentially harmful content in text and images
 - [GPT-4o Mini](/api/docs/models/gpt-4o-mini.md): Fast, affordable small model for focused tasks
 - [GPT-4o](/api/docs/models/gpt-4o.md): Fast, intelligent, flexible GPT model
+- [GPT-5.4 nano](/api/docs/models/gpt-5.4-nano.md): Deprecated. Our cheapest GPT-5.4-class model for simple high-volume tasks
+- [GPT-5.3-Codex](/api/docs/models/gpt-5.3-codex.md): Deprecated. The most capable agentic coding model to date.
+- [GPT-5.1](/api/docs/models/gpt-5.1.md): Deprecated. The best model for coding and agentic tasks with configurable reasoning effort
 - [GPT-Realtime](/api/docs/models/gpt-realtime.md): Deprecated. Model capable of realtime text and audio inputs and outputs
 - [GPT-Audio](/api/docs/models/gpt-audio.md): Deprecated. For audio inputs and outputs with Chat Completions API
+- [TTS-1](/api/docs/models/tts-1.md): Deprecated. Text-to-speech model optimized for speed
+- [TTS-1 HD](/api/docs/models/tts-1-hd.md): Deprecated. Text-to-speech model optimized for quality
 - [GPT-5.3 Chat](/api/docs/models/gpt-5.3-chat-latest.md): Deprecated. GPT-5.3 Instant model used in ChatGPT
 - [GPT-5.2 Chat](/api/docs/models/gpt-5.2-chat-latest.md): Deprecated. GPT-5.2 model used in ChatGPT
 - [GPT-5.2-Codex](/api/docs/models/gpt-5.2-codex.md): Deprecated. Our most intelligent coding model optimized for long-horizon, agentic coding tasks.

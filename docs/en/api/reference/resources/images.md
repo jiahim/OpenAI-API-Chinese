@@ -230,7 +230,7 @@ Creates an edited or extended image given one or more source images and a prompt
 
 - `input_fidelity: optional "high" or "low" or null`
 
-  Controls fidelity to the original input image(s).
+  Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
   - `"high"`
 

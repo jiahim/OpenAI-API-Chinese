@@ -34,6 +34,27 @@ We use the term "legacy" to refer to models and endpoints that no longer receive
 
 Upcoming deprecations are listed below, with the most recent announcements at the top.
 
+### 2026-10-01: GPT-5.3-Codex, GPT-5.1, GPT-5.4-Nano
+
+The following models are deprecated and will be removed from the API on April 1, 2027, with six months' notice. Migrate to the recommended replacements before the shutdown date.
+
+| Shutdown date | Model / system  | Recommended replacement |
+| ------------- | --------------- | ----------------------- |
+| Apr 1, 2027   | `gpt-5.3-codex` | `gpt-6-sol`             |
+| Apr 1, 2027   | `gpt-5.4-nano`  | `gpt-6-luna`            |
+| Apr 1, 2027   | `gpt-5.1`       | `gpt-6-sol`             |
+
+### 2026-10-01: Text-to-speech models
+
+The following text-to-speech models are deprecated and will be removed from the API on January 6, 2027, with at least three months' notice. Migrate to `gpt-realtime-2.1-mini` before the shutdown date. See the [Realtime API guide](https://developers.openai.com/api/docs/guides/realtime) to plan your migration.
+
+| Shutdown date | Model / system               | Recommended replacement |
+| ------------- | ---------------------------- | ----------------------- |
+| Jan 6, 2027   | `tts-1`                      | `gpt-realtime-2.1-mini` |
+| Jan 6, 2027   | `tts-1-hd`                   | `gpt-realtime-2.1-mini` |
+| Jan 6, 2027   | `gpt-4o-mini-tts-2025-03-20` | `gpt-realtime-2.1-mini` |
+| Jan 6, 2027   | `gpt-4o-mini-tts-2025-12-15` | `gpt-realtime-2.1-mini` |
+
 ### 2026-09-11: GPT-5.4-Cyber
 
 The `gpt-5.4-cyber` model is deprecated and will be removed from the API on October 1, 2026. Migrate to the most capable cyber model available to you before the shutdown date.
