@@ -55,6 +55,21 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.completions.CompletionCreateParams;
+
+var completion =
+    client
+        .completions()
+        .create(
+            CompletionCreateParams.builder()
+                .model("gpt-3.5-turbo-instruct")
+                .prompt("Write a tagline for an ice cream shop.")
+                .build());
+completion.choices().forEach(choice -> System.out.println(choice.text()));
+```
+
 ```ruby
 require "openai"
 

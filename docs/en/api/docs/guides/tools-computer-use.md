@@ -43,7 +43,7 @@ Use the app's README for installation, desktop permissions, and supported enviro
 
 ### Connect your own runtime
 
-The following example shows the API loop for a runtime you provide. Python and Ruby send Python code to a desktop runtime that uses PyAutoGUI; JavaScript uses Playwright to operate a browser. Each client exposes an ordinary function tool and returns text or images with the original `call_id`.
+The following example shows the API loop for a runtime you provide. Python, Ruby, and Go send Python code to a desktop runtime that uses PyAutoGUI; JavaScript uses Playwright to operate a browser. Each client exposes an ordinary function tool and returns text or images with the original `call_id`.
 
 The `execute_in_sandbox` or `executeInSandbox` helper sends code to your execution environment and returns its observations. It must preserve the browser or desktop session, enforce execution limits, and apply your permission rules. These are integration examples, separate from running the sample app.
 
@@ -281,6 +281,93 @@ def run_computer_use(endpoint, prompt)
     history[:id] = response.id
   end
 end
+```
+
+  
+
+  
+
+    
+Go
+
+    Run computer use with code execution
+
+```go
+func runComputerUse(ctx context.Context, client openai.Client, endpoint, prompt string, terminal *bufio.Scanner, output io.Writer) error {
+	session := make([]byte, 16)
+	if _, err := rand.Read(session); err != nil {
+		return err
+	}
+	sessionID := hex.EncodeToString(session)
+	tool := responses.ToolParamOfFunction("exec_py", map[string]any{
+		"type": "object", "properties": map[string]any{"code": map[string]any{"type": "string"}},
+		"required": []string{"code"}, "additionalProperties": false,
+	}, true)
+	tool.OfFunction.Description = openai.String("Run Python in a persistent desktop. Variables persist across calls. " +
+		"PyAutoGUI operations are synchronous. Available: pyautogui, time, " +
+		"log(value), and display(PIL_image). Inspect the screen with " +
+		"display(pyautogui.screenshot()) before acting. Use screenshot " +
+		"coordinates and check the screen after a short group of actions. " +
+		"Keep screenshots in memory and PyAutoGUI's fail-safe enabled.")
+	params := responses.ResponseNewParams{
+		Model: "gpt-6-astra", Tools: []responses.ToolUnionParam{tool},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String(prompt)},
+	}
+	for turn := 0; turn < 20; turn++ {
+		response, err := client.Responses.New(ctx, params)
+		if err != nil {
+			return err
+		}
+		if response.Status != "completed" {
+			return fmt.Errorf("response stopped with status: %s", response.Status)
+		}
+		var calls []responses.ResponseFunctionToolCall
+		finalMessage := false
+		for _, item := range response.Output {
+			if item.Type == "function_call" {
+				calls = append(calls, item.AsFunctionCall())
+			}
+			if item.Type == "message" && item.AsMessage().Phase != "commentary" {
+				finalMessage = true
+			}
+		}
+		if len(calls) == 0 && finalMessage {
+			fmt.Fprintln(output, response.OutputText())
+			return nil
+		}
+		if turn == 19 {
+			return fmt.Errorf("task reached the 20-response limit; inspect the last result")
+		}
+		nextInput := responses.ResponseInputParam{}
+		for _, call := range calls {
+			if call.Name != "exec_py" {
+				return fmt.Errorf("unexpected tool: %s", call.Name)
+			}
+			var arguments struct {
+				Code *string `json:"code"`
+			}
+			if err := json.Unmarshal([]byte(call.Arguments), &arguments); err != nil {
+				return err
+			}
+			if arguments.Code == nil {
+				return fmt.Errorf("exec_py requires code")
+			}
+			observations, err := executeInSandbox(ctx, endpoint, sessionID, *arguments.Code, terminal, output)
+			if err != nil {
+				return err
+			}
+			nextInput = append(nextInput, responses.ResponseInputItemUnionParam{
+				OfFunctionCallOutput: &responses.ResponseInputItemFunctionCallOutputParam{
+					CallID: openai.String(call.CallID),
+					Output: responses.ResponseInputItemFunctionCallOutputOutputUnionParam{OfResponseFunctionCallOutputItemArray: observations},
+				},
+			})
+		}
+		params.Input = responses.ResponseNewParamsInputUnion{OfInputItemList: nextInput}
+		params.PreviousResponseID = openai.String(response.ID)
+	}
+	return nil
+}
 ```
 
 

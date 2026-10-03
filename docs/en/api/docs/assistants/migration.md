@@ -85,7 +85,98 @@ A thread was a collection of messages stored server-side. Threads could _only_ s
 
 #### Python
 
+
+
+#### Thread object
+
+```python
+thread = openai.beta.threads.create(
+    messages=[{"role": "user", "content": "what are the 5 Ds of dodgeball?"}],
+    metadata={"user_id": "peter_le_fleur"},
+)
+```
+
+#### Conversation object
+
+```python
+conversation = openai.conversations.create(
+    items=[{"role": "user", "content": "what are the 5 Ds of dodgeball?"}],
+    metadata={"user_id": "peter_le_fleur"},
+)
+```
+
+
+
 #### Go
+
+
+
+#### Thread object (Go)
+
+```go
+thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNewParams{
+	Messages: []openai.BetaThreadNewParamsMessage{{
+		Role: "user",
+		Content: openai.BetaThreadNewParamsMessageContentUnion{
+			OfString: openai.String("what are the 5 Ds of dodgeball?"),
+		},
+	}},
+	Metadata: shared.Metadata{"user_id": "peter_le_fleur"},
+})
+if err != nil {
+	panic(err)
+}
+```
+
+#### Conversation object (Go)
+
+```go
+conversation, err := client.Conversations.New(context.Background(), conversations.ConversationNewParams{
+	Items: []responses.ResponseInputItemUnionParam{
+		responses.ResponseInputItemParamOfMessage("what are the 5 Ds of dodgeball?", responses.EasyInputMessageRoleUser),
+	},
+	Metadata: shared.Metadata{"user_id": "peter_le_fleur"},
+})
+if err != nil {
+	panic(err)
+}
+```
+
+
+
+#### JavaScript
+
+
+
+#### Thread object (JavaScript)
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const thread = await client.beta.threads.create({
+  messages: [{ role: "user", content: "what are the 5 Ds of dodgeball?" }],
+  metadata: { user_id: "peter_le_fleur" },
+});
+console.log(thread.id);
+```
+
+#### Conversation object (JavaScript)
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const conversation = await client.conversations.create({
+  items: [{ role: "user", content: "What are the five Ds of dodgeball?" }],
+  metadata: { user_id: "peter_le_fleur" },
+});
+
+console.log(conversation.id);
+```
+
+
 
 ### Response example
 
@@ -132,7 +223,133 @@ Responses are designed to be used alone, but you can also use them with prompt a
 
 #### Python
 
+
+
+#### Run object
+
+```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+import time
+
+from openai import OpenAI
+
+openai = OpenAI()
+thread_id = "thread_123"
+assistant_id = "asst_123"
+
+run = openai.beta.threads.runs.create(
+    thread_id=thread_id,
+    assistant_id=assistant_id,
+)
+
+while run.status in ("queued", "in_progress"):
+    time.sleep(1)
+    run = openai.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
+```
+
+#### Response object
+
+```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+
+from openai import OpenAI
+
+openai = OpenAI()
+conversation_id = "conv_123"
+
+response = openai.responses.create(
+    model="gpt-6-astra",
+    input=[{"role": "user", "content": "What are the 5 Ds of dodgeball?"}],
+    conversation=conversation_id,
+)
+```
+
+
+
 #### Go
+
+
+
+#### Run object (Go)
+
+```go
+run, err := client.Beta.Threads.Runs.New(context.Background(), "thread_abc123", openai.BetaThreadRunNewParams{
+	AssistantID: "asst_abc123",
+})
+if err != nil {
+	panic(err)
+}
+for run.Status == openai.RunStatusQueued || run.Status == openai.RunStatusInProgress {
+	time.Sleep(time.Second)
+	run, err = client.Beta.Threads.Runs.Get(context.Background(), "thread_abc123", run.ID)
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+#### Response object (Go)
+
+```go
+_, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model: "gpt-6-astra",
+	Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
+		responses.ResponseInputItemParamOfMessage("What are the 5 Ds of dodgeball?", responses.EasyInputMessageRoleUser),
+	}},
+	Conversation: responses.ResponseNewParamsConversationUnion{OfString: openai.String("conv_abc123")},
+})
+if err != nil {
+	panic(err)
+}
+```
+
+
+
+#### JavaScript
+
+
+
+#### Run object (JavaScript)
+
+```javascript
+import { setTimeout } from "node:timers/promises";
+import OpenAI from "openai";
+
+const client = new OpenAI();
+// Replace these illustrative IDs with your own resources.
+const threadId = "thread_123";
+const assistantId = "asst_123";
+let run = await client.beta.threads.runs.create(threadId, {
+  assistant_id: assistantId,
+});
+while (run.status === "queued" || run.status === "in_progress") {
+  await setTimeout(1000);
+  run = await client.beta.threads.runs.retrieve(run.id, {
+    thread_id: threadId,
+  });
+}
+console.log(run.status);
+```
+
+#### Response object (JavaScript)
+
+```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const conversationId = "conv_123";
+
+const response = await client.responses.create({
+  model: "gpt-6-astra",
+  input: [{ role: "user", content: "What are the five Ds of dodgeball?" }],
+  conversation: conversationId,
+});
+
+console.log(response.output_text);
+```
+
+
 
 ### Response example
 

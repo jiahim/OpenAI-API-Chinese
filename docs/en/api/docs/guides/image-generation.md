@@ -1604,6 +1604,34 @@ func saveImage(filename, encoded string) {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.images.ImageGenerateParams;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+var params =
+    ImageGenerateParams.builder()
+        .prompt(
+            "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape")
+        .model("gpt-image-2.5-sunburst")
+        .partialImages(2)
+        .build();
+try (var stream = client.images().generateStreaming(params)) {
+  var events = stream.stream().iterator();
+  while (events.hasNext()) {
+    var event = events.next();
+    if (event.generationPartialImage().isPresent()) {
+      var partial = event.generationPartialImage().orElseThrow();
+      Files.write(
+          Path.of("river" + partial.partialImageIndex() + ".png"),
+          Base64.getDecoder().decode(partial.b64Json()));
+    }
+  }
+}
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -1823,6 +1851,26 @@ func main() {
 	}
 	fmt.Println(base64.StdEncoding.EncodeToString(image))
 }
+```
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+System.out.println(encodeImage(Path.of("example.png")));
+
+private static String encodeImage(Path path) throws java.io.IOException {
+  return Base64.getEncoder().encodeToString(Files.readAllBytes(path));
+}
+```
+
+```csharp
+using System;
+
+Console.WriteLine(EncodeImage("example.png"));
+
+static string EncodeImage(string filePath) => Convert.ToBase64String(File.ReadAllBytes(filePath));
 ```
 
 ```ruby

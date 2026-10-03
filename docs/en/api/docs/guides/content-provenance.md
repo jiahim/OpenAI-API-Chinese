@@ -110,6 +110,19 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.contentprovenancechecks.ContentProvenanceCheckCreateParams;
+import java.nio.file.Path;
+
+var result =
+    client
+        .contentProvenanceChecks()
+        .create(
+            ContentProvenanceCheckCreateParams.builder().file(Path.of("myimage.png")).build());
+System.out.println(result);
+```
+
 ```ruby
 require "openai"
 require "pathname"

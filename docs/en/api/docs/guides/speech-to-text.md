@@ -944,6 +944,39 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import java.nio.file.Path;
+
+var params =
+    TranscriptionCreateParams.builder()
+        .model("gpt-transcribe")
+        .file(Path.of("speech.wav"))
+        .build();
+try (var stream = client.audio().transcriptions().createStreaming(params)) {
+  stream.stream().forEach(event -> System.out.println(event));
+}
+```
+
+```csharp
+using OpenAI.Audio;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-transcribe";
+AudioClient client = new(model, key);
+
+await foreach (StreamingAudioTranscriptionUpdate update in client.TranscribeAudioStreamingAsync("speech.wav"))
+{
+    if (update is StreamingAudioTranscriptionTextDeltaUpdate delta)
+    {
+        Console.Write(delta.Delta);
+    }
+}
+Console.WriteLine();
+```
+
 ```ruby
 require "openai"
 require "pathname"

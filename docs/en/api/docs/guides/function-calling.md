@@ -810,6 +810,65 @@ func callFunction(name string, arguments functionArguments) (string, error) {
 }
 ```
 
+```java
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
+var argsJson = new ObjectMapper().readTree("{\"location\":\"Paris, France\"}");
+System.out.println(callFunction("get_weather", argsJson));
+
+// These local fixtures demonstrate dispatch; replace them with your application services.
+// The email fixture prints its inputs and does not send a message.
+static Map<String, Object> callFunction(String name, JsonNode arguments) {
+  return switch (name) {
+    case "get_weather" -> getWeather(arguments.get("location").asText());
+    case "send_email" -> sendEmail(arguments.get("to").asText(), arguments.get("body").asText());
+    default -> throw new IllegalArgumentException("Unknown function: " + name);
+  };
+}
+
+private static Map<String, Object> getWeather(String location) {
+  int temperature =
+      switch (location) {
+        case "Bogotá, Colombia" -> 18;
+        case "Paris, France" -> 15;
+        default -> 20;
+      };
+  return Map.of("location", location, "temperature_celsius", temperature);
+}
+
+private static Map<String, Object> sendEmail(String to, String body) {
+  System.out.println("Sending email to " + to + ": " + body);
+  return Map.of("status", "sent");
+}
+```
+
+```csharp
+using System.Text.Json;
+
+using JsonDocument arguments = JsonDocument.Parse("{\"location\":\"Paris, France\"}");
+Console.WriteLine(FunctionDispatcher.CallFunction("get_weather", arguments.RootElement));
+
+internal static class FunctionDispatcher
+{
+    // These local fixtures demonstrate dispatch; replace them with your application services.
+    // The email fixture prints its inputs and does not send a message.
+    internal static string CallFunction(string name, JsonElement arguments) => name switch
+    {
+        "get_weather" => GetWeather(arguments.GetProperty("location").GetString()!),
+        "send_email" => SendEmail(arguments.GetProperty("to").GetString()!, arguments.GetProperty("body").GetString()!),
+        _ => throw new ArgumentException($"Unknown function: {name}", nameof(name))
+    };
+    private static string GetWeather(string location) => JsonSerializer.Serialize(new { location, temperature_celsius = location switch { "Bogotá, Colombia" => 18, "Paris, France" => 15, _ => 20 } });
+    private static string SendEmail(string to, string body)
+    {
+        Console.WriteLine($"Sending email to {to}: {body}");
+        return "{\"status\":\"sent\"}";
+    }
+}
+```
+
 ```ruby
 def call_function(name, arguments)
   case name
