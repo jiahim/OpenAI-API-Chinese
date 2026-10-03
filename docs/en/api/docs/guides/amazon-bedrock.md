@@ -1,4 +1,4 @@
-# OpenAI models in Amazon Bedrock
+# OpenAI on Amazon Bedrock
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
@@ -22,11 +22,14 @@ Choose your endpoint based on the capabilities your application needs. For
 example, hosted web search currently requires Mantle. See the
 [endpoint differences](#endpoint-differences) on this page and the AWS [endpoint comparison](https://docs.aws.amazon.com/bedrock/latest/userguide/endpoints.html) for Bedrock-specific capabilities and endpoint selection.
 
-GPT-6 Astra is available through Bedrock Runtime and through Mantle in
-  `us-west-2` (Oregon). The examples in this guide use GPT-5.6 Sol in
-  `us-east-2`; select Astra's supported Region before changing the model.
+[GPT-6 Sol](https://developers.openai.com/api/docs/models/gpt-6-sol) and [GPT-6
+  Luna](https://developers.openai.com/api/docs/models/gpt-6-luna) are available through Bedrock Runtime and
+  through Mantle in `us-east-1` (N. Virginia). [GPT-6
+  Astra](https://developers.openai.com/api/docs/models/gpt-6-astra) is available through Bedrock Runtime and
+  through Mantle in `us-west-2` (Oregon). The examples in this guide use GPT-5.6
+  Terra in `us-east-2`; select the supported Region before changing the model.
 
-For access and setup, see the AWS [GPT-6 Astra announcement](https://aws.amazon.com/blogs/machine-learning/take-on-your-most-ambitious-work-with-gpt-6-astra-on-amazon-bedrock/) and [Runtime endpoint instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html).
+For access and setup, see the AWS [model endpoint availability](https://docs.aws.amazon.com/bedrock/latest/userguide/models-endpoint-availability.html) and [Runtime endpoint instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html).
 
 ## Make Responses API requests
 
@@ -39,11 +42,14 @@ Region and model ID for your deployment:
   `us-east-2` examples. The Ruby examples configure this `/openai/v1`
   endpoint directly because the provider's default `/v1` route doesn't
   support this model.
-- Use a Bedrock model ID with the `openai.` prefix, such as
-  `openai.gpt-5.6-sol`.
+- Use a Bedrock model ID with the `openai.` prefix. For GPT-6 Sol and Luna,
+  use `openai.gpt-6-sol` or `openai.gpt-6-luna` in `us-east-1`.
 
-The examples use `openai.gpt-5.6-sol` in `us-east-2`. For Runtime, follow the AWS [Responses API endpoint instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html) to select the base URL and inference profile. Do not reuse a Mantle model ID
-without checking the Runtime requirements.
+The examples use `openai.gpt-5.6-terra` in `us-east-2`. To try GPT-6 Sol or Luna,
+change both the model ID and the Region. For Ruby, also update the Region in the
+explicit `base_url`. On Bedrock Runtime, use the United States inference profile
+IDs `us.openai.gpt-6-sol` and `us.openai.gpt-6-luna`, or the global IDs
+`global.openai.gpt-6-sol` and `global.openai.gpt-6-luna`. Follow the AWS [Responses API endpoint instructions](https://docs.aws.amazon.com/bedrock/latest/userguide/bedrock-mantle.html) to select the Runtime base URL and inference profile.
 
 The following example uses a Bedrock API key stored as
 `AWS_BEARER_TOKEN_BEDROCK`. See [Amazon Bedrock API keys](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html) for information about generating and using a Bedrock API key.
@@ -72,7 +78,7 @@ const client = new OpenAI({
 });
 
 const response = await client.responses.create({
-  model: "openai.gpt-5.6-sol",
+  model: "openai.gpt-5.6-terra",
   input: "Write a haiku about cloud infrastructure.",
 });
 
@@ -93,7 +99,7 @@ client = OpenAI(
 )
 
 response = client.responses.create(
-    model="openai.gpt-5.6-sol",
+    model="openai.gpt-5.6-terra",
     input="Write a haiku about cloud infrastructure.",
 )
 
@@ -123,7 +129,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "openai.gpt-5.6-sol",
+		Model: "openai.gpt-5.6-terra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Write a haiku about cloud infrastructure."),
 		},
@@ -152,7 +158,7 @@ public final class AmazonBedrockCreateResponseExample {
 
     ResponseCreateParams params =
         ResponseCreateParams.builder()
-            .model("openai.gpt-5.6-sol")
+            .model("openai.gpt-5.6-terra")
             .input("Write a haiku about cloud infrastructure.")
             .build();
 
@@ -181,7 +187,7 @@ ResponsesClient client = new(
 
 CreateResponseOptions options = new()
 {
-    Model = "openai.gpt-5.6-sol",
+    Model = "openai.gpt-5.6-terra",
 };
 options.InputItems.Add(
     ResponseItem.CreateUserMessageItem("Write a haiku about cloud infrastructure.")
@@ -204,7 +210,7 @@ client = OpenAI::Client.new(
 )
 
 response = client.responses.create(
-  model: "openai.gpt-5.6-sol",
+  model: "openai.gpt-5.6-terra",
   input: "Write a haiku about cloud infrastructure."
 )
 
@@ -216,7 +222,7 @@ curl "https://bedrock-mantle.us-east-2.api.aws/openai/v1/responses" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $AWS_BEARER_TOKEN_BEDROCK" \
   -d '{
-    "model": "openai.gpt-5.6-sol",
+    "model": "openai.gpt-5.6-terra",
     "input": "Write a haiku about cloud infrastructure."
   }'
 ```
@@ -259,7 +265,7 @@ const client = new OpenAI({
 });
 
 const response = await client.responses.create({
-  model: "openai.gpt-5.6-sol",
+  model: "openai.gpt-5.6-terra",
   input: "Write a haiku about cloud infrastructure.",
 });
 
@@ -278,7 +284,7 @@ client = OpenAI(
 )
 
 response = client.responses.create(
-    model="openai.gpt-5.6-sol",
+    model="openai.gpt-5.6-terra",
     input="Write a haiku about cloud infrastructure.",
 )
 
@@ -313,7 +319,7 @@ func main() {
 	}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
-		Model: "openai.gpt-5.6-sol",
+		Model: "openai.gpt-5.6-terra",
 		Input: responses.ResponseNewParamsInputUnion{
 			OfString: openai.String("Write a haiku about cloud infrastructure."),
 		},
@@ -343,7 +349,7 @@ public final class AmazonBedrockCreateResponseWithAwsCredentialsExample {
 
     ResponseCreateParams params =
         ResponseCreateParams.builder()
-            .model("openai.gpt-5.6-sol")
+            .model("openai.gpt-5.6-terra")
             .input("Write a haiku about cloud infrastructure.")
             .build();
 
@@ -368,7 +374,7 @@ client = OpenAI::Client.new(
 )
 
 response = client.responses.create(
-  model: "openai.gpt-5.6-sol",
+  model: "openai.gpt-5.6-terra",
   input: "Write a haiku about cloud infrastructure."
 )
 
@@ -433,6 +439,7 @@ These Responses API differences apply when choosing between Runtime and Mantle:
 | Capability                             | Bedrock Runtime                  | Mantle                                                                      |
 | -------------------------------------- | -------------------------------- | --------------------------------------------------------------------------- |
 | GPT-6 Astra                            | Available                        | Available in `us-west-2` (Oregon)                                           |
+| GPT-6 Sol and GPT-6 Luna               | United States and global         | Available in `us-east-1` (N. Virginia)                                      |
 | Computer use                           | Available on supported models    | Available on supported models                                               |
 | Streaming responses                    | Available                        | Available                                                                   |
 | Background mode (`background: true`)   | Not available                    | Available, subject to [data retention settings](#data-access-and-retention) |
@@ -497,6 +504,11 @@ processing in the OpenAI API. Amazon commercial terms apply to Bedrock usage.
 
 See [API pricing](https://developers.openai.com/api/docs/pricing) for direct OpenAI API pricing. For Bedrock
 rates, supported service tiers, and billing options, use [Amazon Bedrock pricing](https://aws.amazon.com/bedrock/pricing/) and the applicable model card.
+
+## Bedrock Managed Agents
+
+For managed agent sessions on AWS, see
+[Bedrock Managed Agents](https://developers.openai.com/api/docs/guides/agents-api/bedrock-managed-agents).
 
 ## Next steps
 

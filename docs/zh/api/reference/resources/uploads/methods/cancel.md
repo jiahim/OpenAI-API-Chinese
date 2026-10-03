@@ -1,26 +1,26 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。你也可以在页面 URL 末尾添加 `.md` 来获取该页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，请在页面 URL 末尾追加 `.md` 。
 
 ## 取消上传
 
 **post** `/uploads/{upload_id}/cancel`
 
-取消该上传。上传被取消后，不可再添加任何分块。
+取消该 Upload。上传被取消后,不能再添加任何 Part。
 
-返回状态为 `cancelled`.
+返回状态为上述值的 Upload 对象 `cancelled`.
 
 ### 路径参数
 
 - `upload_id: string`
 
-### 返回
+### 返回值
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以以 Parts 的形式接收字节分块。
+  Upload 对象可以接受以 Parts 形式传入的字节块。
 
   - `id: string`
 
-    Upload 的唯一标识符，可在 API 端点中引用。
+    Upload 唯一标识符，可在 API 端点中引用。
 
   - `bytes: number`
 
@@ -28,19 +28,19 @@
 
   - `created_at: number`
 
-    Upload 创建时的 Unix 时间戳（以秒为单位）。
+    Upload 创建时的 Unix 时间戳（秒）。
 
   - `expires_at: number`
 
-    Upload 过期时的 Unix 时间戳（以秒为单位）。
+    Upload 过期时的 Unix 时间戳（秒）。
 
   - `filename: string`
 
-    要上传的文件名。
+    要上传的文件的名称。
 
   - `purpose: string`
 
-    该文件的预期用途。 [请参考此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 了解可接受的值。
+    文件的预期用途。 [请参阅此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 以了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -56,7 +56,7 @@
 
   - `file: optional FileObject or null`
 
-    该 `File` 对象表示已上传到 OpenAI 的文档。
+    Upload 完成后可用的 File 对象。
 
     - `id: string`
 
@@ -64,11 +64,11 @@
 
     - `bytes: number`
 
-      文件的大小（以字节为单位）。
+      文件的大小，以字节为单位。
 
     - `created_at: number`
 
-      文件创建时的 Unix 时间戳（以秒为单位）。
+      文件创建时的 Unix 时间戳（秒）。
 
     - `filename: string`
 
@@ -102,7 +102,7 @@
 
     - `status: "uploaded" or "processed" or "error"`
 
-      已弃用。文件的当前状态，可以为 `uploaded`, `processed`，或 `error`.
+      已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
 
       - `"uploaded"`
 
@@ -112,11 +112,11 @@
 
     - `expires_at: optional number`
 
-      文件到期时间的 Unix 时间戳（秒）。
+      文件到期时的 Unix 时间戳（以秒为单位）。
 
     - `status_details: optional string`
 
-      已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
+      已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段： `fine_tuning.job`.
 
   - `object: optional "upload"`
 

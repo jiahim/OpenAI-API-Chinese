@@ -1,4 +1,4 @@
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 获取评估
 
@@ -10,7 +10,7 @@
 
 - `eval_id: string`
 
-### 返回值
+### 返回
 
 - `id: string`
 
@@ -27,15 +27,15 @@
   - `EvalCustomDataSourceConfig object { schema, type }`
 
     一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
-    响应模式定义了数据的形状，数据将用于：
+    响应架构定义了数据的形状，这些数据将用于：
 
-    - 定义你的测试评判标准，以及
-    - 创建运行时所需的数据
+    - 定义你的测试标准，以及
+    - 创建运行所需的数据
 
     - `schema: map[unknown]`
 
-      运行数据源条目的 json 模式。
-      了解如何构建 JSON 模式 [请参阅此处](https://json-schema.org/).
+      运行数据源项的 JSON 架构。
+      了解如何构建 JSON 架构 [参考此处](https://json-schema.org/).
 
     - `type: "custom"`
 
@@ -45,15 +45,15 @@
 
   - `LogsDataSourceConfig object { schema, type, metadata }`
 
-    一个 LogsDataSourceConfig，用于指定你日志查询的元数据属性。
-    这通常是以下类似的元数据： `usecase=chatbot` 或 `prompt-version=v2`,等等。
-    此数据源配置返回的模式用于定义评估中可用的变量。
-    `item` 和 `sample` 在使用此数据源配置时都会被定义。
+    一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
+    这通常是像这样的元数据： `usecase=chatbot` 或 `prompt-version=v2`，等等。
+    此数据源配置返回的架构用于定义评估中可用的变量。
+    `item` 以及 `sample` 在使用此数据源配置时都会被定义。
 
     - `schema: map[unknown]`
 
-      运行数据源条目的 json 模式。
-      了解如何构建 JSON 模式 [请参阅此处](https://json-schema.org/).
+      运行数据源项的 JSON 架构。
+      了解如何构建 JSON 架构 [参考此处](https://json-schema.org/).
 
     - `type: "logs"`
 
@@ -63,11 +63,11 @@
 
     - `metadata: optional Metadata or null`
 
-      由 16 个键值对组成的集合，可以附加到对象上。这可以
-      用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-      用于以结构化格式存储有关对象的附加信息，并通过 接口 或仪表板查询对象。
+      可附加到对象的 16 组键值对。可用于
+      以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
+      格式，以及通过 接口 或仪表板查询对象。
 
-      键为字符串，最大长度为 64 个字符。值为字符串，
+      键为字符串，最大长度为 64 个字符。值为字符串
       最大长度为 512 个字符。
 
   - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
@@ -76,8 +76,8 @@
 
     - `schema: map[unknown]`
 
-      运行数据源条目的 json 模式。
-      了解如何构建 JSON 模式 [请参阅此处](https://json-schema.org/).
+      运行数据源项的 JSON 架构。
+      了解如何构建 JSON 架构 [参考此处](https://json-schema.org/).
 
     - `type: "stored_completions"`
 
@@ -87,20 +87,20 @@
 
     - `metadata: optional Metadata or null`
 
-      由 16 个键值对组成的集合，可以附加到对象上。这可以
-      用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-      用于以结构化格式存储有关对象的附加信息，并通过 接口 或仪表板查询对象。
+      可附加到对象的 16 组键值对。可用于
+      以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
+      格式，以及通过 接口 或仪表板查询对象。
 
-      键为字符串，最大长度为 64 个字符。值为字符串，
+      键为字符串，最大长度为 64 个字符。值为字符串
       最大长度为 512 个字符。
 
 - `metadata: Metadata or null`
 
-  由 16 个键值对组成的集合，可以附加到对象上。这可以
-  用于以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-  用于以结构化格式存储有关对象的附加信息，并通过 接口 或仪表板查询对象。
+  可附加到对象的 16 组键值对。可用于
+  以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
+  格式，以及通过 接口 或仪表板查询对象。
 
-  键为字符串，最大长度为 64 个字符。值为字符串，
+  键为字符串，最大长度为 64 个字符。值为字符串
   最大长度为 512 个字符。
 
 - `name: string`
@@ -109,7 +109,7 @@
 
 - `object: "eval"`
 
-  对象的类型。
+  对象类型。
 
   - `"eval"`
 
@@ -119,7 +119,7 @@
 
   - `LabelModelGrader object { input, labels, model, 3 more }`
 
-    一个 LabelModelGrader 对象，使用模型为评估中的每个项目
+    一个 LabelModelGrader 对象，使用模型为评估中的每一项
     分配标签。
 
     - `input: array of object { content, role, type }`
@@ -138,7 +138,7 @@
 
           - `text: string`
 
-            提供给模型的文本输入。
+            模型的文本输入。
 
           - `type: "input_text"`
 
@@ -148,7 +148,7 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点继承其 TTL 自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
+            标记可复用提示前缀的确切结束位置。断点继承自请求的 `prompt_cache_options.ttl`；边界不会向上对齐到 token 块。
 
             - `mode: "explicit"`
 
@@ -158,11 +158,11 @@
 
         - `OutputText object { text, type }`
 
-          模型的文本输出。
+          模型输出的文本。
 
           - `text: string`
 
-            来自模型的文本输出。
+            模型输出的文本。
 
           - `type: "output_text"`
 
@@ -172,21 +172,21 @@
 
         - `InputImage object { image_url, type, detail }`
 
-          在 EvalItem content 数组中使用的图像输入块。
+          在 EvalItem 内容数组中使用的图片输入块。
 
           - `image_url: string`
 
-            图像输入的 URL。
+            图片输入的 URL。
 
           - `type: "input_image"`
 
-            图像输入的类型。始终为 `input_image`.
+            图片输入的类型。始终为 `input_image`.
 
             - `"input_image"`
 
           - `detail: optional string`
 
-            发送给模型的图像的细节级别。取值之一为 `high`, `low`，或 `auto`。默认为 `auto`.
+            发送给模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。默认为 `auto`.
 
         - `ResponseInputAudio object { input_audio, type }`
 
@@ -200,7 +200,7 @@
 
             - `format: "mp3" or "wav"`
 
-              音频数据的格式。目前支持的格式有 `mp3` 和
+              音频数据的格式。目前支持的格式有 `mp3` 以及
               `wav`.
 
               - `"mp3"`
@@ -215,8 +215,8 @@
 
         - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
-          输入列表，其中每一项可以是输入文本、输出文本、输入
-          图像或输入音频对象。
+          输入列表，其中每个输入可以是输入文本、输出文本、输入
+          图片或输入音频对象。
 
           - `TextInput = string`
 
@@ -228,11 +228,11 @@
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            模型输出的文本。
 
             - `text: string`
 
-              来自模型的文本输出。
+              模型输出的文本。
 
             - `type: "output_text"`
 
@@ -242,21 +242,21 @@
 
           - `InputImage object { image_url, type, detail }`
 
-            在 EvalItem content 数组中使用的图像输入块。
+            在 EvalItem 内容数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像的细节级别。取值之一为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送给模型的图片的细节级别。可选值为 `high`, `low`、或 `auto`。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -264,7 +264,7 @@
 
       - `role: "user" or "assistant" or "system" or "developer"`
 
-        消息输入的角色。取值之一为 `user`, `assistant`, `system`，或
+        消息输入的角色。可选值为 `user`, `assistant`, `system`、或
         `developer`.
 
         - `"user"`
@@ -283,7 +283,7 @@
 
     - `labels: array of string`
 
-      要分配给评估中每一项的标签。
+      要分配给评估中每个项的标签。
 
     - `model: string`
 
@@ -295,7 +295,7 @@
 
     - `passing_labels: array of string`
 
-      表示通过结果的标签。必须是 labels 的一个子集。
+      表示通过结果的标签。必须是 labels 的子集。
 
     - `type: "label_model"`
 
@@ -305,11 +305,11 @@
 
   - `StringCheckGrader object { input, name, operation, 2 more }`
 
-    一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+    一个 StringCheckGrader 对象，使用指定的操作在输入与参考之间进行字符串比较。
 
     - `input: string`
 
-      输入文本，可能包含模板字符串。
+      输入文本。该字段可以包含模板字符串。
 
     - `name: string`
 
@@ -317,7 +317,7 @@
 
     - `operation: "eq" or "ne" or "like" or "ilike"`
 
-      要执行的字符串检查操作，可选值为 `eq`, `ne`, `like`，或 `ilike`.
+      要执行的字符串检查操作，取值之一： `eq`, `ne`, `like`、或 `ilike`.
 
       - `"eq"`
 
@@ -329,7 +329,7 @@
 
     - `reference: string`
 
-      参考文本，可能包含模板字符串。
+      参考文本。该字段可以包含模板字符串。
 
     - `type: "string_check"`
 
@@ -343,7 +343,7 @@
 
     - `pass_threshold: number`
 
-      评分的阈值。
+      分数的阈值。
 
   - `PythonGrader = PythonGrader`
 
@@ -351,15 +351,15 @@
 
     - `pass_threshold: optional number`
 
-      评分的阈值。
+      分数的阈值。
 
   - `ScoreModelGrader = ScoreModelGrader`
 
-    一个 ScoreModelGrader 对象，使用模型对输入打分。
+    一个 ScoreModelGrader 对象，使用模型为输入打分。
 
     - `pass_threshold: optional number`
 
-      评分的阈值。
+      分数的阈值。
 
 ### 示例
 
@@ -368,7 +368,7 @@ curl https://api.openai.com/v1/evals/$EVAL_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -376,7 +376,23 @@ curl https://api.openai.com/v1/evals/$EVAL_ID \
   "created_at": 0,
   "data_source_config": {
     "schema": {
-      "foo": "bar"
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label"
+          ]
+        }
+      },
+      "required": [
+        "item"
+      ]
     },
     "type": "custom"
   },
@@ -416,7 +432,7 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
   -H "Content-Type: application/json"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -460,6 +476,6 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
   ],
   "name": "External Data Eval",
   "created_at": 1739314509,
-  "metadata": {},
+  "metadata": {}
 }
 ```

@@ -1,10 +1,10 @@
-> 完整文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。如需获取页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
 
-## 删除向量存储文件
+## Delete vector store file
 
 **delete** `/vector_stores/{vector_store_id}/files/{file_id}`
 
-删除一个向量存储文件。这会从向量存储中移除该文件，但文件本身不会被删除。若要删除文件，请使用 [delete file](/api/reference/resources/files/methods/delete) 端点。
+删除一个向量存储文件。这会从向量存储中移除该文件，但文件本身不会被删除。要删除文件，请使用 [delete file](/api/reference/resources/files/methods/delete) 端点。
 
 ### 路径参数
 
@@ -12,7 +12,7 @@
 
 - `file_id: string`
 
-### 返回
+### 返回值
 
 - `VectorStoreFileDeleted object { id, deleted, object }`
 
@@ -57,8 +57,8 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
 
 ```json
 {
-  id: "file-abc123",
-  object: "vector_store.file.deleted",
-  deleted: true
+  "id": "file-abc123",
+  "object": "vector_store.file.deleted",
+  "deleted": true
 }
 ```

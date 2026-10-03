@@ -1,25 +1,25 @@
 # 可观测性与使用情况
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-跟踪实时 智能体 活动、检查已完成的工作并查看详细的轮次追踪：
+跟踪实时的智能体活动，检查已完成的工作，并审阅详细的轮次追踪：
 
-1. 你可以在 Platform 仪表板中查看会话日志。
-2. 你可以通过其事件和保存的历史记录追踪会话。
-3. 你可以检查回合并识别委托的命令执行。
-4. 你可以检查根智能体和子智能体回合的记录令牌用量。
+1. 你可以在 Platform 控制台中查看会话日志。
+2. 你可以通过事件和保存的历史记录跟踪会话。
+3. 你可以查看各个回合，并识别委派的命令执行。
+4. 你可以查看根智能体和子智能体回合中记录的 token 使用情况。
 
 ## 在仪表板中查看会话
 
 前往 [platform.openai.com/logs?api=智能体](https://platform.openai.com/logs?api=agents) 并打开 **智能体** 标签页。
 
-按会话 ID 搜索，以检查其轮次、工具调用和子智能体。
+按 ID 搜索会话，以查看其对话轮次、工具调用和子智能体。
 
-参阅 [追踪指南](https://developers.openai.com/api/docs/guides/agents-api/tracing) 以在仪表板中检查记录的模型响应、工具调用和子智能体活动，或 [导出会话追踪](https://developers.openai.com/api/docs/guides/agents-api/tracing#export-session-traces) 为 OTLP JSON，通过公共 API 输出。
+参考 [追踪指南](https://developers.openai.com/api/docs/guides/agents-api/tracing) 在仪表板中查看已记录的模型响应、工具调用和子智能体活动，或 [导出会话追踪](https://developers.openai.com/api/docs/guides/agents-api/tracing#export-session-traces) 通过公共 API 导出为 OTLP JSON。
 
-## 跟踪事件并检查会话历史
+## 跟踪事件并查看会话历史
 
-每个会话都会暴露一个事件流，用于实时显示该智能体正在执行的操作。请设置 `OPENAI_API_KEY` 并将这些示例中的示例会话 ID 替换为你保存的会话 ID:
+每个会话都会公开一个事件流，用于实时显示智能体正在执行的操作。设置 `OPENAI_API_KEY` 并将示例中的示例性会话 ID 替换为你已保存的会话 ID：
 
 跟踪实时会话事件
 
@@ -153,9 +153,9 @@ curl -N \
 ```
 
 
-即使在空闲事件期间，流也会保持打开，以免你遗漏已排队的工作。按下 **Ctrl+C** 即可停止查看。
+即使在空闲事件期间，流也会保持打开，以便你不会错过已排队的工作。按下 **Ctrl+C** 即可停止监听。
 
-在会话运行期间，你会看到诸如以下事件:
+会话运行时，你会看到类似以下的事件：
 
 ```text
 agent.session.environment.connected
@@ -167,7 +167,7 @@ agent.session.turn.completed
 agent.session.idle
 ```
 
-若要检查已发生的操作，可获取该会话已保存的条目:
+若要查看已经完成的工作，可检索该会话已保存的条目：
 
 检查已保存的会话条目
 
@@ -261,11 +261,11 @@ curl \
 ```
 
 
-## 检查轮次并识别委托的命令
+## 检视回合并识别已委派的命令
 
-会话轮次可通过公共 API 获取。使用 `turn_id` 通过已保存的会话 ID 获取命令项中的内容。cURL 示例需要 `jq`:
+会话轮次可通过公共 API 获取。使用 `turn_id` 通过你保存的会话 ID 获取命令项的内容。cURL 示例需要 `jq`:
 
-识别委托命令执行
+识别委托的命令执行
 
 ```javascript
 // Replace the illustrative IDs and URLs below with your own resource values.
@@ -392,50 +392,55 @@ curl "https://api.openai.com/v1/agents/sessions/sess_123/turns/turn_123" \
 
 使用返回的 `last_id` 作为下一页的 `after` 值，当 `has_more` 为 `true`.
 
-命令项包含 `turn_id`。检索该轮次并读取 `subagent_id` 以识别运行该命令的委托 智能体。一个 `null` 子智能体 ID 用于标识根 智能体 的工作。命令输出截断不会被报告。
+命令项包含 `turn_id`。检索该轮次并读取 `subagent_id` 以识别运行该命令的委托智能体。一个 `null` 子智能体 ID 用于识别根智能体工作。不会报告命令输出的截断情况。
 
-## 检查一轮追踪
+## 检查一轮对话追踪
 
-使用 Platform 控制台来检查已完成的回合及其 智能体 活动。
-要通过公共 API 检索已记录的追踪，请使用 [session 追踪 导出端点](https://developers.openai.com/api/docs/guides/agents-api/tracing#export-session-traces) 并附带项目 API 密钥。控制台 追踪 端点仍然与受支持的客户 API 分开。
+使用 Platform 控制台查看已完成的轮次及其 智能体 活动。
+若要通过公共 API 获取已记录的追踪，请使用 [session 追踪 导出端点](https://developers.openai.com/api/docs/guides/agents-api/tracing#export-session-traces) 配合项目 API 密钥调用。控制台 追踪 端点与受支持的客户 API 相互独立。
 
-回合资源包括尽力而为的 `usage` 以及一个 `subagent_id` ，用于标识被委托的工作。用量可在 `null` 未知时进行估算，并可能发生变化。请参阅 [检查子智能体令牌用量](#inspect-subagent-token-usage).
+Turn 资源包含尽力提供的 `usage` 以及一个 `subagent_id` 用于标识已委托的工作。相关用量可在未知时 `null` 且可能会发生变化。详见 [检查子智能体令牌用量](#inspect-subagent-token-usage).
 
-若要归属某条 shell 命令，请通过其命令项的
-`turn_id`，检索该回合，然后检查 `turn.subagent_id`。客户 API 不会指示
+若要归因某个 shell 命令，可通过其命令项的
+`turn_id`，获取对应的轮次，然后查看 `turn.subagent_id`。客户 API 不会指明
 命令输出是否被截断。
 
-## 模型用量与费用
+## 错误与恢复
 
-一个智能体在完成任务时可能会进行多次模型调用。每次调用都遵循模型的 [token 定价](https://developers.openai.com/api/docs/pricing) 和 [提示缓存规则](https://developers.openai.com/api/docs/guides/prompt-caching)，与Responses API中相同。请估算完成任务所需所有调用的成本。
+请参阅 [错误处理与恢复](https://developers.openai.com/api/docs/guides/agents-api/errors) 以检查失败情况，
+选择恢复策略并安全地重试。
 
-### 哪些因素会影响费用？
+## 模型使用量与费用
+
+一个智能体在完成任务时可能会进行多次模型调用。每次调用都遵循模型的 [token 定价](https://developers.openai.com/api/docs/pricing) 和 [提示缓存规则](https://developers.openai.com/api/docs/guides/prompt-caching)，与 Responses API 一致。请估算完成任务所需的所有调用的成本。
+
+### 哪些因素会影响成本？
 
 每次模型调用可能会消耗：
 
-- **输入 tokens：** 智能体 指令、工具定义、对话历史、用户输入、文件或图像以及工具结果。
-- **缓存输入 tokens：** 匹配 prompt 前缀复用的输入，按模型的缓存输入费率计费。
-- **输出 tokens：** 生成的文本、工具调用参数以及推理。
+- **输入 token：** 智能体 指令、工具定义、对话历史、用户输入、文件或图像，以及工具结果。
+- **缓存输入 token：** 由匹配的前缀 prompt 复用而来的输入，按模型的缓存输入费率计费。
+- **输出 token：** 生成的文本、工具调用参数以及推理。
 
 推理令牌按输出令牌计费。
 
-子智能体也可以发起模型调用。查看其记录的 [轮次用量](#inspect-subagent-token-usage) 与根智能体工作一并查看，以调查模型成本。
+子智能体也可以发起模型调用。检查它们记录的 [轮次用量](#inspect-subagent-token-usage) ，以便在排查模型成本时与根智能体的工作一起分析。
 
-请一并核算根智能体与子智能体的工作，包括重试，以及任何适用的工具、沙箱算力和第三方服务费用。对于采用缓存写入定价的模型，将输入写入缓存也会产生费用。下方的 智能体 API 用量字段并未单独暴露缓存写入次数，因此在适用该定价时无法据此确定确切的模型费用。
+核算根智能体和子智能体的工作（包括重试），以及任何适用的工具、沙盒算力和第三方服务费用。对于采用缓存写入定价的模型，将输入写入缓存也会产生费用。下方的 智能体 API 用量字段并未单独暴露缓存写入次数，因此在适用该定价时无法据此确定准确的模型费用。
 
 ### Prompt caching
 
-智能体会在会话中向前传递上下文。当连续多次的模型调用共享相同的前缀时，提示缓存可以复用其先前的处理结果。模型会生成新的回复；缓存不会重放旧的答案。维持会话并不能保证命中缓存。复用取决于前缀是否匹配以及模型的缓存资格和生命周期规则。
+智能体会在一个会话内将上下文向后传递。当连续模型调用共享相同的前缀提示时，提示缓存可以复用其早期处理结果。模型会生成新的回复；缓存并不会回放旧答案。维护会话并不能保证命中缓存。是否复用取决于前缀是否匹配，以及模型的缓存资格与生命周期规则。
 
-在实际可行的前提下保持初始指令和工具定义的稳定，并将新的任务细节放在后续消息中。对于 [工具搜索](https://developers.openai.com/api/docs/guides/tools-tool-search#agents-api)，发现到的定义会被添加到对话末尾，从而保留先前的内容以便复用缓存。详见 [提示缓存](https://developers.openai.com/api/docs/guides/prompt-caching) 以了解特定模型的规则。
+在可行的情况下保持初始指令和工具定义的稳定，并将新任务细节放在后续消息中。使用 [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search#agents-api)，时，发现到的定义会被添加到对话末尾，从而保留先前的内容以便复用缓存。参见 [Prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching) 了解特定模型的规则。
 
-较高的缓存输入占比并不能直接反映在整个任务成本上的节省。缓存输入仍然会计费，并且多次重复调用可能会处理大量历史内容。请在你的应用所需的质量和延迟下，对比完成相同任务的成本。
+较高的缓存输入占比并不能反映在整个任务成本上的节省程度。缓存输入仍会计费，并且重复调用可能会处理大量历史记录。请根据你的应用所需的生成质量和延迟，比较完成相同任务时的成本。
 
-### 了解 token 用量
+### 了解 token 使用情况
 
-会话和回合资源会尽力呈现 `usage`。它可能是 `null` 当数据未知时的近似值，且随着统计到达，已记录的数量可能会变化。缺少用量数据并不代表用量为零。这些计数并非最终账单。
+会话和轮次资源会尽力提供 `usage`。它可能 `null` 时表示未知，且记录的计数可能随着核算数据到达而发生变化。缺少用量记录并不代表用量为零。这些计数并非最终账单。
 
-一条已记录的用量对象包含以下这些令牌类别：
+记录的用量对象包含以下 token 类别：
 
 ```json
 {
@@ -451,12 +456,12 @@ curl "https://api.openai.com/v1/agents/sessions/sess_123/turns/turn_123" \
 }
 ```
 
-在本示例中，智能体处理了 5,000 个输入令牌，并生成了 900 个输出令牌。在输入令牌中，有 1,500 个被缓存。在输出令牌中，有 200 个是推理令牌。
+在此示例中，智能体 处理了 5,000 个输入 token 并生成了 900 个输出 token。在输入 token 中，有 1,500 个来自缓存。在输出 token 中，有 200 个是推理 token。
 
-缓存令牌包含在 `input_tokens`，中，而推理令牌包含在 `output_tokens`.
+缓存 token 已包含在 `input_tokens`，中，推理 token 已包含在 `output_tokens`.
 
-### 查看子智能体的令牌用量
+### 检查子智能体的令牌用量
 
-列出或检索 [会话轮次](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#inspect-session-turns) 并查看每轮的 `usage`。该字段 `subagent_id` 用于标识子智能体；对于根智能体轮次，该字段 `null` 。当 `has_more` 为 `true`，时，请传入 `last_id` 作为 `after` 并使用相同的 `order` 以读取剩余的轮次。
+列出或检索 [会话轮次](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage#inspect-session-turns) 并检查每个轮次的 `usage`。 `subagent_id` 标识子智能体；对于根 `null` root-智能体 轮次为 `has_more` 为 `true`，传入 `last_id` 作为 `after` 并使用相同的 `order` 以读取剩余的轮次。
 
-用量数据是尽力而为的：在未知时可能 `null` ，并且记录的值可能会变化。你也可以在追踪仪表盘中查看每个智能体的记录用量 [追踪 仪表盘](https://developers.openai.com/api/docs/guides/agents-api/tracing#token-usage).
+用量为尽力而为：在未知时可能为 `null` ，并且记录的值可能会变化。你也可以在智能体仪表板中检查每个智能体的记录用量 [追踪 仪表板](https://developers.openai.com/api/docs/guides/agents-api/tracing#token-usage).

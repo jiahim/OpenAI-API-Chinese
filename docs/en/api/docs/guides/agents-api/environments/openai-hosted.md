@@ -7,6 +7,9 @@ and command-line tools. OpenAI provisions and connects it; your application supp
 the task and retrieves the results. Choose a [self-hosted sandbox](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted)
 when you need your own image, compute, or private network.
 
+For tasks that interact with websites through a browser, see
+[Computer use](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use).
+
 ## Configure the sandbox
 
 Set `environment.type` to `openai_hosted` and add only the settings your workload
@@ -22,6 +25,32 @@ needs. The working directory is `/workspace`.
 Packages and input files are prepared before setup commands run. A nonzero setup
 exit status prevents the agent from starting. Use a setup command to check required
 dependencies or files. Templates save configuration, not a running workspace.
+
+### Choose a container size
+
+Set `environment.container_size` when creating a session to choose the CPU and
+memory available to your sandbox. Defaults to `medium`.
+
+| Size     | vCPU | Memory |
+| -------- | ---- | ------ |
+| `small`  | 1    | 1 GB   |
+| `medium` | 2    | 4 GB   |
+| `large`  | 4    | 16 GB  |
+
+For example, include this environment in your
+`POST /v1/agents/sessions` request to select `small`:
+
+```json
+{
+  "environment": {
+    "type": "openai_hosted",
+    "container_size": "small"
+  }
+}
+```
+
+The returned session reports the selected size in `environment.container_size`.
+This setting applies only to OpenAI-hosted sandboxes.
 
 ### Control network access
 
@@ -84,6 +113,7 @@ Create summary.json
 
 ```javascript
 import OpenAI from "openai";
+import { agentFileDestination } from "openai/helpers/beta/agents/filesystem";
 
 const client = new OpenAI();
 const stream = await client.beta.agents.sessions.create({
@@ -104,8 +134,18 @@ const stream = await client.beta.agents.sessions.create({
   stream: true,
 });
 
-for await (const event of stream) {
-  console.log(event);
+stream.withResultCollection();
+try {
+  for await (const event of stream) {
+    console.log(event);
+  }
+  const result = await stream.finalResult();
+  await client.beta.agents.sessions.artifacts.forResult(result).download({
+    path: "/workspace/outputs/summary.json",
+    to: agentFileDestination("summary.json"),
+  });
+} finally {
+  stream.controller.abort();
 }
 ```
 
@@ -130,9 +170,14 @@ stream = client.beta.agents.sessions.create(
     stream=True,
 )
 
-with stream:
+with stream.with_result_collection():
     for event in stream:
         print(event.model_dump_json())
+    result = stream.get_final_result()
+
+client.beta.agents.sessions.artifacts.for_result(result).download(
+    "/workspace/outputs/summary.json", to="summary.json"
+)
 ```
 
 ```go
@@ -141,6 +186,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -160,11 +206,25 @@ func main() {
 		Input: openai.BetaAgentSessionNewParamsInputUnion{OfString: openai.String("Use Python to sum the amount column in /workspace/amounts.csv. Write a JSON object with the total to /workspace/outputs/summary.json, then read it back to verify it.")},
 	})
 	defer stream.Close()
-
+	openai.BetaAgentSessionWithResultCollection(stream)
 	for stream.Next() {
 		fmt.Println(stream.Current().RawJSON())
 	}
-	if err := stream.Err(); err != nil {
+
+	result, err := openai.BetaAgentSessionFinalResult(stream)
+	if err != nil {
+		panic(err)
+	}
+	destination, err := os.Create("summary.json")
+	if err != nil {
+		panic(err)
+	}
+	defer destination.Close()
+	_, err = client.Beta.Agents.Sessions.Artifacts.ForResult(result).Download(ctx, "/workspace/outputs/summary.json", destination)
+	if err != nil {
+		panic(err)
+	}
+	if err := destination.Close(); err != nil {
 		panic(err)
 	}
 }
@@ -172,9 +232,12 @@ func main() {
 
 ```java
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.helpers.beta.agents.AgentArtifactDownloads;
 import com.openai.models.beta.agents.EnvironmentParam;
 import com.openai.models.beta.agents.HostedEnvironmentFileParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import com.openai.services.beta.agents.AgentTurnResults;
+import java.nio.file.Path;
 
 public class HostedReport {
   public static void main(String[] args) throws Exception {
@@ -201,7 +264,11 @@ public class HostedReport {
             .build();
 
     try (var stream = client.beta().agents().sessions().createStreaming(params)) {
+      AgentTurnResults.withResultCollection(stream);
       stream.stream().forEach(System.out::println);
+      var result = AgentTurnResults.getFinalResult(stream);
+      AgentArtifactDownloads.forResult(client.beta().agents().sessions().artifacts(), result)
+          .download("/workspace/outputs/summary.json", Path.of("summary.json"));
     }
   }
 }
@@ -210,6 +277,7 @@ public class HostedReport {
 ```ruby
 require "openai"
 require "json"
+require "pathname"
 
 client = OpenAI::Client.new
 stream = client.beta.agents.sessions.create_streaming(
@@ -229,7 +297,14 @@ stream = client.beta.agents.sessions.create_streaming(
 )
 
 begin
+  stream.with_result_collection
   stream.each { |event| puts event.to_json }
+  result = stream.get_final_result
+  puts result.output_text
+  client.beta.agents.sessions.artifacts.for_result(result).download(
+    path: "/workspace/outputs/summary.json",
+    to: Pathname("summary.json")
+  )
 ensure
   stream.close
 end

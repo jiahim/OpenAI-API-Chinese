@@ -1,4 +1,4 @@
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾添加 `.md` 。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后附加 `.md` 即可获得文档页面的 Markdown 版本。
 
 ## 更新向量存储文件属性
 
@@ -16,11 +16,11 @@
 
 - `attributes: map[string or number or boolean] or null`
 
-  可附加到对象的 16 组键值对。可用于
-  以结构化格式存储对象的附加信息，以及通过
-  API 或控制面板查询对象。键为字符串，
-  最大长度为 64 个字符。值为字符串（最大长度
-  512 个字符）、布尔值或数字。
+  一组 16 个可附加到对象的键值对。可用于
+  以结构化格式存储关于对象的附加信息，并通过API或控制面板查询对象。键为
+  字符串，
+  最大长度为 64 个字符。值为字符串，
+  最大长度为 512 个字符、布尔值或数字。
 
   - `string`
 
@@ -36,7 +36,7 @@
 
   - `id: string`
 
-    可在 API 端点中引用的标识符。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
@@ -44,11 +44,11 @@
 
   - `last_error: object { code, message }  or null`
 
-    与此向量存储文件关联的最近一次错误。如果没有错误则为 `null` 。
+    与此向量存储文件关联的最后一个错误。若无错误则为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      以下值之一： `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -58,7 +58,7 @@
 
     - `message: string`
 
-      对错误的人工可读描述。
+      人类可读的错误描述。
 
   - `object: "vector_store.file"`
 
@@ -68,7 +68,7 @@
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。状态 `completed` 表示该向量存储文件已可供使用。
+    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。状态 `completed` 表示向量存储文件已可供使用。
 
     - `"in_progress"`
 
@@ -80,19 +80,19 @@
 
   - `usage_bytes: number`
 
-    向量存储的总使用量（以字节为单位）。请注意，此值可能与原始文件大小不同。
+    向量存储的总使用量（以字节为单位）。请注意，这可能与原始文件大小不同。
 
   - `vector_store_id: string`
 
-    该 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [文件](/api/reference/resources/files) 所附加到的对象。
+    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [文件](/api/reference/resources/files) 。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 组键值对。可用于
-    以结构化格式存储对象的附加信息，以及通过
-    API 或控制面板查询对象。键为字符串，
-    最大长度为 64 个字符。值为字符串（最大长度
-    512 个字符）、布尔值或数字。
+    一组 16 个可附加到对象的键值对。可用于
+    以结构化格式存储关于对象的附加信息，并通过API或控制面板查询对象。键为
+    字符串，
+    最大长度为 64 个字符。值为字符串，
+    最大长度为 512 个字符、布尔值或数字。
 
     - `string`
 
@@ -102,7 +102,7 @@
 
   - `chunking_strategy: optional StaticFileChunkingStrategyObject or OtherFileChunkingStrategyObject`
 
-    用于对文件进行分块的策略。
+    用于对文件进行分块（chunk）的策略。
 
     - `StaticFileChunkingStrategyObject object { static, type }`
 
@@ -110,13 +110,13 @@
 
         - `chunk_overlap_tokens: number`
 
-          块之间重叠的 token 数量。默认值为 `400`.
+          分块之间重叠的 token 数量。默认值为 `400`.
 
           请注意，重叠部分不得超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个分块的最大 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中的最大 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
@@ -126,7 +126,7 @@
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回此错误。通常，这是因为文件在API引入该概念之前已被索引。 `chunking_strategy` 概念时引入的。
+      在分块策略未知时返回此值。通常，这是因为文件是在 `chunking_strategy` 概念引入到 API 之前被索引的。
 
       - `type: "other"`
 
@@ -178,7 +178,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
 ### 示例
 
 ```http
-curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
+curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"attributes": {"key1": "value1", "key2": 2}}'
@@ -192,10 +192,16 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
   "object": "vector_store.file",
   "usage_bytes": 1234,
   "created_at": 1699061776,
-  "vector_store_id": "vs_abcd",
+  "vector_store_id": "vs_abc123",
   "status": "completed",
   "last_error": null,
-  "chunking_strategy": {...},
+  "chunking_strategy": {
+    "type": "static",
+    "static": {
+      "max_chunk_size_tokens": 800,
+      "chunk_overlap_tokens": 400
+    }
+  },
   "attributes": {"key1": "value1", "key2": 2}
 }
 ```

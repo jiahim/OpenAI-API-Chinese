@@ -152,6 +152,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "salesOverview.pdf",
       "purpose": "assistants",
+      "status": "processed"
     },
     {
       "id": "file-abc456",
@@ -161,6 +162,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "puppy.jsonl",
       "purpose": "fine-tune",
+      "status": "processed"
     }
   ],
   "first_id": "file-abc123",

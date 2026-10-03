@@ -70,13 +70,15 @@ Returns the audio file content, or a stream of audio events.
 
     - `"gpt-4o-mini-tts-2025-12-15"`
 
-- `voice: string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
+- `voice: string or "alloy" or "ash" or "ballad" or 10 more or object { id }`
 
-  The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options).
+  The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options). Custom voices must be created from audio samples. Voices created from text prompts are supported only in Live.
 
   - `string`
 
-  - `"alloy" or "ash" or "ballad" or 7 more`
+  - `"alloy" or "ash" or "ballad" or 10 more`
+
+    The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options). Custom voices must be created from audio samples. Voices created from text prompts are supported only in Live.
 
     - `"alloy"`
 
@@ -97,6 +99,12 @@ Returns the audio file content, or a stream of audio events.
     - `"marin"`
 
     - `"cedar"`
+
+    - `"fable"`
+
+    - `"onyx"`
+
+    - `"nova"`
 
   - `ID object { id }`
 
@@ -147,7 +155,7 @@ curl https://api.openai.com/v1/audio/speech \
     -d '{
           "input": "input",
           "model": "tts-1",
-          "voice": "alloy"
+          "voice": "ash"
         }'
 ```
 
@@ -202,7 +210,8 @@ curl https://api.openai.com/v1/audio/speech \
 Transcribes audio into the input language.
 
 Returns a transcription object in `json`, `diarized_json`, or `verbose_json`
-format, or a stream of transcript events.
+format, plain text in `text`, `srt`, or `vtt` format, or a stream of
+transcript events. Supported formats depend on the model.
 
 ### Returns
 
@@ -694,8 +703,8 @@ curl https://api.openai.com/v1/audio/transcriptions \
 {
   "task": "transcribe",
   "language": "english",
-  "duration": 8.470000267028809,
-  "text": "The beach was a popular spot on a hot summer day. People were swimming in the ocean, building sandcastles, and playing beach volleyball.",
+  "duration": 3.32,
+  "text": "The beach was a popular spot on a hot summer day.",
   "segments": [
     {
       "id": 0,
@@ -710,12 +719,11 @@ curl https://api.openai.com/v1/audio/transcriptions \
       "avg_logprob": -0.2860786020755768,
       "compression_ratio": 1.2363636493682861,
       "no_speech_prob": 0.00985979475080967
-    },
-    ...
+    }
   ],
   "usage": {
     "type": "duration",
-    "seconds": 9
+    "seconds": 4
   }
 }
 ```
@@ -817,24 +825,18 @@ curl https://api.openai.com/v1/audio/transcriptions \
 {
   "task": "transcribe",
   "language": "english",
-  "duration": 8.470000267028809,
-  "text": "The beach was a popular spot on a hot summer day. People were swimming in the ocean, building sandcastles, and playing beach volleyball.",
+  "duration": 0.5,
+  "text": "Hello.",
   "words": [
     {
-      "word": "The",
+      "word": "Hello",
       "start": 0.0,
-      "end": 0.23999999463558197
-    },
-    ...
-    {
-      "word": "volleyball",
-      "start": 7.400000095367432,
-      "end": 7.900000095367432
+      "end": 0.5
     }
   ],
   "usage": {
     "type": "duration",
-    "seconds": 9
+    "seconds": 1
   }
 }
 ```
@@ -2504,68 +2506,51 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
 **post** `/audio/voices`
 
-Creates a custom voice.
+Creates a voice from a text prompt or from a consent recording and an audio sample.
 
-### Returns
+For prompt-based creation, send `type: "prompt"` with a `name` and `prompt` as JSON or multipart form data. For creation from an audio sample, send `type: "audio_sample"` with a `name`, `audio_sample`, and `consent` recording ID as multipart form data. The type defaults to `audio_sample` when omitted.
 
-- `id: string`
+Returns the saved voice's metadata. Voices created from text prompts are supported only in Live, not in Realtime or the speech endpoint. The response does not include preview audio.
 
-  The voice identifier, which can be referenced in API endpoints.
-
-- `created_at: number`
-
-  The Unix timestamp (in seconds) for when the voice was created.
+### Body Parameters
 
 - `name: string`
 
-  The name of the voice.
+  The name of the new voice.
 
-- `object: "audio.voice"`
+- `prompt: string`
 
-  The object type, which is always `audio.voice`.
+  A description of the desired voice. Must not contain only whitespace.
 
-  - `"audio.voice"`
+- `type: "prompt"`
 
-### Example
+  Set to `prompt` to create a voice from a text description.
 
-```http
-curl https://api.openai.com/v1/audio/voices \
-    -H 'Content-Type: multipart/form-data' \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -F 'audio_sample=@/path/to/audio_sample' \
-    -F consent=consent \
-    -F name=name
-```
+  - `"prompt"`
 
-#### Response
+- `model: optional string or "auto" or "2026-10-01"`
 
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "name": "name",
-  "object": "audio.voice"
-}
-```
+  The voice creation model to use. Defaults to `auto`.
 
-### Example
+  - `string`
 
-```http
-curl https://api.openai.com/v1/audio/voices \
-  -X POST \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F "name=My new voice" \
-  -F "consent=cons_1234" \
-  -F "audio_sample=@$HOME/audio_sample.wav;type=audio/x-wav"
-```
+  - `"auto" or "2026-10-01"`
 
-## Domain Types
+    The voice creation model to use. Defaults to `auto`.
 
-### Voice Create Response
+    - `"auto"`
 
-- `VoiceCreateResponse object { id, created_at, name, object }`
+    - `"2026-10-01"`
 
-  A custom voice that can be used for audio output.
+- `script_hint: optional string`
+
+  Optional text for the voice to speak during creation. If omitted, a script is generated from the prompt. Must not be blank after trimming whitespace; scripts that are too short are rejected.
+
+### Returns
+
+- `Voice object { id, created_at, name, 2 more }`
+
+  A custom voice that can be used for audio output. Voices created from text prompts are supported only in Live.
 
   - `id: string`
 
@@ -2584,3 +2569,85 @@ curl https://api.openai.com/v1/audio/voices \
     The object type, which is always `audio.voice`.
 
     - `"audio.voice"`
+
+  - `type: "audio_sample" or "prompt"`
+
+    How the voice was created. Voices created from text prompts are supported only in Live.
+
+    - `"audio_sample"`
+
+    - `"prompt"`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/audio/voices \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -d '{
+          "name": "x",
+          "prompt": "x",
+          "type": "prompt"
+        }'
+```
+
+#### Response
+
+```json
+{
+  "id": "id",
+  "created_at": 0,
+  "name": "name",
+  "object": "audio.voice",
+  "type": "audio_sample"
+}
+```
+
+### Example
+
+```http
+curl https://api.openai.com/v1/audio/voices \
+  -X POST \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "prompt",
+    "name": "Warm narrator",
+    "prompt": "A warm, calm narrator with a clear, measured delivery.",
+    "model": "auto"
+  }'
+```
+
+## Domain Types
+
+### Voice
+
+- `Voice object { id, created_at, name, 2 more }`
+
+  A custom voice that can be used for audio output. Voices created from text prompts are supported only in Live.
+
+  - `id: string`
+
+    The voice identifier, which can be referenced in API endpoints.
+
+  - `created_at: number`
+
+    The Unix timestamp (in seconds) for when the voice was created.
+
+  - `name: string`
+
+    The name of the voice.
+
+  - `object: "audio.voice"`
+
+    The object type, which is always `audio.voice`.
+
+    - `"audio.voice"`
+
+  - `type: "audio_sample" or "prompt"`
+
+    How the voice was created. Voices created from text prompts are supported only in Live.
+
+    - `"audio_sample"`
+
+    - `"prompt"`

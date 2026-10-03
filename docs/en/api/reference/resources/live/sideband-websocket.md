@@ -14,7 +14,7 @@ Authenticate from your backend with your OpenAI API key in the `Authorization: B
 
 `session_id` (required path parameter): The ID of the existing session to attach to.
 
-Attaching does not create a session or replay earlier events. Audio stays on the primary connection. Do not send session.start or session.input_audio.append on this WebSocket.
+Attaching does not create a session or replay earlier events. The primary connection carries live media; this sideband receives reflected input and output audio. Do not send session.start or session.input_audio.append on this WebSocket.
 
 ## Inputs
 
@@ -215,7 +215,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `"mcp"`
 
-        - `tools: optional array of FunctionTool or object { type }`
+        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 3 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -254,6 +254,34 @@ Schema name: `LiveSessionUpdateParam`
               The tool type. Always `web_search`.
 
               - `"web_search"`
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              - `"file_search"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              - `"code_interpreter"`
+
+          - `Shell object { environment, type }`
+
+            A Responses shell tool with a container_auto or container_reference environment. Local execution and domain secrets are not supported.
+
+            - `environment: map[unknown]`
+
+            - `type: "shell"`
+
+              - `"shell"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              - `"image_generation"`
 
 - `type: "session.update"`
 
@@ -705,7 +733,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -1273,7 +1301,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `"incomplete"`
 
-  - `WebSearchCall object { id, action, status, type }`
+  - `WebSearchCall object { id, status, type, action }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -1282,7 +1310,27 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -1350,26 +1398,6 @@ Schema name: `LiveResponseItemCreateParam`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
   - `FunctionCall object { arguments, call_id, name, 6 more }`
 
@@ -1774,7 +1802,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             Combine multiple filters using `and` or `or`.
 
-            - `filters: array of ComparisonFilter or unknown`
+            - `filters: array of ComparisonFilter or CompoundFilter`
 
               Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -1782,7 +1810,9 @@ Schema name: `LiveResponseItemCreateParam`
 
                 A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-              - `unknown`
+              - `CompoundFilter object { filters, type }`
+
+                Combine multiple filters using `and` or `or`.
 
             - `type: "and" or "or"`
 
@@ -1906,7 +1936,9 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -2229,7 +2261,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -2334,13 +2366,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -2726,7 +2758,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -2996,7 +3028,9 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -3287,7 +3321,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -3392,13 +3426,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -3634,7 +3668,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -4859,6 +4893,118 @@ Schema name: `LiveSessionCloseParam`
 
 ## Server events
 
+<a id="transport.ringing"></a>
+
+### transport.ringing
+
+The outbound SIP provider leg is ringing or providing early media. Delivered only to sideband observers.
+
+#### Schema
+
+Schema name: `LiveTransportRinging`
+
+- `event_id: string`
+
+- `session_id: string`
+
+  The canonical Live session ID.
+
+- `type: "transport.ringing"`
+
+  - `"transport.ringing"`
+
+#### Example
+
+```json
+{
+  "type": "transport.ringing",
+  "event_id": "event_call_1",
+  "session_id": "live_u0_123"
+}
+```
+
+<a id="transport.answered"></a>
+
+### transport.answered
+
+The outbound SIP provider leg answered and media is established. Delivered only to sideband observers.
+
+#### Schema
+
+Schema name: `LiveTransportAnswered`
+
+- `event_id: string`
+
+- `session_id: string`
+
+  The canonical Live session ID.
+
+- `type: "transport.answered"`
+
+  - `"transport.answered"`
+
+#### Example
+
+```json
+{
+  "type": "transport.answered",
+  "event_id": "event_call_2",
+  "session_id": "live_u0_123"
+}
+```
+
+<a id="transport.failed"></a>
+
+### transport.failed
+
+An asynchronous outbound SIP setup failure. Delivered only to sideband observers.
+
+#### Schema
+
+Schema name: `LiveTransportFailed`
+
+- `error: object { code, message, type, param }`
+
+  - `code: string`
+
+    The call setup failure code.
+
+  - `message: string`
+
+  - `type: "call_error"`
+
+    - `"call_error"`
+
+  - `param: optional string`
+
+    The parameter related to the error, if any. Empty when no parameter applies.
+
+- `event_id: string`
+
+- `session_id: string`
+
+  The canonical Live session ID.
+
+- `type: "transport.failed"`
+
+  - `"transport.failed"`
+
+#### Example
+
+```json
+{
+  "type": "transport.failed",
+  "event_id": "event_call_4",
+  "session_id": "live_u0_123",
+  "error": {
+    "type": "call_error",
+    "code": "provider_invite_failed",
+    "message": "provider rejected the call",
+    "param": ""
+  }
+}
+```
+
 <a id="session.started"></a>
 
 ### session.started
@@ -4961,13 +5107,13 @@ Schema name: `LiveSessionStarted`
 
       The voice used for speech generated by the Live model.
 
-      - `voice: optional string or "alloy" or "ash" or "ballad" or 19 more or CustomVoice`
+      - `voice: optional string or "alloy" or "ash" or "aube" or 29 more or CustomVoice`
 
         The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
         - `string`
 
-        - `"alloy" or "ash" or "ballad" or 19 more`
+        - `"alloy" or "ash" or "aube" or 29 more`
 
           The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
@@ -4975,11 +5121,15 @@ Schema name: `LiveSessionStarted`
 
           - `"ash"`
 
+          - `"aube"`
+
           - `"ballad"`
 
           - `"beacon"`
 
           - `"bossa"`
+
+          - `"brise"`
 
           - `"cedar"`
 
@@ -4991,11 +5141,23 @@ Schema name: `LiveSessionStarted`
 
           - `"echo"`
 
+          - `"flitz"`
+
           - `"gleam"`
+
+          - `"harema"`
+
+          - `"juni"`
 
           - `"marin"`
 
           - `"meridian"`
+
+          - `"nira"`
+
+          - `"noeul"`
+
+          - `"nuri"`
 
           - `"quartz"`
 
@@ -5004,6 +5166,10 @@ Schema name: `LiveSessionStarted`
           - `"sage"`
 
           - `"shimmer"`
+
+          - `"shitan"`
+
+          - `"sillage"`
 
           - `"stone"`
 
@@ -5183,7 +5349,7 @@ Schema name: `LiveSessionStarted`
 
               - `"mcp"`
 
-        - `tools: optional array of FunctionTool or object { type }`
+        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 3 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -5222,6 +5388,34 @@ Schema name: `LiveSessionStarted`
               The tool type. Always `web_search`.
 
               - `"web_search"`
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              - `"file_search"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              - `"code_interpreter"`
+
+          - `Shell object { environment, type }`
+
+            A Responses shell tool with a container_auto or container_reference environment. Local execution and domain secrets are not supported.
+
+            - `environment: map[unknown]`
+
+            - `type: "shell"`
+
+              - `"shell"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              - `"image_generation"`
 
       - `type: "responses"`
 
@@ -5527,13 +5721,13 @@ Schema name: `LiveSessionUpdated`
 
       The voice used for speech generated by the Live model.
 
-      - `voice: optional string or "alloy" or "ash" or "ballad" or 19 more or CustomVoice`
+      - `voice: optional string or "alloy" or "ash" or "aube" or 29 more or CustomVoice`
 
         The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
         - `string`
 
-        - `"alloy" or "ash" or "ballad" or 19 more`
+        - `"alloy" or "ash" or "aube" or 29 more`
 
           The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
@@ -5541,11 +5735,15 @@ Schema name: `LiveSessionUpdated`
 
           - `"ash"`
 
+          - `"aube"`
+
           - `"ballad"`
 
           - `"beacon"`
 
           - `"bossa"`
+
+          - `"brise"`
 
           - `"cedar"`
 
@@ -5557,11 +5755,23 @@ Schema name: `LiveSessionUpdated`
 
           - `"echo"`
 
+          - `"flitz"`
+
           - `"gleam"`
+
+          - `"harema"`
+
+          - `"juni"`
 
           - `"marin"`
 
           - `"meridian"`
+
+          - `"nira"`
+
+          - `"noeul"`
+
+          - `"nuri"`
 
           - `"quartz"`
 
@@ -5570,6 +5780,10 @@ Schema name: `LiveSessionUpdated`
           - `"sage"`
 
           - `"shimmer"`
+
+          - `"shitan"`
+
+          - `"sillage"`
 
           - `"stone"`
 
@@ -5749,7 +5963,7 @@ Schema name: `LiveSessionUpdated`
 
               - `"mcp"`
 
-        - `tools: optional array of FunctionTool or object { type }`
+        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 3 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -5788,6 +6002,34 @@ Schema name: `LiveSessionUpdated`
               The tool type. Always `web_search`.
 
               - `"web_search"`
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              - `"file_search"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              - `"code_interpreter"`
+
+          - `Shell object { environment, type }`
+
+            A Responses shell tool with a container_auto or container_reference environment. Local execution and domain secrets are not supported.
+
+            - `environment: map[unknown]`
+
+            - `type: "shell"`
+
+              - `"shell"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              - `"image_generation"`
 
       - `type: "responses"`
 
@@ -6197,6 +6439,45 @@ Schema name: `LiveCommentaryAppended`
 }
 ```
 
+<a id="session.output_audio.delta"></a>
+
+### session.output_audio.delta
+
+An audio chunk generated by the Live model. Decode and play primary WebSocket chunks in delivery order using the configured session audio format. Sideband connections receive reflected output audio with timestamps.
+
+#### Schema
+
+Schema name: `LiveOutputAudioDelta`
+
+- `delta: string`
+
+  Base64-encoded raw audio. Primary WebSocket events use the session's configured format; reflected sideband events use mono PCM16LE at 24 kHz.
+
+- `type: "session.output_audio.delta"`
+
+  The event type, always `session.output_audio.delta`.
+
+  - `"session.output_audio.delta"`
+
+- `end_ms: optional number`
+
+  Exclusive session-relative end in milliseconds. Required on reflected sideband events; omitted on the primary WebSocket. Dropped output frames leave gaps between reflected ranges.
+
+- `start_ms: optional number`
+
+  Inclusive session-relative start in milliseconds. Required on reflected sideband events; omitted on the primary WebSocket.
+
+#### Example
+
+```json
+{
+  "type": "session.output_audio.delta",
+  "delta": "AACAAIAAAIAAAP9/AIAAgA==",
+  "start_ms": 1000,
+  "end_ms": 1200
+}
+```
+
 <a id="session.input_transcript.delta"></a>
 
 ### session.input_transcript.delta
@@ -6592,13 +6873,13 @@ Schema name: `LiveSessionClosed`
 
       The voice used for speech generated by the Live model.
 
-      - `voice: optional string or "alloy" or "ash" or "ballad" or 19 more or CustomVoice`
+      - `voice: optional string or "alloy" or "ash" or "aube" or 29 more or CustomVoice`
 
         The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
         - `string`
 
-        - `"alloy" or "ash" or "ballad" or 19 more`
+        - `"alloy" or "ash" or "aube" or 29 more`
 
           The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
@@ -6606,11 +6887,15 @@ Schema name: `LiveSessionClosed`
 
           - `"ash"`
 
+          - `"aube"`
+
           - `"ballad"`
 
           - `"beacon"`
 
           - `"bossa"`
+
+          - `"brise"`
 
           - `"cedar"`
 
@@ -6622,11 +6907,23 @@ Schema name: `LiveSessionClosed`
 
           - `"echo"`
 
+          - `"flitz"`
+
           - `"gleam"`
+
+          - `"harema"`
+
+          - `"juni"`
 
           - `"marin"`
 
           - `"meridian"`
+
+          - `"nira"`
+
+          - `"noeul"`
+
+          - `"nuri"`
 
           - `"quartz"`
 
@@ -6635,6 +6932,10 @@ Schema name: `LiveSessionClosed`
           - `"sage"`
 
           - `"shimmer"`
+
+          - `"shitan"`
+
+          - `"sillage"`
 
           - `"stone"`
 
@@ -6814,7 +7115,7 @@ Schema name: `LiveSessionClosed`
 
               - `"mcp"`
 
-        - `tools: optional array of FunctionTool or object { type }`
+        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 3 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -6853,6 +7154,34 @@ Schema name: `LiveSessionClosed`
               The tool type. Always `web_search`.
 
               - `"web_search"`
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              - `"file_search"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              - `"code_interpreter"`
+
+          - `Shell object { environment, type }`
+
+            A Responses shell tool with a container_auto or container_reference environment. Local execution and domain secrets are not supported.
+
+            - `environment: map[unknown]`
+
+            - `type: "shell"`
+
+              - `"shell"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              - `"image_generation"`
 
       - `type: "responses"`
 
@@ -7236,7 +7565,7 @@ Schema name: `LiveTransportDTMFReceived`
 
 ### transport.dtmf.send
 
-A SIP DTMF keypress successfully sent by the hosted tool. Delivered only to sideband observers; this is not a client command.
+A SIP DTMF keypress successfully sent to the SIP trunk. Delivered only to sideband observers; this is not a client command.
 
 #### Schema
 
@@ -7250,6 +7579,10 @@ Schema name: `LiveTransportDTMFSend`
 
   - `"transport.dtmf.send"`
 
+- `client_event_id: optional string`
+
+  The event_id of the client command, when supplied.
+
 #### Example
 
 ```json
@@ -7257,117 +7590,5 @@ Schema name: `LiveTransportDTMFSend`
   "type": "transport.dtmf.send",
   "event_id": "event_dtmf_2",
   "event": "#"
-}
-```
-
-<a id="transport.ringing"></a>
-
-### transport.ringing
-
-The outbound SIP provider leg is ringing or providing early media. Delivered only to sideband observers.
-
-#### Schema
-
-Schema name: `LiveTransportRinging`
-
-- `event_id: string`
-
-- `session_id: string`
-
-  The canonical Live session ID.
-
-- `type: "transport.ringing"`
-
-  - `"transport.ringing"`
-
-#### Example
-
-```json
-{
-  "type": "transport.ringing",
-  "event_id": "event_call_1",
-  "session_id": "live_u0_123"
-}
-```
-
-<a id="transport.answered"></a>
-
-### transport.answered
-
-The outbound SIP provider leg answered and media is established. Delivered only to sideband observers.
-
-#### Schema
-
-Schema name: `LiveTransportAnswered`
-
-- `event_id: string`
-
-- `session_id: string`
-
-  The canonical Live session ID.
-
-- `type: "transport.answered"`
-
-  - `"transport.answered"`
-
-#### Example
-
-```json
-{
-  "type": "transport.answered",
-  "event_id": "event_call_2",
-  "session_id": "live_u0_123"
-}
-```
-
-<a id="transport.failed"></a>
-
-### transport.failed
-
-An asynchronous outbound SIP setup failure. Delivered only to sideband observers.
-
-#### Schema
-
-Schema name: `LiveTransportFailed`
-
-- `error: object { code, message, type, param }`
-
-  - `code: string`
-
-    The call setup failure code.
-
-  - `message: string`
-
-  - `type: "call_error"`
-
-    - `"call_error"`
-
-  - `param: optional string`
-
-    The parameter related to the error, if any. Empty when no parameter applies.
-
-- `event_id: string`
-
-- `session_id: string`
-
-  The canonical Live session ID.
-
-- `type: "transport.failed"`
-
-  - `"transport.failed"`
-
-#### Example
-
-```json
-{
-  "type": "transport.failed",
-  "event_id": "event_call_4",
-  "session_id": "live_u0_123",
-  "error": {
-    "type": "call_error",
-    "code": "provider_invite_failed",
-    "message": "provider rejected the call",
-    "param": ""
-  }
 }
 ```

@@ -2,7 +2,7 @@
 
 ## Cancel eval run
 
-**post** `/evals/{eval_id}/runs/{run_id}`
+**post** `/evals/{eval_id}/runs/{run_id}/cancel`
 
 Cancel an ongoing evaluation run.
 
@@ -1076,7 +1076,7 @@ Cancel an ongoing evaluation run.
 
               Combine multiple filters using `and` or `or`.
 
-              - `filters: array of ComparisonFilter or unknown`
+              - `filters: array of ComparisonFilter or CompoundFilter`
 
                 Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -1084,7 +1084,9 @@ Cancel an ongoing evaluation run.
 
                   A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                - `unknown`
+                - `CompoundFilter object { filters, type }`
+
+                  Combine multiple filters using `and` or `or`.
 
               - `type: "and" or "or"`
 
@@ -1208,7 +1210,9 @@ Cancel an ongoing evaluation run.
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -1531,7 +1535,7 @@ Cancel an ongoing evaluation run.
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -1636,13 +1640,13 @@ Cancel an ongoing evaluation run.
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -2028,7 +2032,7 @@ Cancel an ongoing evaluation run.
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -2074,7 +2078,7 @@ Cancel an ongoing evaluation run.
 
         An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
 
-- `error: EvalAPIError`
+- `error: EvalAPIError or null`
 
   An object representing an error response from the Eval API.
 
@@ -2099,11 +2103,11 @@ Cancel an ongoing evaluation run.
   Keys are strings with a maximum length of 64 characters. Values are strings
   with a maximum length of 512 characters.
 
-- `model: string`
+- `model: string or null`
 
   The model that is evaluated, if applicable.
 
-- `name: string`
+- `name: string or null`
 
   The name of the evaluation run.
 
@@ -2113,7 +2117,7 @@ Cancel an ongoing evaluation run.
 
   - `"eval.run"`
 
-- `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }`
+- `per_model_usage: array of object { cached_tokens, completion_tokens, invocation_count, 3 more }  or null`
 
   Usage statistics for each model during the evaluation run.
 
@@ -2141,7 +2145,7 @@ Cancel an ongoing evaluation run.
 
     The total number of tokens used.
 
-- `per_testing_criteria_results: array of object { failed, passed, testing_criteria }`
+- `per_testing_criteria_results: array of object { failed, passed, testing_criteria }  or null`
 
   Results per testing criteria applied during the evaluation run.
 
@@ -2188,7 +2192,7 @@ Cancel an ongoing evaluation run.
 ### Example
 
 ```http
-curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID \
+curl https://api.openai.com/v1/evals/$EVAL_ID/runs/$RUN_ID/cancel \
     -X POST \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```

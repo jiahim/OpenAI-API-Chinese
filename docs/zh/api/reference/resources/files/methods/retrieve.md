@@ -1,20 +1,20 @@
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 检索文件
 
 **get** `/files/{file_id}`
 
-返回有关特定文件的信息。
+Returns information about a specific file.
 
 ### 路径参数
 
 - `file_id: string`
 
-### 返回
+### 返回值
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
-  该 `File` 对象表示已上传到 OpenAI 的文档。
+  该 `File` object 表示已上传到 OpenAI 的文档。
 
   - `id: string`
 
@@ -22,7 +22,7 @@
 
   - `bytes: number`
 
-    文件大小（以字节为单位）。
+    文件大小，以字节为单位。
 
   - `created_at: number`
 
@@ -60,7 +60,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可以是 `uploaded`, `processed`，或者 `error`.
+    已弃用。文件的当前状态，可以为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -74,7 +74,7 @@
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
 
 ### 示例
 
@@ -114,8 +114,9 @@ curl https://api.openai.com/v1/files/file-abc123 \
   "object": "file",
   "bytes": 120000,
   "created_at": 1677610602,
-  "expires_at": 1677614202,
+  "expires_at": 1680202602,
   "filename": "mydata.jsonl",
   "purpose": "fine-tune",
+  "status": "processed"
 }
 ```

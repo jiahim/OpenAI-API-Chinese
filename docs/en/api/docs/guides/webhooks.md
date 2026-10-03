@@ -6,6 +6,8 @@ OpenAI [webhooks](http://chatgpt.com/?q=eli5+what+is+a+webhook?) allow you to re
 
 To receive misalignment monitoring notifications for an API project, see [Receive project safety alerts](https://developers.openai.com/api/docs/guides/safety-checks/misalignment-monitoring#receive-project-safety-alerts).
 
+To receive organization-level warning and deactivation notices for safety identifiers, see [Safety enforcement notifications](https://developers.openai.com/api/docs/guides/safety-enforcement).
+
 For Agents API sessions, see [Session webhooks](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks) for session events and recovery patterns. Use the endpoint setup, signature verification, and delivery guidance on this page for the webhook receiver.
 
 [API reference for webhook events
@@ -273,7 +275,7 @@ In this guide, you will learn how to create webhook endpoints in the dashboard, 
 
 ## Creating webhook endpoints
 
-To start receiving webhook requests on your server, log in to the dashboard and [open the webhook settings page](https://platform.openai.com/settings/project/webhooks). Webhooks are configured per-project.
+To start receiving project webhook requests on your server, log in to the dashboard and [open the webhook settings page](https://platform.openai.com/settings/project/webhooks). The setup in this section is for project endpoints. For organization-level safety events, see [Safety enforcement notifications](https://developers.openai.com/api/docs/guides/safety-enforcement).
 
 Click the "Create" button to create a new webhook endpoint. You will configure three things:
 

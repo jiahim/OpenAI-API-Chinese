@@ -1,10 +1,10 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 末尾追加 `.md` 可获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取文档页面的 Markdown 版本。
 
-## 列出 ChatKit 对话线程项
+## 列出 ChatKit 线程项
 
 **get** `/chatkit/threads/{thread_id}/items`
 
-列出属于某个 ChatKit 会话线程的条目。
+列出属于某个 ChatKit 线程的条目。
 
 ### 路径参数
 
@@ -14,19 +14,19 @@
 
 - `after: optional string`
 
-  在指定的会话条目 ID 之后创建的列表条目。对于第一页，默认为 null。
+  在此线程项 ID 之后创建的列表项。对于第一页，默认为 null。
 
 - `before: optional string`
 
-  在指定的会话条目 ID 之前创建的列表条目。对于最新结果，默认为 null。
+  在此线程项 ID 之前创建的列表项。对于最新结果，默认为 null。
 
 - `limit: optional number`
 
-  要返回的最大会话条目数。默认为 20。
+  要返回的线程项的最大数量。默认为 20。
 
 - `order: optional "asc" or "desc"`
 
-  按创建时间排序结果的方式。默认为 `desc`.
+  按创建时间排序结果的顺序。默认为 `desc`.
 
   - `"asc"`
 
@@ -40,7 +40,7 @@
 
   - `data: array of ChatKitThreadUserMessageItem or ChatKitThreadAssistantMessageItem or ChatKitWidgetItem or 3 more`
 
-    项的列表
+    项列表
 
     - `ChatKitThreadUserMessageItem object { id, attachments, content, 5 more }`
 
@@ -80,15 +80,15 @@
 
       - `content: array of object { text, type }  or object { text, type }`
 
-        由用户提供的有序内容元素。
+        用户提供的有序内容元素。
 
         - `InputText object { text, type }`
 
-          用户向线程贡献的文本块。
+          用户在该线程中贡献的文本块。
 
           - `text: string`
 
-            由用户提供的纯文本内容。
+            用户提供的纯文本内容。
 
           - `type: "input_text"`
 
@@ -102,7 +102,7 @@
 
           - `text: string`
 
-            引用的文本内容。
+            引用文本内容。
 
           - `type: "quoted_text"`
 
@@ -116,11 +116,11 @@
 
       - `inference_options: object { model, tool_choice }  or null`
 
-        应用于该消息的推理覆盖参数。未设置时默认为 null。
+        应用于消息的推理覆盖参数。未设置时默认为 null。
 
         - `model: string or null`
 
-          生成该响应的模型名称。使用会话默认模型时默认为 null。
+          生成响应的模型名称。使用会话默认模型时默认为 null。
 
         - `tool_choice: object { id }  or null`
 
@@ -146,7 +146,7 @@
 
     - `ChatKitThreadAssistantMessageItem object { id, content, created_at, 3 more }`
 
-      线程中由助手撰写的消息。
+      线程中由智能体创建的消息。
 
       - `id: string`
 
@@ -154,11 +154,11 @@
 
       - `content: array of ChatKitResponseOutputText`
 
-        按顺序排列的助手响应片段。
+        有序的智能体响应片段。
 
         - `annotations: array of object { source, type }  or object { source, type }`
 
-          附加到响应文本的、按顺序排列的注解列表。
+          附加到响应文本的有序注解列表。
 
           - `File object { source, type }`
 
@@ -166,11 +166,11 @@
 
             - `source: object { filename, type }`
 
-              该注解引用的文件附件。
+              注解所引用的文件附件。
 
               - `filename: string`
 
-                该注解引用的文件名。
+                注解所引用的文件名。
 
               - `type: "file"`
 
@@ -180,7 +180,7 @@
 
             - `type: "file"`
 
-              类型鉴别器，始终为 `file` （对于此注解而言）。
+              类型判别字段，始终为 `file` （针对该注解）。
 
               - `"file"`
 
@@ -190,7 +190,7 @@
 
             - `source: object { type, url }`
 
-              该注解引用的 URL。
+              注解所引用的 URL。
 
               - `type: "url"`
 
@@ -200,17 +200,17 @@
 
               - `url: string`
 
-                该注解引用的 URL。
+                注解所引用的 URL。
 
             - `type: "url"`
 
-              类型鉴别器，始终为 `url` （对于此注解而言）。
+              类型判别字段，始终为 `url` （针对该注解）。
 
               - `"url"`
 
         - `text: string`
 
-          助手生成的文本。
+          智能体生成的文本。
 
         - `type: "output_text"`
 
@@ -240,7 +240,7 @@
 
     - `ChatKitWidgetItem object { id, created_at, object, 3 more }`
 
-      用于渲染 widget 负载的线程项。
+      用于渲染 widget 负载的线程条目。
 
       - `id: string`
 
@@ -272,7 +272,7 @@
 
     - `ChatKitClientToolCall object { id, arguments, call_id, 7 more }`
 
-      助手发起的客户端工具调用的记录。
+      由智能体发起的客户端工具调用记录。
 
       - `id: string`
 
@@ -280,7 +280,7 @@
 
       - `arguments: string`
 
-        发送到工具的 JSON 编码参数。
+        发送给工具的 JSON 编码参数。
 
       - `call_id: string`
 
@@ -302,7 +302,7 @@
 
       - `output: string or null`
 
-        从该工具捕获的 JSON 编码输出。执行进行中时默认为 null。
+        从工具捕获的 JSON 编码输出。在执行进行中默认为 null。
 
       - `status: "in_progress" or "completed"`
 
@@ -324,7 +324,7 @@
 
     - `ChatKitTask object { id, created_at, heading, 5 more }`
 
-      由 工作流 发出的任务，用于显示进度和状态更新。
+      由工作流发出的任务，用于显示进度和状态更新。
 
       - `id: string`
 
@@ -368,7 +368,7 @@
 
     - `ChatKitTaskGroup object { id, created_at, object, 3 more }`
 
-      在会话中分组到一起的 工作流 任务集合。
+      在线程中分组到一起的工作流任务集合。
 
       - `id: string`
 
@@ -497,28 +497,36 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
     {
       "id": "cthi_user_001",
       "object": "chatkit.thread_item",
-      "type": "user_message",
+      "type": "chatkit.user_message",
       "content": [
         {
           "type": "input_text",
           "text": "I need help debugging an onboarding issue."
         }
       ],
-      "attachments": []
+      "attachments": [],
+      "created_at": 1712345600,
+      "thread_id": "cthr_abc123",
+      "inference_options": null
     },
     {
       "id": "cthi_assistant_002",
       "object": "chatkit.thread_item",
-      "type": "assistant_message",
+      "type": "chatkit.assistant_message",
       "content": [
         {
           "type": "output_text",
-          "text": "Let's start by confirming the workflow version you deployed."
+          "text": "Let's start by confirming the workflow version you deployed.",
+          "annotations": []
         }
-      ]
+      ],
+      "created_at": 1712345601,
+      "thread_id": "cthr_abc123"
     }
   ],
   "has_more": false,
-  "object": "list"
+  "object": "list",
+  "first_id": "cthi_user_001",
+  "last_id": "cthi_assistant_002"
 }
 ```

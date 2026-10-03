@@ -48,9 +48,12 @@ with OpenAI() as client:
         environment={"type": "openai_hosted"},
         input="Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output.",
         stream=True,
-    ) as events:
-        for event in events:
+    ).with_result_collection() as stream:
+        for event in stream:
             print(event.to_json(indent=None), flush=True)
+        result = stream.get_final_result()
+    print(result.output_text)
+    session_id = result.session_id
 ```
 
 
@@ -93,10 +96,14 @@ const events = await client.beta.agents.sessions.create({
     "Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output.",
   stream: true,
 });
+events.withResultCollection();
 try {
   for await (const event of events) {
     console.log(JSON.stringify(event));
   }
+  const result = await events.finalResult();
+  console.log(result.output_text);
+  console.log("Session:", result.session_id);
 } finally {
   events.controller.abort();
 }
@@ -150,6 +157,7 @@ events := client.Beta.Agents.Sessions.NewStreaming(ctx, openai.BetaAgentSessionN
 	},
 })
 defer events.Close()
+openai.BetaAgentSessionWithResultCollection(events)
 if events.Err() != nil {
 	panic(events.Err())
 }
@@ -157,9 +165,13 @@ for events.Next() {
 	event := events.Current()
 	fmt.Println(event.RawJSON())
 }
-if err := events.Err(); err != nil {
+result, err := openai.BetaAgentSessionFinalResult(events)
+if err != nil {
 	panic(err)
 }
+fmt.Println(result.OutputText())
+sessionID := result.SessionID()
+fmt.Println("Session:", sessionID)
 ```
 
 
@@ -201,6 +213,7 @@ import com.openai.core.http.StreamResponse;
 import com.openai.models.beta.agents.AgentSessionEvent;
 import com.openai.models.beta.agents.EnvironmentParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import com.openai.services.beta.agents.AgentTurnResults;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 var json = new JsonMapper();
@@ -221,11 +234,16 @@ try (StreamResponse<AgentSessionEvent> events =
                     "Create tree.py, a Python script that prints a readable tree of the files"
                         + " in the current directory. Run it and show me the output.")
                 .build())) {
+  AgentTurnResults.withResultCollection(events);
   var iterator = events.stream().iterator();
   while (iterator.hasNext()) {
     var event = iterator.next();
     System.out.println(json.writeValueAsString(event));
   }
+  var result = AgentTurnResults.getFinalResult(events);
+  System.out.println(result.outputText());
+  String sessionId = result.sessionId();
+  System.out.println(sessionId);
 }
 ```
 
@@ -269,9 +287,14 @@ events = client.beta.agents.sessions.create_streaming(
   input: "Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output."
 )
 begin
+  events.with_result_collection
   events.each do |event|
     puts JSON.generate(event.to_h)
   end
+  result = events.get_final_result
+  puts result.output_text
+  session_id = result.session_id
+  puts "Session: #{session_id}"
 ensure
   events.close
 end

@@ -1,10 +1,10 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取该页面的 Markdown 版本。
 
-## 列出批量中的向量存储文件
+## 在批处理中列出向量存储文件
 
 **get** `/vector_stores/{vector_store_id}/file_batches/{batch_id}/files`
 
-返回该批次中的向量存储文件列表。
+返回批处理中的向量存储文件列表。
 
 ### 路径参数
 
@@ -16,15 +16,15 @@
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于指定你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的游标。 `after` 是一个对象 ID，用于指明你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的下一次调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `before: optional string`
 
-  用于分页的游标。 `before` 是一个对象 ID，用于指定你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 开头，那么后续调用可以包含 before=obj_foo 以获取列表的上一页。
+  用于分页的游标。 `before` 是一个对象 ID，用于指明你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 开头，那么你的下一次调用可以包含 before=obj_foo 以获取列表的上一页。
 
 - `filter: optional "in_progress" or "completed" or "failed" or "cancelled"`
 
-  按文件状态过滤。可选值为 `in_progress`, `completed`, `failed`, `cancelled`.
+  按文件状态筛选。可选值为 `in_progress`, `completed`, `failed`, `cancelled`.
 
   - `"in_progress"`
 
@@ -36,7 +36,7 @@
 
 - `limit: optional number`
 
-  返回对象数量的上限。限制范围在 1 到 100 之间，默认值为 20。
+  返回对象的数量限制。范围为 1 到 100，默认值为 20。
 
 - `order: optional "asc" or "desc"`
 
@@ -52,7 +52,7 @@
 
   - `id: string`
 
-    该标识符，可在 API 端点中引用。
+    可在 API 端点中引用的标识符。
 
   - `created_at: number`
 
@@ -60,11 +60,11 @@
 
   - `last_error: object { code, message }  or null`
 
-    与该向量存储文件关联的最后一个错误。如果没有错误则 `null` 为 null。
+    与该向量存储文件关联的最后一个错误。如果没有错误，则为 `null` 。
 
     - `code: "server_error" or "unsupported_file" or "invalid_file"`
 
-      以下值之一： `server_error`, `unsupported_file`，或 `invalid_file`.
+      以下之一： `server_error`, `unsupported_file`，或 `invalid_file`.
 
       - `"server_error"`
 
@@ -74,7 +74,7 @@
 
     - `message: string`
 
-      人类可读的错误描述。
+      错误的人工可读描述。
 
   - `object: "vector_store.file"`
 
@@ -84,7 +84,7 @@
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。该状态 `completed` 表示该向量存储文件已可使用。
+    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。状态 `completed` 表示向量存储文件已可供使用。
 
     - `"in_progress"`
 
@@ -100,13 +100,13 @@
 
   - `vector_store_id: string`
 
-    所附加的 [向量存储](/api/reference/resources/vector_stores) 的 ID。 [文件](/api/reference/resources/files) 所附加到的。
+    所关联的 [向量存储](/api/reference/resources/vector_stores) 的 ID，该 [文件](/api/reference/resources/files) 附加到的。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。键为字符串
-    格式，以及通过 接口 或仪表板查询对象。键为字符串
+    可以附加到对象的 16 组键值对。可用于
+    以结构化格式存储有关对象的附加信息，并通过 API 或仪表板
+    查询对象。键为字符串
     最大长度为 64 个字符。值为字符串，最大
     长度为 512 个字符、布尔值或数字。
 
@@ -118,7 +118,7 @@
 
   - `chunking_strategy: optional StaticFileChunkingStrategyObject or OtherFileChunkingStrategyObject`
 
-    用于对文件进行分块（chunk）的策略。
+    用于对文件进行分块的策略。
 
     - `StaticFileChunkingStrategyObject object { static, type }`
 
@@ -128,11 +128,11 @@
 
           块之间重叠的 token 数。默认值为 `400`.
 
-          注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中包含的最大 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
@@ -142,7 +142,7 @@
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回。通常是因为文件在该概念被引入之前就已建立索引，该概念引入于 `chunking_strategy` API 中。
+      当分块策略未知时返回此值。通常是因为文件在引入该概念的 `chunking_strategy` API 之前就已建立索引。
 
       - `type: "other"`
 
@@ -220,13 +220,19 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
       "id": "file-abc123",
       "object": "vector_store.file",
       "created_at": 1699061776,
-      "vector_store_id": "vs_abc123"
+      "vector_store_id": "vs_abc123",
+      "usage_bytes": 1234,
+      "status": "completed",
+      "last_error": null
     },
     {
       "id": "file-abc456",
       "object": "vector_store.file",
       "created_at": 1699061776,
-      "vector_store_id": "vs_abc123"
+      "vector_store_id": "vs_abc123",
+      "usage_bytes": 1234,
+      "status": "completed",
+      "last_error": null
     }
   ],
   "first_id": "file-abc123",

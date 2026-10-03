@@ -640,6 +640,121 @@ func runTool(name, argumentsJSON string) (map[string]any, error) {
 }
 ```
 
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+var json = new ObjectMapper();
+var tools =
+    List.of(
+        Tool.ofFunction(function("get_inventory", "available_units")),
+        Tool.ofFunction(function("get_demand", "requested_units")),
+        Tool.ofProgrammaticToolCalling());
+var input = new ArrayList<ResponseInputItem>();
+input.add(
+    ResponseInputItem.ofEasyInputMessage(
+        EasyInputMessage.builder()
+            .role(EasyInputMessage.Role.USER)
+            .content("Compare inventory with demand for sku_123.")
+            .build()));
+
+while (true) {
+  var response =
+      client
+          .responses()
+          .create(
+              ResponseCreateParams.builder()
+                  .model("gpt-6-astra")
+                  .store(false)
+                  .inputOfResponse(input)
+                  .tools(tools)
+                  .build());
+  if (!response.status().orElseThrow().equals(ResponseStatus.COMPLETED)) {
+    throw new IllegalStateException("Response ended with status " + response.status());
+  }
+  // Preserve every replayable output item, including program and reasoning items.
+  response.output().stream()
+      .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
+      .forEach(input::add);
+  var calls = response.output().stream().flatMap(item -> item.functionCall().stream()).toList();
+  if (calls.isEmpty()) {
+    var messages = response.output().stream().flatMap(item -> item.message().stream()).toList();
+    if (!messages.isEmpty()) {
+      messages.forEach(
+          message ->
+              message
+                  .content()
+                  .forEach(
+                      content -> {
+                        content.outputText().ifPresent(text -> System.out.println(text.text()));
+                        content
+                            .refusal()
+                            .ifPresent(refusal -> System.out.println(refusal.refusal()));
+                      }));
+      break;
+    }
+    continue;
+  }
+  for (var call : calls) {
+    String sku = json.readTree(call.arguments()).get("sku").asText();
+    var result =
+        switch (call.name()) {
+          case "get_inventory" -> Map.of("sku", sku, "available_units", 42);
+          case "get_demand" -> Map.of("sku", sku, "requested_units", 31);
+          default -> throw new IllegalArgumentException("Unknown tool: " + call.name());
+        };
+    var output =
+        ResponseInputItem.FunctionCallOutput.builder()
+            .callId(call.callId())
+            .output(json.writeValueAsString(result));
+    // Preserve caller so the runtime can resume the correct program.
+    call.caller()
+        .ifPresent(
+            caller ->
+                output.caller(
+                    JsonValue.from(caller)
+                        .convert(ResponseInputItem.FunctionCallOutput.Caller.class)));
+    input.add(ResponseInputItem.ofFunctionCallOutput(output.build()));
+  }
+}
+
+private static FunctionTool function(String name, String outputField) {
+  var parameters =
+      Map.of(
+          "type",
+          "object",
+          "properties",
+          Map.of("sku", Map.of("type", "string")),
+          "required",
+          List.of("sku"),
+          "additionalProperties",
+          false);
+  var outputSchema =
+      Map.of(
+          "type",
+          "object",
+          "properties",
+          Map.of("sku", Map.of("type", "string"), outputField, Map.of("type", "number")),
+          "required",
+          List.of("sku", outputField),
+          "additionalProperties",
+          false);
+  return FunctionTool.builder()
+      .name(name)
+      .description("Return an object with sku (string) and " + outputField + " (number).")
+      .parameters(JsonValue.from(parameters).convert(FunctionTool.Parameters.class))
+      .outputSchema(JsonValue.from(outputSchema).convert(FunctionTool.OutputSchema.class))
+      .allowedCallers(List.of(FunctionTool.AllowedCaller.PROGRAMMATIC))
+      .strict(true)
+      .build();
+}
+```
+
 ```ruby
 require "json"
 require "openai"

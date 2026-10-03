@@ -1,21 +1,21 @@
-# File transcription
+# 文件转录
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。各文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-当你有一段已录制完毕的音频或一段有边界的音频请求时，使用文件转写。上传音频并接收最终转写文本，或者让模型在处理文件时流式返回文本。
+当你有已完成的录音或有边界的音频请求时，使用文件转写。上传音频并获取最终转写文本，或在模型处理文件时流式接收文本。
 
-从 [`gpt-transcribe`](https://developers.openai.com/api/docs/models/gpt-transcribe)。开始。这是用于以其原始语言转写录制语音的推荐模型。仅在需要说话人标签、词级时间戳、字幕格式或翻译成英文时才使用专用模型。
+从以下模型开始 [`gpt-transcribe`](https://developers.openai.com/api/docs/models/gpt-transcribe)。这是用于以原始语言转写已录制语音的推荐模型。只有在你需要说话人标签、词级时间戳、字幕格式或翻译为英文时，才使用专用模型。
 
-文件最大可达 25 MB。受支持的输入格式包括 `mp3`, `mp4`, `mpeg`, `mpga`, `m4a`, `wav`，以及 `webm`.
+文件大小可达 25 MB。受支持的输入格式包括 `mp3`, `mp4`, `mpeg`, `mpga`, `m4a`, `wav`，以及 `webm`.
 
-对于仍在从麦克风、通话或媒体流持续到达的音频，请使用
+对于仍来自麦克风、通话或媒体流的音频，请使用
   [实时转写](https://developers.openai.com/api/docs/guides/realtime-transcription).
 
 ## 快速入门
 
 ### 转录
 
-将音频文件发送到 `/v1/audio/transcriptions` 以 `gpt-transcribe`:
+将音频文件发送至 `/v1/audio/transcriptions` 以 `gpt-transcribe`:
 
 转录音频
 
@@ -121,6 +121,8 @@ transcript = client.audio.transcriptions.create(
   file: audio,
   model: "gpt-transcribe"
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 puts(transcript.text)
 ```
 
@@ -151,7 +153,7 @@ curl --request POST \
 }
 ```
 
-当模型无法可靠地预测语言时，它会返回 `"languages": []`。请参阅 [Audio API 参考](https://developers.openai.com/api/reference/resources/audio) 了解完整的请求和响应字段。
+当模型无法可靠地预测语言时，它会返回 `"languages": []`。请参阅 [Audio API 参考文档](https://developers.openai.com/api/reference/resources/audio) 以了解完整的请求和响应字段。
 
 ## 添加转录上下文
 
@@ -273,6 +275,8 @@ transcript = client.audio.transcriptions.create(
   model: "gpt-transcribe",
   keywords: ["OpenAI", "Responses API", "Codex"]
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 puts(transcript.text)
 ```
 
@@ -291,23 +295,23 @@ curl https://api.openai.com/v1/audio/transcriptions \
 ```
 
 
-- 使用 `prompt` 添加关于录音的非结构化上下文。
-- 使用 `keywords` 添加你预期会听到的专有术语。
-- 使用 `languages` 添加预期的输入语言。
+- 使用 `prompt` 提供关于该录音的非结构化上下文。
+- 使用 `keywords` 提供你预期会听到的原文术语。
+- 使用 `languages` 提供预期的输入语言。
 
-关键词是提示，并非必须输出的内容。仅包含相关术语，并评估它们能否提升准确性，同时不会导致出现未提及的术语。
+关键词只是提示，并非必须包含的输出。只添加相关的词汇，并评估它们能否在不让未提及的词出现的前提下提升准确率。
 
-若需设置多个关键词，请使用复数形式的 `gpt-transcribe`, `languages` 字段替换单数形式 `language` 字段。请勿同时发送这两个字段。每个关键词占一行，且不要包含 `<`, `>`、回车符或换行符。当 API 检测到其中任一字符，或当关键词 `prompt` 超出模型的长度限制时，会拒绝整个请求。
+对于 `gpt-transcribe`, `languages` ，可替代单数 `language` 字段。不要同时发送这两个字段。每个关键词占一行，不要包含 `<`, `>`、回车符或换行符。当 API 遇到这些字符之一，或当 `prompt` 超出模型的长度限制时，将拒绝整个请求。
 
-## 说话人 diarization
+## 说话人区分
 
-使用 `gpt-4o-transcribe-diarize` 仅当你需要识别录音中不同部分的说话人时使用。此专用的说话人标注模型不推荐用于普通的文件转录。
+使用 `gpt-4o-transcribe-diarize` 仅在你需要识别录音中不同部分的说话人时使用。这个专用的说话人标注模型并非普通文件转写的推荐模型。
 
-请求 `diarized_json` 响应格式以接收带有 `speaker`, `start`，以及 `end` 元数据的片段。对于超过 30 秒的音频，请将 `chunking_strategy` 设置为 `"auto"` 或一个语音活动检测配置。
+请求 `diarized_json` 响应格式以接收带有 `speaker`, `start`，以及 `end` 元数据的分段。对于超过 30 秒的音频，将 `chunking_strategy` 设置为 `"auto"` 或语音活动检测配置。
 
-你可以通过 `known_speaker_names[]` 和 `known_speaker_references[]` 最多可选地提供四个短音频参考，以将片段映射到已知说话人。请提供 2–10 秒的参考片段，格式为主音频上传所支持的任意输入格式； [数据 URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs) 使用 multipart 表单数据时。
+你可以选择通过 `known_speaker_names[]` 和 `known_speaker_references[]` 提供最多四个短音频参考，将分段映射到已知说话人。参考片段时长应在 2–10 秒之间，使用主音频上传所支持的任意输入格式；在使用 multipart 表单数据时，将其编码为 [data URL](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs) 。
 
-对会议录音进行说话人分离
+为会议录音进行说话人分离
 
 ```javascript
 import fs from "fs";
@@ -516,16 +520,16 @@ curl --request POST \
 ```
 
 
-当 `stream=true`，时，带说话人标签的响应会在每个片段完成时发出 `transcript.text.segment` 事件。 `transcript.text.delta` 事件中包含一个 `segment_id` 字段，但 delta 不包含部分说话人分配。模型只有在片段最终确定时才会分配说话人。
+当 `stream=true`，时，带说话人标签的响应会在每个分段完成时发出 `transcript.text.segment` 事件。 `transcript.text.delta` 事件包含一个 `segment_id` 字段，但 delta 不包含部分说话人分配。模型只有在确定分段时才会分配说话人。
 
-说话人标注可通过 `/v1/audio/transcriptions`。使用。它不
-  支持实时转录会话。
+说话人标注可通过 `/v1/audio/transcriptions`。使用。
+  不支持 Realtime 转写会话。
 
-## 翻译
+## Translations
 
-要将已完成的音频录制翻译为英文，请使用 `/v1/audio/translations` 以 `whisper-1`。与保留录制原始语言的转写不同，此端点会返回英文文本。
+要将一段已完成的音频录音翻译成英文，请使用 `/v1/audio/translations` 以 `whisper-1`。与转录不同，转录会保留录音的原始语言，而该接口会返回英文文本。
 
-Translate audio
+翻译音频
 
 ```javascript
 import fs from "fs";
@@ -626,6 +630,8 @@ require "pathname"
 client = OpenAI::Client.new
 audio = Pathname("german.wav")
 translation = client.audio.translations.create(file: audio, model: "whisper-1")
+raise "Expected a JSON translation response" if translation.is_a?(StringIO)
+
 puts(translation.text)
 ```
 
@@ -639,29 +645,29 @@ curl --request POST \
 ```
 
 
-对于其他语言的音频录制，响应中会包含英文翻译：
+对于其他语言的音频录音，响应中会包含英文翻译：
 
 ```example-content
 Hello, my name is Wolfgang and I come from Germany. Where are you heading today?
 ```
 
-此端点仅支持翻译为英文。
+该端点仅支持翻译为英文。
 
 ## 支持的语言
 
-使用 `languages` 以 `gpt-transcribe` 当你知道预期会接收到哪些输入语言时使用。支持的语言代码格式包括：
+使用 `languages` 以 `gpt-transcribe` 当你已知期望的输入语言时使用。支持的语言代码格式包括：
 
 - ISO 639-1 代码，例如 `en`, `es`，以及 `fr`.
-- 选定的 ISO 639-3 代码，例如 `eng`, `spa`, `yue`，以及 `cmn`.
+- 精选的 ISO 639-3 代码，例如 `eng`, `spa`, `yue`，以及 `cmn`.
 - 区域 `zh` 语言环境代码，例如 `zh-cn`, `zh-tw`，以及 `zh-hk`.
 
-API 会拒绝不受支持或格式错误的语言代码。响应还会指出模型能够可靠检测的语言。
+当 API 收到不受支持或格式不正确的语言代码时会返回错误。该响应还会指出模型能够可靠识别的语言。
 
-若需设置多个关键词，请使用复数形式的 `whisper-1`，请参阅 [Whisper 语言列表](https://github.com/openai/whisper#available-models-and-languages)。Whisper 支持 98 种语言，但不同语言的准确率会有所差异。接受单一语言提示的现有模型使用 `language` 而不是 `languages`.
+对于 `whisper-1`，请参阅 [Whisper 语言列表](https://github.com/openai/whisper#available-models-and-languages). Whisper 支持 98 种语言，但准确率因语言而异。现有接受单一语言提示的模型请使用 `language` 替代 `languages`.
 
 ## 时间戳
 
-使用 `whisper-1` 当你需要词级或片段级时间戳时。 [`timestamp_granularities[]` parameter](/api/docs/api-reference/audio/createTranscription#audio-createtranscription-timestamp_granularities) 返回用于字幕生成和视频编辑的结构化时间戳数据。
+使用 `whisper-1` 当你需要单词或片段时间戳时。 [`timestamp_granularities[]` parameter](/api/docs/api-reference/audio/createTranscription#audio-createtranscription-timestamp_granularities) 参数会返回用于字幕生成和视频剪辑的结构化时间戳数据。
 
 时间戳选项
 
@@ -796,6 +802,8 @@ transcript = client.audio.transcriptions.create(
   response_format: :verbose_json,
   timestamp_granularities: [:word]
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 pp(transcript[:words])
 ```
 
@@ -810,13 +818,13 @@ curl https://api.openai.com/v1/audio/transcriptions \
 ```
 
 
-该 `timestamp_granularities[]` 参数仅支持 `whisper-1`.
+该 `timestamp_granularities[]` 参数仅在以下情况下支持： `whisper-1`.
 
 ## Longer inputs
 
-Transcriptions API 接受最大 25 MB 的文件。对于更大的录音，请使用压缩音频格式或将文件拆分为 25 MB 及以下的分片。避免在句子中间进行拆分，以免丢失上下文并降低准确率。
+Transcriptions API 接受最大 25 MB 的文件。对于更大的录音，请使用压缩音频格式，或将文件拆分为 25 MB 或更小的分块。避免在句子中间进行拆分，这可能会去除上下文并降低准确率。
 
-处理此问题的一种方法是使用 [开源 Python 包 PyDub](https://github.com/jiaaro/pydub) 来拆分音频：
+一种处理方法是使用 [PyDub 开源 Python 包](https://github.com/jiaaro/pydub) 来拆分音频：
 
 ```python
 from pydub import AudioSegment
@@ -834,20 +842,20 @@ first_10_minutes.export("good_morning_10.wav", format="wav")
 
 _OpenAI 不对 PyDub 等第三方软件的可用性或安全性作任何保证。_
 
-## 提示词
+## Prompting
 
-使用 [提示](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create#audio/createTranscription-prompt) 以提升对名称、首字母缩写、格式或录音相关词汇的识别效果。通过 `gpt-transcribe`，将提示与 `keywords` 和 `languages` 中显示的 [添加转录上下文](#add-transcription-context).
+使用 [prompt](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create#audio/createTranscription-prompt) 以提升对人名、缩写、格式或录制相关词汇的识别。结合 `gpt-transcribe`，将该提示与 `keywords` 和 `languages` 中所示的 [添加转录上下文](#add-transcription-context).
 
 现有 `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 集成也支持提示。 `gpt-4o-transcribe-diarize` 不支持提示。
 
-常用的提示场景包括：
+有用的提示场景包括：
 
-- 正确转写产品名称、技术术语和缩略语。
-- 承接较长录音中前一段内容的上下文。
-- 保留标点、大小写以及语气填充词。
-- 为某种语言选择首选书写体系。
+- 正确转录产品名称、技术术语和缩略词。
+- 延续较长录音中上一片段的上下文。
+- 保留标点、大小写和填充词。
+- 为某种语言选择首选书写系统。
 
-若需设置多个关键词，请使用复数形式的 `whisper-1`，提示词的 token 上限为 224，并且相较于推荐的转录模型可控性更弱。详见 [提升可靠性](#improving-reliability) 如果你的工作流需要使用 Whisper。
+对于 `whisper-1`，提示词存在 224 token 的限制，且可控性低于推荐的转录模型。详见 [提升可靠性](#improving-reliability) 如果你的工作流需要使用 Whisper。
 
 
 
@@ -855,13 +863,13 @@ _OpenAI 不对 PyDub 等第三方软件的可用性或安全性作任何保证�
 
 
 
-文件转录可以在模型处理完整录音时流式输出部分文本。这不需要 Realtime 会话。
+文件转录可以在模型处理已完成的录音时流式输出部分文本。这不需要 Realtime 会话。
 
 ### 流式传输已完成音频录制的转录
 
-Set `stream=true` 以 `gpt-transcribe`. Transcriptions API 返回 [transcript events](https://developers.openai.com/api/reference/resources/audio) ，即模型转录音频各部分时产生的事件。
+Set `stream=true` 以 `gpt-transcribe`. Transcriptions API 会返回 [转写事件](https://developers.openai.com/api/reference/resources/audio) ，即模型对录音各部分进行转写时的事件。
 
-流式转录
+流式转写
 
 ```javascript
 import fs from "fs";
@@ -936,6 +944,39 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import java.nio.file.Path;
+
+var params =
+    TranscriptionCreateParams.builder()
+        .model("gpt-transcribe")
+        .file(Path.of("speech.wav"))
+        .build();
+try (var stream = client.audio().transcriptions().createStreaming(params)) {
+  stream.stream().forEach(event -> System.out.println(event));
+}
+```
+
+```csharp
+using OpenAI.Audio;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-transcribe";
+AudioClient client = new(model, key);
+
+await foreach (StreamingAudioTranscriptionUpdate update in client.TranscribeAudioStreamingAsync("speech.wav"))
+{
+    if (update is StreamingAudioTranscriptionTextDeltaUpdate delta)
+    {
+        Console.Write(delta.Delta);
+    }
+}
+Console.WriteLine();
+```
+
 ```ruby
 require "openai"
 require "pathname"
@@ -962,9 +1003,9 @@ curl --request POST \
 ```
 
 
-模型会在转录音频时 `transcript.text.delta` 发出事件，然后在最终的 `transcript.text.done` 事件中返回完整转录文本。对于使用 `response_format="diarized_json"`，进行说话人标记的转录，说话人分离模型还会在确定一个片段时发出 `transcript.text.segment` 事件。
+模型会在转写音频的过程中发出 `transcript.text.delta` 事件，然后在最终的 `transcript.text.done` 事件中返回完整转写文本。对于带说话人标注的转写， `response_format="diarized_json"`，的说话人分离模型还会在每个片段最终确定时发出 `transcript.text.segment` 事件。
 
-若需设置多个关键词，请使用复数形式的 `gpt-transcribe`，最终事件还会包含检测到的语言：
+对于 `gpt-transcribe`，最终事件还会包含检测到的语言：
 
 ```json
 {
@@ -978,13 +1019,13 @@ curl --request POST \
   `gpt-4o-transcribe-diarize` 集成也支持文件流式传输。
   `whisper-1` 则不支持。
 
-### 对正在进行的音频录制进行流式转录
+### 对进行中音频录制进行流式转录
 
-对于来自麦克风、通话或媒体流的实时音频，请使用 [实时转写](https://developers.openai.com/api/docs/guides/realtime-transcription) 指南，而不是上面面向文件的流式传输路径。它涵盖了当前的转录会话流程以及推荐的实时路径，并附带 [`gpt-live-transcribe`](https://developers.openai.com/api/docs/models/gpt-live-transcribe).
+对于来自麦克风、通话或媒体流的实时音频，请使用 [实时转写](https://developers.openai.com/api/docs/guides/realtime-transcription) 指南，而不是上面面向文件的流式传输路径。它涵盖了当前的转录会话流程以及推荐的使用 [`gpt-live-transcribe`](https://developers.openai.com/api/docs/models/gpt-live-transcribe).
 
 ## 提升可靠性
 
-如果使用 `whisper-1` 进行时间戳、字幕或翻译，这些技巧可以提升对不常见词汇和缩略语的识别效果。对于新的通用转录，建议从 `gpt-transcribe` 开始，并使用 [transcription context](#add-transcription-context) 代替。
+如果使用 `whisper-1` 用于时间戳、字幕或翻译，这些技术可以提升对不常见词汇和缩写的识别效果。对于新的通用转录任务，请从 `gpt-transcribe` 开始，并使用 [转录上下文](#add-transcription-context) 代替。
 
 
 
@@ -992,7 +1033,7 @@ curl --request POST \
 
 
 
-第一种方法是使用可选的 prompt 参数传入一个包含正确拼写的字典。
+第一种方法是使用可选的 prompt 参数，传入一个包含正确拼写的字典。
 
 Whisper 不会像通用文本模型那样遵循指令，它接受的 prompt 最长为 224 个 token。
 
@@ -1126,6 +1167,8 @@ transcript = client.audio.transcriptions.create(
   model: "whisper-1",
   prompt: "The speaker says OpenAI and Responses API"
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 puts(transcript.text)
 ```
 
@@ -1140,7 +1183,7 @@ curl --request POST \
 ```
 
 
-虽然这种方法提升了可靠性，但它仅限于 224 个 token，因此你的 SKU 列表必须相对较小，才能成为一种可扩展的方案。
+虽然这能提升可靠性，但该技术仅限于 224 个 token，因此要让该方案具备可扩展性，你的 SKU 列表需要相对较小。
 
 
 
@@ -1154,7 +1197,7 @@ curl --request POST \
 
 第二种方法使用文本模型对转录文本进行后处理。
 
-通过 `system_prompt` 变量提供指令。与转录 prompt 一样，你可以包含公司和产品名称。
+通过以下方式提供指令： `system_prompt` 变量。与转录提示词一样，你可以包含公司和产品名称。
 
 后处理
 
@@ -1359,6 +1402,8 @@ transcript = client.audio.transcriptions.create(
   model: "gpt-4o-mini-transcribe"
 )
 
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 response = client.responses.create(
   model: "gpt-4.1",
   input: "Add punctuation and paragraph breaks without changing the words:\n#{transcript.text}"
@@ -1367,4 +1412,4 @@ puts(response.output_text)
 ```
 
 
-文本模型可以纠正拼写错误，并能处理比 Whisper 的 224 token prompt 窗口更长的术语列表。请根据原始音频评估纠正结果，避免改变说话人原本的内容。
+文本模型可以纠正常见的拼写错误，并且能处理比 Whisper 的 224 token 提示词窗口更长的术语列表。请对照原始音频评估修正结果，避免改变说话者的原意。

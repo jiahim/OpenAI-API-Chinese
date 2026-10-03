@@ -74,7 +74,7 @@ For a desktop application, provide a VM or container and translate the returned 
 
 #### Create a Docker image
 
-The following Dockerfile starts an Ubuntu desktop with Xvfb, `x11vnc`, and Firefox:
+The following Dockerfile starts an Ubuntu desktop with `Xvfb`, `x11vnc`, and Firefox:
 
 Dockerfile
 
@@ -1463,7 +1463,7 @@ async function computerUseLoop(target, response) {
     };
 
     response = await client.responses.create({
-      model: "gpt-5.6-sol",
+      model: "gpt-6.1-sol",
       tools: [{ type: "computer" }],
       previous_response_id: response.id,
       input: [
@@ -1501,7 +1501,7 @@ def computer_use_loop(target, response):
         screenshot_base64 = base64.b64encode(screenshot).decode("utf-8")
 
         response = client.responses.create(
-            model="gpt-5.6-sol",
+            model="gpt-6.1-sol",
             tools=[{"type": "computer"}],
             previous_response_id=response.id,
             input=[
@@ -1729,7 +1729,7 @@ while (true) {
           .responses()
           .create(
               ResponseCreateParams.builder()
-                  .model("gpt-5.6-sol")
+                  .model("gpt-6.1-sol")
                   .previousResponseId(response.id())
                   .putAdditionalBodyProperty(
                       "tools", JsonValue.from(List.of(Map.of("type", "computer"))))
@@ -1834,7 +1834,7 @@ def capture_screenshot(vm):
 
 
 
-For Computer use, prefer `detail: "original"` on screenshot inputs to preserve resolution and improve click accuracy. Large screenshots can use more input tokens, and `original` can still resize images that exceed the model's dimension limits. For patch-based image inputs, the API rejects screenshots that still exceed the [30,000-patch limit](https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements) after resizing. It does not resize them to fit that limit. If `detail: "original"` uses too many tokens or exceeds the limit, downscale the image before sending it to the API, and make sure you remap model-generated coordinates from the downscaled coordinate space to the original image's coordinate space. Avoid using `high` or `low` image detail for computer use tasks. When downscaling, we observe strong performance with 1440x900 and 1600x900 desktop resolutions. See the [Images and Vision guide](https://developers.openai.com/api/docs/guides/images-vision#model-sizing-behavior) for the limits that apply to each model.
+For Computer use, prefer `detail: "original"` on screenshot inputs to preserve resolution and improve click accuracy. Large screenshots can use more input tokens, and `original` can still resize images that exceed the model's dimension limits. For patch-based image inputs, the API rejects screenshots that still exceed the [30,000-patch limit](https://developers.openai.com/api/docs/guides/images-vision#image-input-requirements) after resizing. It does not resize them to fit that limit. If `detail: "original"` uses too many tokens or exceeds the limit, scale down the image before sending it to the API, and make sure you remap model-generated coordinates from the scaled image's coordinate space to the original image's coordinate space. Avoid using `high` or `low` image detail for computer use tasks. When scaling down, we observe strong performance with 1440 × 900 and 1600 × 900 desktop resolutions. See the [Images and Vision guide](https://developers.openai.com/api/docs/guides/images-vision#model-sizing-behavior) for the limits that apply to each model.
 
 <a id="option-2-use-a-custom-tool-or-harness"></a>
 
@@ -2203,7 +2203,7 @@ To migrate from the legacy preview integration, update the model, tool definitio
 
 |                | Preview integration                         | GA integration                                      |
 | -------------- | ------------------------------------------- | --------------------------------------------------- |
-| **Model**      | `computer-use-preview`                      | `gpt-5.6-sol`                                       |
+| **Model**      | `computer-use-preview`                      | `gpt-6.1-sol`                                       |
 | **Tool name**  | `tools: [{ type: "computer_use_preview" }]` | `tools: [{ type: "computer" }]`                     |
 | **Actions**    | One `action` on each `computer_call`        | A batched `actions[]` array on each `computer_call` |
 | **Truncation** | `truncation: "auto"` required               | `truncation` not necessary                          |

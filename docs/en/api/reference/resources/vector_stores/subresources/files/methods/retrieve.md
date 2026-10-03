@@ -169,8 +169,9 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   "id": "file-abc123",
   "object": "vector_store.file",
   "created_at": 1699061776,
-  "vector_store_id": "vs_abcd",
+  "vector_store_id": "vs_abc123",
   "status": "completed",
-  "last_error": null
+  "last_error": null,
+  "usage_bytes": 1234
 }
 ```

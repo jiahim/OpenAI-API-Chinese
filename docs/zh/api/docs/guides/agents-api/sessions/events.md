@@ -1,22 +1,22 @@
-# 事件与条目
+# 事件和条目
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 后追加 `.md` 获取。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取该页面的 Markdown 版本。
 
-事件用于报告智能体运行过程中发生的事情。条目是稍后可以检索的已保存消息和工具调用。可使用事件实时更新你的应用，并使用条目展示其保存的历史记录。
-
-
+事件报告 智能体 工作时的状态。条目是稍后可以检索的已保存消息和工具调用。使用事件可以实时更新你的应用，使用条目可以展示其保存的历史记录。
 
 
 
 
-你的应用通过发送输入事件来提交消息、取消回合或返回工具结果。智能体则会发送事件，用于报告输出及会话状态的变化。详见 [运行并继续会话](https://developers.openai.com/api/docs/guides/agents-api/sessions) 以了解如何发送输入。
+
+
+你的应用通过发送输入事件来提交消息、取消轮次或返回工具结果。智能体 发送事件，用于报告输出和会话中的变更。详见 [运行并继续会话](https://developers.openai.com/api/docs/guides/agents-api/sessions) 了解如何发送输入。
 
 
 
 
 ## 消费流
 
-在发送工作之前订阅，这样你的应用就能接收该轮的早期事件。传入你的 API 客户端、会话的会话 ID 以及一个事件处理器：
+在发送任务前订阅，以便你的应用能接收该轮的早期事件。传入你的 API 客户端、会话的会话 ID 以及一个事件处理函数：
 
 流式会话事件
 
@@ -190,7 +190,7 @@ curl -N \
 ```
 
 
-该助手将每个事件传递给处理器，并检查常见的事件类型。然后在 `agent.session.idle` 时继续，并在根轮次完成时返回。如果根轮次失败或被取消、会话或环境失败，或收到一个 `error` 事件，则会抛出错误。子智能体轮次事件不会结束流。你的处理器决定如何展示输出；调用方处理来自该助手的错误。如果流在轮次结束前关闭，该助手会抛出错误。参见 [恢复断开的流](#how-to-recover-a-disconnected-stream).
+该辅助函数会将每个事件传递给处理函数，然后检查常见事件类型。它会在根轮次结束时继续 `agent.session.idle` 并返回。如果根轮次失败或被取消、会话或环境失败，或者出现了某个 `error` 事件，则抛出错误。子智能体的轮次事件不会结束流。你的处理函数决定如何展示输出；调用方处理来自辅助函数的错误。如果流在轮次结束前关闭，该辅助函数会抛出错误。详见 [恢复断开的流](#how-to-recover-a-disconnected-stream).
 
 
 
@@ -461,13 +461,13 @@ end
 
 使用事件的 `type` 来决定你的应用应该执行的操作：
 
-- **显示文本：** 将增量 `agent.session.turn.output_text.delta` 追加到相关的内容片段。当 `agent.session.turn.output_text.done` 到达时，将该片段替换为其完整文本。增量可能为空。
-- **追踪进度：** 会话、轮次和条目事件会报告进度。检查 `agent.session.turn.completed`, `agent.session.turn.failed`，或 `agent.session.turn.cancelled` 以确定轮次的结果。
-- **提供所需输入：** 在 `agent.session.requires_action`，时，获取会话并检查 `required_actions`。你的代码可能需要返回函数结果或连接环境。
+- **显示文本：** 追加 `agent.session.turn.output_text.delta` 到对应的内容片段。当 `agent.session.turn.output_text.done` 到达时，用其完整文本替换该片段。增量可能不存在。
+- **跟踪工作：** 会话、轮次和项事件会报告进度。检查 `agent.session.turn.completed`, `agent.session.turn.failed`，或 `agent.session.turn.cancelled` 以确定该轮次的结果。
+- **提供所需的输入：** 当 `agent.session.requires_action`，时，检索会话并检查 `required_actions`。你的代码可能需要返回函数结果、连接环境，或处理 [浏览器源访问或登录](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use#handle-origin-access).
 
-空闲的会话或已关闭的流本身并不代表成功。一个已完成的回合也不保证每个工具都执行成功。请检查智能体的输出。
+仅凭空闲会话或已关闭的流并不能判定成功。一个已完成的回合也不能保证每个工具都成功执行。请检查 智能体 的输出。
 
-使用 `item_id`, `output_index`，以及 `content_index` 将文本更新连接到同一个内容部分。例如，下面这些简化的事件会更新同一个部分：
+使用 `item_id`, `output_index`，和 `content_index` 将文本更新连接到同一个内容部分。例如，下面这些经过精简的事件会更新同一个部分：
 
 ```json
 {
@@ -489,28 +489,38 @@ end
 }
 ```
 
-每个事件都有自己的 `event_id`。共享的 `item_id` 用于标识已保存的项，其中包含消息的内容、状态和阶段。请参阅 [检索已保存的工作](https://developers.openai.com/api/docs/guides/agents-api/sessions#retrieve-session-items).
+每个事件都有自己的 `event_id`。共享的 `item_id` 标识了已保存的项，其中包含消息的内容、状态和阶段。参见 [检索已保存的工作](https://developers.openai.com/api/docs/guides/agents-api/sessions#retrieve-session-items).
 
-请参阅 [流式事件参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/streaming-events) 以了解所有事件类型和字段。这些流事件与 [webhooks](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks)。不同。有关子智能体活动和命令归属，请参阅 [观察委托](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#observe-delegation).
+请参阅 [流式事件参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/streaming-events) 了解所有事件类型和字段。这些流事件不同于 [webhook](https://developers.openai.com/api/docs/guides/agents-api/sessions/webhooks)。关于子智能体活动和命令归因，请参阅 [观察委派](https://developers.openai.com/api/docs/guides/agents-api/multi-agent#observe-delegation).
 
-## 获取项目和对话轮次
+## 获取项目和轮次
 
-使用你应用对话状态中的会话 ID 来检索已保存的工作：
+使用应用对话状态中的会话 ID 来检索已保存的工作：
 
-- **会话条目：** [列出条目](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/items/methods/list) 以跨轮次检索根 智能体 的消息和工具调用。
-- **轮次：** [列出轮次](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/turns/methods/list) 以浏览会话的工作内容。 [检索轮次](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/turns/methods/retrieve) 按 ID 检查其状态、时间戳、使用情况和错误。
-- **单个轮次的条目：** 对于根 智能体 轮次，按 `turn_id`。筛选会话条目。每个子智能体都有其自己的 [条目历史](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/subagents/subresources/items/methods/list) 以及一个 [按轮次条目接口](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/subagents/subresources/turns/subresources/items/methods/list).
+- **会话条目：** [List items](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/items/methods/list) 以检索根智能体跨多个回合的消息和工具调用。
+- **回合：** [List turns](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/turns/methods/list) 以浏览会话的工作内容。 [Retrieve a turn](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/turns/methods/retrieve) 通过 ID 检查其状态、时间戳、用量和错误。
+- **单个回合的条目：** 对于根智能体回合，按以下方式筛选会话条目 `turn_id`。每个子智能体都有自己的 [item history](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/subagents/subresources/items/methods/list) 以及一个 [per-turn items endpoint](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/subagents/subresources/turns/subresources/items/methods/list).
 
-列表接口一次返回一页。使用 SDK 分页助手或 `after` 游标获取更多结果。单次返回的页面可能未包含该轮的全部条目。使用 `order: "asc"` 按从旧到新的顺序读取条目。
+列表端点一次返回一页。使用 SDK 分页辅助函数或 `after` 游标来检索更多结果。单个页面可能不包含某一轮的所有项。请使用 `order: "asc"` 按从旧到新的顺序读取项。
 
 ## 如何恢复断开的流
 
-流不会重放错过的事件。要恢复你应用的视图：
+从已保存的条目中恢复遗漏的输出。若要恢复你应用的视图：
 
-1. 打开一个新的流并缓冲传入的事件。
-2. 在流保持连接的同时，检索会话及其已保存的项。
-3. 根据这些项，按项 ID 为键恢复你的本地状态。
-4. 使用以下方式应用已缓冲的项更新 `item_id`。丢弃那些在检索到的历史记录中已达到最终状态的项的更新。
+1. 打开一个新的流并缓存接收到的事件。
+2. 在流保持连接的同时，检索会话及其已保存的条目。
+3. 根据这些条目恢复你的本地状态，并以条目 ID 作为键。
+4. 使用以下方式应用已缓存的条目更新 `item_id`。对于检索到的历史记录中已达到最终状态的条目，丢弃其更新。
 5. 继续处理实时事件。
 
-一个 `output_text.done` 事件可以用完整的文本替换临时文本缓冲区。已保存的条目可让你恢复已完成的工作，但不能恢复你错过的每个中间事件。
+当你重新连接到一个失败的会话时，流会报告已保存的失败信息并关闭。
+如果检索到的会话处于 `status: "failed"` 或你收到 `agent.session.failed`,
+停止重连并遵循
+[会话恢复指南](https://developers.openai.com/api/docs/guides/agents-api/errors#session-and-environment-errors).
+
+从检索到的会话的 `required_actions`.
+历史项无法表明哪些请求仍需要响应。对于
+浏览器审批，请按以下方式匹配表单 `request_id` 并移除那些不再
+待处理的项。重新连接后，你无需重新发送任务或先前的审批。
+
+一个 `output_text.done` 事件可以用完整文本替换临时文本缓冲区。已保存的项可让你恢复已完成的工作，但无法恢复你错过的每一个中间事件。

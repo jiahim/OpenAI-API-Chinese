@@ -8,6 +8,8 @@ OpenAI manages sessions, orchestration, context compaction, and recovery while y
 
 Agents can operate in a sandbox where they can execute code, edit files, connect to MCP servers, and produce artifacts.
 
+See the [API reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents) for endpoints, request parameters, and response fields.
+
 ## Pricing
 
 Model usage is billed at the selected model's [API rates](https://developers.openai.com/api/docs/pricing). OpenAI tools use their [standard rates](https://developers.openai.com/api/docs/pricing#built-in-tools), and OpenAI-hosted sandboxes use standard [container rates](https://developers.openai.com/api/docs/pricing#built-in-tools).
@@ -344,6 +346,9 @@ curl -sS -X POST "https://api.openai.com/v1/agents/sessions" \
 
 
 For a runtime comparison, see the [Agents overview](https://developers.openai.com/api/docs/guides/agents#compare-agent-runtimes).
+
+For the AWS service built on the Agents API, see
+[Bedrock Managed Agents](https://developers.openai.com/api/docs/guides/agents-api/bedrock-managed-agents).
 
 The Agents API retains session state so you can continue work across turns without
   rebuilding the conversation context. You can delete sessions and published

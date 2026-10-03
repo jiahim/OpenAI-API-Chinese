@@ -13,7 +13,7 @@ An agent session can outlive its environment. Your application manages the compu
 
 Your application can start compute after creating a session. Use your [provider's SDK or API](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted#sandbox-providers), then [connect the executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted) with the session's environment ID and an environment key.
 
-See the [application-managed sandbox examples](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed) in the OpenAI Cookbook.
+See the [application-managed sandbox examples](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes) in the OpenAI Cookbook.
 
 <picture>
   <source
@@ -39,7 +39,7 @@ Use one component to manage each session's environment. Store the mapping betwee
 
 You can also wait until input needs an environment connection. The API emits `agent.session.action_required` with `required_action.type: "environment_connection"` before waiting for the executor. Your webhook handler starts or reconnects the environment.
 
-See the [webhook-managed sandbox examples](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed) in the OpenAI Cookbook.
+See the [webhook-managed sandbox examples](https://github.com/openai/openai-cookbook/blob/main/examples/agents_api/sandboxes/webhook_managed.md) in the OpenAI Cookbook.
 
 <picture>
   <source

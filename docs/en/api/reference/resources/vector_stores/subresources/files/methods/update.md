@@ -178,7 +178,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/files/$FILE_ID \
 ### Example
 
 ```http
-curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
+curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"attributes": {"key1": "value1", "key2": 2}}'
@@ -192,10 +192,16 @@ curl https://api.openai.com/v1/vector_stores/{vector_store_id}/files/{file_id} \
   "object": "vector_store.file",
   "usage_bytes": 1234,
   "created_at": 1699061776,
-  "vector_store_id": "vs_abcd",
+  "vector_store_id": "vs_abc123",
   "status": "completed",
   "last_error": null,
-  "chunking_strategy": {...},
+  "chunking_strategy": {
+    "type": "static",
+    "static": {
+      "max_chunk_size_tokens": 800,
+      "chunk_overlap_tokens": 400
+    }
+  },
   "attributes": {"key1": "value1", "key2": 2}
 }
 ```

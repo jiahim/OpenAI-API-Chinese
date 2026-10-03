@@ -1,12 +1,12 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取对应文档页面的 Markdown 版本。
 
-## 创建语音
+## Create speech
 
 **post** `/audio/speech`
 
 根据输入文本生成音频。
 
-返回音频文件内容，或音频事件流。
+返回音频文件内容或音频事件流。
 
 ### 请求体参数
 
@@ -30,13 +30,15 @@
 
     - `"gpt-4o-mini-tts-2025-12-15"`
 
-- `voice: string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
+- `voice: string or "alloy" or "ash" or "ballad" or 10 more or object { id }`
 
-  生成音频时使用的声音。支持的内置声音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`，以及 `cedar`。你也可以提供一个带有 `id`，的自定义 voice 对象，例如 `{ "id": "voice_1234" }`。声音试听可在 [文本转语音指南](/api/docs/guides/text-to-speech#voice-options).
+  生成音频时使用的语音。支持的内置语音包括 `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`，以及 `cedar`。你也可以提供带有 `id`，的自定义语音对象，例如 `{ "id": "voice_1234" }`。语音预览可在 [文本转语音指南](/api/docs/guides/text-to-speech#voice-options)。中查看。自定义语音必须通过音频样本创建。仅 Live 支持通过文本提示创建的语音。
 
   - `string`
 
-  - `"alloy" or "ash" or "ballad" or 7 more`
+  - `"alloy" or "ash" or "ballad" or 10 more`
+
+    生成音频时使用的语音。支持的内置语音包括 `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`，以及 `cedar`。你也可以提供带有 `id`，的自定义语音对象，例如 `{ "id": "voice_1234" }`。语音预览可在 [文本转语音指南](/api/docs/guides/text-to-speech#voice-options)。中查看。自定义语音必须通过音频样本创建。仅 Live 支持通过文本提示创建的语音。
 
     - `"alloy"`
 
@@ -58,21 +60,27 @@
 
     - `"cedar"`
 
+    - `"fable"`
+
+    - `"onyx"`
+
+    - `"nova"`
+
   - `ID object { id }`
 
-    自定义声音参考。
+    自定义语音引用。
 
     - `id: string`
 
-      自定义声音 ID，例如 `voice_1234`.
+      自定义语音 ID，例如 `voice_1234`.
 
 - `instructions: optional string`
 
-  通过附加指令控制生成音频的声音。不适用于 `tts-1` 或 `tts-1-hd`.
+  通过额外指令控制生成音频的语音。不适用于 `tts-1` 或 `tts-1-hd`.
 
 - `response_format: optional "mp3" or "opus" or "aac" or 3 more`
 
-  输出的音频格式。支持的格式有 `mp3`, `opus`, `aac`, `flac`, `wav`，以及 `pcm`.
+  音频输出格式。支持的格式包括 `mp3`, `opus`, `aac`, `flac`, `wav`，以及 `pcm`.
 
   - `"mp3"`
 
@@ -88,11 +96,11 @@
 
 - `speed: optional number`
 
-  生成音频的速度。从 `0.25` 到 `4.0`. `1.0` 中选取，默认值为 1.0。
+  生成音频的速度。选择 `0.25` 到 `4.0`. `1.0` 之间的值，
 
 - `stream_format: optional "sse" or "audio"`
 
-  流式传输音频的格式。支持的格式有 `sse` 和 `audio`. `sse` 不支持 `tts-1` 或 `tts-1-hd`.
+  是默认值。流式音频的格式。支持的格式包括 `sse` 且 `audio`. `sse` 不支持 `tts-1` 或 `tts-1-hd`.
 
   - `"sse"`
 
@@ -107,7 +115,7 @@ curl https://api.openai.com/v1/audio/speech \
     -d '{
           "input": "input",
           "model": "tts-1",
-          "voice": "alloy"
+          "voice": "ash"
         }'
 ```
 

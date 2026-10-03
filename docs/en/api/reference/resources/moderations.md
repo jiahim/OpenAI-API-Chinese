@@ -517,6 +517,7 @@ curl https://api.openai.com/v1/moderations \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
+    "model": "omni-moderation-latest",
     "input": "I want to kill them."
   }'
 ```
@@ -526,7 +527,7 @@ curl https://api.openai.com/v1/moderations \
 ```json
 {
   "id": "modr-AB8CjOTu2jiq12hp1AQPfeqFWaORR",
-  "model": "text-moderation-007",
+  "model": "omni-moderation-latest",
   "results": [
     {
       "flagged": true,
@@ -541,20 +542,65 @@ curl https://api.openai.com/v1/moderations \
         "self-harm/intent": false,
         "self-harm/instructions": false,
         "harassment/threatening": true,
-        "violence": true
+        "violence": true,
+        "illicit": false,
+        "illicit/violent": false
       },
       "category_scores": {
-        "sexual": 0.000011726012417057063,
+        "sexual": 1.1726012417057063e-05,
         "hate": 0.22706663608551025,
         "harassment": 0.5215635299682617,
-        "self-harm": 2.227119921371923e-6,
-        "sexual/minors": 7.107352217872176e-8,
+        "self-harm": 2.227119921371923e-06,
+        "sexual/minors": 7.107352217872176e-08,
         "hate/threatening": 0.023547329008579254,
-        "violence/graphic": 0.00003391829886822961,
-        "self-harm/intent": 1.646940972932498e-6,
-        "self-harm/instructions": 1.1198755256458526e-9,
+        "violence/graphic": 3.391829886822961e-05,
+        "self-harm/intent": 1.646940972932498e-06,
+        "self-harm/instructions": 1.1198755256458526e-09,
         "harassment/threatening": 0.5694745779037476,
-        "violence": 0.9971134662628174
+        "violence": 0.9971134662628174,
+        "illicit": 0.001,
+        "illicit/violent": 0.001
+      },
+      "category_applied_input_types": {
+        "sexual": [
+          "text"
+        ],
+        "hate": [
+          "text"
+        ],
+        "harassment": [
+          "text"
+        ],
+        "self-harm": [
+          "text"
+        ],
+        "sexual/minors": [
+          "text"
+        ],
+        "hate/threatening": [
+          "text"
+        ],
+        "violence/graphic": [
+          "text"
+        ],
+        "self-harm/intent": [
+          "text"
+        ],
+        "self-harm/instructions": [
+          "text"
+        ],
+        "harassment/threatening": [
+          "text"
+        ],
+        "violence": [
+          "text"
+        ],
+        "illicit": [
+          "text"
+        ],
+        "illicit/violent": [
+          "text"
+        ]
       }
     }
   ]

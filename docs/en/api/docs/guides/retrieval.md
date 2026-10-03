@@ -2263,6 +2263,30 @@ func formatResults(results []openai.VectorStoreSearchResponse) string {
 }
 ```
 
+```java
+import com.openai.models.vectorstores.VectorStoreSearchResponse;
+import java.util.List;
+
+System.out.println(formatResults(results.data()));
+
+static String formatResults(List<VectorStoreSearchResponse> results) {
+  var formatted = new StringBuilder("<sources>");
+  for (var result : results) {
+    formatted
+        .append("<result file_id='")
+        .append(result.fileId())
+        .append("' file_name='")
+        .append(result.filename())
+        .append("'>");
+    for (var part : result.content()) {
+      formatted.append("<content>").append(part.text()).append("</content>");
+    }
+    formatted.append("</result>");
+  }
+  return formatted.append("</sources>").toString();
+}
+```
+
 ```ruby
 results = [
   {

@@ -1,46 +1,46 @@
 # Chat
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取该文档页面的 Markdown 版本。
 
 # Completions
 
-## Create chat completion
+## 创建聊天补全
 
 **post** `/chat/completions`
 
-**开始一个新项目？** 我们推荐你尝试 [Responses](/api/reference/resources/responses)
-以充分利用 OpenAI 平台的最新功能。比较
+**开始一个新项目？** 我们建议你试用 [Responses](/api/reference/resources/responses)
+以充分利用最新的 OpenAI 平台功能。比较
 [Chat Completions 与 Responses](/api/docs/guides/migrate-to-responses?api-mode=responses).
 
 ---
 
-为给定的聊天会话创建模型响应。更多信息请参阅
+为给定的聊天对话创建模型响应。更多信息请参阅
 [文本生成](/api/docs/guides/text), [视觉](/api/docs/guides/images-vision),
 和 [音频](/api/docs/guides/audio) 指南。
 
-参数支持可能因用于生成响应的模型而异，尤其是较新的推理模型。仅
-在推理模型中支持的参数将在下方注明。有关推理模型中
-不受支持参数的最新情况，请参考推理
-指南，
-[。](/api/docs/guides/reasoning).
+参数支持可能因用于生成
+响应的模型而异，尤其是较新的推理模型。仅
+推理模型支持的参数将在下方注明。有关推理模型中
+不受支持参数的当前情况，请，
+[参阅推理指南](/api/docs/guides/reasoning).
 
-返回一个聊天补全对象，如果请求采用流式传输，则返回按顺序排列的聊天补全
-块对象。
+返回一个聊天补全对象，如果请求是流式的，则返回一系列聊天补全
+分块对象。
 
 ### Body 参数
 
 - `messages: array of ChatCompletionMessageParam`
 
-  到目前为止组成对话的消息列表。根据所使用的
-  [model](/api/docs/models) 不同，支持的消息类型（模态）也有所不同，例如
-  支持 [text](/api/docs/guides/text),
-  [images](/api/docs/guides/images-vision)，以及 [audio](/api/docs/guides/audio).
+  到目前为止构成对话的消息列表。根据你使用的
+  [model](/api/docs/models) ，支持不同的消息类型（模态），例如
+  支持的，例如 [text](/api/docs/guides/text),
+  [images](/api/docs/guides/images-vision)，和 [audio](/api/docs/guides/audio).
 
   - `ChatCompletionDeveloperMessageParam object { content, role, name }`
 
-    开发者提供的指令，无论用户发送什么
-    消息，模型都应遵循这些指令。对于 o1 及更高版本的模型， `developer` 消息
-    将取代之前的 `system` messages。
+    由开发者提供的指令，无论用户发送什么消息，模型都应遵循这些指令。对于 o1 及更新的
+    模型， `developer` messages
+    字段取代了之前的 `system` messages。
 
     - `content: string or array of ChatCompletionContentPartText`
 
@@ -52,7 +52,7 @@
 
       - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-        由已定义类型组成的内容部分数组。对于开发者消息，仅支持 type `text` 类型。
+        由已定义类型的内容部分组成的数组。对于开发者消息，仅支持 type 为 `text` 的类型。
 
         - `text: string`
 
@@ -66,11 +66,11 @@
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
-            断点模式。始终为 `explicit`.
+            断点模式。始终 `explicit`.
 
             - `"explicit"`
 
@@ -82,13 +82,13 @@
 
     - `name: optional string`
 
-      参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+      参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
   - `ChatCompletionSystemMessageParam object { content, role, name }`
 
-    开发者提供的指令，无论用户发送什么
-    用户发送的消息。对于 o1 及更新模型，请改用 `developer` 消息
-    来实现此目的。
+    由开发者提供的指令，无论用户发送什么消息，模型都应遵循这些指令。对于 o1 及更新的
+    用户发送的消息。对于 o1 及更新模型，请使用 `developer` messages
+    来代替。
 
     - `content: string or array of ChatCompletionContentPartText`
 
@@ -100,7 +100,7 @@
 
       - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-        具有指定类型的内容部分数组。对于系统消息，仅支持类型 `text` 类型。
+        由已定义类型组成的内容部分数组。对于系统消息，仅支持类型 `text` 的类型。
 
         - `text: string`
 
@@ -112,7 +112,7 @@
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
     - `role: "system"`
 
@@ -122,11 +122,11 @@
 
     - `name: optional string`
 
-      参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+      参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
   - `ChatCompletionUserMessageParam object { content, role, name }`
 
-    由最终用户发送的消息，包含提示词或额外的上下文
+    由终端用户发送的消息，包含提示或额外的上下文
     信息。
 
     - `content: string or array of ChatCompletionContentPart`
@@ -139,7 +139,7 @@
 
       - `ArrayOfContentParts = array of ChatCompletionContentPart`
 
-        具有指定类型的内容部分数组。支持的可选项因 [model](/api/docs/models) 生成响应时所使用的模型而异。可以包含文本、图像或音频输入。
+        由已定义类型组成的内容部分数组。支持选项因用于生成响应的 [model](/api/docs/models) 而异。可包含文本、图像或音频输入。
 
         - `ChatCompletionContentPartText object { text, type, prompt_cache_breakpoint }`
 
@@ -155,7 +155,7 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
         - `ChatCompletionContentPartImage object { image_url, type, prompt_cache_breakpoint }`
 
@@ -165,9 +165,9 @@
 
             - `url: string`
 
-              图像的 URL 或 base64 编码的图像数据。
+              图像的 URL 或 base64 编码后的图像数据。
 
-            - `detail: optional "auto" or "low" or "high"`
+            - `detail: optional "auto" or "low" or "high" or "original"`
 
               指定图像的细节级别。更多信息请参阅 [视觉指南](/api/docs/guides/images-vision#choose-an-image-detail-level).
 
@@ -177,6 +177,8 @@
 
               - `"high"`
 
+              - `"original"`
+
           - `type: "image_url"`
 
             内容部分的类型。
@@ -185,11 +187,11 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
-              断点模式。始终为 `explicit`.
+              断点模式。始终 `explicit`.
 
               - `"explicit"`
 
@@ -205,7 +207,7 @@
 
             - `format: "wav" or "mp3"`
 
-              编码音频数据的格式。目前支持 "wav" 和 "mp3"。
+              编码音频数据的格式。当前支持 "wav" 和 "mp3"。
 
               - `"wav"`
 
@@ -219,11 +221,11 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
-              断点模式。始终为 `explicit`.
+              断点模式。始终 `explicit`.
 
               - `"explicit"`
 
@@ -235,8 +237,8 @@
 
             - `file_data: optional string`
 
-              Base64 编码的文件数据，在将文件作为
-              字符串传递给模型时使用。
+              Base64 编码的文件数据，在将文件以字符串形式传递给模型时使用
+              。
 
             - `file_id: optional string`
 
@@ -244,8 +246,8 @@
 
             - `filename: optional string`
 
-              文件的名称，在将文件作为
-              字符串传递给模型时使用。
+              文件的名称，在将文件以字符串形式传递给模型时使用
+              。
 
           - `type: "file"`
 
@@ -255,11 +257,11 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
-              断点模式。始终为 `explicit`.
+              断点模式。始终 `explicit`.
 
               - `"explicit"`
 
@@ -271,11 +273,11 @@
 
     - `name: optional string`
 
-      参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+      参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
   - `ChatCompletionAssistantMessageParam object { role, audio, content, 4 more }`
 
-    模型针对用户消息发送的回复消息。
+    模型针对用户消息回复时发送的消息。
 
     - `role: "assistant"`
 
@@ -285,16 +287,16 @@
 
     - `audio: optional object { id }  or null`
 
-      关于模型先前音频回复的数据。
+      关于模型先前音频响应的数据。
       [了解更多](/api/docs/guides/audio).
 
       - `id: string`
 
-        模型先前音频回复的唯一标识符。
+        模型先前音频响应的唯一标识符。
 
     - `content: optional string or array of ChatCompletionContentPartText or ChatCompletionContentPartRefusal or null`
 
-      助手消息的内容。除非指定了 `tool_calls` 或 `function_call` ，否则必填。
+      助手消息的内容。除非指定了 `tool_calls` 或 `function_call` ，否则此项必填。
 
       - `TextContent = string`
 
@@ -302,7 +304,7 @@
 
       - `ArrayOfContentParts = array of ChatCompletionContentPartText or ChatCompletionContentPartRefusal`
 
-        由已定义类型的内容部分组成的数组。可以包含一个或多个类型为 `text`，的部分，或恰好一个类型为 `refusal`.
+        由已定义类型组成的内容部分数组。可以是一或多个类型为 `text`，或恰好一个类型为 `refusal`.
 
         - `ChatCompletionContentPartText object { text, type, prompt_cache_breakpoint }`
 
@@ -312,7 +314,7 @@
 
           - `refusal: string`
 
-            由模型生成的拒绝消息。
+            模型生成的拒绝消息。
 
           - `type: "refusal"`
 
@@ -322,23 +324,23 @@
 
     - `function_call: optional object { arguments, name }  or null`
 
-      已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+      已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
       - `arguments: string`
 
-        调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+        调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
       - `name: string`
 
-        要调用的函数名称。
+        要调用的函数的名称。
 
     - `name: optional string`
 
-      参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+      参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
     - `refusal: optional string or null`
 
-      助手生成的拒绝消息。
+      助手给出的拒绝消息。
 
     - `tool_calls: optional array of ChatCompletionMessageToolCall`
 
@@ -354,19 +356,19 @@
 
         - `function: object { arguments, name }`
 
-          模型所调用的函数。
+          模型调用的函数。
 
           - `arguments: string`
 
-            调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+            调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
           - `name: string`
 
-            要调用的函数名称。
+            要调用的函数的名称。
 
         - `type: "function"`
 
-          工具的类型。目前，仅 `function` 类型。
+          工具的类型。目前，仅 `function` 的类型。
 
           - `"function"`
 
@@ -380,15 +382,15 @@
 
         - `custom: object { input, name }`
 
-          模型所调用的自定义工具。
+          模型调用的自定义工具。
 
           - `input: string`
 
-            模型生成的自定义工具调用输入。
+            模型为该自定义工具调用生成的输入。
 
           - `name: string`
 
-            要调用的自定义工具名称。
+            要调用的自定义工具的名称。
 
         - `type: "custom"`
 
@@ -408,7 +410,7 @@
 
       - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-        具有指定类型的内容部分数组。对于工具消息，仅支持类型 `text` 类型。
+        由已定义类型组成的内容部分数组。对于工具消息，仅支持 type `text` 的类型。
 
         - `text: string`
 
@@ -420,7 +422,7 @@
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
     - `role: "tool"`
 
@@ -430,7 +432,7 @@
 
     - `tool_call_id: string`
 
-      此消息所响应的工具调用。
+      此消息正在响应的工具调用。
 
   - `ChatCompletionFunctionMessageParam object { content, name, role }`
 
@@ -440,7 +442,7 @@
 
     - `name: string`
 
-      要调用的函数名称。
+      要调用的函数的名称。
 
     - `role: "function"`
 
@@ -448,23 +450,25 @@
 
       - `"function"`
 
-- `model: string or "gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+- `model: string or "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
   用于生成响应的模型 ID，例如 `gpt-6-astra` 或 `o3`。OpenAI
-  提供了多种在能力、性能
-  特性和价格方面各不相同的模型。请参阅 [模型指南](/api/docs/models)
+  提供多种不同能力、性能
+  特征和价格的模型。请参阅 [模型指南](/api/docs/models)
   以浏览和比较可用的模型。
 
   - `string`
 
-  - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+  - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
     用于生成响应的模型 ID，例如 `gpt-6-astra` 或 `o3`。OpenAI
-    提供了多种在能力、性能
-    特性和价格方面各不相同的模型。请参阅 [模型指南](/api/docs/models)
+    提供多种不同能力、性能
+    特征和价格的模型。请参阅 [模型指南](/api/docs/models)
     以浏览和比较可用的模型。
 
     - `"gpt-6-astra"`
+
+    - `"gpt-6.1-sol"`
 
     - `"gpt-6-sol"`
 
@@ -642,12 +646,12 @@
 
 - `audio: optional ChatCompletionAudioParam or null`
 
-  音频输出参数。在使用以下方式请求音频输出时必填：
+  音频输出参数。在使用以下方式请求音频输出时必填
   `modalities: ["audio"]`. [了解更多](/api/docs/guides/audio).
 
   - `format: "wav" or "aac" or "mp3" or 3 more`
 
-    指定输出音频格式。必须是以下值之一： `wav`, `mp3`, `flac`,
+    指定输出音频格式。必须为以下之一 `wav`, `mp3`, `flac`,
     `opus`，或 `pcm16`.
 
     - `"wav"`
@@ -664,10 +668,12 @@
 
   - `voice: string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
 
-    模型用于回复的声音。支持的内置声音包括
+    模型用于响应的语音。支持的内置语音包括
     `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `nova`, `onyx`,
-    `sage`, `shimmer`, `marin`，以及 `cedar`。你也可以提供
-    带有自定义声音对象的 `id`，例如 `{ "id": "voice_1234" }`.
+    `sage`, `shimmer`, `marin`，和 `cedar`。你也可以提供
+    自定义语音对象，其包含 `id`，例如 `{ "id": "voice_1234" }`.
+    自定义语音必须由音频样本创建。通过文本
+    提示创建的语音仅在 Live 中受支持。
 
     - `string`
 
@@ -695,39 +701,39 @@
 
     - `ID object { id }`
 
-      自定义声音引用。
+      自定义语音引用。
 
       - `id: string`
 
-        自定义声音 ID，例如 `voice_1234`.
+        自定义语音 ID，例如。 `voice_1234`.
 
 - `frequency_penalty: optional number or null`
 
-  介于 -2.0 和 2.0 之间的数值。正值会根据
-  词元在已有文本中的出现频率对其进行惩罚，从而降低模型
-  逐字重复相同内容的可能性。
+  介于 -2.0 到 2.0 之间的数字。正值会根据
+  目前文本中已出现的频率对新词元进行惩罚，从而降低模型
+  逐字重复相同语句的可能性。
 
 - `function_call: optional "none" or "auto" or ChatCompletionFunctionCallOption`
 
-  已弃用，建议改用 `tool_choice`.
+  已弃用，推荐使用 `tool_choice`.
 
-  控制模型调用哪个函数（如果有）。
+  控制模型调用哪个函数（如果有的话）。
 
   `none` 表示模型不会调用函数，而是生成一条
   消息。
 
-  `auto` 表示模型可以在生成消息和调用
+  `auto` 表示模型可以在生成消息或调用
   函数之间进行选择。
 
-  通过 `{"name": "my_function"}` 指定某个特定函数会强制
+  通过 {"name": "my_function"} 指定某个函数 `{"name": "my_function"}` 会强制模型调用该函数。
   模型调用该函数。
 
-  `none` 在没有函数时的默认值。 `auto` 是默认值
-  （当存在函数时）。
+  `none` none 是不存在任何函数时的默认值。 `auto` auto 是存在函数时
+  的默认值。
 
   - `"none" or "auto"`
 
-    `none` 表示模型不会调用函数，而是生成一条消息。 `auto` 表示模型可以在生成消息和调用函数之间进行选择。
+    `none` none 表示模型不会调用函数，而是生成一条消息。 `auto` auto 表示模型可以在生成消息或调用函数之间进行选择。
 
     - `"none"`
 
@@ -735,81 +741,81 @@
 
   - `ChatCompletionFunctionCallOption object { name }`
 
-    通过 `{"name": "my_function"}` 强制模型调用该函数。
+    通过 {"name": "my_function"} 指定某个函数 `{"name": "my_function"}` 强制模型调用该函数。
 
     - `name: string`
 
-      要调用的函数名称。
+      要调用的函数的名称。
 
 - `functions: optional array of object { name, description, parameters }`
 
-  已弃用，建议改用 `tools`.
+  已弃用，推荐使用 `tools`.
 
   模型可为其生成 JSON 输入的函数列表。
 
   - `name: string`
 
-    要调用的函数名称。必须包含 a-z、A-Z、0-9 或下划线和短横线，最大长度为 64。
+    要调用的函数名称。必须由 a-z、A-Z、0-9 组成，或包含下划线和连字符，最大长度为 64。
 
   - `description: optional string`
 
-    对函数功能的描述，供模型用于判断何时以及如何调用该函数。
+    函数功能的描述，供模型用于决定何时以及如何调用该函数。
 
   - `parameters: optional FunctionParameters`
 
-    函数接受的参数，以 JSON Schema 对象描述。参见 [指南](/api/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 查看该格式的相关文档。
+    函数接受的参数，使用 JSON Schema 对象描述。请参阅 [指南](/api/docs/guides/function-calling) 例如，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，查看有关该格式的文档。
 
-    省略 `parameters` 用于定义一个空参数列表的函数。
+    省略 `parameters` 则定义一个空参数列表的函数。
 
 - `logit_bias: optional map[number] or null`
 
-  修改指定 token 在 completion 中出现的概率。
+  修改指定 token 出现在补全结果中的可能性。
 
   接受一个 JSON 对象，将 token（在
-  tokenizer 中通过其 token ID 指定）映射到 -100 到 100 之间的关联偏差值。从数学上讲，
-  该偏差会在采样前加到模型生成的 logits 上。
-  具体效果因模型而异，但介于 -1 和 1 之间的值应
-  降低或提高被选中的概率；像 -100 或 100 这样
-  的值应导致禁止或仅选择相关 token。
+  分词器）中由其 token ID 指定）映射到介于 -100 到 100 之间的关联偏置值。数学上，
+  该偏置值会在采样之前添加到模型生成的 logits 中。
+  具体效果因模型而异，但介于 -1 到 1 之间的值应当
+  降低或提高被选中的可能性；像 -100 或 100 这样的值
+  应当导致对应 token 被禁止或被唯一选中。
 
 - `logprobs: optional boolean or null`
 
   是否返回输出 token 的对数概率。如果为 true，
-  则返回所返回的每个输出 token 的对数概率；
-  `content` 的 `message`.
+  则返回
+  `content` 中每个输出 token 的对数概率。 `message`.
 
 - `max_completion_tokens: optional number or null`
 
-  为一次 completion 可生成 token 总数的上限，包括可见的输出 token 和 [推理 token](/api/docs/guides/reasoning).
+  一次补全可生成 token 数量的上限，包括可见输出 token 和 [推理 token](/api/docs/guides/reasoning).
 
 - `max_tokens: optional number or null`
 
-  可在 [聊天 completion](https://platform.openai.com/tokenizer) 中生成的最大 token 数。该值可用于控制
-  成本
-  [成本](https://openai.com/api/pricing/) 用于通过 API 生成的文本。
+  可生成的最大 [token](https://platform.openai.com/tokenizer) 数量上限，生成于
+  chat completion。该值可用于控制
+  [成本](https://openai.com/api/pricing/) ，这些成本来自通过 API 生成的文本。
 
-  该值已被弃用，推荐使用 `max_completion_tokens`，并且
-  与 [o 系列模型](/api/docs/guides/reasoning).
+  此值现已弃用，推荐使用 `max_completion_tokens`，且与
+  不兼容 [o-series 模型](/api/docs/guides/reasoning).
 
 - `metadata: optional Metadata or null`
 
-  可以附加到对象的 16 个键值对集合。可用于
-  以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-  格式，以及通过 接口 或仪表板查询对象。
+  可附加到对象的 16 个键值对。可用于
+  以结构化格式存储对象的附加信息，并通过 API 或仪表板进行查询。
+  以结构化格式存储对象的附加信息，并通过 接口 或仪表板进行查询。
 
-  键是字符串，最大长度为 64 个字符。值是字符串
-  ，最大长度为 512 个字符。
+  键为字符串，最长 64 个字符。值为字符串，
+  最长 512 个字符。
 
 - `modalities: optional array of "text" or "audio" or null`
 
-  你希望模型生成的输出类型。
-  大多数模型能够生成文本，这也是默认行为：
+  希望模型生成的输出类型。
+  大多数模型都能够生成文本，这也是默认行为：
 
   `["text"]`
 
   该 `gpt-4o-audio-preview` 模型也可用于
-  [生成音频](/api/docs/guides/audio)。若要请求此模型生成
-  文本和音频两种响应，可以使用：
+  [生成音频](/api/docs/guides/audio)。若希望该模型同时生成
+  文本和音频响应，可以使用：
 
   `["text", "audio"]`
 
@@ -819,19 +825,19 @@
 
 - `moderation: optional object { model, policy }  or null`
 
-  用于对请求输入和生成输出运行内容审核的配置。
+  对请求输入和生成输出运行审查的配置。
 
   - `model: string`
 
-    用于已审核补全的内容审核模型，例如 'omni-moderation-latest'。
+    用于审核补全的审核模型，例如 omni-moderation-latest。
 
   - `policy: optional object { input, output }  or null`
 
-    应用于已审核响应输入和输出的策略。
+    应用于审核响应输入和输出的策略。
 
     - `input: optional object { mode }  or null`
 
-      响应输入的审核策略。
+      用于响应输入的审核策略。
 
       - `mode: "score" or "block"`
 
@@ -841,7 +847,7 @@
 
     - `output: optional object { mode }  or null`
 
-      响应输出的审核策略。
+      用于响应输出的审核策略。
 
       - `mode: "score" or "block"`
 
@@ -851,33 +857,33 @@
 
 - `n: optional number or null`
 
-  为每条输入消息生成多少个聊天补全选项。请注意，费用将根据所有选项生成的 token 总数计算。请将 `n` as `1` 保持在较低水平以最小化成本。
+  针对每条输入消息要生成的聊天补选项数量。请注意，将根据所有选项中生成的令牌总数向你收费。请将 `n` n `1` 保持较小以降低成本。
 
 - `parallel_tool_calls: optional boolean`
 
-  是否在工具使用期间启用 [parallel function calling](/api/docs/guides/function-calling#parallel-function-calling) 。
+  是否在工具使用期间启用 [并行函数调用](/api/docs/guides/function-calling#parallel-function-calling) 。
 
 - `prediction: optional ChatCompletionPredictionContent or null`
 
-  Predicted Output 的配置，当模型的响应中 [Predicted Output](/api/docs/guides/predicted-outputs),
-  较大部分事先已知时，可以显著提升响应速度。当你正在重新生成一个文件，而
-  大部分内容只有少量改动时，这种情况最为常见。
-  重新生成一个只有少量改动的文件。
+  用于以下对象的配置： [Predicted Output](/api/docs/guides/predicted-outputs),
+  当模型响应的较大内容可提前预知时，它可以显著提升响应速度。
+  大多数内容仅做了小幅修改时，这种情况最为常见。
+  你正在重新生成文件，但仅对大部分内容做轻微改动。
 
   - `content: string or array of ChatCompletionContentPartText`
 
     生成模型响应时应匹配的内容。
-    如果生成的 token 与该内容匹配，则可以更快地返回整个模型响应。
-    可以更快地返回整个模型响应。
+    如果生成的 token 与此内容匹配，则整个模型响应
+    可以更快地返回。
 
     - `TextContent = string`
 
-      用于 Predicted Output 的内容。通常是你正在重新生成、仅做少量改动的文件的
-      文本。
+      用于 Predicted Output 的内容。这通常是
+      你要重新生成并做了少量修改的文件文本。
 
     - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-      具有指定类型的内容部分数组。支持的可选项因 [model](/api/docs/models) 用于生成响应的内容。可以包含文本输入。
+      由已定义类型组成的内容部分数组。支持选项因用于生成响应的 [model](/api/docs/models) 用于生成响应。可以包含文本输入。
 
       - `text: string`
 
@@ -889,32 +895,32 @@
 
       - `prompt_cache_breakpoint: optional object { mode }`
 
-        标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+        标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
   - `type: "content"`
 
-    你要提供的预测内容的类型。该类型通常
-    始终为 `content`.
+    你要提供的预测内容的类型。此类型
+    当前始终为 `content`.
 
     - `"content"`
 
 - `presence_penalty: optional number or null`
 
-  介于 -2.0 和 2.0 之间的数值。正值会根据
-  它们到目前为止是否出现在文本中，从而提高模型
-  谈论新话题的可能性。
+  介于 -2.0 到 2.0 之间的数字。正值会根据
+  它们是否出现在目前为止的文本中，从而增加模型谈论新话题的可能性
+  。
 
 - `prompt_cache_key: optional string or null`
 
-  由 OpenAI 用于缓存相似请求的响应，以优化你的缓存命中率。取代 `user` 字段。 [了解更多](/api/docs/guides/prompt-caching).
+  由 OpenAI 用于为相似请求缓存响应，以优化你的缓存命中率。取代 `user` 字段。 [了解更多](/api/docs/guides/prompt-caching).
 
 - `prompt_cache_options: optional object { mode, ttl }`
 
-  提示缓存的选项。支持 `gpt-5.6` 及更高版本的模型。默认情况下，OpenAI 会自动选择一个隐式缓存断点。你可以通过 `prompt_cache_breakpoint`。向内容块添加显式断点。每个请求最多可以写入四个断点。对于缓存匹配，OpenAI 会考虑对话中最近的最多 80 个断点，且不受内容块回溯限制。请将 `mode` 设置为 `explicit` 以禁用隐式断点。 `ttl` 默认为 `30m`，这是当前唯一支持的值。参见 [提示缓存指南](/api/docs/guides/prompt-caching) 以获取最新详情。
+  提示缓存的选项。受支持的模型为 `gpt-5.6` 及更高版本。默认情况下，OpenAI 会自动选择一个隐式缓存断点。你可以为内容块添加显式断点 `prompt_cache_breakpoint`。每个请求最多可以写入四个断点。对于缓存匹配，OpenAI 会考虑对话中最多最近的 80 个断点，且没有内容块回溯限制。将 `mode` 设置为 `explicit` 以禁用隐式断点。 `ttl` 默认为 `30m`，也是当前唯一受支持的值。请参阅 [提示缓存指南](/api/docs/guides/prompt-caching) 了解最新详细信息。
 
   - `mode: optional "implicit" or "explicit"`
 
-    控制 OpenAI 是否自动创建隐式缓存断点。默认为 `implicit`。使用 `implicit`，时，OpenAI 会创建一个隐式断点，并在请求中写入最近的最多三个显式断点。使用 `explicit`，时，OpenAI 不会创建隐式断点，并写入最近的最多四个显式断点。如果没有显式断点，则该请求不使用提示缓存。
+    控制 OpenAI 是否自动创建隐式缓存断点。默认为 `implicit`。使用 `implicit`，时，OpenAI 会创建一个隐式断点，并在请求中写入最多最近三个显式断点。使用 `explicit`，时，OpenAI 不会创建隐式断点，并写入最多最近四个显式断点。如果没有显式断点，则该请求不使用提示缓存。
 
     - `"implicit"`
 
@@ -922,7 +928,7 @@
 
   - `ttl: optional "30m"`
 
-    应用于该请求写入的每个隐式和显式缓存断点的最短生命周期。默认为 `30m`，这是当前唯一支持的值。后端可能会保留缓存条目更长时间。
+    应用于该请求写入的每个隐式和显式缓存断点的最短生命周期。默认为 `30m`，这是当前唯一支持的值。后端可能会将缓存条目保留更长时间。
 
     - `"30m"`
 
@@ -930,16 +936,16 @@
 
   已弃用。请使用 `prompt_cache_options.ttl` 替代。
 
-  提示缓存的保留策略。设置为 `24h` 以启用扩展提示缓存，使缓存的前缀保持更长时间的活跃状态，最长可达 24 小时。 [了解更多](/api/docs/guides/prompt-caching#prompt-cache-retention).
-  此字段表示最长保留策略，而
+  提示缓存的保留策略。设置为 `24h` 以启用扩展提示缓存，它会将缓存前缀保持更长时间，最长可达 24 小时。 [了解更多](/api/docs/guides/prompt-caching#prompt-cache-retention).
+  此字段表示最大保留策略，而
   `prompt_cache_options.ttl` 表示最短缓存生命周期。这两个
-  字段相互独立，不会互相影响。
-  对于 `gpt-5.5`, `gpt-5.5-pro`，以及未来模型，仅 `24h` 类型。
+  字段是独立的，互不影响。
+  对于 `gpt-5.5`, `gpt-5.5-pro`，以及未来的模型，仅 `24h` 的类型。
 
-  对于同时支持 `in_memory` 和 `24h`，的旧模型，默认值取决于你所在组织的数据保留策略：
+  对于同时支持 `in_memory` 和 `24h`，的旧版模型，默认值取决于你所在组织的数据保留策略：
 
-  - 未启用 ZDR 的组织默认使用 `24h`.
-  - 启用 ZDR 的组织默认使用 `in_memory` 当 `prompt_cache_retention` 未指定时。
+  - 未启用 ZDR 的组织默认为 `24h`.
+  - 已启用 ZDR 的组织默认为 `in_memory` 当未指定 `prompt_cache_retention` 时。
 
   - `"in_memory"`
 
@@ -947,13 +953,13 @@
 
 - `reasoning_effort: optional ReasoningEffort or null`
 
-  限制推理模型在推理上的投入程度。当前支持的
-  值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-  降低推理投入程度可以使响应更快，并在响应中用于推理的 token 更少。并非所有推理模型都支持每个
-  值。
-  值。参见
-  [reasoning guide](/api/docs/guides/reasoning)
-  以了解特定模型的支持情况。
+  约束推理模型在推理上的投入程度。当前支持的
+  值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+  降低推理力度可以让响应更快、使用的 tokens 更少
+  用于响应中的推理。并非所有推理模型都支持每个
+  值。请参阅
+  [推理指南](/api/docs/guides/reasoning)
+  了解特定模型的支持情况。
 
   - `"none"`
 
@@ -974,13 +980,13 @@
   用于指定模型必须输出的格式的对象。
 
   设置为 `{ "type": "json_schema", "json_schema": {...} }` 可启用
-  结构化输出，确保模型会匹配你提供的 JSON
+  结构化输出，这能确保模型匹配你提供的 JSON
   schema。更多信息请参阅 [结构化输出
   指南](/api/docs/guides/structured-outputs).
 
-  设置为 `{ "type": "json_object" }` 启用旧的 JSON 模式，这会
-  确保模型生成的消息是合法的 JSON。对于支持 `json_schema`
-  的模型，推荐使用该参数。
+  设置为 `{ "type": "json_object" }` 可启用旧的 JSON 模式，这能
+  确保模型生成的消息是有效的 JSON。对于支持该模式的模型，推荐使用 `json_schema`
+  。
 
   - `ResponseFormatText object { type }`
 
@@ -994,34 +1000,34 @@
 
   - `ResponseFormatJSONSchema object { json_schema, type }`
 
-    JSON Schema 响应格式。用于生成结构化的 JSON 响应。
-    了解有关 [结构化输出](/api/docs/guides/structured-outputs).
+    JSON Schema 响应格式。用于生成结构化 JSON 响应。
+    了解更多关于 [结构化输出](/api/docs/guides/structured-outputs).
 
     - `json_schema: object { name, description, schema, strict }`
 
-      结构化输出配置选项（含 JSON Schema）的更多信息。
+      结构化输出配置选项的信息，包括 JSON Schema。
 
       - `name: string`
 
-        响应格式的名称。必须为 a-z、A-Z、0-9，或包含
-        下划线和短横线，最大长度为 64。
+        响应格式的名称。必须是 a-z、A-Z、0-9，或包含
+        下划线和连字符，最大长度为 64。
 
       - `description: optional string`
 
-        响应格式用途的描述，供模型用于
-        以确定如何按指定格式进行响应。
+        对响应格式用途的描述，供模型参考以
+        决定如何按该格式进行响应。
 
       - `schema: optional map[unknown]`
 
-        响应格式的 schema，以 JSON Schema 对象的形式描述。
+        响应格式的 schema，以 JSON Schema 对象描述。
         了解如何构建 JSON schema [此处](https://json-schema.org/).
 
       - `strict: optional boolean or null`
 
         是否在生成输出时启用严格的 schema 遵循。
-        若设置为 true，模型将始终遵循所定义的精确 schema
-        字段。 `schema` 字段中所定义的精确 schema。当 strict
-        `strict` 为 `true`。时，仅支持 JSON Schema 的一个子集。如需了解更多信息，请阅读 [结构化输出
+        如果设为 true，模型将始终严格遵循
+        字段中所定义的 schema。仅支持 JSON Schema 的一个子集，当 `schema` 字段时（仅支持 JSON Schema 的子集）。
+        `strict` 用于 `true`。了解更多，请阅读 [结构化输出
         指南](/api/docs/guides/structured-outputs).
 
     - `type: "json_schema"`
@@ -1032,9 +1038,9 @@
 
   - `ResponseFormatJSONObject object { type }`
 
-    JSON 对象响应格式。一种较旧的生成 JSON 响应方式。
-    对于支持 `json_schema` 的模型，推荐使用 json_schema。请注意，模型在没有系统或用户消息指示的情况下不会生成 JSON。
-    模型在没有系统或用户消息指示的情况下不会生成 JSON
+    JSON 对象响应格式。一种较早的生成 JSON 响应的方法。
+    使用 `json_schema` 推荐用于支持它的模型。注意，
+    模型在缺少指示它这样做的系统或用户消息时不会生成 JSON
     。
 
     - `type: "json_object"`
@@ -1045,26 +1051,26 @@
 
 - `safety_identifier: optional string or null`
 
-  一个稳定的标识符，用于帮助检测可能违反 OpenAI 使用政策的应用程序用户。
-  该 ID 应为字符串，唯一标识每个用户，最大长度为 64 个字符。建议对其用户名或电子邮件地址进行哈希处理，以避免向我们发送任何可识别信息。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+  用于帮助检测可能违反 OpenAI 使用策略的应用程序用户的稳定标识符。
+  这些 ID 应为唯一标识每个用户的字符串，最大长度为 64 个字符。建议对用户名或电子邮件地址进行哈希处理，以避免向我们发送任何可识别信息。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 - `seed: optional number or null`
 
   此功能处于 Beta 阶段。
-  如果指定，系统将尽力进行确定性采样，以便在 seed 相同的情况下重复请求 `seed` 和参数应返回相同的结果。
-  无法保证确定性，你应当参考 `system_fingerprint` response 参数以监控后端的变化。
+  如果指定该参数，我们系统将尽最大努力进行确定性采样，即在 `seed` 和参数相同的情况下，重复请求应返回相同的结果。
+  无法保证确定性，你可以参考 `system_fingerprint` 响应参数来监控后端的变化。
 
 - `service_tier: optional "auto" or "default" or "flex" or 3 more or null`
 
   指定用于处理该请求的处理类型。
 
-  - 如果设置为 'auto'，则请求将使用在项目设置中配置的服务层级进行处理。除非另有配置，否则项目将使用 'default'。
-  - 如果设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-  - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务层级进行处理。
-  - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请为 Responses 或 Chat Completions 包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+  - 如果设置为 'auto'，则该请求将按照项目设置中配置的服务层级处理。除非另行配置，否则该项目将使用 'default'。
+  - 如果设置为 'default'，则该请求将按照所选模型的标准定价和性能进行处理。
+  - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级处理。
+  - 若要在 [Fast mode](/api/docs/guides/fast-mode) 级别启用，请在 Responses 或 Chat Completions 中添加 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
   - 未设置时，默认行为为 'auto'。
 
-  当 `service_tier` 参数被设置时，响应主体将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。此响应值可能与参数中设置的值不同。
+  当 `service_tier` 参数被设置时，响应体将包含基于实际用于服务该请求的处理模式的 `service_tier` 值。该响应值可能与参数中设置的值不同。
 
   - `"auto"`
 
@@ -1080,9 +1086,9 @@
 
 - `stop: optional string or array of string or null`
 
-  最新的推理模型不支持该参数 `o3` 和 `o4-mini`.
+  最新的推理模型不支持 `o3` 和 `o4-mini`.
 
-  最多 4 个序列，在这些序列处 API 将停止生成更多 token。
+  最多 4 个序列，当 API 遇到这些序列时会停止生成更多 token。该
   返回的文本不会包含停止序列。
 
   - `string`
@@ -1091,19 +1097,19 @@
 
 - `store: optional boolean or null`
 
-  是否存储本次 chat completion 请求的输出，以用于我们的
-  用于我们的 [模型蒸馏](/api/docs/guides/supervised-fine-tuning#distilling-from-a-larger-model) 或
+  是否存储本次 chat completion 请求的输出，以便用于我们的
+  模型蒸馏 [模型蒸馏](/api/docs/guides/supervised-fine-tuning#distilling-from-a-larger-model) 或
   [evals](/api/docs/guides/evals) 产品。
 
   支持文本和图像输入。注意：超过 8MB 的图像输入将被丢弃。
 
 - `stream: optional boolean or null`
 
-  如果设置为 true，模型响应数据将在生成时通过
-  流式传输到客户端，使用 [服务端发送事件](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
-  请参阅下方 [Streaming 部分](/api/reference/resources/chat/subresources/completions/streaming-events)
-  了解更多信息，另请参阅 [流式响应](/api/docs/guides/streaming-responses)
-  指南，了解如何处理流式事件。
+  如果设置为 true，模型响应数据将通过
+  使用 [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
+  请参阅下方 [Streaming section below](/api/reference/resources/chat/subresources/completions/streaming-events)
+  获取更多信息，以及 [streaming responses](/api/docs/guides/streaming-responses)
+  指南了解如何处理流式事件。
 
 - `stream_options: optional ChatCompletionStreamOptions or null`
 
@@ -1111,43 +1117,43 @@
 
   - `include_obfuscation: optional boolean`
 
-    为 true 时，将启用流混淆。流混淆会向
-    字段的流式增量事件添加 `obfuscation` 随机字符，以规范化负载大小，
-    作为针对某些侧信道攻击的缓解措施。
-    这些混淆字段默认包含，但会增加少量
-    数据流的开销。你可以设置 `include_obfuscation` 设置为
-    为 false 以优化带宽，前提是你信任你的应用与
-    OpenAI API 之间的网络链路。
+    当为 true 时，将启用流混淆。流混淆会向
+    添加随机字符 `obfuscation` 流式增量事件上的字段，用于
+    规范化负载大小，作为对某些侧信道攻击的缓解措施。
+    默认会包含这些混淆字段，但会给数据流带来少量
+    开销。你可以设置 `include_obfuscation` 设置为
+    为 false，以便在信任你的应用与
+    OpenAI API 之间的网络链路时优化带宽。
 
   - `include_usage: optional boolean`
 
-    如果启用，会在 `data: [DONE]`
-    消息之前额外流式发送一个块。 `usage` 字段会显示整个请求的令牌用量统计，
-    而 choices 字段始终为 `choices` 一个空数组，
-    data 字段也始终为空数组。
+    如果设置，则在 `data: [DONE]`
+    消息之前会额外流式传输一个数据块。该 `usage` 数据块上的字段显示整个请求的令牌使用统计信息，
+    并且该字段始终为空 `choices` 数组。其余所有
+    数据块也会包含。
 
-    所有其他块也将包含 `usage` 字段，但值为
-    null。 **注意：** 如果流被中断，你可能无法收到
-    包含该请求总 token 用量的最终 usage 块。
+    一个字段，但其值为 `usage` null
+    。 **注意：** 如果流被中断，你可能无法收到
+    包含整个请求令牌使用总量的最终使用情况数据块。
 
 - `temperature: optional number or null`
 
-  使用的采样温度，介于 0 到 2 之间。较高的值（如 0.8）会使输出更加随机，较低的值（如 0.2）会使输出更加集中和确定。
-  我们通常建议修改此参数或 `top_p` 但不要同时修改两者。
+  使用的采样温度，介于 0 和 2 之间。较高的值（例如 0.8）会使输出更随机，而较低的值（例如 0.2）会使其更聚焦、更确定。
+  我们通常建议调整该参数或 `top_p` 但不能同时为两者。
 
 - `tool_choice: optional ChatCompletionToolChoiceOption`
 
-  控制模型调用哪个工具（如果有）。
+  控制模型调用哪个工具（如果有的话）。
   `none` 表示模型不会调用任何工具，而是生成一条消息。
-  `auto` 表示模型可以在生成消息或调用一个或多个工具之间进行选择。
+  `auto` 表示模型可以自行选择是生成消息还是调用一个或多个工具。
   `required` 表示模型必须调用一个或多个工具。
-  通过以下方式指定特定工具 `{"type": "function", "function": {"name": "my_function"}}` 会强制模型调用该工具。
+  通过以下方式指定特定工具： `{"type": "function", "function": {"name": "my_function"}}` 强制模型调用该工具。
 
-  `none` 是在没有工具时的默认值。 `auto` 是在存在工具时的默认值。
+  `none` 在没有工具时的默认值。 `auto` 在有工具时的默认值。
 
   - `ToolChoiceMode = "none" or "auto" or "required"`
 
-    `none` 表示模型不会调用任何工具，而是生成一条消息。 `auto` 表示模型可以在生成消息或调用一个或多个工具之间进行选择。 `required` 表示模型必须调用一个或多个工具。
+    `none` 表示模型不会调用任何工具，而是生成一条消息。 `auto` 表示模型可以自行选择是生成消息还是调用一个或多个工具。 `required` 表示模型必须调用一个或多个工具。
 
     - `"none"`
 
@@ -1157,17 +1163,17 @@
 
   - `ChatCompletionAllowedToolChoice object { allowed_tools, type }`
 
-    将模型可用的工具限制为一组预定义的工具。
+    将模型可用的工具限制为预定义的集合。
 
     - `allowed_tools: ChatCompletionAllowedTools`
 
-      将模型可用的工具限制为一组预定义的工具。
+      将模型可用的工具限制为预定义的集合。
 
       - `mode: "auto" or "required"`
 
-        将模型可用的工具限制为一组预定义的工具。
+        将模型可用的工具限制为预定义的集合。
 
-        `auto` 允许模型从允许的工具中进行选择并生成一个
+        `auto` 允许模型从允许的工具中进行选择并生成
         消息。
 
         `required` 要求模型调用允许的工具中的一个或多个。
@@ -1178,7 +1184,7 @@
 
       - `tools: array of map[unknown]`
 
-        模型应被允许调用的工具定义列表。
+        允许模型调用的工具定义列表。
 
         对于 Chat Completions API，工具定义列表可能如下所示：
 
@@ -1197,13 +1203,13 @@
 
   - `ChatCompletionNamedToolChoice object { function, type }`
 
-    指定模型应使用的工具。用于强制模型调用特定函数。
+    指定模型应使用的工具。用于强制模型调用特定的函数。
 
     - `function: object { name }`
 
       - `name: string`
 
-        要调用的函数名称。
+        要调用的函数的名称。
 
     - `type: "function"`
 
@@ -1219,7 +1225,7 @@
 
       - `name: string`
 
-        要调用的自定义工具名称。
+        要调用的自定义工具的名称。
 
     - `type: "custom"`
 
@@ -1229,7 +1235,7 @@
 
 - `tools: optional array of ChatCompletionTool`
 
-  模型可以调用的工具列表。你可以提供以下任一类型
+  模型可以调用的工具列表。你可以提供
   [自定义工具](/api/docs/guides/function-calling#custom-tools) 或
   [函数工具](/api/docs/guides/function-calling).
 
@@ -1241,25 +1247,25 @@
 
       - `name: string`
 
-        要调用的函数名称。必须包含 a-z、A-Z、0-9 或下划线和短横线，最大长度为 64。
+        要调用的函数名称。必须由 a-z、A-Z、0-9 组成，或包含下划线和连字符，最大长度为 64。
 
       - `description: optional string`
 
-        对函数功能的描述，供模型用于判断何时以及如何调用该函数。
+        函数功能的描述，供模型用于决定何时以及如何调用该函数。
 
       - `parameters: optional FunctionParameters`
 
-        函数接受的参数，以 JSON Schema 对象描述。参见 [指南](/api/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 查看该格式的相关文档。
+        函数接受的参数，使用 JSON Schema 对象描述。请参阅 [指南](/api/docs/guides/function-calling) 例如，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，查看有关该格式的文档。
 
-        省略 `parameters` 用于定义一个空参数列表的函数。
+        省略 `parameters` 则定义一个空参数列表的函数。
 
       - `strict: optional boolean or null`
 
-        是否在生成函数调用时启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段中所定义的精确 schema。当 strict `strict` 为 `true`。中定义的确切模式。在 [function calling guide](/api/docs/guides/function-calling).
+        生成函数调用时是否启用严格的模式遵循。如果设置为 true，则模型将遵循在 `parameters` 字段时（仅支持 JSON Schema 的子集）。 `strict` 用于 `true`。中定义的精确模式。详细了解结构化输出，请参阅 [函数调用指南](/api/docs/guides/function-calling).
 
     - `type: "function"`
 
-      工具的类型。目前，仅 `function` 类型。
+      工具的类型。目前，仅 `function` 的类型。
 
       - `"function"`
 
@@ -1285,7 +1291,7 @@
 
         - `Text object { type }`
 
-          无约束自由格式文本。
+          无约束的、自由格式的文本。
 
           - `type: "text"`
 
@@ -1307,7 +1313,7 @@
 
             - `syntax: "lark" or "regex"`
 
-              语法定义的语法。取值之一为 `lark` 或 `regex`.
+              语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
               - `"lark"`
 
@@ -1327,32 +1333,32 @@
 
 - `top_logprobs: optional number or null`
 
-  一个介于 0 到 20 之间的整数，用于指定在每个 token 位置返回的最可能的
-  token 数量上限，每个 token 带有对应的对数
+  介于 0 和 20 之间的整数，用于指定最可能的
+  在每个 token 位置返回的 token 数量，每个 token 带有对应的对数
   概率。在某些情况下，返回的 token 数量可能少于
-  请求。
+  请求的数量。
   `logprobs` 必须设置为 `true` 如果使用此参数。
 
 - `top_p: optional number or null`
 
-  一种温度采样的替代方案，称为核采样，
-  其中模型考虑具有 top_p 概率的标记的结果
-  质量。因此 0.1 意味着仅考虑构成前 10% 概率质量的标记
-  会被考虑。
+  一种称为 nucleus 采样的温度采样替代方法，
+  模型只考虑具有 top_p 概率质量的 token 的结果。
+  因此 0.1 表示仅考虑构成前 10% 概率质量的 token。
+  被考虑。
 
-  我们通常建议修改此参数或 `temperature` 但不要同时修改两者。
+  我们通常建议调整该参数或 `temperature` 但不能同时为两者。
 
-- `user: optional string`
+- `user: optional string or null`
 
-  此字段正在被替换为 `safety_identifier` 和 `prompt_cache_key`。请改用 `prompt_cache_key` 以保持缓存优化。
-  为你的最终用户提供的一个稳定标识符。
-  用于通过更好地对相似请求进行分桶来提高缓存命中率，并帮助 OpenAI 检测和防止滥用行为。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+  此字段将被 `safety_identifier` 和 `prompt_cache_key`。取代。使用 `prompt_cache_key` 代替以维持缓存优化。
+  最终用户的稳定标识符。
+  用于通过更好地对相似请求进行分桶来提高缓存命中率，并帮助 OpenAI 检测和防止滥用。 [了解更多](/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 - `verbosity: optional "low" or "medium" or "high" or null`
 
-  限制模型响应的详细程度。较低的值将导致
+  约束模型响应的详细程度。较低的值将导致
   更简洁的响应，而较高的值将导致更详细的响应。
-  当前支持的值包括 `low`, `medium`，以及 `high`。默认值为
+  当前支持的值有 `low`, `medium`，和 `high`。默认值为
   `medium`.
 
   - `"low"`
@@ -1363,13 +1369,13 @@
 
 - `web_search_options: optional object { search_context_size, user_location }`
 
-  此工具会在网页上搜索相关结果以用于响应。
+  此工具会在网页上搜索相关结果以在响应中使用。
   详细了解 [网页搜索工具](/api/docs/guides/tools-web-search).
 
   - `search_context_size: optional "low" or "medium" or "high"`
 
-    用于以下内容所使用的上下文窗口空间的高级指导
-    search。取值为 `low`, `medium`，或 `high`. `medium` 时为默认值。
+    用于
+    搜索的上下文窗口使用量的高层级指引。可选值为 `low`, `medium`，或 `high`. `medium` 是默认值。
 
     - `"low"`
 
@@ -1391,9 +1397,9 @@
 
       - `country: optional string`
 
-        用户所在地的两位字母
+        两位字母的
         [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如，
-        例如。 `US`.
+        e.g. `US`.
 
       - `region: optional string`
 
@@ -1406,7 +1412,7 @@
 
     - `type: "approximate"`
 
-      位置近似的类型。始终为 `approximate`.
+      近似位置的类型。始终为 `approximate`.
 
       - `"approximate"`
 
@@ -1414,7 +1420,7 @@
 
 - `ChatCompletion object { id, choices, created, 7 more }`
 
-  表示模型根据所提供的输入返回的聊天补全响应。
+  表示模型根据提供的输入返回的聊天补全响应。
 
   - `id: string`
 
@@ -1426,11 +1432,11 @@
 
     - `finish_reason: "stop" or "length" or "tool_calls" or 2 more`
 
-      模型停止生成 token 的原因。这将是 `stop` 如果模型遇到自然停止点或提供了停止序列，
-      `length` 如果达到了请求中指定的最大 token 数，
-      `content_filter` 如果内容因我们的内容过滤器标记而被省略，
-      `tool_calls` 如果模型调用了工具，或 `function_call` （已弃用）如果模型调用了函数。
-      请阅读 [模型规范](https://model-spec.openai.com/2025-12-18.html) 以了解更多信息。
+      模型停止生成 token 的原因。 `stop` 如果模型遇到自然停止点或提供了停止序列；
+      `length` 如果达到请求中指定的最大 token 数；
+      `content_filter` 如果内容因我们的内容过滤器的标记而被省略；
+      `tool_calls` 如果模型调用了工具； `function_call` （已弃用）如果模型调用了函数。
+      阅读 [Model Spec](https://model-spec.openai.com/2025-12-18.html) 了解更多。
 
       - `"stop"`
 
@@ -1460,15 +1466,15 @@
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
           - `token: string`
 
@@ -1476,15 +1482,15 @@
 
           - `bytes: array of number or null`
 
-            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
           - `logprob: number`
 
-            该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+            该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
       - `refusal: array of ChatCompletionTokenLogprob or null`
 
-        包含对数概率信息的 message 拒绝 token 列表。
+        包含消息拒答标记及其对数概率信息的列表。
 
         - `token: string`
 
@@ -1492,37 +1498,33 @@
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
     - `message: ChatCompletionMessage`
 
-      模型生成的聊天补全消息。
+      由模型生成的聊天补全消息。
 
       - `content: string or null`
 
         消息的内容。
 
-      - `refusal: string or null`
-
-        由模型生成的拒绝消息。
-
       - `role: "assistant"`
 
-        此消息作者的角色。
+        本消息作者的角色。
 
         - `"assistant"`
 
       - `annotations: optional array of object { type, url_citation }`
 
-        消息的注释（如适用），例如使用
+        消息的注解（如果适用），例如在使用
         [网页搜索工具](/api/docs/guides/tools-web-search).
 
         - `type: "url_citation"`
@@ -1553,41 +1555,45 @@
 
       - `audio: optional ChatCompletionAudio or null`
 
-        如果请求了音频输出模态，此对象包含有关模型音频响应的
-        数据。 [了解更多](/api/docs/guides/audio).
+        如果请求了音频输出模态，则此对象包含有关
+        模型音频响应的数据。 [了解更多](/api/docs/guides/audio).
 
         - `id: string`
 
-          此音频响应的唯一标识符。
+          该音频响应的唯一标识符。
 
         - `data: string`
 
-          模型生成的 Base64 编码音频字节，格式为请求中
-          指定的格式。
+          由模型生成的 Base64 编码音频字节，格式
+          由请求中指定。
 
         - `expires_at: number`
 
-          此音频响应在服务端不再可用于多轮
-          对话的 Unix 时间戳（秒）。
+          此音频响应在服务端不再可访问的 Unix 时间戳（秒），用于多轮
+          对话时使用。
           conversations.
 
         - `transcript: string`
 
-          模型生成的音频转录文本。
+          由模型生成的音频的转录文本。
 
-      - `function_call: optional object { arguments, name }`
+      - `function_call: optional object { arguments, name }  or null`
 
-        已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+        已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
         - `arguments: string`
 
-          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
         - `name: string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
-      - `tool_calls: optional array of ChatCompletionMessageToolCall`
+      - `refusal: optional string or null`
+
+        模型生成的拒绝消息。
+
+      - `tool_calls: optional array of ChatCompletionMessageToolCall or null`
 
         模型生成的工具调用，例如函数调用。
 
@@ -1601,19 +1607,19 @@
 
           - `function: object { arguments, name }`
 
-            模型所调用的函数。
+            模型调用的函数。
 
             - `arguments: string`
 
-              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
             - `name: string`
 
-              要调用的函数名称。
+              要调用的函数的名称。
 
           - `type: "function"`
 
-            工具的类型。目前，仅 `function` 类型。
+            工具的类型。目前，仅 `function` 的类型。
 
             - `"function"`
 
@@ -1627,15 +1633,15 @@
 
           - `custom: object { input, name }`
 
-            模型所调用的自定义工具。
+            模型调用的自定义工具。
 
             - `input: string`
 
-              模型生成的自定义工具调用输入。
+              模型为该自定义工具调用生成的输入。
 
             - `name: string`
 
-              要调用的自定义工具名称。
+              要调用的自定义工具的名称。
 
           - `type: "custom"`
 
@@ -1645,11 +1651,11 @@
 
   - `created: number`
 
-    聊天补全创建时的 Unix 时间戳（以秒为单位）。
+    该聊天补全创建时的 Unix 时间戳（以秒为单位）。
 
   - `model: string`
 
-    用于聊天补全的模型。
+    用于该聊天补全的模型。
 
   - `object: "chat.completion"`
 
@@ -1659,41 +1665,41 @@
 
   - `metadata: optional Metadata or null`
 
-    可以附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-    格式，以及通过 接口 或仪表板查询对象。
+    可附加到对象的 16 个键值对。可用于
+    以结构化格式存储对象的附加信息，并通过 API 或仪表板进行查询。
+    以结构化格式存储对象的附加信息，并通过 接口 或仪表板进行查询。
 
-    键是字符串，最大长度为 64 个字符。值是字符串
-    ，最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
   - `moderation: optional object { input, output }  or null`
 
-    请求输入和生成输出的审核结果（如果请求了
-    内容审核）。
+    针对请求输入与生成输出的内容审核结果（如果请求了
+    审核补全）。
 
     - `input: object { model, results, type }  or object { code, message, type }`
 
-      请求输入的审核结果。
+      对请求输入的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -1701,19 +1707,19 @@
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -1725,7 +1731,7 @@
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -1743,27 +1749,27 @@
 
     - `output: object { model, results, type }  or object { code, message, type }`
 
-      针对生成输出的内容审核。
+      对生成输出的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -1771,19 +1777,19 @@
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -1795,7 +1801,7 @@
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -1815,13 +1821,13 @@
 
     指定用于处理该请求的处理类型。
 
-    - 如果设置为 'auto'，则请求将使用在项目设置中配置的服务层级进行处理。除非另有配置，否则项目将使用 'default'。
-    - 如果设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务层级进行处理。
-    - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请为 Responses 或 Chat Completions 包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+    - 如果设置为 'auto'，则该请求将按照项目设置中配置的服务层级处理。除非另行配置，否则该项目将使用 'default'。
+    - 如果设置为 'default'，则该请求将按照所选模型的标准定价和性能进行处理。
+    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级处理。
+    - 若要在 [Fast mode](/api/docs/guides/fast-mode) 级别启用，请在 Responses 或 Chat Completions 中添加 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
     - 未设置时，默认行为为 'auto'。
 
-    当 `service_tier` 参数被设置时，响应主体将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。此响应值可能与参数中设置的值不同。
+    当 `service_tier` 参数被设置时，响应体将包含基于实际用于服务该请求的处理模式的 `service_tier` 值。该响应值可能与参数中设置的值不同。
 
     - `"auto"`
 
@@ -1837,13 +1843,13 @@
 
   - `system_fingerprint: optional string`
 
-    此指纹表示模型运行所使用后端配置。
+    此指纹表示模型运行所用的后端配置。
 
-    可与 `seed` 请求参数配合使用，以了解何时发生了可能影响确定性的后端更改。
+    可与以下参数配合使用： `seed` request 参数一同使用，以了解何时进行了可能影响确定性的后端更改。
 
   - `usage: optional CompletionUsage`
 
-    补全请求的使用统计信息。
+    本次补全请求的使用统计。
 
     - `completion_tokens: number`
 
@@ -1855,7 +1861,7 @@
 
     - `total_tokens: number`
 
-      请求中使用的 token 总数（提示词 + 补全）。
+      本次请求使用的 token 总数（提示词 + 补全）。
 
     - `completion_tokens_details: optional object { accepted_prediction_tokens, audio_tokens, reasoning_tokens, 2 more }`
 
@@ -1863,8 +1869,8 @@
 
       - `accepted_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        出现在补全中的预测 token 数量。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        的预测出现在补全结果中的 token 数量。
 
       - `audio_tokens: optional number`
 
@@ -1872,15 +1878,15 @@
 
       - `reasoning_tokens: optional number`
 
-        模型为推理生成的 token。
+        模型用于推理的 token。
 
       - `rejected_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        未出现在补全中的预测。然而，与
-        推理 token 一样，这些 token 仍会计入用于计费、
-        输出以及上下文窗口的
-        补全 token 总数中。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        未出现在补全中的预测 token。然而，与 reasoning tokens 一样，
+        这些 token 在计费、输出和上下文窗口
+        计费、输出和上下文窗口的 total completion tokens
+        限制中仍被计入。
 
       - `text_tokens: optional number`
 
@@ -1892,7 +1898,7 @@
 
       - `audio_tokens: optional number`
 
-        提示中存在的音频输入 token。
+        提示词中存在的音频输入 token。
 
       - `cache_write_tokens: optional number`
 
@@ -1900,15 +1906,15 @@
 
       - `cached_tokens: optional number`
 
-        提示中存在的已缓存 token。
+        提示词中存在的已缓存 token。
 
       - `image_tokens: optional number`
 
-        提示中存在的图像输入 token。
+        提示词中存在的图像输入 token。
 
       - `text_tokens: optional number`
 
-        提示中存在的文本输入 token。
+        提示词中存在的文本输入 token。
 
 ### 示例
 
@@ -1982,7 +1988,6 @@ curl https://api.openai.com/v1/chat/completions \
       },
       "message": {
         "content": "content",
-        "refusal": "refusal",
         "role": "assistant",
         "annotations": [
           {
@@ -2005,6 +2010,7 @@ curl https://api.openai.com/v1/chat/completions \
           "arguments": "arguments",
           "name": "name"
         },
+        "refusal": "refusal",
         "tool_calls": [
           {
             "id": "id",
@@ -2314,7 +2320,7 @@ curl https://api.openai.com/v1/chat/completions \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -d '{
-    "model": "gpt-6-astra",
+    "model": "gpt-6-sol",
     "messages": [
       {
         "role": "user",
@@ -2334,7 +2340,7 @@ curl https://api.openai.com/v1/chat/completions \
   "id": "chatcmpl-123",
   "object": "chat.completion",
   "created": 1702685778,
-  "model": "gpt-6-astra",
+  "model": "gpt-6-sol",
   "choices": [
     {
       "index": 0,
@@ -2502,7 +2508,8 @@ curl https://api.openai.com/v1/chat/completions \
               }
             ]
           }
-        ]
+        ],
+        "refusal": null
       },
       "finish_reason": "stop"
     }
@@ -2516,8 +2523,7 @@ curl https://api.openai.com/v1/chat/completions \
       "accepted_prediction_tokens": 0,
       "rejected_prediction_tokens": 0
     }
-  },
-  "system_fingerprint": null
+  }
 }
 ```
 
@@ -2546,21 +2552,24 @@ curl https://api.openai.com/v1/chat/completions \
 #### 响应
 
 ```json
-{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-6-astra", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-6-astra", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
 
-{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-6-astra", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
+data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-6-astra", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
 
-....
+: Intermediate chat completion chunks omitted.
 
-{"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-6-astra", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}]}
+data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1694268190,"model":"gpt-6-astra", "system_fingerprint": "fp_44709d6fcb", "choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}]}
+
+data: [DONE]
+
 ```
 
 ## 删除聊天补全
 
 **delete** `/chat/completions/{completion_id}`
 
-删除已存储的聊天补全。仅限已使用
-参数创建的 `store` 参数设置为 `true` 的聊天补单可以被删除。
+删除已存储的 chat completion。仅当 Chat Completions 是使用 store
+参数设置为 `store` 参数设置为 `true` 时才能被删除。
 
 ### 路径参数
 
@@ -2572,7 +2581,7 @@ curl https://api.openai.com/v1/chat/completions \
 
   - `id: string`
 
-    被删除的聊天补全的 ID。
+    已删除的聊天补全的 ID。
 
   - `deleted: boolean`
 
@@ -2580,7 +2589,7 @@ curl https://api.openai.com/v1/chat/completions \
 
   - `object: "chat.completion.deleted"`
 
-    被删除对象的类型。
+    正在删除的对象的类型。
 
     - `"chat.completion.deleted"`
 
@@ -2624,8 +2633,8 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 **get** `/chat/completions`
 
-列出已存储的 Chat Completions。只会返回已存储
-的 `store` 参数设置为 `true` 将会被返回。
+列出已存储的 Chat Completions。仅返回已通过
+存储的 `store` 参数设置为 `true` 将返回。
 
 ### 查询参数
 
@@ -2639,17 +2648,17 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `metadata: optional Metadata or null`
 
-  用于按元数据键筛选 Chat Completions 的列表。例如：
+  用于按元数据键过滤 Chat Completions 的列表。例如：
 
   `metadata[key1]=value1&metadata[key2]=value2`
 
 - `model: optional string`
 
-  用于生成这些 Chat Completions 的模型。
+  用于生成 Chat Completions 的模型。
 
 - `order: optional "asc" or "desc"`
 
-  按时间戳对 Chat Completions 进行排序的顺序。使用 `asc` 表示升序，或 `desc` 表示降序。默认为 `asc`.
+  按时间戳对 Chat Completions 进行排序的顺序。使用 `asc` 表示升序，或使用 `desc` 表示降序。默认为 `asc`.
 
   - `"asc"`
 
@@ -2659,7 +2668,7 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `data: array of ChatCompletion`
 
-  一个 chat completion 对象数组。
+  chat completion 对象的数组。
 
   - `id: string`
 
@@ -2671,11 +2680,11 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `finish_reason: "stop" or "length" or "tool_calls" or 2 more`
 
-      模型停止生成 token 的原因。这将是 `stop` 如果模型遇到自然停止点或提供了停止序列，
-      `length` 如果达到了请求中指定的最大 token 数，
-      `content_filter` 如果内容因我们的内容过滤器标记而被省略，
-      `tool_calls` 如果模型调用了工具，或 `function_call` （已弃用）如果模型调用了函数。
-      请阅读 [模型规范](https://model-spec.openai.com/2025-12-18.html) 以了解更多信息。
+      模型停止生成 token 的原因。 `stop` 如果模型遇到自然停止点或提供了停止序列；
+      `length` 如果达到请求中指定的最大 token 数；
+      `content_filter` 如果内容因我们的内容过滤器的标记而被省略；
+      `tool_calls` 如果模型调用了工具； `function_call` （已弃用）如果模型调用了函数。
+      阅读 [Model Spec](https://model-spec.openai.com/2025-12-18.html) 了解更多。
 
       - `"stop"`
 
@@ -2705,15 +2714,15 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
           - `token: string`
 
@@ -2721,15 +2730,15 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `bytes: array of number or null`
 
-            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
           - `logprob: number`
 
-            该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+            该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
       - `refusal: array of ChatCompletionTokenLogprob or null`
 
-        包含对数概率信息的 message 拒绝 token 列表。
+        包含消息拒答标记及其对数概率信息的列表。
 
         - `token: string`
 
@@ -2737,37 +2746,33 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
     - `message: ChatCompletionMessage`
 
-      模型生成的聊天补全消息。
+      由模型生成的聊天补全消息。
 
       - `content: string or null`
 
         消息的内容。
 
-      - `refusal: string or null`
-
-        由模型生成的拒绝消息。
-
       - `role: "assistant"`
 
-        此消息作者的角色。
+        本消息作者的角色。
 
         - `"assistant"`
 
       - `annotations: optional array of object { type, url_citation }`
 
-        消息的注释（如适用），例如使用
+        消息的注解（如果适用），例如在使用
         [网页搜索工具](/api/docs/guides/tools-web-search).
 
         - `type: "url_citation"`
@@ -2798,41 +2803,45 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `audio: optional ChatCompletionAudio or null`
 
-        如果请求了音频输出模态，此对象包含有关模型音频响应的
-        数据。 [了解更多](/api/docs/guides/audio).
+        如果请求了音频输出模态，则此对象包含有关
+        模型音频响应的数据。 [了解更多](/api/docs/guides/audio).
 
         - `id: string`
 
-          此音频响应的唯一标识符。
+          该音频响应的唯一标识符。
 
         - `data: string`
 
-          模型生成的 Base64 编码音频字节，格式为请求中
-          指定的格式。
+          由模型生成的 Base64 编码音频字节，格式
+          由请求中指定。
 
         - `expires_at: number`
 
-          此音频响应在服务端不再可用于多轮
-          对话的 Unix 时间戳（秒）。
+          此音频响应在服务端不再可访问的 Unix 时间戳（秒），用于多轮
+          对话时使用。
           conversations.
 
         - `transcript: string`
 
-          模型生成的音频转录文本。
+          由模型生成的音频的转录文本。
 
-      - `function_call: optional object { arguments, name }`
+      - `function_call: optional object { arguments, name }  or null`
 
-        已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+        已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
         - `arguments: string`
 
-          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
         - `name: string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
-      - `tool_calls: optional array of ChatCompletionMessageToolCall`
+      - `refusal: optional string or null`
+
+        模型生成的拒绝消息。
+
+      - `tool_calls: optional array of ChatCompletionMessageToolCall or null`
 
         模型生成的工具调用，例如函数调用。
 
@@ -2846,19 +2855,19 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `function: object { arguments, name }`
 
-            模型所调用的函数。
+            模型调用的函数。
 
             - `arguments: string`
 
-              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
             - `name: string`
 
-              要调用的函数名称。
+              要调用的函数的名称。
 
           - `type: "function"`
 
-            工具的类型。目前，仅 `function` 类型。
+            工具的类型。目前，仅 `function` 的类型。
 
             - `"function"`
 
@@ -2872,15 +2881,15 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `custom: object { input, name }`
 
-            模型所调用的自定义工具。
+            模型调用的自定义工具。
 
             - `input: string`
 
-              模型生成的自定义工具调用输入。
+              模型为该自定义工具调用生成的输入。
 
             - `name: string`
 
-              要调用的自定义工具名称。
+              要调用的自定义工具的名称。
 
           - `type: "custom"`
 
@@ -2890,11 +2899,11 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `created: number`
 
-    聊天补全创建时的 Unix 时间戳（以秒为单位）。
+    该聊天补全创建时的 Unix 时间戳（以秒为单位）。
 
   - `model: string`
 
-    用于聊天补全的模型。
+    用于该聊天补全的模型。
 
   - `object: "chat.completion"`
 
@@ -2904,41 +2913,41 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `metadata: optional Metadata or null`
 
-    可以附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-    格式，以及通过 接口 或仪表板查询对象。
+    可附加到对象的 16 个键值对。可用于
+    以结构化格式存储对象的附加信息，并通过 API 或仪表板进行查询。
+    以结构化格式存储对象的附加信息，并通过 接口 或仪表板进行查询。
 
-    键是字符串，最大长度为 64 个字符。值是字符串
-    ，最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
   - `moderation: optional object { input, output }  or null`
 
-    请求输入和生成输出的审核结果（如果请求了
-    内容审核）。
+    针对请求输入与生成输出的内容审核结果（如果请求了
+    审核补全）。
 
     - `input: object { model, results, type }  or object { code, message, type }`
 
-      请求输入的审核结果。
+      对请求输入的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -2946,19 +2955,19 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -2970,7 +2979,7 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -2988,27 +2997,27 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `output: object { model, results, type }  or object { code, message, type }`
 
-      针对生成输出的内容审核。
+      对生成输出的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -3016,19 +3025,19 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -3040,7 +3049,7 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -3060,13 +3069,13 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     指定用于处理该请求的处理类型。
 
-    - 如果设置为 'auto'，则请求将使用在项目设置中配置的服务层级进行处理。除非另有配置，否则项目将使用 'default'。
-    - 如果设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务层级进行处理。
-    - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请为 Responses 或 Chat Completions 包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+    - 如果设置为 'auto'，则该请求将按照项目设置中配置的服务层级处理。除非另行配置，否则该项目将使用 'default'。
+    - 如果设置为 'default'，则该请求将按照所选模型的标准定价和性能进行处理。
+    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级处理。
+    - 若要在 [Fast mode](/api/docs/guides/fast-mode) 级别启用，请在 Responses 或 Chat Completions 中添加 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
     - 未设置时，默认行为为 'auto'。
 
-    当 `service_tier` 参数被设置时，响应主体将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。此响应值可能与参数中设置的值不同。
+    当 `service_tier` 参数被设置时，响应体将包含基于实际用于服务该请求的处理模式的 `service_tier` 值。该响应值可能与参数中设置的值不同。
 
     - `"auto"`
 
@@ -3082,13 +3091,13 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `system_fingerprint: optional string`
 
-    此指纹表示模型运行所使用后端配置。
+    此指纹表示模型运行所用的后端配置。
 
-    可与 `seed` 请求参数配合使用，以了解何时发生了可能影响确定性的后端更改。
+    可与以下参数配合使用： `seed` request 参数一同使用，以了解何时进行了可能影响确定性的后端更改。
 
   - `usage: optional CompletionUsage`
 
-    补全请求的使用统计信息。
+    本次补全请求的使用统计。
 
     - `completion_tokens: number`
 
@@ -3100,7 +3109,7 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `total_tokens: number`
 
-      请求中使用的 token 总数（提示词 + 补全）。
+      本次请求使用的 token 总数（提示词 + 补全）。
 
     - `completion_tokens_details: optional object { accepted_prediction_tokens, audio_tokens, reasoning_tokens, 2 more }`
 
@@ -3108,8 +3117,8 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `accepted_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        出现在补全中的预测 token 数量。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        的预测出现在补全结果中的 token 数量。
 
       - `audio_tokens: optional number`
 
@@ -3117,15 +3126,15 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `reasoning_tokens: optional number`
 
-        模型为推理生成的 token。
+        模型用于推理的 token。
 
       - `rejected_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        未出现在补全中的预测。然而，与
-        推理 token 一样，这些 token 仍会计入用于计费、
-        输出以及上下文窗口的
-        补全 token 总数中。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        未出现在补全中的预测 token。然而，与 reasoning tokens 一样，
+        这些 token 在计费、输出和上下文窗口
+        计费、输出和上下文窗口的 total completion tokens
+        限制中仍被计入。
 
       - `text_tokens: optional number`
 
@@ -3137,7 +3146,7 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `audio_tokens: optional number`
 
-        提示中存在的音频输入 token。
+        提示词中存在的音频输入 token。
 
       - `cache_write_tokens: optional number`
 
@@ -3145,31 +3154,31 @@ curl -X DELETE https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `cached_tokens: optional number`
 
-        提示中存在的已缓存 token。
+        提示词中存在的已缓存 token。
 
       - `image_tokens: optional number`
 
-        提示中存在的图像输入 token。
+        提示词中存在的图像输入 token。
 
       - `text_tokens: optional number`
 
-        提示中存在的文本输入 token。
+        提示词中存在的文本输入 token。
 
-- `first_id: string`
+- `first_id: string or null`
 
   data 数组中第一条 chat completion 的标识符。
 
 - `has_more: boolean`
 
-  指示是否还有更多 Chat Completions 可用。
+  指示是否还有更多可用的 Chat Completions。
 
-- `last_id: string`
+- `last_id: string or null`
 
   data 数组中最后一条 chat completion 的标识符。
 
 - `object: "list"`
 
-  此对象的类型，始终设置为 "list"。
+  此对象的类型。始终设置为 "list"。
 
   - `"list"`
 
@@ -3231,7 +3240,6 @@ curl https://api.openai.com/v1/chat/completions \
           },
           "message": {
             "content": "content",
-            "refusal": "refusal",
             "role": "assistant",
             "annotations": [
               {
@@ -3254,6 +3262,7 @@ curl https://api.openai.com/v1/chat/completions \
               "arguments": "arguments",
               "name": "name"
             },
+            "refusal": "refusal",
             "tool_calls": [
               {
                 "id": "id",
@@ -3412,7 +3421,7 @@ curl https://api.openai.com/v1/chat/completions \
 **get** `/chat/completions/{completion_id}`
 
 获取已存储的聊天补全。仅限已创建的 Chat Completions
-的 `store` 参数设置为 `true` 将会被返回。
+存储的 `store` 参数设置为 `true` 将返回。
 
 ### 路径参数
 
@@ -3422,7 +3431,7 @@ curl https://api.openai.com/v1/chat/completions \
 
 - `ChatCompletion object { id, choices, created, 7 more }`
 
-  表示模型根据所提供的输入返回的聊天补全响应。
+  表示模型根据提供的输入返回的聊天补全响应。
 
   - `id: string`
 
@@ -3434,11 +3443,11 @@ curl https://api.openai.com/v1/chat/completions \
 
     - `finish_reason: "stop" or "length" or "tool_calls" or 2 more`
 
-      模型停止生成 token 的原因。这将是 `stop` 如果模型遇到自然停止点或提供了停止序列，
-      `length` 如果达到了请求中指定的最大 token 数，
-      `content_filter` 如果内容因我们的内容过滤器标记而被省略，
-      `tool_calls` 如果模型调用了工具，或 `function_call` （已弃用）如果模型调用了函数。
-      请阅读 [模型规范](https://model-spec.openai.com/2025-12-18.html) 以了解更多信息。
+      模型停止生成 token 的原因。 `stop` 如果模型遇到自然停止点或提供了停止序列；
+      `length` 如果达到请求中指定的最大 token 数；
+      `content_filter` 如果内容因我们的内容过滤器的标记而被省略；
+      `tool_calls` 如果模型调用了工具； `function_call` （已弃用）如果模型调用了函数。
+      阅读 [Model Spec](https://model-spec.openai.com/2025-12-18.html) 了解更多。
 
       - `"stop"`
 
@@ -3468,15 +3477,15 @@ curl https://api.openai.com/v1/chat/completions \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
           - `token: string`
 
@@ -3484,15 +3493,15 @@ curl https://api.openai.com/v1/chat/completions \
 
           - `bytes: array of number or null`
 
-            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
           - `logprob: number`
 
-            该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+            该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
       - `refusal: array of ChatCompletionTokenLogprob or null`
 
-        包含对数概率信息的 message 拒绝 token 列表。
+        包含消息拒答标记及其对数概率信息的列表。
 
         - `token: string`
 
@@ -3500,37 +3509,33 @@ curl https://api.openai.com/v1/chat/completions \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
     - `message: ChatCompletionMessage`
 
-      模型生成的聊天补全消息。
+      由模型生成的聊天补全消息。
 
       - `content: string or null`
 
         消息的内容。
 
-      - `refusal: string or null`
-
-        由模型生成的拒绝消息。
-
       - `role: "assistant"`
 
-        此消息作者的角色。
+        本消息作者的角色。
 
         - `"assistant"`
 
       - `annotations: optional array of object { type, url_citation }`
 
-        消息的注释（如适用），例如使用
+        消息的注解（如果适用），例如在使用
         [网页搜索工具](/api/docs/guides/tools-web-search).
 
         - `type: "url_citation"`
@@ -3561,41 +3566,45 @@ curl https://api.openai.com/v1/chat/completions \
 
       - `audio: optional ChatCompletionAudio or null`
 
-        如果请求了音频输出模态，此对象包含有关模型音频响应的
-        数据。 [了解更多](/api/docs/guides/audio).
+        如果请求了音频输出模态，则此对象包含有关
+        模型音频响应的数据。 [了解更多](/api/docs/guides/audio).
 
         - `id: string`
 
-          此音频响应的唯一标识符。
+          该音频响应的唯一标识符。
 
         - `data: string`
 
-          模型生成的 Base64 编码音频字节，格式为请求中
-          指定的格式。
+          由模型生成的 Base64 编码音频字节，格式
+          由请求中指定。
 
         - `expires_at: number`
 
-          此音频响应在服务端不再可用于多轮
-          对话的 Unix 时间戳（秒）。
+          此音频响应在服务端不再可访问的 Unix 时间戳（秒），用于多轮
+          对话时使用。
           conversations.
 
         - `transcript: string`
 
-          模型生成的音频转录文本。
+          由模型生成的音频的转录文本。
 
-      - `function_call: optional object { arguments, name }`
+      - `function_call: optional object { arguments, name }  or null`
 
-        已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+        已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
         - `arguments: string`
 
-          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
         - `name: string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
-      - `tool_calls: optional array of ChatCompletionMessageToolCall`
+      - `refusal: optional string or null`
+
+        模型生成的拒绝消息。
+
+      - `tool_calls: optional array of ChatCompletionMessageToolCall or null`
 
         模型生成的工具调用，例如函数调用。
 
@@ -3609,19 +3618,19 @@ curl https://api.openai.com/v1/chat/completions \
 
           - `function: object { arguments, name }`
 
-            模型所调用的函数。
+            模型调用的函数。
 
             - `arguments: string`
 
-              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
             - `name: string`
 
-              要调用的函数名称。
+              要调用的函数的名称。
 
           - `type: "function"`
 
-            工具的类型。目前，仅 `function` 类型。
+            工具的类型。目前，仅 `function` 的类型。
 
             - `"function"`
 
@@ -3635,15 +3644,15 @@ curl https://api.openai.com/v1/chat/completions \
 
           - `custom: object { input, name }`
 
-            模型所调用的自定义工具。
+            模型调用的自定义工具。
 
             - `input: string`
 
-              模型生成的自定义工具调用输入。
+              模型为该自定义工具调用生成的输入。
 
             - `name: string`
 
-              要调用的自定义工具名称。
+              要调用的自定义工具的名称。
 
           - `type: "custom"`
 
@@ -3653,11 +3662,11 @@ curl https://api.openai.com/v1/chat/completions \
 
   - `created: number`
 
-    聊天补全创建时的 Unix 时间戳（以秒为单位）。
+    该聊天补全创建时的 Unix 时间戳（以秒为单位）。
 
   - `model: string`
 
-    用于聊天补全的模型。
+    用于该聊天补全的模型。
 
   - `object: "chat.completion"`
 
@@ -3667,41 +3676,41 @@ curl https://api.openai.com/v1/chat/completions \
 
   - `metadata: optional Metadata or null`
 
-    可以附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-    格式，以及通过 接口 或仪表板查询对象。
+    可附加到对象的 16 个键值对。可用于
+    以结构化格式存储对象的附加信息，并通过 API 或仪表板进行查询。
+    以结构化格式存储对象的附加信息，并通过 接口 或仪表板进行查询。
 
-    键是字符串，最大长度为 64 个字符。值是字符串
-    ，最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
   - `moderation: optional object { input, output }  or null`
 
-    请求输入和生成输出的审核结果（如果请求了
-    内容审核）。
+    针对请求输入与生成输出的内容审核结果（如果请求了
+    审核补全）。
 
     - `input: object { model, results, type }  or object { code, message, type }`
 
-      请求输入的审核结果。
+      对请求输入的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -3709,19 +3718,19 @@ curl https://api.openai.com/v1/chat/completions \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -3733,7 +3742,7 @@ curl https://api.openai.com/v1/chat/completions \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -3751,27 +3760,27 @@ curl https://api.openai.com/v1/chat/completions \
 
     - `output: object { model, results, type }  or object { code, message, type }`
 
-      针对生成输出的内容审核。
+      对生成输出的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -3779,19 +3788,19 @@ curl https://api.openai.com/v1/chat/completions \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -3803,7 +3812,7 @@ curl https://api.openai.com/v1/chat/completions \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -3823,13 +3832,13 @@ curl https://api.openai.com/v1/chat/completions \
 
     指定用于处理该请求的处理类型。
 
-    - 如果设置为 'auto'，则请求将使用在项目设置中配置的服务层级进行处理。除非另有配置，否则项目将使用 'default'。
-    - 如果设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务层级进行处理。
-    - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请为 Responses 或 Chat Completions 包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+    - 如果设置为 'auto'，则该请求将按照项目设置中配置的服务层级处理。除非另行配置，否则该项目将使用 'default'。
+    - 如果设置为 'default'，则该请求将按照所选模型的标准定价和性能进行处理。
+    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级处理。
+    - 若要在 [Fast mode](/api/docs/guides/fast-mode) 级别启用，请在 Responses 或 Chat Completions 中添加 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
     - 未设置时，默认行为为 'auto'。
 
-    当 `service_tier` 参数被设置时，响应主体将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。此响应值可能与参数中设置的值不同。
+    当 `service_tier` 参数被设置时，响应体将包含基于实际用于服务该请求的处理模式的 `service_tier` 值。该响应值可能与参数中设置的值不同。
 
     - `"auto"`
 
@@ -3845,13 +3854,13 @@ curl https://api.openai.com/v1/chat/completions \
 
   - `system_fingerprint: optional string`
 
-    此指纹表示模型运行所使用后端配置。
+    此指纹表示模型运行所用的后端配置。
 
-    可与 `seed` 请求参数配合使用，以了解何时发生了可能影响确定性的后端更改。
+    可与以下参数配合使用： `seed` request 参数一同使用，以了解何时进行了可能影响确定性的后端更改。
 
   - `usage: optional CompletionUsage`
 
-    补全请求的使用统计信息。
+    本次补全请求的使用统计。
 
     - `completion_tokens: number`
 
@@ -3863,7 +3872,7 @@ curl https://api.openai.com/v1/chat/completions \
 
     - `total_tokens: number`
 
-      请求中使用的 token 总数（提示词 + 补全）。
+      本次请求使用的 token 总数（提示词 + 补全）。
 
     - `completion_tokens_details: optional object { accepted_prediction_tokens, audio_tokens, reasoning_tokens, 2 more }`
 
@@ -3871,8 +3880,8 @@ curl https://api.openai.com/v1/chat/completions \
 
       - `accepted_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        出现在补全中的预测 token 数量。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        的预测出现在补全结果中的 token 数量。
 
       - `audio_tokens: optional number`
 
@@ -3880,15 +3889,15 @@ curl https://api.openai.com/v1/chat/completions \
 
       - `reasoning_tokens: optional number`
 
-        模型为推理生成的 token。
+        模型用于推理的 token。
 
       - `rejected_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        未出现在补全中的预测。然而，与
-        推理 token 一样，这些 token 仍会计入用于计费、
-        输出以及上下文窗口的
-        补全 token 总数中。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        未出现在补全中的预测 token。然而，与 reasoning tokens 一样，
+        这些 token 在计费、输出和上下文窗口
+        计费、输出和上下文窗口的 total completion tokens
+        限制中仍被计入。
 
       - `text_tokens: optional number`
 
@@ -3900,7 +3909,7 @@ curl https://api.openai.com/v1/chat/completions \
 
       - `audio_tokens: optional number`
 
-        提示中存在的音频输入 token。
+        提示词中存在的音频输入 token。
 
       - `cache_write_tokens: optional number`
 
@@ -3908,15 +3917,15 @@ curl https://api.openai.com/v1/chat/completions \
 
       - `cached_tokens: optional number`
 
-        提示中存在的已缓存 token。
+        提示词中存在的已缓存 token。
 
       - `image_tokens: optional number`
 
-        提示中存在的图像输入 token。
+        提示词中存在的图像输入 token。
 
       - `text_tokens: optional number`
 
-        提示中存在的文本输入 token。
+        提示词中存在的文本输入 token。
 
 ### 示例
 
@@ -3974,7 +3983,6 @@ curl https://api.openai.com/v1/chat/completions/$COMPLETION_ID \
       },
       "message": {
         "content": "content",
-        "refusal": "refusal",
         "role": "assistant",
         "annotations": [
           {
@@ -3997,6 +4005,7 @@ curl https://api.openai.com/v1/chat/completions/$COMPLETION_ID \
           "arguments": "arguments",
           "name": "name"
         },
+        "refusal": "refusal",
         "tool_calls": [
           {
             "id": "id",
@@ -4136,12 +4145,12 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 }
 ```
 
-## Update chat completion
+## 更新聊天补全
 
 **post** `/chat/completions/{completion_id}`
 
-修改已存储的聊天补全。只有已被
-参数创建的 `store` 参数设置为 `true` 可以被修改。目前，
+修改已存储的聊天补全。只有已
+参数设置为 `store` 参数设置为 `true` 的聊天补全可以修改。目前，
 唯一支持的修改是更新 `metadata` 字段。
 
 ### 路径参数
@@ -4152,18 +4161,18 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
 - `metadata: Metadata or null`
 
-  可以附加到对象的 16 个键值对集合。可用于
-  以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-  格式，以及通过 接口 或仪表板查询对象。
+  可附加到对象的 16 个键值对。可用于
+  以结构化格式存储对象的附加信息，并通过 API 或仪表板进行查询。
+  以结构化格式存储对象的附加信息，并通过 接口 或仪表板进行查询。
 
-  键是字符串，最大长度为 64 个字符。值是字符串
-  ，最大长度为 512 个字符。
+  键为字符串，最长 64 个字符。值为字符串，
+  最长 512 个字符。
 
 ### 返回
 
 - `ChatCompletion object { id, choices, created, 7 more }`
 
-  表示模型根据所提供的输入返回的聊天补全响应。
+  表示模型根据提供的输入返回的聊天补全响应。
 
   - `id: string`
 
@@ -4175,11 +4184,11 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
     - `finish_reason: "stop" or "length" or "tool_calls" or 2 more`
 
-      模型停止生成 token 的原因。这将是 `stop` 如果模型遇到自然停止点或提供了停止序列，
-      `length` 如果达到了请求中指定的最大 token 数，
-      `content_filter` 如果内容因我们的内容过滤器标记而被省略，
-      `tool_calls` 如果模型调用了工具，或 `function_call` （已弃用）如果模型调用了函数。
-      请阅读 [模型规范](https://model-spec.openai.com/2025-12-18.html) 以了解更多信息。
+      模型停止生成 token 的原因。 `stop` 如果模型遇到自然停止点或提供了停止序列；
+      `length` 如果达到请求中指定的最大 token 数；
+      `content_filter` 如果内容因我们的内容过滤器的标记而被省略；
+      `tool_calls` 如果模型调用了工具； `function_call` （已弃用）如果模型调用了函数。
+      阅读 [Model Spec](https://model-spec.openai.com/2025-12-18.html) 了解更多。
 
       - `"stop"`
 
@@ -4209,15 +4218,15 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
           - `token: string`
 
@@ -4225,15 +4234,15 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
           - `bytes: array of number or null`
 
-            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
           - `logprob: number`
 
-            该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+            该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
       - `refusal: array of ChatCompletionTokenLogprob or null`
 
-        包含对数概率信息的 message 拒绝 token 列表。
+        包含消息拒答标记及其对数概率信息的列表。
 
         - `token: string`
 
@@ -4241,37 +4250,33 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
     - `message: ChatCompletionMessage`
 
-      模型生成的聊天补全消息。
+      由模型生成的聊天补全消息。
 
       - `content: string or null`
 
         消息的内容。
 
-      - `refusal: string or null`
-
-        由模型生成的拒绝消息。
-
       - `role: "assistant"`
 
-        此消息作者的角色。
+        本消息作者的角色。
 
         - `"assistant"`
 
       - `annotations: optional array of object { type, url_citation }`
 
-        消息的注释（如适用），例如使用
+        消息的注解（如果适用），例如在使用
         [网页搜索工具](/api/docs/guides/tools-web-search).
 
         - `type: "url_citation"`
@@ -4302,41 +4307,45 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
       - `audio: optional ChatCompletionAudio or null`
 
-        如果请求了音频输出模态，此对象包含有关模型音频响应的
-        数据。 [了解更多](/api/docs/guides/audio).
+        如果请求了音频输出模态，则此对象包含有关
+        模型音频响应的数据。 [了解更多](/api/docs/guides/audio).
 
         - `id: string`
 
-          此音频响应的唯一标识符。
+          该音频响应的唯一标识符。
 
         - `data: string`
 
-          模型生成的 Base64 编码音频字节，格式为请求中
-          指定的格式。
+          由模型生成的 Base64 编码音频字节，格式
+          由请求中指定。
 
         - `expires_at: number`
 
-          此音频响应在服务端不再可用于多轮
-          对话的 Unix 时间戳（秒）。
+          此音频响应在服务端不再可访问的 Unix 时间戳（秒），用于多轮
+          对话时使用。
           conversations.
 
         - `transcript: string`
 
-          模型生成的音频转录文本。
+          由模型生成的音频的转录文本。
 
-      - `function_call: optional object { arguments, name }`
+      - `function_call: optional object { arguments, name }  or null`
 
-        已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+        已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
         - `arguments: string`
 
-          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
         - `name: string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
-      - `tool_calls: optional array of ChatCompletionMessageToolCall`
+      - `refusal: optional string or null`
+
+        模型生成的拒绝消息。
+
+      - `tool_calls: optional array of ChatCompletionMessageToolCall or null`
 
         模型生成的工具调用，例如函数调用。
 
@@ -4350,19 +4359,19 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
           - `function: object { arguments, name }`
 
-            模型所调用的函数。
+            模型调用的函数。
 
             - `arguments: string`
 
-              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
             - `name: string`
 
-              要调用的函数名称。
+              要调用的函数的名称。
 
           - `type: "function"`
 
-            工具的类型。目前，仅 `function` 类型。
+            工具的类型。目前，仅 `function` 的类型。
 
             - `"function"`
 
@@ -4376,15 +4385,15 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
           - `custom: object { input, name }`
 
-            模型所调用的自定义工具。
+            模型调用的自定义工具。
 
             - `input: string`
 
-              模型生成的自定义工具调用输入。
+              模型为该自定义工具调用生成的输入。
 
             - `name: string`
 
-              要调用的自定义工具名称。
+              要调用的自定义工具的名称。
 
           - `type: "custom"`
 
@@ -4394,11 +4403,11 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
   - `created: number`
 
-    聊天补全创建时的 Unix 时间戳（以秒为单位）。
+    该聊天补全创建时的 Unix 时间戳（以秒为单位）。
 
   - `model: string`
 
-    用于聊天补全的模型。
+    用于该聊天补全的模型。
 
   - `object: "chat.completion"`
 
@@ -4408,41 +4417,41 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
   - `metadata: optional Metadata or null`
 
-    可以附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-    格式，以及通过 接口 或仪表板查询对象。
+    可附加到对象的 16 个键值对。可用于
+    以结构化格式存储对象的附加信息，并通过 API 或仪表板进行查询。
+    以结构化格式存储对象的附加信息，并通过 接口 或仪表板进行查询。
 
-    键是字符串，最大长度为 64 个字符。值是字符串
-    ，最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
   - `moderation: optional object { input, output }  or null`
 
-    请求输入和生成输出的审核结果（如果请求了
-    内容审核）。
+    针对请求输入与生成输出的内容审核结果（如果请求了
+    审核补全）。
 
     - `input: object { model, results, type }  or object { code, message, type }`
 
-      请求输入的审核结果。
+      对请求输入的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -4450,19 +4459,19 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -4474,7 +4483,7 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -4492,27 +4501,27 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
     - `output: object { model, results, type }  or object { code, message, type }`
 
-      针对生成输出的内容审核。
+      对生成输出的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -4520,19 +4529,19 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -4544,7 +4553,7 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -4564,13 +4573,13 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
     指定用于处理该请求的处理类型。
 
-    - 如果设置为 'auto'，则请求将使用在项目设置中配置的服务层级进行处理。除非另有配置，否则项目将使用 'default'。
-    - 如果设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务层级进行处理。
-    - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请为 Responses 或 Chat Completions 包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+    - 如果设置为 'auto'，则该请求将按照项目设置中配置的服务层级处理。除非另行配置，否则该项目将使用 'default'。
+    - 如果设置为 'default'，则该请求将按照所选模型的标准定价和性能进行处理。
+    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级处理。
+    - 若要在 [Fast mode](/api/docs/guides/fast-mode) 级别启用，请在 Responses 或 Chat Completions 中添加 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
     - 未设置时，默认行为为 'auto'。
 
-    当 `service_tier` 参数被设置时，响应主体将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。此响应值可能与参数中设置的值不同。
+    当 `service_tier` 参数被设置时，响应体将包含基于实际用于服务该请求的处理模式的 `service_tier` 值。该响应值可能与参数中设置的值不同。
 
     - `"auto"`
 
@@ -4586,13 +4595,13 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
   - `system_fingerprint: optional string`
 
-    此指纹表示模型运行所使用后端配置。
+    此指纹表示模型运行所用的后端配置。
 
-    可与 `seed` 请求参数配合使用，以了解何时发生了可能影响确定性的后端更改。
+    可与以下参数配合使用： `seed` request 参数一同使用，以了解何时进行了可能影响确定性的后端更改。
 
   - `usage: optional CompletionUsage`
 
-    补全请求的使用统计信息。
+    本次补全请求的使用统计。
 
     - `completion_tokens: number`
 
@@ -4604,7 +4613,7 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
     - `total_tokens: number`
 
-      请求中使用的 token 总数（提示词 + 补全）。
+      本次请求使用的 token 总数（提示词 + 补全）。
 
     - `completion_tokens_details: optional object { accepted_prediction_tokens, audio_tokens, reasoning_tokens, 2 more }`
 
@@ -4612,8 +4621,8 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
       - `accepted_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        出现在补全中的预测 token 数量。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        的预测出现在补全结果中的 token 数量。
 
       - `audio_tokens: optional number`
 
@@ -4621,15 +4630,15 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
       - `reasoning_tokens: optional number`
 
-        模型为推理生成的 token。
+        模型用于推理的 token。
 
       - `rejected_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        未出现在补全中的预测。然而，与
-        推理 token 一样，这些 token 仍会计入用于计费、
-        输出以及上下文窗口的
-        补全 token 总数中。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        未出现在补全中的预测 token。然而，与 reasoning tokens 一样，
+        这些 token 在计费、输出和上下文窗口
+        计费、输出和上下文窗口的 total completion tokens
+        限制中仍被计入。
 
       - `text_tokens: optional number`
 
@@ -4641,7 +4650,7 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
       - `audio_tokens: optional number`
 
-        提示中存在的音频输入 token。
+        提示词中存在的音频输入 token。
 
       - `cache_write_tokens: optional number`
 
@@ -4649,15 +4658,15 @@ curl https://api.openai.com/v1/chat/completions/chatcmpl-abc123 \
 
       - `cached_tokens: optional number`
 
-        提示中存在的已缓存 token。
+        提示词中存在的已缓存 token。
 
       - `image_tokens: optional number`
 
-        提示中存在的图像输入 token。
+        提示词中存在的图像输入 token。
 
       - `text_tokens: optional number`
 
-        提示中存在的文本输入 token。
+        提示词中存在的文本输入 token。
 
 ### 示例
 
@@ -4721,7 +4730,6 @@ curl https://api.openai.com/v1/chat/completions/$COMPLETION_ID \
       },
       "message": {
         "content": "content",
-        "refusal": "refusal",
         "role": "assistant",
         "annotations": [
           {
@@ -4744,6 +4752,7 @@ curl https://api.openai.com/v1/chat/completions/$COMPLETION_ID \
           "arguments": "arguments",
           "name": "name"
         },
+        "refusal": "refusal",
         "tool_calls": [
           {
             "id": "id",
@@ -4892,13 +4901,13 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `ChatCompletionAllowedTools object { mode, tools }`
 
-  将模型可用的工具限制为一组预定义的工具。
+  将模型可用的工具限制为预定义的集合。
 
   - `mode: "auto" or "required"`
 
-    将模型可用的工具限制为一组预定义的工具。
+    将模型可用的工具限制为预定义的集合。
 
-    `auto` 允许模型从允许的工具中进行选择并生成一个
+    `auto` 允许模型从允许的工具中进行选择并生成
     消息。
 
     `required` 要求模型调用允许的工具中的一个或多个。
@@ -4909,7 +4918,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `tools: array of map[unknown]`
 
-    模型应被允许调用的工具定义列表。
+    允许模型调用的工具定义列表。
 
     对于 Chat Completions API，工具定义列表可能如下所示：
 
@@ -4924,7 +4933,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `ChatCompletion object { id, choices, created, 7 more }`
 
-  表示模型根据所提供的输入返回的聊天补全响应。
+  表示模型根据提供的输入返回的聊天补全响应。
 
   - `id: string`
 
@@ -4936,11 +4945,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `finish_reason: "stop" or "length" or "tool_calls" or 2 more`
 
-      模型停止生成 token 的原因。这将是 `stop` 如果模型遇到自然停止点或提供了停止序列，
-      `length` 如果达到了请求中指定的最大 token 数，
-      `content_filter` 如果内容因我们的内容过滤器标记而被省略，
-      `tool_calls` 如果模型调用了工具，或 `function_call` （已弃用）如果模型调用了函数。
-      请阅读 [模型规范](https://model-spec.openai.com/2025-12-18.html) 以了解更多信息。
+      模型停止生成 token 的原因。 `stop` 如果模型遇到自然停止点或提供了停止序列；
+      `length` 如果达到请求中指定的最大 token 数；
+      `content_filter` 如果内容因我们的内容过滤器的标记而被省略；
+      `tool_calls` 如果模型调用了工具； `function_call` （已弃用）如果模型调用了函数。
+      阅读 [Model Spec](https://model-spec.openai.com/2025-12-18.html) 了解更多。
 
       - `"stop"`
 
@@ -4970,15 +4979,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
           - `token: string`
 
@@ -4986,15 +4995,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `bytes: array of number or null`
 
-            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
           - `logprob: number`
 
-            该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+            该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
       - `refusal: array of ChatCompletionTokenLogprob or null`
 
-        包含对数概率信息的 message 拒绝 token 列表。
+        包含消息拒答标记及其对数概率信息的列表。
 
         - `token: string`
 
@@ -5002,37 +5011,33 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
     - `message: ChatCompletionMessage`
 
-      模型生成的聊天补全消息。
+      由模型生成的聊天补全消息。
 
       - `content: string or null`
 
         消息的内容。
 
-      - `refusal: string or null`
-
-        由模型生成的拒绝消息。
-
       - `role: "assistant"`
 
-        此消息作者的角色。
+        本消息作者的角色。
 
         - `"assistant"`
 
       - `annotations: optional array of object { type, url_citation }`
 
-        消息的注释（如适用），例如使用
+        消息的注解（如果适用），例如在使用
         [网页搜索工具](/api/docs/guides/tools-web-search).
 
         - `type: "url_citation"`
@@ -5063,41 +5068,45 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `audio: optional ChatCompletionAudio or null`
 
-        如果请求了音频输出模态，此对象包含有关模型音频响应的
-        数据。 [了解更多](/api/docs/guides/audio).
+        如果请求了音频输出模态，则此对象包含有关
+        模型音频响应的数据。 [了解更多](/api/docs/guides/audio).
 
         - `id: string`
 
-          此音频响应的唯一标识符。
+          该音频响应的唯一标识符。
 
         - `data: string`
 
-          模型生成的 Base64 编码音频字节，格式为请求中
-          指定的格式。
+          由模型生成的 Base64 编码音频字节，格式
+          由请求中指定。
 
         - `expires_at: number`
 
-          此音频响应在服务端不再可用于多轮
-          对话的 Unix 时间戳（秒）。
+          此音频响应在服务端不再可访问的 Unix 时间戳（秒），用于多轮
+          对话时使用。
           conversations.
 
         - `transcript: string`
 
-          模型生成的音频转录文本。
+          由模型生成的音频的转录文本。
 
-      - `function_call: optional object { arguments, name }`
+      - `function_call: optional object { arguments, name }  or null`
 
-        已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+        已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
         - `arguments: string`
 
-          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
         - `name: string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
-      - `tool_calls: optional array of ChatCompletionMessageToolCall`
+      - `refusal: optional string or null`
+
+        模型生成的拒绝消息。
+
+      - `tool_calls: optional array of ChatCompletionMessageToolCall or null`
 
         模型生成的工具调用，例如函数调用。
 
@@ -5111,19 +5120,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `function: object { arguments, name }`
 
-            模型所调用的函数。
+            模型调用的函数。
 
             - `arguments: string`
 
-              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+              调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
             - `name: string`
 
-              要调用的函数名称。
+              要调用的函数的名称。
 
           - `type: "function"`
 
-            工具的类型。目前，仅 `function` 类型。
+            工具的类型。目前，仅 `function` 的类型。
 
             - `"function"`
 
@@ -5137,15 +5146,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `custom: object { input, name }`
 
-            模型所调用的自定义工具。
+            模型调用的自定义工具。
 
             - `input: string`
 
-              模型生成的自定义工具调用输入。
+              模型为该自定义工具调用生成的输入。
 
             - `name: string`
 
-              要调用的自定义工具名称。
+              要调用的自定义工具的名称。
 
           - `type: "custom"`
 
@@ -5155,11 +5164,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `created: number`
 
-    聊天补全创建时的 Unix 时间戳（以秒为单位）。
+    该聊天补全创建时的 Unix 时间戳（以秒为单位）。
 
   - `model: string`
 
-    用于聊天补全的模型。
+    用于该聊天补全的模型。
 
   - `object: "chat.completion"`
 
@@ -5169,41 +5178,41 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `metadata: optional Metadata or null`
 
-    可以附加到对象的 16 个键值对集合。可用于
-    以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
-    格式，以及通过 接口 或仪表板查询对象。
+    可附加到对象的 16 个键值对。可用于
+    以结构化格式存储对象的附加信息，并通过 API 或仪表板进行查询。
+    以结构化格式存储对象的附加信息，并通过 接口 或仪表板进行查询。
 
-    键是字符串，最大长度为 64 个字符。值是字符串
-    ，最大长度为 512 个字符。
+    键为字符串，最长 64 个字符。值为字符串，
+    最长 512 个字符。
 
   - `moderation: optional object { input, output }  or null`
 
-    请求输入和生成输出的审核结果（如果请求了
-    内容审核）。
+    针对请求输入与生成输出的内容审核结果（如果请求了
+    审核补全）。
 
     - `input: object { model, results, type }  or object { code, message, type }`
 
-      请求输入的审核结果。
+      对请求输入的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -5211,19 +5220,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -5235,7 +5244,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -5253,27 +5262,27 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `output: object { model, results, type }  or object { code, message, type }`
 
-      针对生成输出的内容审核。
+      对生成输出的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -5281,19 +5290,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -5305,7 +5314,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -5325,13 +5334,13 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     指定用于处理该请求的处理类型。
 
-    - 如果设置为 'auto'，则请求将使用在项目设置中配置的服务层级进行处理。除非另有配置，否则项目将使用 'default'。
-    - 如果设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务层级进行处理。
-    - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请为 Responses 或 Chat Completions 包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+    - 如果设置为 'auto'，则该请求将按照项目设置中配置的服务层级处理。除非另行配置，否则该项目将使用 'default'。
+    - 如果设置为 'default'，则该请求将按照所选模型的标准定价和性能进行处理。
+    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级处理。
+    - 若要在 [Fast mode](/api/docs/guides/fast-mode) 级别启用，请在 Responses 或 Chat Completions 中添加 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
     - 未设置时，默认行为为 'auto'。
 
-    当 `service_tier` 参数被设置时，响应主体将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。此响应值可能与参数中设置的值不同。
+    当 `service_tier` 参数被设置时，响应体将包含基于实际用于服务该请求的处理模式的 `service_tier` 值。该响应值可能与参数中设置的值不同。
 
     - `"auto"`
 
@@ -5347,13 +5356,13 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `system_fingerprint: optional string`
 
-    此指纹表示模型运行所使用后端配置。
+    此指纹表示模型运行所用的后端配置。
 
-    可与 `seed` 请求参数配合使用，以了解何时发生了可能影响确定性的后端更改。
+    可与以下参数配合使用： `seed` request 参数一同使用，以了解何时进行了可能影响确定性的后端更改。
 
   - `usage: optional CompletionUsage`
 
-    补全请求的使用统计信息。
+    本次补全请求的使用统计。
 
     - `completion_tokens: number`
 
@@ -5365,7 +5374,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `total_tokens: number`
 
-      请求中使用的 token 总数（提示词 + 补全）。
+      本次请求使用的 token 总数（提示词 + 补全）。
 
     - `completion_tokens_details: optional object { accepted_prediction_tokens, audio_tokens, reasoning_tokens, 2 more }`
 
@@ -5373,8 +5382,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `accepted_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        出现在补全中的预测 token 数量。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        的预测出现在补全结果中的 token 数量。
 
       - `audio_tokens: optional number`
 
@@ -5382,15 +5391,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `reasoning_tokens: optional number`
 
-        模型为推理生成的 token。
+        模型用于推理的 token。
 
       - `rejected_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        未出现在补全中的预测。然而，与
-        推理 token 一样，这些 token 仍会计入用于计费、
-        输出以及上下文窗口的
-        补全 token 总数中。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        未出现在补全中的预测 token。然而，与 reasoning tokens 一样，
+        这些 token 在计费、输出和上下文窗口
+        计费、输出和上下文窗口的 total completion tokens
+        限制中仍被计入。
 
       - `text_tokens: optional number`
 
@@ -5402,7 +5411,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `audio_tokens: optional number`
 
-        提示中存在的音频输入 token。
+        提示词中存在的音频输入 token。
 
       - `cache_write_tokens: optional number`
 
@@ -5410,31 +5419,31 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `cached_tokens: optional number`
 
-        提示中存在的已缓存 token。
+        提示词中存在的已缓存 token。
 
       - `image_tokens: optional number`
 
-        提示中存在的图像输入 token。
+        提示词中存在的图像输入 token。
 
       - `text_tokens: optional number`
 
-        提示中存在的文本输入 token。
+        提示词中存在的文本输入 token。
 
 ### Chat Completion Allowed Tool Choice
 
 - `ChatCompletionAllowedToolChoice object { allowed_tools, type }`
 
-  将模型可用的工具限制为一组预定义的工具。
+  将模型可用的工具限制为预定义的集合。
 
   - `allowed_tools: ChatCompletionAllowedTools`
 
-    将模型可用的工具限制为一组预定义的工具。
+    将模型可用的工具限制为预定义的集合。
 
     - `mode: "auto" or "required"`
 
-      将模型可用的工具限制为一组预定义的工具。
+      将模型可用的工具限制为预定义的集合。
 
-      `auto` 允许模型从允许的工具中进行选择并生成一个
+      `auto` 允许模型从允许的工具中进行选择并生成
       消息。
 
       `required` 要求模型调用允许的工具中的一个或多个。
@@ -5445,7 +5454,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `tools: array of map[unknown]`
 
-      模型应被允许调用的工具定义列表。
+      允许模型调用的工具定义列表。
 
       对于 Chat Completions API，工具定义列表可能如下所示：
 
@@ -5466,7 +5475,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `ChatCompletionAssistantMessageParam object { role, audio, content, 4 more }`
 
-  模型针对用户消息发送的回复消息。
+  模型针对用户消息回复时发送的消息。
 
   - `role: "assistant"`
 
@@ -5476,16 +5485,16 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `audio: optional object { id }  or null`
 
-    关于模型先前音频回复的数据。
+    关于模型先前音频响应的数据。
     [了解更多](/api/docs/guides/audio).
 
     - `id: string`
 
-      模型先前音频回复的唯一标识符。
+      模型先前音频响应的唯一标识符。
 
   - `content: optional string or array of ChatCompletionContentPartText or ChatCompletionContentPartRefusal or null`
 
-    助手消息的内容。除非指定了 `tool_calls` 或 `function_call` ，否则必填。
+    助手消息的内容。除非指定了 `tool_calls` 或 `function_call` ，否则此项必填。
 
     - `TextContent = string`
 
@@ -5493,7 +5502,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `ArrayOfContentParts = array of ChatCompletionContentPartText or ChatCompletionContentPartRefusal`
 
-      由已定义类型的内容部分组成的数组。可以包含一个或多个类型为 `text`，的部分，或恰好一个类型为 `refusal`.
+      由已定义类型组成的内容部分数组。可以是一或多个类型为 `text`，或恰好一个类型为 `refusal`.
 
       - `ChatCompletionContentPartText object { text, type, prompt_cache_breakpoint }`
 
@@ -5511,11 +5520,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
-            断点模式。始终为 `explicit`.
+            断点模式。始终 `explicit`.
 
             - `"explicit"`
 
@@ -5523,7 +5532,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `refusal: string`
 
-          由模型生成的拒绝消息。
+          模型生成的拒绝消息。
 
         - `type: "refusal"`
 
@@ -5533,23 +5542,23 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `function_call: optional object { arguments, name }  or null`
 
-    已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+    已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
     - `arguments: string`
 
-      调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+      调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
     - `name: string`
 
-      要调用的函数名称。
+      要调用的函数的名称。
 
   - `name: optional string`
 
-    参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+    参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
   - `refusal: optional string or null`
 
-    助手生成的拒绝消息。
+    助手给出的拒绝消息。
 
   - `tool_calls: optional array of ChatCompletionMessageToolCall`
 
@@ -5565,19 +5574,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `function: object { arguments, name }`
 
-        模型所调用的函数。
+        模型调用的函数。
 
         - `arguments: string`
 
-          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
         - `name: string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
       - `type: "function"`
 
-        工具的类型。目前，仅 `function` 类型。
+        工具的类型。目前，仅 `function` 的类型。
 
         - `"function"`
 
@@ -5591,15 +5600,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `custom: object { input, name }`
 
-        模型所调用的自定义工具。
+        模型调用的自定义工具。
 
         - `input: string`
 
-          模型生成的自定义工具调用输入。
+          模型为该自定义工具调用生成的输入。
 
         - `name: string`
 
-          要调用的自定义工具名称。
+          要调用的自定义工具的名称。
 
       - `type: "custom"`
 
@@ -5611,38 +5620,38 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `ChatCompletionAudio object { id, data, expires_at, transcript }`
 
-  如果请求了音频输出模态，此对象包含有关模型音频响应的
-  数据。 [了解更多](/api/docs/guides/audio).
+  如果请求了音频输出模态，则此对象包含有关
+  模型音频响应的数据。 [了解更多](/api/docs/guides/audio).
 
   - `id: string`
 
-    此音频响应的唯一标识符。
+    该音频响应的唯一标识符。
 
   - `data: string`
 
-    模型生成的 Base64 编码音频字节，格式为请求中
-    指定的格式。
+    由模型生成的 Base64 编码音频字节，格式
+    由请求中指定。
 
   - `expires_at: number`
 
-    此音频响应在服务端不再可用于多轮
-    对话的 Unix 时间戳（秒）。
+    此音频响应在服务端不再可访问的 Unix 时间戳（秒），用于多轮
+    对话时使用。
     conversations.
 
   - `transcript: string`
 
-    模型生成的音频转录文本。
+    由模型生成的音频的转录文本。
 
 ### Chat Completion Audio Param
 
 - `ChatCompletionAudioParam object { format, voice }`
 
-  音频输出参数。在使用以下方式请求音频输出时必填：
+  音频输出参数。在使用以下方式请求音频输出时必填
   `modalities: ["audio"]`. [了解更多](/api/docs/guides/audio).
 
   - `format: "wav" or "aac" or "mp3" or 3 more`
 
-    指定输出音频格式。必须是以下值之一： `wav`, `mp3`, `flac`,
+    指定输出音频格式。必须为以下之一 `wav`, `mp3`, `flac`,
     `opus`，或 `pcm16`.
 
     - `"wav"`
@@ -5659,10 +5668,12 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `voice: string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
 
-    模型用于回复的声音。支持的内置声音包括
+    模型用于响应的语音。支持的内置语音包括
     `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `nova`, `onyx`,
-    `sage`, `shimmer`, `marin`，以及 `cedar`。你也可以提供
-    带有自定义声音对象的 `id`，例如 `{ "id": "voice_1234" }`.
+    `sage`, `shimmer`, `marin`，和 `cedar`。你也可以提供
+    自定义语音对象，其包含 `id`，例如 `{ "id": "voice_1234" }`.
+    自定义语音必须由音频样本创建。通过文本
+    提示创建的语音仅在 Live 中受支持。
 
     - `string`
 
@@ -5690,17 +5701,17 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `ID object { id }`
 
-      自定义声音引用。
+      自定义语音引用。
 
       - `id: string`
 
-        自定义声音 ID，例如 `voice_1234`.
+        自定义语音 ID，例如。 `voice_1234`.
 
 ### Chat Completion Chunk
 
 - `ChatCompletionChunk object { id, choices, created, 7 more }`
 
-  表示由模型根据所提供的输入返回的聊天补全响应的流式分块
+  表示模型根据提供的输入返回的聊天补全响应的流式分块
   。
   [了解更多](/api/docs/guides/streaming-responses).
 
@@ -5710,8 +5721,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `choices: array of object { delta, finish_reason, index, logprobs }`
 
-    聊天补全选项的列表。如果 `n` 大于 1，则可以包含多个元素。如果你在最后一个分块中设置了
-    ，该列表也可能为空。 `stream_options: {"include_usage": true}`.
+    聊天补全选项的列表。如果以下值大于 1，则可以包含多个元素。如果设置了以下字段，最后一个分块也可以为空 `n` ，该列表也可以为空
+    。 `stream_options: {"include_usage": true}`.
 
     - `delta: object { content, function_call, refusal, 2 more }`
 
@@ -5723,23 +5734,23 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `function_call: optional object { arguments, name }`
 
-        已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+        已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
         - `arguments: optional string`
 
-          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
         - `name: optional string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
       - `refusal: optional string or null`
 
-        由模型生成的拒绝消息。
+        模型生成的拒绝消息。
 
       - `role: optional "developer" or "system" or "user" or 2 more`
 
-        此消息作者的角色。
+        本消息作者的角色。
 
         - `"developer"`
 
@@ -5763,24 +5774,24 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `arguments: optional string`
 
-            调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+            调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
           - `name: optional string`
 
-            要调用的函数名称。
+            要调用的函数的名称。
 
         - `type: optional "function"`
 
-          工具的类型。目前，仅 `function` 类型。
+          工具的类型。目前，仅 `function` 的类型。
 
           - `"function"`
 
     - `finish_reason: "stop" or "length" or "tool_calls" or 2 more or null`
 
-      模型停止生成 token 的原因。这将是 `stop` 如果模型遇到自然停止点或提供了停止序列，
-      `length` 如果达到了请求中指定的最大 token 数，
-      `content_filter` 如果内容因我们的内容过滤器标记而被省略，
-      `tool_calls` 如果模型调用了工具，或 `function_call` （已弃用）如果模型调用了函数。
+      模型停止生成 token 的原因。 `stop` 如果模型遇到自然停止点或提供了停止序列；
+      `length` 如果达到请求中指定的最大 token 数；
+      `content_filter` 如果内容因我们的内容过滤器的标记而被省略；
+      `tool_calls` 如果模型调用了工具； `function_call` （已弃用）如果模型调用了函数。
 
       - `"stop"`
 
@@ -5810,15 +5821,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
           - `token: string`
 
@@ -5826,15 +5837,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `bytes: array of number or null`
 
-            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+            表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
           - `logprob: number`
 
-            该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+            该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
       - `refusal: array of ChatCompletionTokenLogprob or null`
 
-        包含对数概率信息的 message 拒绝 token 列表。
+        包含消息拒答标记及其对数概率信息的列表。
 
         - `token: string`
 
@@ -5842,15 +5853,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
         - `top_logprobs: array of object { token, bytes, logprob }`
 
-          在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+          在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
   - `created: number`
 
@@ -5868,32 +5879,32 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `moderation: optional object { input, output }  or null`
 
-    请求输入和生成输出的审核结果。当请求经过审核的补全时出现
-    在审核分块上。
+    针对请求输入和生成输出的审核结果。在请求启用审核的补全时，该字段会出现在审核分块上
+    。
 
     - `input: object { model, results, type }  or object { code, message, type }`
 
-      请求输入的审核结果。
+      对请求输入的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -5901,19 +5912,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -5925,7 +5936,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -5943,27 +5954,27 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `output: object { model, results, type }  or object { code, message, type }`
 
-      针对生成输出的内容审核。
+      对生成输出的内容审核。
 
       - `ModerationResults object { model, results, type }`
 
-        请求输入或生成输出的成功审核结果。
+        针对请求输入或生成输出的成功内容审核结果。
 
         - `model: string`
 
-          用于生成结果的审核模型。
+          用于生成结果的内容审核模型。
 
         - `results: array of object { categories, category_applied_input_types, category_scores, 3 more }`
 
-          审核结果列表。
+          内容审核结果的列表。
 
           - `categories: map[boolean]`
 
-            一个字典，键为审核类别，值为布尔值，若输入在该类别下被标记则为 True。
+            从内容审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
 
           - `category_applied_input_types: map[array of "text" or "image"]`
 
-            每个类别的分数所反映的输入模态。
+            每个类别的分数所对应的输入模态。
 
             - `"text"`
 
@@ -5971,19 +5982,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `category_scores: map[number]`
 
-            一个字典，键为审核类别，值为分数。
+            从内容审核类别到分数的字典。
 
           - `flagged: boolean`
 
-            一个布尔值，指示内容是否被任何类别标记。
+            指示该内容是否被任何类别标记的布尔值。
 
           - `model: string`
 
-            生成该结果的审核模型。
+            生成此结果的内容审核模型。
 
           - `type: "moderation_result"`
 
-            对象类型，对于成功的审核结果始终为 `moderation_result` 。
+            对象类型，在成功的内容审核结果中始终为 `moderation_result` 。
 
             - `"moderation_result"`
 
@@ -5995,7 +6006,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `Error object { code, message, type }`
 
-        尝试审核时产生的错误。
+        尝试进行内容审核时产生的错误。
 
         - `code: string`
 
@@ -6013,21 +6024,21 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `obfuscation: optional string`
 
-    一个混淆字符串，用于将流式分块的大小标准化，作为对
-    某些侧信道攻击的缓解措施。该字段默认包含，并在设置
-    时被省略 `stream_options.include_obfuscation` 为 `false`.
+    添加的混淆字符串，用于将流式分块的大小规范化，作为针对某些侧信道攻击的缓解措施。该字段默认包含
+    ，但在以下情况下省略
+    。 `stream_options.include_obfuscation` 用于 `false`.
 
   - `service_tier: optional "auto" or "default" or "flex" or 3 more or null`
 
     指定用于处理该请求的处理类型。
 
-    - 如果设置为 'auto'，则请求将使用在项目设置中配置的服务层级进行处理。除非另有配置，否则项目将使用 'default'。
-    - 如果设置为 'default'，则请求将使用所选模型的标准定价和性能进行处理。
-    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则请求将使用 Flex Processing 服务层级进行处理。
-    - 若要在请求级别启用 [Fast mode](/api/docs/guides/fast-mode) ，请为 Responses 或 Chat Completions 包含 `service_tier=fast` 或 `service_tier=priority` 参数。响应将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
+    - 如果设置为 'auto'，则该请求将按照项目设置中配置的服务层级处理。除非另行配置，否则该项目将使用 'default'。
+    - 如果设置为 'default'，则该请求将按照所选模型的标准定价和性能进行处理。
+    - 如果设置为 '[flex](/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级处理。
+    - 若要在 [Fast mode](/api/docs/guides/fast-mode) 级别启用，请在 Responses 或 Chat Completions 中添加 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
     - 未设置时，默认行为为 'auto'。
 
-    当 `service_tier` 参数被设置时，响应主体将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。此响应值可能与参数中设置的值不同。
+    当 `service_tier` 参数被设置时，响应体将包含基于实际用于服务该请求的处理模式的 `service_tier` 值。该响应值可能与参数中设置的值不同。
 
     - `"auto"`
 
@@ -6043,19 +6054,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `system_fingerprint: optional string`
 
-    此指纹表示模型运行所处的后端配置。
-    可与 `seed` 请求参数配合使用，以了解何时发生了可能影响确定性的后端更改。
+    此指纹表示模型运行所用的后端配置。
+    可与以下参数配合使用： `seed` request 参数一同使用，以了解何时进行了可能影响确定性的后端更改。
 
   - `usage: optional CompletionUsage or null`
 
-    一个可选字段，仅当你在请求中设置
-    `stream_options: {"include_usage": true}` 时才会出现。如果存在，它
-    包含一个 null 值 **，最后一个分块除外** 其中包含
+    一个可选字段，仅当你在请求中设置了以下内容时才会出现
+    `stream_options: {"include_usage": true}` 。如果存在，除最后一个分块外，该字段的值为
+    null **。** 其中包含
     整个请求的 token 使用统计信息。
 
-    **注意：** 如果流被中断或取消，你可能无法
-    接收到包含整个请求总 token 用量的最终 usage 块，其中
-    包含了请求的总 token 用量。
+    **注意：** 如果流被中断或取消，你可能不会
+    接收到包含整个请求总 token 使用量的最终 usage 分块，该分块用于汇总
+    请求的用量。
 
     - `completion_tokens: number`
 
@@ -6067,7 +6078,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `total_tokens: number`
 
-      请求中使用的 token 总数（提示词 + 补全）。
+      本次请求使用的 token 总数（提示词 + 补全）。
 
     - `completion_tokens_details: optional object { accepted_prediction_tokens, audio_tokens, reasoning_tokens, 2 more }`
 
@@ -6075,8 +6086,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `accepted_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        出现在补全中的预测 token 数量。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        的预测出现在补全结果中的 token 数量。
 
       - `audio_tokens: optional number`
 
@@ -6084,15 +6095,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `reasoning_tokens: optional number`
 
-        模型为推理生成的 token。
+        模型用于推理的 token。
 
       - `rejected_prediction_tokens: optional number`
 
-        使用 Predicted Outputs 时，
-        未出现在补全中的预测。然而，与
-        推理 token 一样，这些 token 仍会计入用于计费、
-        输出以及上下文窗口的
-        补全 token 总数中。
+        使用 Predicted Outputs 时，prediction 中出现在补全中的 token 数量。
+        未出现在补全中的预测 token。然而，与 reasoning tokens 一样，
+        这些 token 在计费、输出和上下文窗口
+        计费、输出和上下文窗口的 total completion tokens
+        限制中仍被计入。
 
       - `text_tokens: optional number`
 
@@ -6104,7 +6115,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `audio_tokens: optional number`
 
-        提示中存在的音频输入 token。
+        提示词中存在的音频输入 token。
 
       - `cache_write_tokens: optional number`
 
@@ -6112,15 +6123,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `cached_tokens: optional number`
 
-        提示中存在的已缓存 token。
+        提示词中存在的已缓存 token。
 
       - `image_tokens: optional number`
 
-        提示中存在的图像输入 token。
+        提示词中存在的图像输入 token。
 
       - `text_tokens: optional number`
 
-        提示中存在的文本输入 token。
+        提示词中存在的文本输入 token。
 
 ### Chat Completion Content Part
 
@@ -6144,11 +6155,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `prompt_cache_breakpoint: optional object { mode }`
 
-      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+      标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
       - `mode: "explicit"`
 
-        断点模式。始终为 `explicit`.
+        断点模式。始终 `explicit`.
 
         - `"explicit"`
 
@@ -6160,9 +6171,9 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `url: string`
 
-        图像的 URL 或 base64 编码的图像数据。
+        图像的 URL 或 base64 编码后的图像数据。
 
-      - `detail: optional "auto" or "low" or "high"`
+      - `detail: optional "auto" or "low" or "high" or "original"`
 
         指定图像的细节级别。更多信息请参阅 [视觉指南](/api/docs/guides/images-vision#choose-an-image-detail-level).
 
@@ -6172,6 +6183,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `"high"`
 
+        - `"original"`
+
     - `type: "image_url"`
 
       内容部分的类型。
@@ -6180,11 +6193,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `prompt_cache_breakpoint: optional object { mode }`
 
-      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+      标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
       - `mode: "explicit"`
 
-        断点模式。始终为 `explicit`.
+        断点模式。始终 `explicit`.
 
         - `"explicit"`
 
@@ -6200,7 +6213,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `format: "wav" or "mp3"`
 
-        编码音频数据的格式。目前支持 "wav" 和 "mp3"。
+        编码音频数据的格式。当前支持 "wav" 和 "mp3"。
 
         - `"wav"`
 
@@ -6214,11 +6227,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `prompt_cache_breakpoint: optional object { mode }`
 
-      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+      标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
       - `mode: "explicit"`
 
-        断点模式。始终为 `explicit`.
+        断点模式。始终 `explicit`.
 
         - `"explicit"`
 
@@ -6230,8 +6243,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `file_data: optional string`
 
-        Base64 编码的文件数据，在将文件作为
-        字符串传递给模型时使用。
+        Base64 编码的文件数据，在将文件以字符串形式传递给模型时使用
+        。
 
       - `file_id: optional string`
 
@@ -6239,8 +6252,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `filename: optional string`
 
-        文件的名称，在将文件作为
-        字符串传递给模型时使用。
+        文件的名称，在将文件以字符串形式传递给模型时使用
+        。
 
     - `type: "file"`
 
@@ -6250,11 +6263,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `prompt_cache_breakpoint: optional object { mode }`
 
-      标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+      标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
       - `mode: "explicit"`
 
-        断点模式。始终为 `explicit`.
+        断点模式。始终 `explicit`.
 
         - `"explicit"`
 
@@ -6268,9 +6281,9 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `url: string`
 
-      图像的 URL 或 base64 编码的图像数据。
+      图像的 URL 或 base64 编码后的图像数据。
 
-    - `detail: optional "auto" or "low" or "high"`
+    - `detail: optional "auto" or "low" or "high" or "original"`
 
       指定图像的细节级别。更多信息请参阅 [视觉指南](/api/docs/guides/images-vision#choose-an-image-detail-level).
 
@@ -6280,6 +6293,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `"high"`
 
+      - `"original"`
+
   - `type: "image_url"`
 
     内容部分的类型。
@@ -6288,11 +6303,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `prompt_cache_breakpoint: optional object { mode }`
 
-    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+    标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
     - `mode: "explicit"`
 
-      断点模式。始终为 `explicit`.
+      断点模式。始终 `explicit`.
 
       - `"explicit"`
 
@@ -6310,7 +6325,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `format: "wav" or "mp3"`
 
-      编码音频数据的格式。目前支持 "wav" 和 "mp3"。
+      编码音频数据的格式。当前支持 "wav" 和 "mp3"。
 
       - `"wav"`
 
@@ -6324,11 +6339,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `prompt_cache_breakpoint: optional object { mode }`
 
-    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+    标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
     - `mode: "explicit"`
 
-      断点模式。始终为 `explicit`.
+      断点模式。始终 `explicit`.
 
       - `"explicit"`
 
@@ -6338,7 +6353,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `refusal: string`
 
-    由模型生成的拒绝消息。
+    模型生成的拒绝消息。
 
   - `type: "refusal"`
 
@@ -6364,11 +6379,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `prompt_cache_breakpoint: optional object { mode }`
 
-    标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+    标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
     - `mode: "explicit"`
 
-      断点模式。始终为 `explicit`.
+      断点模式。始终 `explicit`.
 
       - `"explicit"`
 
@@ -6396,7 +6411,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `Text object { type }`
 
-        无约束自由格式文本。
+        无约束的、自由格式的文本。
 
         - `type: "text"`
 
@@ -6418,7 +6433,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `syntax: "lark" or "regex"`
 
-            语法定义的语法。取值之一为 `lark` 或 `regex`.
+            语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
             - `"lark"`
 
@@ -6442,7 +6457,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `id: string`
 
-    被删除的聊天补全的 ID。
+    已删除的聊天补全的 ID。
 
   - `deleted: boolean`
 
@@ -6450,7 +6465,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `object: "chat.completion.deleted"`
 
-    被删除对象的类型。
+    正在删除的对象的类型。
 
     - `"chat.completion.deleted"`
 
@@ -6458,9 +6473,9 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `ChatCompletionDeveloperMessageParam object { content, role, name }`
 
-  开发者提供的指令，无论用户发送什么
-  消息，模型都应遵循这些指令。对于 o1 及更高版本的模型， `developer` 消息
-  将取代之前的 `system` messages。
+  由开发者提供的指令，无论用户发送什么消息，模型都应遵循这些指令。对于 o1 及更新的
+  模型， `developer` messages
+  字段取代了之前的 `system` messages。
 
   - `content: string or array of ChatCompletionContentPartText`
 
@@ -6472,7 +6487,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-      由已定义类型组成的内容部分数组。对于开发者消息，仅支持 type `text` 类型。
+      由已定义类型的内容部分组成的数组。对于开发者消息，仅支持 type 为 `text` 的类型。
 
       - `text: string`
 
@@ -6486,11 +6501,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `prompt_cache_breakpoint: optional object { mode }`
 
-        标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+        标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
         - `mode: "explicit"`
 
-          断点模式。始终为 `explicit`.
+          断点模式。始终 `explicit`.
 
           - `"explicit"`
 
@@ -6502,17 +6517,17 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `name: optional string`
 
-    参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+    参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
 ### Chat Completion Function Call Option
 
 - `ChatCompletionFunctionCallOption object { name }`
 
-  通过 `{"name": "my_function"}` 强制模型调用该函数。
+  通过 {"name": "my_function"} 指定某个函数 `{"name": "my_function"}` 强制模型调用该函数。
 
   - `name: string`
 
-    要调用的函数名称。
+    要调用的函数的名称。
 
 ### Chat Completion Function Message Param
 
@@ -6524,7 +6539,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `name: string`
 
-    要调用的函数名称。
+    要调用的函数的名称。
 
   - `role: "function"`
 
@@ -6542,51 +6557,47 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `name: string`
 
-      要调用的函数名称。必须包含 a-z、A-Z、0-9 或下划线和短横线，最大长度为 64。
+      要调用的函数名称。必须由 a-z、A-Z、0-9 组成，或包含下划线和连字符，最大长度为 64。
 
     - `description: optional string`
 
-      对函数功能的描述，供模型用于判断何时以及如何调用该函数。
+      函数功能的描述，供模型用于决定何时以及如何调用该函数。
 
     - `parameters: optional FunctionParameters`
 
-      函数接受的参数，以 JSON Schema 对象描述。参见 [指南](/api/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 查看该格式的相关文档。
+      函数接受的参数，使用 JSON Schema 对象描述。请参阅 [指南](/api/docs/guides/function-calling) 例如，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，查看有关该格式的文档。
 
-      省略 `parameters` 用于定义一个空参数列表的函数。
+      省略 `parameters` 则定义一个空参数列表的函数。
 
     - `strict: optional boolean or null`
 
-      是否在生成函数调用时启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段中所定义的精确 schema。当 strict `strict` 为 `true`。中定义的确切模式。在 [function calling guide](/api/docs/guides/function-calling).
+      生成函数调用时是否启用严格的模式遵循。如果设置为 true，则模型将遵循在 `parameters` 字段时（仅支持 JSON Schema 的子集）。 `strict` 用于 `true`。中定义的精确模式。详细了解结构化输出，请参阅 [函数调用指南](/api/docs/guides/function-calling).
 
   - `type: "function"`
 
-    工具的类型。目前，仅 `function` 类型。
+    工具的类型。目前，仅 `function` 的类型。
 
     - `"function"`
 
 ### Chat Completion Message
 
-- `ChatCompletionMessage object { content, refusal, role, 4 more }`
+- `ChatCompletionMessage object { content, role, annotations, 4 more }`
 
-  模型生成的聊天补全消息。
+  由模型生成的聊天补全消息。
 
   - `content: string or null`
 
     消息的内容。
 
-  - `refusal: string or null`
-
-    由模型生成的拒绝消息。
-
   - `role: "assistant"`
 
-    此消息作者的角色。
+    本消息作者的角色。
 
     - `"assistant"`
 
   - `annotations: optional array of object { type, url_citation }`
 
-    消息的注释（如适用），例如使用
+    消息的注解（如果适用），例如在使用
     [网页搜索工具](/api/docs/guides/tools-web-search).
 
     - `type: "url_citation"`
@@ -6617,41 +6628,45 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `audio: optional ChatCompletionAudio or null`
 
-    如果请求了音频输出模态，此对象包含有关模型音频响应的
-    数据。 [了解更多](/api/docs/guides/audio).
+    如果请求了音频输出模态，则此对象包含有关
+    模型音频响应的数据。 [了解更多](/api/docs/guides/audio).
 
     - `id: string`
 
-      此音频响应的唯一标识符。
+      该音频响应的唯一标识符。
 
     - `data: string`
 
-      模型生成的 Base64 编码音频字节，格式为请求中
-      指定的格式。
+      由模型生成的 Base64 编码音频字节，格式
+      由请求中指定。
 
     - `expires_at: number`
 
-      此音频响应在服务端不再可用于多轮
-      对话的 Unix 时间戳（秒）。
+      此音频响应在服务端不再可访问的 Unix 时间戳（秒），用于多轮
+      对话时使用。
       conversations.
 
     - `transcript: string`
 
-      模型生成的音频转录文本。
+      由模型生成的音频的转录文本。
 
-  - `function_call: optional object { arguments, name }`
+  - `function_call: optional object { arguments, name }  or null`
 
-    已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+    已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
     - `arguments: string`
 
-      调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+      调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
     - `name: string`
 
-      要调用的函数名称。
+      要调用的函数的名称。
 
-  - `tool_calls: optional array of ChatCompletionMessageToolCall`
+  - `refusal: optional string or null`
+
+    模型生成的拒绝消息。
+
+  - `tool_calls: optional array of ChatCompletionMessageToolCall or null`
 
     模型生成的工具调用，例如函数调用。
 
@@ -6665,19 +6680,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `function: object { arguments, name }`
 
-        模型所调用的函数。
+        模型调用的函数。
 
         - `arguments: string`
 
-          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
         - `name: string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
       - `type: "function"`
 
-        工具的类型。目前，仅 `function` 类型。
+        工具的类型。目前，仅 `function` 的类型。
 
         - `"function"`
 
@@ -6691,15 +6706,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `custom: object { input, name }`
 
-        模型所调用的自定义工具。
+        模型调用的自定义工具。
 
         - `input: string`
 
-          模型生成的自定义工具调用输入。
+          模型为该自定义工具调用生成的输入。
 
         - `name: string`
 
-          要调用的自定义工具名称。
+          要调用的自定义工具的名称。
 
       - `type: "custom"`
 
@@ -6719,15 +6734,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `custom: object { input, name }`
 
-    模型所调用的自定义工具。
+    模型调用的自定义工具。
 
     - `input: string`
 
-      模型生成的自定义工具调用输入。
+      模型为该自定义工具调用生成的输入。
 
     - `name: string`
 
-      要调用的自定义工具名称。
+      要调用的自定义工具的名称。
 
   - `type: "custom"`
 
@@ -6747,19 +6762,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `function: object { arguments, name }`
 
-    模型所调用的函数。
+    模型调用的函数。
 
     - `arguments: string`
 
-      调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+      调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
     - `name: string`
 
-      要调用的函数名称。
+      要调用的函数的名称。
 
   - `type: "function"`
 
-    工具的类型。目前，仅 `function` 类型。
+    工具的类型。目前，仅 `function` 的类型。
 
     - `"function"`
 
@@ -6767,15 +6782,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `ChatCompletionMessageParam = ChatCompletionDeveloperMessageParam or ChatCompletionSystemMessageParam or ChatCompletionUserMessageParam or 3 more`
 
-  开发者提供的指令，无论用户发送什么
-  消息，模型都应遵循这些指令。对于 o1 及更高版本的模型， `developer` 消息
-  将取代之前的 `system` messages。
+  由开发者提供的指令，无论用户发送什么消息，模型都应遵循这些指令。对于 o1 及更新的
+  模型， `developer` messages
+  字段取代了之前的 `system` messages。
 
   - `ChatCompletionDeveloperMessageParam object { content, role, name }`
 
-    开发者提供的指令，无论用户发送什么
-    消息，模型都应遵循这些指令。对于 o1 及更高版本的模型， `developer` 消息
-    将取代之前的 `system` messages。
+    由开发者提供的指令，无论用户发送什么消息，模型都应遵循这些指令。对于 o1 及更新的
+    模型， `developer` messages
+    字段取代了之前的 `system` messages。
 
     - `content: string or array of ChatCompletionContentPartText`
 
@@ -6787,7 +6802,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-        由已定义类型组成的内容部分数组。对于开发者消息，仅支持 type `text` 类型。
+        由已定义类型的内容部分组成的数组。对于开发者消息，仅支持 type 为 `text` 的类型。
 
         - `text: string`
 
@@ -6801,11 +6816,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
-            断点模式。始终为 `explicit`.
+            断点模式。始终 `explicit`.
 
             - `"explicit"`
 
@@ -6817,13 +6832,13 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `name: optional string`
 
-      参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+      参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
   - `ChatCompletionSystemMessageParam object { content, role, name }`
 
-    开发者提供的指令，无论用户发送什么
-    用户发送的消息。对于 o1 及更新模型，请改用 `developer` 消息
-    来实现此目的。
+    由开发者提供的指令，无论用户发送什么消息，模型都应遵循这些指令。对于 o1 及更新的
+    用户发送的消息。对于 o1 及更新模型，请使用 `developer` messages
+    来代替。
 
     - `content: string or array of ChatCompletionContentPartText`
 
@@ -6835,7 +6850,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-        具有指定类型的内容部分数组。对于系统消息，仅支持类型 `text` 类型。
+        由已定义类型组成的内容部分数组。对于系统消息，仅支持类型 `text` 的类型。
 
         - `text: string`
 
@@ -6847,7 +6862,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
     - `role: "system"`
 
@@ -6857,11 +6872,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `name: optional string`
 
-      参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+      参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
   - `ChatCompletionUserMessageParam object { content, role, name }`
 
-    由最终用户发送的消息，包含提示词或额外的上下文
+    由终端用户发送的消息，包含提示或额外的上下文
     信息。
 
     - `content: string or array of ChatCompletionContentPart`
@@ -6874,7 +6889,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `ArrayOfContentParts = array of ChatCompletionContentPart`
 
-        具有指定类型的内容部分数组。支持的可选项因 [model](/api/docs/models) 生成响应时所使用的模型而异。可以包含文本、图像或音频输入。
+        由已定义类型组成的内容部分数组。支持选项因用于生成响应的 [model](/api/docs/models) 而异。可包含文本、图像或音频输入。
 
         - `ChatCompletionContentPartText object { text, type, prompt_cache_breakpoint }`
 
@@ -6890,7 +6905,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
         - `ChatCompletionContentPartImage object { image_url, type, prompt_cache_breakpoint }`
 
@@ -6900,9 +6915,9 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
             - `url: string`
 
-              图像的 URL 或 base64 编码的图像数据。
+              图像的 URL 或 base64 编码后的图像数据。
 
-            - `detail: optional "auto" or "low" or "high"`
+            - `detail: optional "auto" or "low" or "high" or "original"`
 
               指定图像的细节级别。更多信息请参阅 [视觉指南](/api/docs/guides/images-vision#choose-an-image-detail-level).
 
@@ -6912,6 +6927,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
               - `"high"`
 
+              - `"original"`
+
           - `type: "image_url"`
 
             内容部分的类型。
@@ -6920,11 +6937,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
-              断点模式。始终为 `explicit`.
+              断点模式。始终 `explicit`.
 
               - `"explicit"`
 
@@ -6940,7 +6957,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
             - `format: "wav" or "mp3"`
 
-              编码音频数据的格式。目前支持 "wav" 和 "mp3"。
+              编码音频数据的格式。当前支持 "wav" 和 "mp3"。
 
               - `"wav"`
 
@@ -6954,11 +6971,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
-              断点模式。始终为 `explicit`.
+              断点模式。始终 `explicit`.
 
               - `"explicit"`
 
@@ -6970,8 +6987,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
             - `file_data: optional string`
 
-              Base64 编码的文件数据，在将文件作为
-              字符串传递给模型时使用。
+              Base64 编码的文件数据，在将文件以字符串形式传递给模型时使用
+              。
 
             - `file_id: optional string`
 
@@ -6979,8 +6996,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
             - `filename: optional string`
 
-              文件的名称，在将文件作为
-              字符串传递给模型时使用。
+              文件的名称，在将文件以字符串形式传递给模型时使用
+              。
 
           - `type: "file"`
 
@@ -6990,11 +7007,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
-              断点模式。始终为 `explicit`.
+              断点模式。始终 `explicit`.
 
               - `"explicit"`
 
@@ -7006,11 +7023,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `name: optional string`
 
-      参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+      参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
   - `ChatCompletionAssistantMessageParam object { role, audio, content, 4 more }`
 
-    模型针对用户消息发送的回复消息。
+    模型针对用户消息回复时发送的消息。
 
     - `role: "assistant"`
 
@@ -7020,16 +7037,16 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `audio: optional object { id }  or null`
 
-      关于模型先前音频回复的数据。
+      关于模型先前音频响应的数据。
       [了解更多](/api/docs/guides/audio).
 
       - `id: string`
 
-        模型先前音频回复的唯一标识符。
+        模型先前音频响应的唯一标识符。
 
     - `content: optional string or array of ChatCompletionContentPartText or ChatCompletionContentPartRefusal or null`
 
-      助手消息的内容。除非指定了 `tool_calls` 或 `function_call` ，否则必填。
+      助手消息的内容。除非指定了 `tool_calls` 或 `function_call` ，否则此项必填。
 
       - `TextContent = string`
 
@@ -7037,7 +7054,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `ArrayOfContentParts = array of ChatCompletionContentPartText or ChatCompletionContentPartRefusal`
 
-        由已定义类型的内容部分组成的数组。可以包含一个或多个类型为 `text`，的部分，或恰好一个类型为 `refusal`.
+        由已定义类型组成的内容部分数组。可以是一或多个类型为 `text`，或恰好一个类型为 `refusal`.
 
         - `ChatCompletionContentPartText object { text, type, prompt_cache_breakpoint }`
 
@@ -7047,7 +7064,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `refusal: string`
 
-            由模型生成的拒绝消息。
+            模型生成的拒绝消息。
 
           - `type: "refusal"`
 
@@ -7057,23 +7074,23 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `function_call: optional object { arguments, name }  or null`
 
-      已弃用，由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+      已弃用并由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
       - `arguments: string`
 
-        调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+        调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
       - `name: string`
 
-        要调用的函数名称。
+        要调用的函数的名称。
 
     - `name: optional string`
 
-      参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+      参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
     - `refusal: optional string or null`
 
-      助手生成的拒绝消息。
+      助手给出的拒绝消息。
 
     - `tool_calls: optional array of ChatCompletionMessageToolCall`
 
@@ -7089,19 +7106,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `function: object { arguments, name }`
 
-          模型所调用的函数。
+          模型调用的函数。
 
           - `arguments: string`
 
-            调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+            调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
           - `name: string`
 
-            要调用的函数名称。
+            要调用的函数的名称。
 
         - `type: "function"`
 
-          工具的类型。目前，仅 `function` 类型。
+          工具的类型。目前，仅 `function` 的类型。
 
           - `"function"`
 
@@ -7115,15 +7132,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `custom: object { input, name }`
 
-          模型所调用的自定义工具。
+          模型调用的自定义工具。
 
           - `input: string`
 
-            模型生成的自定义工具调用输入。
+            模型为该自定义工具调用生成的输入。
 
           - `name: string`
 
-            要调用的自定义工具名称。
+            要调用的自定义工具的名称。
 
         - `type: "custom"`
 
@@ -7143,7 +7160,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-        具有指定类型的内容部分数组。对于工具消息，仅支持类型 `text` 类型。
+        由已定义类型组成的内容部分数组。对于工具消息，仅支持 type `text` 的类型。
 
         - `text: string`
 
@@ -7155,7 +7172,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
     - `role: "tool"`
 
@@ -7165,7 +7182,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `tool_call_id: string`
 
-      此消息所响应的工具调用。
+      此消息正在响应的工具调用。
 
   - `ChatCompletionFunctionMessageParam object { content, name, role }`
 
@@ -7175,7 +7192,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `name: string`
 
-      要调用的函数名称。
+      要调用的函数的名称。
 
     - `role: "function"`
 
@@ -7199,19 +7216,19 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `function: object { arguments, name }`
 
-      模型所调用的函数。
+      模型调用的函数。
 
       - `arguments: string`
 
-        调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会幻觉出你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+        调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你的函数模式中未定义的参数。在调用函数之前，请在代码中校验这些参数。
 
       - `name: string`
 
-        要调用的函数名称。
+        要调用的函数的名称。
 
     - `type: "function"`
 
-      工具的类型。目前，仅 `function` 类型。
+      工具的类型。目前，仅 `function` 的类型。
 
       - `"function"`
 
@@ -7225,15 +7242,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `custom: object { input, name }`
 
-      模型所调用的自定义工具。
+      模型调用的自定义工具。
 
       - `input: string`
 
-        模型生成的自定义工具调用输入。
+        模型为该自定义工具调用生成的输入。
 
       - `name: string`
 
-        要调用的自定义工具名称。
+        要调用的自定义工具的名称。
 
     - `type: "custom"`
 
@@ -7253,13 +7270,13 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `ChatCompletionNamedToolChoice object { function, type }`
 
-  指定模型应使用的工具。用于强制模型调用特定函数。
+  指定模型应使用的工具。用于强制模型调用特定的函数。
 
   - `function: object { name }`
 
     - `name: string`
 
-      要调用的函数名称。
+      要调用的函数的名称。
 
   - `type: "function"`
 
@@ -7277,7 +7294,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `name: string`
 
-      要调用的自定义工具名称。
+      要调用的自定义工具的名称。
 
   - `type: "custom"`
 
@@ -7289,23 +7306,23 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `ChatCompletionPredictionContent object { content, type }`
 
-  静态预测输出内容，例如正在被重新生成的文本文件的内容
-  。
+  静态预测输出内容，例如要重新生成的文本文件的内容
+  被重新生成。
 
   - `content: string or array of ChatCompletionContentPartText`
 
     生成模型响应时应匹配的内容。
-    如果生成的 token 与该内容匹配，则可以更快地返回整个模型响应。
-    可以更快地返回整个模型响应。
+    如果生成的 token 与此内容匹配，则整个模型响应
+    可以更快地返回。
 
     - `TextContent = string`
 
-      用于 Predicted Output 的内容。通常是你正在重新生成、仅做少量改动的文件的
-      文本。
+      用于 Predicted Output 的内容。这通常是
+      你要重新生成并做了少量修改的文件文本。
 
     - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-      具有指定类型的内容部分数组。支持的可选项因 [model](/api/docs/models) 用于生成响应的内容。可以包含文本输入。
+      由已定义类型组成的内容部分数组。支持选项因用于生成响应的 [model](/api/docs/models) 用于生成响应。可以包含文本输入。
 
       - `text: string`
 
@@ -7319,22 +7336,22 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `prompt_cache_breakpoint: optional object { mode }`
 
-        标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+        标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
         - `mode: "explicit"`
 
-          断点模式。始终为 `explicit`.
+          断点模式。始终 `explicit`.
 
           - `"explicit"`
 
   - `type: "content"`
 
-    你要提供的预测内容的类型。该类型通常
-    始终为 `content`.
+    你要提供的预测内容的类型。此类型
+    当前始终为 `content`.
 
     - `"content"`
 
-### Chat Completion Role
+### Chat Completion 角色
 
 - `ChatCompletionRole = "developer" or "system" or "user" or 3 more`
 
@@ -7354,78 +7371,61 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 ### Chat Completion Store Message
 
-- `ChatCompletionStoreMessage = ChatCompletionMessage`
-
-  模型生成的聊天补全消息。
+- `ChatCompletionStoreMessage object { id, content, content_parts, 2 more }`
 
   - `id: string`
 
-    聊天消息的标识符。
+  - `content: string or null`
 
-  - `content_parts: optional array of ChatCompletionContentPartText or ChatCompletionContentPartImage or null`
+  - `content_parts: array of object { type, file, image_url, 2 more }  or null`
 
-    如果提供了内容片段数组，则此处为一个包含以下内容的数组 `text` 和 `image_url` 片段。
-    否则为 null。
+    - `type: "text" or "image_url" or "input_audio" or "file"`
 
-    - `ChatCompletionContentPartText object { text, type, prompt_cache_breakpoint }`
+      - `"text"`
 
-      了解 [文本输入](/api/docs/guides/text).
+      - `"image_url"`
 
-      - `text: string`
+      - `"input_audio"`
 
-        文本内容。
+      - `"file"`
 
-      - `type: "text"`
+    - `file: optional object { file_data, file_id, filename }  or null`
 
-        内容部分的类型。
+      - `file_data: optional string or null`
 
-        - `"text"`
+      - `file_id: optional string or null`
 
-      - `prompt_cache_breakpoint: optional object { mode }`
+      - `filename: optional string or null`
 
-        标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+    - `image_url: optional object { url, detail }  or null`
 
-        - `mode: "explicit"`
+      - `url: string`
 
-          断点模式。始终为 `explicit`.
+      - `detail: optional string or null`
 
-          - `"explicit"`
+    - `input_audio: optional object { data, format }  or null`
 
-    - `ChatCompletionContentPartImage object { image_url, type, prompt_cache_breakpoint }`
+      - `data: string`
 
-      了解 [图像输入](/api/docs/guides/images-vision).
+      - `format: string`
 
-      - `image_url: object { url, detail }`
+    - `text: optional string or null`
 
-        - `url: string`
+  - `role: "user" or "assistant" or "tool" or 3 more`
 
-          图像的 URL 或 base64 编码的图像数据。
+    - `"user"`
 
-        - `detail: optional "auto" or "low" or "high"`
+    - `"assistant"`
 
-          指定图像的细节级别。更多信息请参阅 [视觉指南](/api/docs/guides/images-vision#choose-an-image-detail-level).
+    - `"tool"`
 
-          - `"auto"`
+    - `"system"`
 
-          - `"low"`
+    - `"function"`
 
-          - `"high"`
+    - `"developer"`
 
-      - `type: "image_url"`
-
-        内容部分的类型。
-
-        - `"image_url"`
-
-      - `prompt_cache_breakpoint: optional object { mode }`
-
-        标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
-
-        - `mode: "explicit"`
-
-          断点模式。始终为 `explicit`.
-
-          - `"explicit"`
+  - `name: optional string or null`
 
 ### Chat Completion Stream Options
 
@@ -7435,32 +7435,32 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `include_obfuscation: optional boolean`
 
-    为 true 时，将启用流混淆。流混淆会向
-    字段的流式增量事件添加 `obfuscation` 随机字符，以规范化负载大小，
-    作为针对某些侧信道攻击的缓解措施。
-    这些混淆字段默认包含，但会增加少量
-    数据流的开销。你可以设置 `include_obfuscation` 设置为
-    为 false 以优化带宽，前提是你信任你的应用与
-    OpenAI API 之间的网络链路。
+    当为 true 时，将启用流混淆。流混淆会向
+    添加随机字符 `obfuscation` 流式增量事件上的字段，用于
+    规范化负载大小，作为对某些侧信道攻击的缓解措施。
+    默认会包含这些混淆字段，但会给数据流带来少量
+    开销。你可以设置 `include_obfuscation` 设置为
+    为 false，以便在信任你的应用与
+    OpenAI API 之间的网络链路时优化带宽。
 
   - `include_usage: optional boolean`
 
-    如果启用，会在 `data: [DONE]`
-    消息之前额外流式发送一个块。 `usage` 字段会显示整个请求的令牌用量统计，
-    而 choices 字段始终为 `choices` 一个空数组，
-    data 字段也始终为空数组。
+    如果设置，则在 `data: [DONE]`
+    消息之前会额外流式传输一个数据块。该 `usage` 数据块上的字段显示整个请求的令牌使用统计信息，
+    并且该字段始终为空 `choices` 数组。其余所有
+    数据块也会包含。
 
-    所有其他块也将包含 `usage` 字段，但值为
-    null。 **注意：** 如果流被中断，你可能无法收到
-    包含该请求总 token 用量的最终 usage 块。
+    一个字段，但其值为 `usage` null
+    。 **注意：** 如果流被中断，你可能无法收到
+    包含整个请求令牌使用总量的最终使用情况数据块。
 
 ### Chat Completion System Message Param
 
 - `ChatCompletionSystemMessageParam object { content, role, name }`
 
-  开发者提供的指令，无论用户发送什么
-  用户发送的消息。对于 o1 及更新模型，请改用 `developer` 消息
-  来实现此目的。
+  由开发者提供的指令，无论用户发送什么消息，模型都应遵循这些指令。对于 o1 及更新的
+  用户发送的消息。对于 o1 及更新模型，请使用 `developer` messages
+  来代替。
 
   - `content: string or array of ChatCompletionContentPartText`
 
@@ -7472,7 +7472,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-      具有指定类型的内容部分数组。对于系统消息，仅支持类型 `text` 类型。
+      由已定义类型组成的内容部分数组。对于系统消息，仅支持类型 `text` 的类型。
 
       - `text: string`
 
@@ -7486,11 +7486,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `prompt_cache_breakpoint: optional object { mode }`
 
-        标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+        标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
         - `mode: "explicit"`
 
-          断点模式。始终为 `explicit`.
+          断点模式。始终 `explicit`.
 
           - `"explicit"`
 
@@ -7502,7 +7502,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `name: optional string`
 
-    参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+    参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
 ### Chat Completion Token Logprob
 
@@ -7514,15 +7514,15 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `bytes: array of number or null`
 
-    表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+    表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
   - `logprob: number`
 
-    该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+    该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
   - `top_logprobs: array of object { token, bytes, logprob }`
 
-    在该 token 位置最可能出现的 token 列表及其对数概率。条目数量可能少于请求的 `top_logprobs`.
+    在该标记位置处最可能的标记及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
 
     - `token: string`
 
@@ -7530,11 +7530,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `bytes: array of number or null`
 
-      表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示才能生成正确文本表示的情况下非常有用。可以是 `null` 如果该 token 没有字节表示。
+      表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示，且必须组合其字节表示才能生成正确文本表示的情况下非常有用。如果 `null` 表示该 token 没有字节表示。
 
     - `logprob: number`
 
-      该 token 的对数概率（如果它位于最可能的 20 个 token 之内）。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+      该 token 的对数概率，如果它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该标记出现的可能性极低。
 
 ### Chat Completion Tool
 
@@ -7550,25 +7550,25 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `name: string`
 
-        要调用的函数名称。必须包含 a-z、A-Z、0-9 或下划线和短横线，最大长度为 64。
+        要调用的函数名称。必须由 a-z、A-Z、0-9 组成，或包含下划线和连字符，最大长度为 64。
 
       - `description: optional string`
 
-        对函数功能的描述，供模型用于判断何时以及如何调用该函数。
+        函数功能的描述，供模型用于决定何时以及如何调用该函数。
 
       - `parameters: optional FunctionParameters`
 
-        函数接受的参数，以 JSON Schema 对象描述。参见 [指南](/api/docs/guides/function-calling) 中的示例，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) 查看该格式的相关文档。
+        函数接受的参数，使用 JSON Schema 对象描述。请参阅 [指南](/api/docs/guides/function-calling) 例如，以及 [JSON Schema 参考](https://json-schema.org/understanding-json-schema/) ，查看有关该格式的文档。
 
-        省略 `parameters` 用于定义一个空参数列表的函数。
+        省略 `parameters` 则定义一个空参数列表的函数。
 
       - `strict: optional boolean or null`
 
-        是否在生成函数调用时启用严格的模式遵循。如果设置为 true，模型将遵循 `parameters` 字段中所定义的精确 schema。当 strict `strict` 为 `true`。中定义的确切模式。在 [function calling guide](/api/docs/guides/function-calling).
+        生成函数调用时是否启用严格的模式遵循。如果设置为 true，则模型将遵循在 `parameters` 字段时（仅支持 JSON Schema 的子集）。 `strict` 用于 `true`。中定义的精确模式。详细了解结构化输出，请参阅 [函数调用指南](/api/docs/guides/function-calling).
 
     - `type: "function"`
 
-      工具的类型。目前，仅 `function` 类型。
+      工具的类型。目前，仅 `function` 的类型。
 
       - `"function"`
 
@@ -7594,7 +7594,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `Text object { type }`
 
-          无约束自由格式文本。
+          无约束的、自由格式的文本。
 
           - `type: "text"`
 
@@ -7616,7 +7616,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
             - `syntax: "lark" or "regex"`
 
-              语法定义的语法。取值之一为 `lark` 或 `regex`.
+              语法定义的语法格式。可选值为 `lark` 或 `regex`.
 
               - `"lark"`
 
@@ -7638,17 +7638,17 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `ChatCompletionToolChoiceOption = "none" or "auto" or "required" or ChatCompletionAllowedToolChoice or ChatCompletionNamedToolChoice or ChatCompletionNamedToolChoiceCustom`
 
-  控制模型调用哪个工具（如果有）。
+  控制模型调用哪个工具（如果有的话）。
   `none` 表示模型不会调用任何工具，而是生成一条消息。
-  `auto` 表示模型可以在生成消息或调用一个或多个工具之间进行选择。
+  `auto` 表示模型可以自行选择是生成消息还是调用一个或多个工具。
   `required` 表示模型必须调用一个或多个工具。
-  通过以下方式指定特定工具 `{"type": "function", "function": {"name": "my_function"}}` 会强制模型调用该工具。
+  通过以下方式指定特定工具： `{"type": "function", "function": {"name": "my_function"}}` 强制模型调用该工具。
 
-  `none` 是在没有工具时的默认值。 `auto` 是在存在工具时的默认值。
+  `none` 在没有工具时的默认值。 `auto` 在有工具时的默认值。
 
   - `ToolChoiceMode = "none" or "auto" or "required"`
 
-    `none` 表示模型不会调用任何工具，而是生成一条消息。 `auto` 表示模型可以在生成消息或调用一个或多个工具之间进行选择。 `required` 表示模型必须调用一个或多个工具。
+    `none` 表示模型不会调用任何工具，而是生成一条消息。 `auto` 表示模型可以自行选择是生成消息还是调用一个或多个工具。 `required` 表示模型必须调用一个或多个工具。
 
     - `"none"`
 
@@ -7658,17 +7658,17 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `ChatCompletionAllowedToolChoice object { allowed_tools, type }`
 
-    将模型可用的工具限制为一组预定义的工具。
+    将模型可用的工具限制为预定义的集合。
 
     - `allowed_tools: ChatCompletionAllowedTools`
 
-      将模型可用的工具限制为一组预定义的工具。
+      将模型可用的工具限制为预定义的集合。
 
       - `mode: "auto" or "required"`
 
-        将模型可用的工具限制为一组预定义的工具。
+        将模型可用的工具限制为预定义的集合。
 
-        `auto` 允许模型从允许的工具中进行选择并生成一个
+        `auto` 允许模型从允许的工具中进行选择并生成
         消息。
 
         `required` 要求模型调用允许的工具中的一个或多个。
@@ -7679,7 +7679,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `tools: array of map[unknown]`
 
-        模型应被允许调用的工具定义列表。
+        允许模型调用的工具定义列表。
 
         对于 Chat Completions API，工具定义列表可能如下所示：
 
@@ -7698,13 +7698,13 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `ChatCompletionNamedToolChoice object { function, type }`
 
-    指定模型应使用的工具。用于强制模型调用特定函数。
+    指定模型应使用的工具。用于强制模型调用特定的函数。
 
     - `function: object { name }`
 
       - `name: string`
 
-        要调用的函数名称。
+        要调用的函数的名称。
 
     - `type: "function"`
 
@@ -7720,7 +7720,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `name: string`
 
-        要调用的自定义工具名称。
+        要调用的自定义工具的名称。
 
     - `type: "custom"`
 
@@ -7742,7 +7742,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `ArrayOfContentParts = array of ChatCompletionContentPartText`
 
-      具有指定类型的内容部分数组。对于工具消息，仅支持类型 `text` 类型。
+      由已定义类型组成的内容部分数组。对于工具消息，仅支持 type `text` 的类型。
 
       - `text: string`
 
@@ -7756,11 +7756,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
       - `prompt_cache_breakpoint: optional object { mode }`
 
-        标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+        标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
         - `mode: "explicit"`
 
-          断点模式。始终为 `explicit`.
+          断点模式。始终 `explicit`.
 
           - `"explicit"`
 
@@ -7772,13 +7772,13 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `tool_call_id: string`
 
-    此消息所响应的工具调用。
+    此消息正在响应的工具调用。
 
 ### Chat Completion User Message Param
 
 - `ChatCompletionUserMessageParam object { content, role, name }`
 
-  由最终用户发送的消息，包含提示词或额外的上下文
+  由终端用户发送的消息，包含提示或额外的上下文
   信息。
 
   - `content: string or array of ChatCompletionContentPart`
@@ -7791,7 +7791,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
     - `ArrayOfContentParts = array of ChatCompletionContentPart`
 
-      具有指定类型的内容部分数组。支持的可选项因 [model](/api/docs/models) 生成响应时所使用的模型而异。可以包含文本、图像或音频输入。
+      由已定义类型组成的内容部分数组。支持选项因用于生成响应的 [model](/api/docs/models) 而异。可包含文本、图像或音频输入。
 
       - `ChatCompletionContentPartText object { text, type, prompt_cache_breakpoint }`
 
@@ -7809,11 +7809,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
-            断点模式。始终为 `explicit`.
+            断点模式。始终 `explicit`.
 
             - `"explicit"`
 
@@ -7825,9 +7825,9 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `url: string`
 
-            图像的 URL 或 base64 编码的图像数据。
+            图像的 URL 或 base64 编码后的图像数据。
 
-          - `detail: optional "auto" or "low" or "high"`
+          - `detail: optional "auto" or "low" or "high" or "original"`
 
             指定图像的细节级别。更多信息请参阅 [视觉指南](/api/docs/guides/images-vision#choose-an-image-detail-level).
 
@@ -7837,6 +7837,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
             - `"high"`
 
+            - `"original"`
+
         - `type: "image_url"`
 
           内容部分的类型。
@@ -7845,11 +7847,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
-            断点模式。始终为 `explicit`.
+            断点模式。始终 `explicit`.
 
             - `"explicit"`
 
@@ -7865,7 +7867,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `format: "wav" or "mp3"`
 
-            编码音频数据的格式。目前支持 "wav" 和 "mp3"。
+            编码音频数据的格式。当前支持 "wav" 和 "mp3"。
 
             - `"wav"`
 
@@ -7879,11 +7881,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
-            断点模式。始终为 `explicit`.
+            断点模式。始终 `explicit`.
 
             - `"explicit"`
 
@@ -7895,8 +7897,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `file_data: optional string`
 
-            Base64 编码的文件数据，在将文件作为
-            字符串传递给模型时使用。
+            Base64 编码的文件数据，在将文件以字符串形式传递给模型时使用
+            。
 
           - `file_id: optional string`
 
@@ -7904,8 +7906,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
           - `filename: optional string`
 
-            文件的名称，在将文件作为
-            字符串传递给模型时使用。
+            文件的名称，在将文件以字符串形式传递给模型时使用
+            。
 
         - `type: "file"`
 
@@ -7915,11 +7917,11 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
           - `mode: "explicit"`
 
-            断点模式。始终为 `explicit`.
+            断点模式。始终 `explicit`.
 
             - `"explicit"`
 
@@ -7931,7 +7933,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
   - `name: optional string`
 
-    参与者的可选名称。为模型提供信息，以区分同一角色的不同参与者。
+    参与者的可选名称。为模型提供信息以区分同一角色的不同参与者。
 
 # Messages
 
@@ -7940,8 +7942,8 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 **get** `/chat/completions/{completion_id}/messages`
 
 获取已存储聊天补全中的消息。仅返回通过
-聊天补全接口 `store` 参数设置为 `true` will be
-返回。
+创建时使用了 `store` 参数设置为 `true` 参数的 聊天补全接口
+。
 
 ### 路径参数
 
@@ -7959,7 +7961,7 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `order: optional "asc" or "desc"`
 
-  按时间戳排序消息的顺序。使用 `asc` 表示升序，或 `desc` 表示降序。默认为 `asc`.
+  按时间戳排序消息的顺序。使用 `asc` 表示升序，或使用 `desc` 表示降序。默认为 `asc`.
 
   - `"asc"`
 
@@ -7969,92 +7971,77 @@ curl -X POST https://api.openai.com/v1/chat/completions/chat_abc123 \
 
 - `data: array of ChatCompletionStoreMessage`
 
-  一个由聊天补全消息对象组成的数组。
+  聊天补全消息对象的数组。
 
   - `id: string`
 
-    聊天消息的标识符。
+  - `content: string or null`
 
-  - `content_parts: optional array of ChatCompletionContentPartText or ChatCompletionContentPartImage or null`
+  - `content_parts: array of object { type, file, image_url, 2 more }  or null`
 
-    如果提供了内容片段数组，则此处为一个包含以下内容的数组 `text` 和 `image_url` 片段。
-    否则为 null。
+    - `type: "text" or "image_url" or "input_audio" or "file"`
 
-    - `ChatCompletionContentPartText object { text, type, prompt_cache_breakpoint }`
+      - `"text"`
 
-      了解 [文本输入](/api/docs/guides/text).
+      - `"image_url"`
 
-      - `text: string`
+      - `"input_audio"`
 
-        文本内容。
+      - `"file"`
 
-      - `type: "text"`
+    - `file: optional object { file_data, file_id, filename }  or null`
 
-        内容部分的类型。
+      - `file_data: optional string or null`
 
-        - `"text"`
+      - `file_id: optional string or null`
 
-      - `prompt_cache_breakpoint: optional object { mode }`
+      - `filename: optional string or null`
 
-        标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
+    - `image_url: optional object { url, detail }  or null`
 
-        - `mode: "explicit"`
+      - `url: string`
 
-          断点模式。始终为 `explicit`.
+      - `detail: optional string or null`
 
-          - `"explicit"`
+    - `input_audio: optional object { data, format }  or null`
 
-    - `ChatCompletionContentPartImage object { image_url, type, prompt_cache_breakpoint }`
+      - `data: string`
 
-      了解 [图像输入](/api/docs/guides/images-vision).
+      - `format: string`
 
-      - `image_url: object { url, detail }`
+    - `text: optional string or null`
 
-        - `url: string`
+  - `role: "user" or "assistant" or "tool" or 3 more`
 
-          图像的 URL 或 base64 编码的图像数据。
+    - `"user"`
 
-        - `detail: optional "auto" or "low" or "high"`
+    - `"assistant"`
 
-          指定图像的细节级别。更多信息请参阅 [视觉指南](/api/docs/guides/images-vision#choose-an-image-detail-level).
+    - `"tool"`
 
-          - `"auto"`
+    - `"system"`
 
-          - `"low"`
+    - `"function"`
 
-          - `"high"`
+    - `"developer"`
 
-      - `type: "image_url"`
+  - `name: optional string or null`
 
-        内容部分的类型。
+- `first_id: string or null`
 
-        - `"image_url"`
-
-      - `prompt_cache_breakpoint: optional object { mode }`
-
-        标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；处继承其 TTL；边界不会对齐到 token 块。
-
-        - `mode: "explicit"`
-
-          断点模式。始终为 `explicit`.
-
-          - `"explicit"`
-
-- `first_id: string`
-
-  data 数组中第一条聊天消息的标识符。
+  数据数组中第一条聊天消息的标识符。
 
 - `has_more: boolean`
 
   指示是否还有更多可用的聊天消息。
 
-- `last_id: string`
+- `last_id: string or null`
 
-  data 数组中最后一条聊天消息的标识符。
+  数据数组中最后一条聊天消息的标识符。
 
 - `object: "list"`
 
-  此对象的类型，始终设置为 "list"。
+  此对象的类型。始终设置为 "list"。
 
   - `"list"`
 
@@ -8071,50 +8058,29 @@ curl https://api.openai.com/v1/chat/completions/$COMPLETION_ID/messages \
 {
   "data": [
     {
-      "content": "content",
-      "refusal": "refusal",
-      "role": "assistant",
-      "annotations": [
-        {
-          "type": "url_citation",
-          "url_citation": {
-            "end_index": 0,
-            "start_index": 0,
-            "title": "title",
-            "url": "https://example.com"
-          }
-        }
-      ],
-      "audio": {
-        "id": "id",
-        "data": "data",
-        "expires_at": 0,
-        "transcript": "transcript"
-      },
-      "function_call": {
-        "arguments": "arguments",
-        "name": "name"
-      },
-      "tool_calls": [
-        {
-          "id": "id",
-          "function": {
-            "arguments": "arguments",
-            "name": "name"
-          },
-          "type": "function"
-        }
-      ],
       "id": "id",
+      "content": "content",
       "content_parts": [
         {
-          "text": "text",
           "type": "text",
-          "prompt_cache_breakpoint": {
-            "mode": "explicit"
-          }
+          "file": {
+            "file_data": "file_data",
+            "file_id": "file_id",
+            "filename": "filename"
+          },
+          "image_url": {
+            "url": "url",
+            "detail": "detail"
+          },
+          "input_audio": {
+            "data": "data",
+            "format": "format"
+          },
+          "text": "text"
         }
-      ]
+      ],
+      "role": "user",
+      "name": "name"
     }
   ],
   "first_id": "first_id",

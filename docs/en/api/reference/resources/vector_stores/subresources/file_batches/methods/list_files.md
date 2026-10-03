@@ -220,13 +220,19 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
       "id": "file-abc123",
       "object": "vector_store.file",
       "created_at": 1699061776,
-      "vector_store_id": "vs_abc123"
+      "vector_store_id": "vs_abc123",
+      "usage_bytes": 1234,
+      "status": "completed",
+      "last_error": null
     },
     {
       "id": "file-abc456",
       "object": "vector_store.file",
       "created_at": 1699061776,
-      "vector_store_id": "vs_abc123"
+      "vector_store_id": "vs_abc123",
+      "usage_bytes": 1234,
+      "status": "completed",
+      "last_error": null
     }
   ],
   "first_id": "file-abc123",

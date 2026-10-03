@@ -56,7 +56,7 @@ Returns the Upload object with status `cancelled`.
 
   - `file: optional FileObject or null`
 
-    The `File` object represents a document that has been uploaded to OpenAI.
+    The ready File object after the Upload is completed.
 
     - `id: string`
 

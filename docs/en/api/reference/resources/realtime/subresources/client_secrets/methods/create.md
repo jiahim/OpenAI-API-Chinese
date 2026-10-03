@@ -297,6 +297,7 @@ Returns the created client secret and the effective session object. The client s
           `marin`, and `cedar`. You may also provide a custom voice object with
           an `id`, for example `{ "id": "voice_1234" }`. Voice cannot be changed
           during the session once the model has responded with audio at least once.
+          Custom voices must be created from audio samples. Voices created from text prompts are supported only in Live.
           We recommend `marin` and `cedar` for best quality.
 
           - `string`
@@ -1097,7 +1098,7 @@ Returns the created client secret and the effective session object. The client s
 
               - `"audio/pcma"`
 
-        - `noise_reduction: optional object { type }`
+        - `noise_reduction: optional object { type }  or null`
 
           Configuration for input audio noise reduction. This can be set to `null` to turn off.
           Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model.
@@ -1111,11 +1112,11 @@ Returns the created client secret and the effective session object. The client s
 
             - `"far_field"`
 
-        - `transcription: optional object { language, languages, model, prompt }`
+        - `transcription: optional object { language, languages, model, prompt }  or null`
 
           Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
-          - `language: optional string`
+          - `language: optional string or null`
 
             The language of the input audio.
 
@@ -1305,7 +1306,7 @@ Returns the created client secret and the effective session object. The client s
 
       Expiration timestamp for the session, in seconds since epoch.
 
-    - `include: optional array of "item.input_audio_transcription.logprobs"`
+    - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
       Additional fields to include in server outputs.
 
@@ -1880,7 +1881,7 @@ Returns the created client secret and the effective session object. The client s
 
           The PCM audio format. Only a 24kHz sample rate is supported.
 
-        - `noise_reduction: optional object { type }`
+        - `noise_reduction: optional object { type }  or null`
 
           Configuration for input audio noise reduction.
 
@@ -1888,11 +1889,11 @@ Returns the created client secret and the effective session object. The client s
 
             Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.
 
-        - `transcription: optional object { language, languages, model, prompt }`
+        - `transcription: optional object { language, languages, model, prompt }  or null`
 
           Configuration of the transcription model.
 
-          - `language: optional string`
+          - `language: optional string or null`
 
             The language of the input audio.
 
@@ -1961,7 +1962,7 @@ Returns the created client secret and the effective session object. The client s
 
       Expiration timestamp for the session, in seconds since epoch.
 
-    - `include: optional array of "item.input_audio_transcription.logprobs"`
+    - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
       Additional fields to include in server outputs.
 
@@ -2113,7 +2114,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         "transcription": null,
         "noise_reduction": null,
         "turn_detection": {
-          "type": "server_vad",
+          "type": "server_vad"
         }
       },
       "output": {

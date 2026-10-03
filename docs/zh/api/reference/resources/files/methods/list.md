@@ -1,4 +1,4 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
 
 ## 列出文件
 
@@ -10,15 +10,15 @@
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的下一次调用可以包含 after=obj_foo，以便获取列表的下一页。
+  用于分页查询的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你后续的调用可以在 after=obj_foo 以便获取列表的下一页。
 
 - `limit: optional number`
 
-  返回对象的数量上限。Limit 的取值范围为 1 到 10,000，默认值为 10,000。
+  返回对象数量的上限。Limit 的取值范围为 1 到 10,000，默认为 10,000。
 
 - `order: optional "asc" or "desc"`
 
-  按对象的 `created_at` 时间戳排序。 `asc` 表示升序， `desc` 表示降序。
+  按对象的 `created_at` 时间戳进行排序。 `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
@@ -34,11 +34,11 @@
 
   - `id: string`
 
-    文件标识符，可在 API 端点中引用。
+    文件标识符，可以在 API 端点中引用。
 
   - `bytes: number`
 
-    文件大小，以字节为单位。
+    文件的字节大小。
 
   - `created_at: number`
 
@@ -46,7 +46,7 @@
 
   - `filename: string`
 
-    文件名称。
+    文件的名称。
 
   - `object: "file"`
 
@@ -56,7 +56,7 @@
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，和 `user_data`.
+    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
 
     - `"assistants"`
 
@@ -76,7 +76,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可以为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -152,6 +152,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "salesOverview.pdf",
       "purpose": "assistants",
+      "status": "processed"
     },
     {
       "id": "file-abc456",
@@ -161,6 +162,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "puppy.jsonl",
       "purpose": "fine-tune",
+      "status": "processed"
     }
   ],
   "first_id": "file-abc123",

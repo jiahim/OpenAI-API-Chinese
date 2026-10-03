@@ -48,6 +48,15 @@ You can view the rate and usage limits for your organization under the [limits](
 
 To view a high-level summary of rate limits per model, visit the [models page](https://developers.openai.com/api/docs/models).
 
+### Spend limits
+
+Consider setting [**spend limits**](https://developers.openai.com/api/docs/guides/spend-limits) for your organization or projects to control monthly API spend. These controls are separate from the monthly usage limits above.
+
+| Control                                                                          | What happens at the configured amount       | Use it when you want to                       |
+| -------------------------------------------------------------------------------- | ------------------------------------------- | --------------------------------------------- |
+| [Spend alert](https://developers.openai.com/api/docs/guides/spend-limits#spend-alerts)                        | Sends a notification; API traffic continues | Track spend without interrupting traffic      |
+| [Hard spend limit](https://developers.openai.com/api/docs/guides/spend-limits#understand-hard-limit-behavior) | Affected API requests return a `429` error  | Enforce a monthly organization or project cap |
+
 ### Rate limits in headers
 
 In addition to seeing your rate limit on your [account page](https://platform.openai.com/settings/organization/limits), you can also view important information about your rate limits such as the remaining requests, tokens, and other metadata in the headers of the HTTP response.
@@ -136,6 +145,8 @@ This approach has many benefits:
 - Adding random jitter to the delay helps retries from all hitting at the same time.
 
 Note that unsuccessful requests contribute to your per-minute limit, so continuously resending a request won’t work.
+
+The legacy Completions examples below use `gpt-3.5-turbo-instruct`, which has a [scheduled shutdown date of September 28, 2026](https://developers.openai.com/api/docs/deprecations#2025-09-26-legacy-gpt-model-snapshots). After that date, retain the retry pattern but migrate the request to [Responses or Chat Completions](https://developers.openai.com/api/docs/guides/migrate-to-responses) with `gpt-5.6-terra`; changing the model ID in a Completions request is not sufficient.
 
 The Python examples below demonstrate fallback backoff. They don't inspect `Retry-After`: before using them, add handling for valid server hints so the wrappers don't retry sooner than requested. Disable SDK retries or account for them in your application's retry limits.
 
@@ -298,7 +309,7 @@ Your rate limit is calculated as the maximum of `max_tokens` and the estimated n
 
 #### Batching requests
 
-If your use case does not require immediate responses, you can use the [Batch API](https://developers.openai.com/api/docs/guides/batch) to more easily submit and execute large collections of requests without impacting your synchronous request rate limits.
+If your use case does not require immediate responses, you can use the [Batch API](https://developers.openai.com/api/docs/guides/batch) to submit and execute large collections of requests without impacting your synchronous request rate limits.
 
 For use cases that _do_ requires synchronous responses, the OpenAI API has separate limits for **requests per minute** and **tokens per minute**.
 

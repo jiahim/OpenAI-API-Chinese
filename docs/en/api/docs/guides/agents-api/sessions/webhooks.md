@@ -6,16 +6,17 @@ Use webhooks to respond to session state changes without keeping an event stream
 
 ## Supported events
 
-| Event                           | When it fires                                                                         |
-| ------------------------------- | ------------------------------------------------------------------------------------- |
-| `agent.session.created`         | A session is created.                                                                 |
-| `agent.session.action_required` | The session needs a function result, initial environment connection, or reconnection. |
-| `agent.session.in_progress`     | The session starts processing a turn.                                                 |
-| `agent.session.idle`            | The session is idle and ready for more input.                                         |
-| `agent.session.failed`          | The session enters a failed state.                                                    |
+| Event                           | When it fires                                                                          |
+| ------------------------------- | -------------------------------------------------------------------------------------- |
+| `agent.session.created`         | A session is created.                                                                  |
+| `agent.session.action_required` | The session needs a function result, environment connection, or computer-use approval. |
+| `agent.session.in_progress`     | The session starts processing a turn.                                                  |
+| `agent.session.idle`            | The session is idle and ready for more input.                                          |
+| `agent.session.failed`          | The session enters a failed state.                                                     |
 
 An `agent.session.action_required` event includes the session ID and a
-`required_action.type` of `function_call` or `environment_connection`.
+`required_action.type` of `function_call`, `environment_connection`, or
+`computer_use_approval_request`.
 
 ```json
 {
@@ -27,8 +28,13 @@ An `agent.session.action_required` event includes the session ID and a
 }
 ```
 
-Retrieve the session and inspect `required_actions` for call IDs, arguments, or
-environment IDs. The webhook does not include those details.
+Retrieve the session and inspect `required_actions` for call IDs, arguments,
+environment IDs, or computer-use approval details; the webhook omits them.
+For computer use, the nested `request.type` identifies browser origin access or
+authentication. Show the current request to the user, then
+return their response through the session events endpoint. See
+[Computer use](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use#handle-origin-access)
+for the request and response shapes.
 
 ## Set up a webhook
 

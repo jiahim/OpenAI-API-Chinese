@@ -151,7 +151,13 @@ puts result
 ```
 
 
-See the [Agents API reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents) for configuration fields and accepted values. See [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) and [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp) for tool setup, and [Multi-agent](https://developers.openai.com/api/docs/guides/agents-api/multi-agent) for delegation.
+See the [Agents API reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents) for configuration fields and values. For setup, see [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions), [Computer use](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use), [MCP connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp), or [Multi-agent delegation](https://developers.openai.com/api/docs/guides/agents-api/multi-agent).
+
+### Configuration size
+
+Keep the combined size of your instructions and tool configuration below 4 MiB (4,194,304 bytes), leaving a little room for Agents API metadata. If session startup fails because this configuration is too large, create a new session with smaller instructions and tool configuration.
+
+Files uploaded to the environment follow separate [file limits](https://developers.openai.com/api/docs/guides/agents-api/environments/files#file-limits).
 
 ## Reuse an agent across sessions
 
@@ -490,6 +496,6 @@ Set `environment` alongside `agent` when creating a session. It determines where
 
 Choose `none`, `openai_hosted`, or `self_hosted`. [Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture) explains when to use each option and who manages the environment.
 
-For an OpenAI-hosted environment, configure the packages, initial files, and network access the task needs. You can reuse an environment template across sessions. For a self-hosted environment, prepare your compute and [connect an executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
+For an OpenAI-hosted environment, [choose a container size](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted#choose-a-container-size) and configure the packages, initial files, and network access the task needs. You can reuse an environment template across sessions. For a self-hosted environment, prepare your compute and [connect an executor](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted).
 
 See the [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) for environment fields and [Plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins) for skills, plugins, and templates. See [Session artifacts](https://developers.openai.com/api/docs/guides/agents-api/environments/files) for files you want to keep after execution.

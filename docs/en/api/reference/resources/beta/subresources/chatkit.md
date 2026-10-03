@@ -183,39 +183,39 @@ curl https://api.openai.com/v1/chatkit/sessions/$SESSION_ID/cancel \
 
 ```json
 {
-  "id": "id",
+  "id": "cksess_123",
+  "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1712349876,
+  "workflow": {
+    "id": "workflow_alpha",
+    "version": "2024-10-01",
+    "state_variables": {
+      "message": "hello"
+    },
+    "tracing": {
+      "enabled": true
+    }
+  },
+  "user": "user_789",
+  "rate_limits": {
+    "max_requests_per_1_minute": 60
+  },
+  "max_requests_per_1_minute": 60,
+  "status": "cancelled",
   "chatkit_configuration": {
     "automatic_thread_titling": {
       "enabled": true
     },
     "file_upload": {
       "enabled": true,
-      "max_file_size": 0,
-      "max_files": 0
+      "max_file_size": 16,
+      "max_files": 20
     },
     "history": {
       "enabled": true,
-      "recent_threads": 0
+      "recent_threads": 10
     }
-  },
-  "client_secret": "client_secret",
-  "expires_at": 0,
-  "max_requests_per_1_minute": 0,
-  "object": "chatkit.session",
-  "rate_limits": {
-    "max_requests_per_1_minute": 0
-  },
-  "status": "active",
-  "user": "user",
-  "workflow": {
-    "id": "id",
-    "state_variables": {
-      "foo": "string"
-    },
-    "tracing": {
-      "enabled": true
-    },
-    "version": "version"
   }
 }
 ```
@@ -235,17 +235,36 @@ curl -X POST \
 {
   "id": "cksess_123",
   "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1735689600,
   "workflow": {
     "id": "workflow_alpha",
-    "version": "1"
+    "version": null,
+    "state_variables": null,
+    "tracing": {
+      "enabled": true
+    }
   },
-  "scope": {
-    "customer_id": "cust_456"
+  "user": "user_123",
+  "rate_limits": {
+    "max_requests_per_1_minute": 10
   },
-  "max_requests_per_1_minute": 30,
-  "ttl_seconds": 900,
+  "max_requests_per_1_minute": 10,
   "status": "cancelled",
-  "cancelled_at": 1712345678
+  "chatkit_configuration": {
+    "automatic_thread_titling": {
+      "enabled": true
+    },
+    "file_upload": {
+      "enabled": false,
+      "max_file_size": 512,
+      "max_files": 10
+    },
+    "history": {
+      "enabled": true,
+      "recent_threads": null
+    }
+  }
 }
 ```
 
@@ -492,39 +511,39 @@ curl https://api.openai.com/v1/chatkit/sessions \
 
 ```json
 {
-  "id": "id",
+  "id": "cksess_123",
   "chatkit_configuration": {
     "automatic_thread_titling": {
       "enabled": true
     },
     "file_upload": {
       "enabled": true,
-      "max_file_size": 0,
-      "max_files": 0
+      "max_file_size": 16,
+      "max_files": 20
     },
     "history": {
       "enabled": true,
-      "recent_threads": 0
+      "recent_threads": 10
     }
   },
-  "client_secret": "client_secret",
-  "expires_at": 0,
-  "max_requests_per_1_minute": 0,
+  "client_secret": "ek_token_123",
+  "expires_at": 1712349876,
+  "max_requests_per_1_minute": 60,
   "object": "chatkit.session",
   "rate_limits": {
-    "max_requests_per_1_minute": 0
+    "max_requests_per_1_minute": 60
   },
   "status": "active",
-  "user": "user",
+  "user": "user_789",
   "workflow": {
-    "id": "id",
+    "id": "workflow_alpha",
     "state_variables": {
-      "foo": "string"
+      "message": "hello"
     },
     "tracing": {
       "enabled": true
     },
-    "version": "version"
+    "version": "2024-10-01"
   }
 }
 ```
@@ -537,17 +556,8 @@ curl https://api.openai.com/v1/chatkit/sessions \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "OpenAI-Beta: chatkit_beta=v1" \
   -d '{
-    "workflow": {
-      "id": "workflow_alpha",
-      "version": "2024-10-01"
-    },
-    "scope": {
-      "project": "alpha",
-      "environment": "staging"
-    },
-    "expires_after": 1800,
-    "max_requests_per_1_minute": 60,
-    "max_requests_per_session": 500
+    "user": "user_123",
+    "workflow": {"id": "workflow_alpha"}
   }'
 ```
 
@@ -555,19 +565,38 @@ curl https://api.openai.com/v1/chatkit/sessions \
 
 ```json
 {
-  "client_secret": "chatkit_token_123",
+  "id": "cksess_123",
+  "object": "chatkit.session",
+  "client_secret": "ek_example_00eyJleHBpcmVzX2F0IjogMTczNTY4OTYwMH0=",
   "expires_at": 1735689600,
   "workflow": {
     "id": "workflow_alpha",
-    "version": "2024-10-01"
+    "version": null,
+    "state_variables": null,
+    "tracing": {
+      "enabled": true
+    }
   },
-  "scope": {
-    "project": "alpha",
-    "environment": "staging"
+  "user": "user_123",
+  "rate_limits": {
+    "max_requests_per_1_minute": 10
   },
-  "max_requests_per_1_minute": 60,
-  "max_requests_per_session": 500,
-  "status": "active"
+  "max_requests_per_1_minute": 10,
+  "status": "active",
+  "chatkit_configuration": {
+    "automatic_thread_titling": {
+      "enabled": true
+    },
+    "file_upload": {
+      "enabled": false,
+      "max_file_size": 512,
+      "max_files": 10
+    },
+    "history": {
+      "enabled": true,
+      "recent_threads": null
+    }
+  }
 }
 ```
 
@@ -785,16 +814,28 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
     {
       "id": "cthr_abc123",
       "object": "chatkit.thread",
-      "title": "Customer escalation"
+      "title": "Customer escalation",
+      "created_at": 1712345600,
+      "status": {
+        "type": "active"
+      },
+      "user": "user_123"
     },
     {
       "id": "cthr_def456",
       "object": "chatkit.thread",
-      "title": "Demo feedback"
+      "title": "Demo feedback",
+      "created_at": 1712345600,
+      "status": {
+        "type": "active"
+      },
+      "user": "user_456"
     }
   ],
   "has_more": false,
-  "object": "list"
+  "object": "list",
+  "first_id": "cthr_abc123",
+  "last_id": "cthr_def456"
 }
 ```
 
@@ -1295,29 +1336,37 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
     {
       "id": "cthi_user_001",
       "object": "chatkit.thread_item",
-      "type": "user_message",
+      "type": "chatkit.user_message",
       "content": [
         {
           "type": "input_text",
           "text": "I need help debugging an onboarding issue."
         }
       ],
-      "attachments": []
+      "attachments": [],
+      "created_at": 1712345600,
+      "thread_id": "cthr_abc123",
+      "inference_options": null
     },
     {
       "id": "cthi_assistant_002",
       "object": "chatkit.thread_item",
-      "type": "assistant_message",
+      "type": "chatkit.assistant_message",
       "content": [
         {
           "type": "output_text",
-          "text": "Let's start by confirming the workflow version you deployed."
+          "text": "Let's start by confirming the workflow version you deployed.",
+          "annotations": []
         }
-      ]
+      ],
+      "created_at": 1712345601,
+      "thread_id": "cthr_abc123"
     }
   ],
   "has_more": false,
-  "object": "list"
+  "object": "list",
+  "first_id": "cthi_user_001",
+  "last_id": "cthi_assistant_002"
 }
 ```
 
@@ -1439,34 +1488,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
   "id": "cthr_abc123",
   "object": "chatkit.thread",
   "title": "Customer escalation",
-  "items": {
-    "data": [
-      {
-        "id": "cthi_user_001",
-        "object": "chatkit.thread_item",
-        "type": "user_message",
-        "content": [
-          {
-            "type": "input_text",
-            "text": "I need help debugging an onboarding issue."
-          }
-        ],
-        "attachments": []
-      },
-      {
-        "id": "cthi_assistant_002",
-        "object": "chatkit.thread_item",
-        "type": "assistant_message",
-        "content": [
-          {
-            "type": "output_text",
-            "text": "Let's start by confirming the workflow version you deployed."
-          }
-        ]
-      }
-    ],
-    "has_more": false
-  }
+  "created_at": 1712345600,
+  "status": {
+    "type": "active"
+  },
+  "user": "user_123"
 }
 ```
 

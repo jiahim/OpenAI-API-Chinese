@@ -7,7 +7,7 @@
 Prompt caching reuses work when requests share the same prompt prefix. This provides three main benefits:
 
 - **Compute-efficient:** Avoid recalculating a prompt prefix that the model has already processed.
-- **Cheaper input tokens:** Pay the model's reduced cached-input rate for reused tokens, discounted up to 90%.
+- **Cheaper input tokens:** Pay the model's reduced cached-input rate for reused tokens, discounted up to 95%.
 - **Faster:** Reduce the time spent processing input before the response starts.
 
 Prompt caching is enabled by default for supported OpenAI models. Use the [Prompt Caching Dashboard](https://platform.openai.com/usage?usage_section=prompt-caching) to monitor cache read hit rates and use the [Prompt Cache Diagnostics tool](https://developers.openai.com/api/docs/guides/prompt-caching/diagnostics) to diagnose cache misses and improve cache reuse.
@@ -80,7 +80,7 @@ After the minimum cacheable token length, you can choose where to place cache br
 
 
 
-For GPT-5.6 and later, cache writes cost 1.25× the standard, uncached input-token rate. It is worth incurring this charge when you know a prefix will be reused, because subsequent reads cost only 0.1× that rate. Writing a prefix once and fully reusing it once costs 1.35× its ordinary input cost, compared with 2× for processing it twice without caching. The savings grow with each additional cache read: across ten requests, one write and nine full reads cost 2.15×, compared with 10× without caching.
+For GPT-5.6 and later, cache writes cost 1.25× the standard, uncached input-token rate. Subsequent reads cost 0.1× that rate on most of these models and 0.05× on [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol). At the 0.1× read rate, writing a prefix once and fully reusing it once costs 1.35× its ordinary input cost, compared with 2× for processing it twice without caching. Across ten requests, one write and nine full reads cost 2.15× at that rate, compared with 10× without caching.
 
 Both implicit and explicit caching are supported, where explicit caching gives you more control over which context is written to cache.
 
@@ -234,7 +234,7 @@ Using separate keys can make cached token usage and billing easier to explain fo
 | `prompt_cache_key`         | Optional for separate cache accounting              | Use a stable key to optimize cache routing                  | Use a stable key to optimize cache routing                                      |
 | Minimum cacheable prefix   | 1,024 visible input tokens                          | Varies by request settings                                  | Varies by request settings                                                      |
 | Cached-token reporting     | Exact eligible boundary, excluding hidden tokens    | Excludes hidden tokens and rounds down to a multiple of 128 | Excludes hidden tokens and rounds down to a multiple of 128                     |
-| Cache read charge          | 0.1× the uncached input-token rate                  | Model-dependent cached-input rate                           | Model-dependent cached-input rate                                               |
+| Cache read charge          | 0.1× uncached input (0.05× for GPT-6.1 Sol)         | Model-dependent cached-input rate                           | Model-dependent cached-input rate                                               |
 | Cache write charge         | 1.25× the uncached input-token rate                 | No additional cache-write charge                            | No additional cache-write charge                                                |
 | Cache lifetime control     | `prompt_cache_options.ttl`                          | `prompt_cache_retention`                                    | `prompt_cache_retention`                                                        |
 | Supported retention values | `"30m"`                                             | `"24h"` only                                                | `"in_memory"` or `"24h"`<sup>[\*](#extended-retention-models)</sup>             |
@@ -290,7 +290,7 @@ Keep changing content after the breakpoint
 
 ```json
 {
-  "model": "gpt-5.6",
+  "model": "gpt-6.1-sol",
   "reasoning": { "effort": "low", "context": "all_turns" },
   "text": { "verbosity": "medium" },
   "prompt_cache_options": { "mode": "explicit" },
@@ -417,7 +417,7 @@ Prewarm the cache
 
 ```json
 {
-  "model": "gpt-5.6",
+  "model": "gpt-6.1-sol",
   "input": [
     {
       "role": "developer",
@@ -435,7 +435,7 @@ Send a follow-up request
 
 ```json
 {
-  "model": "gpt-5.6",
+  "model": "gpt-6.1-sol",
   "input": [
     {
       "role": "developer",
@@ -534,7 +534,7 @@ $$
 
 Expand when $$L > L_{\mathrm{break\text{-}even}}$$; keeping the shorter prefix costs less when $$L < L_{\mathrm{break\text{-}even}}$$. At equality, the costs are the same. The smallest whole-token length for which expansion is cheaper is $$\left\lfloor L_{\mathrm{break\text{-}even}} \right\rfloor + 1$$. Conversely, shrinking a cacheable prefix below $$M$$ loses caching: under the same assumptions, the shorter uncached prefix must fall below $$L_{\mathrm{break\text{-}even}}$$ to cost less than caching $$M$$ tokens. There is no universal maximum-cost prompt length; the crossover depends on reuse and pricing.
 
-For example, with $$M = 1{,}024$$, $$r = 0.1$$, and $$w = 1.25$$, the crossover is $$102.4 + \frac{1{,}177.6}{N}$$ tokens. Across 10 requests, expanding an original prefix of at least 221 tokens to 1,024 tokens is cheaper. As reuse grows, the crossover approaches 102.4 tokens. A 103-token prefix needs at least 1,963 total requests to benefit; a prefix of 102 tokens or fewer never does under these assumptions. This comparison excludes performance, output tokens, and unchanged request costs. Additional misses, writes, or different model rates change the result.
+For example, using the usual cache-read rate with $$M = 1{,}024$$, $$r = 0.1$$, and $$w = 1.25$$, the crossover is $$102.4 + \frac{1{,}177.6}{N}$$ tokens. Across 10 requests, expanding an original prefix of at least 221 tokens to 1,024 tokens is cheaper. As reuse grows, the crossover approaches 102.4 tokens. A 103-token prefix needs at least 1,963 total requests to benefit; a prefix of 102 tokens or fewer never does under these assumptions. This comparison excludes performance, output tokens, and unchanged request costs. Additional misses, writes, or different model rates change the result.
 
 
 
@@ -677,7 +677,7 @@ Responses API request for a single-turn judge
 
 ```json
 {
-  "model": "gpt-5.6-sol",
+  "model": "gpt-6.1-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "low" },
   "prompt_cache_options": { "mode": "explicit" },
@@ -728,7 +728,7 @@ Responses API request for a multi-turn agent
 
 ```json
 {
-  "model": "gpt-5.6-sol",
+  "model": "gpt-6.1-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "medium" },
   "prompt_cache_key": "agent_123_v1:user_456",
@@ -797,7 +797,7 @@ Without a breakpoint after the static content
 
 ```json
 {
-  "model": "gpt-5.6-sol",
+  "model": "gpt-6.1-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "low" },
   "prompt_cache_options": { "mode": "implicit" },
@@ -815,7 +815,7 @@ With a breakpoint after the static content
 
 ```json
 {
-  "model": "gpt-5.6-sol",
+  "model": "gpt-6.1-sol",
   "reasoning": { "effort": "medium", "context": "all_turns" },
   "text": { "verbosity": "low" },
   "prompt_cache_options": { "mode": "explicit" },

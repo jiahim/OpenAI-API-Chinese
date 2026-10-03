@@ -1,4 +1,4 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取文档页面的 Markdown 版本。
 
 ## 删除容器文件
 
@@ -12,12 +12,32 @@
 
 - `file_id: string`
 
+### 返回
+
+- `id: string`
+
+- `deleted: boolean`
+
+- `object: "container.file.deleted"`
+
+  - `"container.file.deleted"`
+
 ### 示例
 
 ```http
 curl https://api.openai.com/v1/containers/$CONTAINER_ID/files/$FILE_ID \
     -X DELETE \
     -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+#### 响应
+
+```json
+{
+  "id": "id",
+  "deleted": true,
+  "object": "container.file.deleted"
+}
 ```
 
 ### 示例

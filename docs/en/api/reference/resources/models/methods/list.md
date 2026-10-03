@@ -93,7 +93,7 @@ curl https://api.openai.com/v1/models \
       "created": 1686935002,
       "owned_by": "openai",
       "shutdown_date": "2026-10-23"
-    },
+    }
   ]
 }
 ```

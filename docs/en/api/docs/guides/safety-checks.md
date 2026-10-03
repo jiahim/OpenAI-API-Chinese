@@ -19,6 +19,8 @@ If your org engages in suspicious activity that violates our safety policies, we
 
 ## Implementing safety identifiers for individual users
 
+To route warning and deactivation notices for a safety identifier to your investigation or support workflow, see [Safety enforcement notifications](https://developers.openai.com/api/docs/guides/safety-enforcement).
+
 The `safety_identifier` parameter is available in both the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) and older [Chat Completions API](https://developers.openai.com/api/reference/resources/chat). The Realtime API supports the same concept through the `OpenAI-Safety-Identifier` header. To use safety identifiers, provide a stable ID for your end user on each request. Hash user email or internal user IDs to avoid passing any personal information.
 
 Safety identifiers do not carry over between APIs or sessions. If your application already sends `safety_identifier` with Responses API requests, pass the same stable value separately when you create or connect each Realtime session.

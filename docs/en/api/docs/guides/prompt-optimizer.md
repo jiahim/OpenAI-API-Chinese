@@ -19,7 +19,7 @@ OpenAI is deprecating the dataset-backed prompt optimizer as part of the Evals
 The prompt optimizer can use the following from your dataset to improve your prompt:
 
 - Annotations (Good/Bad and additional custom annotation columns you add)
-- Text critiques written in **output_feedback**
+- Text critiques written in **`output_feedback`**
 - Results from graders
 
 For effective results, add annotations containing a Good/Bad rating _and_ detailed, specific critiques. Create [graders](https://developers.openai.com/api/docs/guides/evaluation-getting-started#add-graders) that precisely capture the properties that you desire from your prompt.

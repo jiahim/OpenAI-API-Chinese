@@ -405,6 +405,11 @@ To attribute a shell command, retrieve the turn identified by its command item's
 `turn_id`, then inspect `turn.subagent_id`. The customer API does not indicate
 whether command output was truncated.
 
+## Errors and recovery
+
+See [Errors and recovery](https://developers.openai.com/api/docs/guides/agents-api/errors) to inspect failures,
+choose a recovery, and retry safely.
+
 ## Model usage and cost
 
 An agent may make several model calls while completing a task. Each call follows the model's [token pricing](https://developers.openai.com/api/docs/pricing) and [prompt-caching rules](https://developers.openai.com/api/docs/guides/prompt-caching), as in the Responses API. Estimate cost across all calls needed to complete the task.

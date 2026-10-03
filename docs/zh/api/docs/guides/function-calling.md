@@ -1,21 +1,23 @@
 # 函数调用
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取文档页面的 Markdown 版本。
 
-**函数调用** （也称为 **工具调用**）为 OpenAI 模型提供了一种强大且灵活的方式来对接外部系统并访问其训练数据之外的数据。本指南介绍如何将模型连接到由你的应用提供的数据和操作。我们将演示如何使用函数工具（由 JSON schema 定义）以及适用于自由格式文本输入输出的自定义工具。
+**Function calling** （也称为 **tool calling**）为 OpenAI 模型提供了一种强大且灵活的方式来与外部系统对接，并访问其训练数据之外的数据。本指南将介绍如何将模型连接到你的应用所提供的数据和操作。我们将展示如何使用函数工具（由 JSON schema 定义）以及支持自由文本输入输出的自定义工具。
 
-对于 智能体 API 会话，请使用 [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 来注册函数并处理会话操作请求。本指南中的示例展示了 Responses API 和 Chat Completions 的集成。
+对于 智能体 API 会话，请使用 [Functions](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 来注册函数并处理会话中的操作请求。这些示例展示了 Responses API 和 Chat Completions 的集成方式。
 
-如果你的应用包含许多函数或大型 schema，可以将函数调用与 [工具搜索](https://developers.openai.com/api/docs/guides/tools-tool-search) 结合使用，以推迟加载不常用的工具，仅在模型需要时再加载它们。仅 `gpt-5.4` 及更高版本的模型支持 `tool_search`.
+如果你的应用包含大量函数或庞大的 schema，可以将函数调用与 [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) 结合使用，以延迟加载不常用的工具，仅在模型需要时再加载它们。仅 `gpt-5.4` 及更高版本的模型支持 `tool_search`.
 
-GPT-6 Astra 需要使用 Responses API 进行工具调用。Chat Completions
-  示例使用 GPT-5.6 以保持兼容性。请参阅 [migration
-  指南](https://developers.openai.com/api/docs/guides/migrate-to-responses) 以更新现有的
+GPT-6 Astra 和 [GPT-6.1
+  Sol](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-sol) 需要使用
+  Responses API 进行工具调用。Chat Completions 示例使用 GPT-5.6
+  Terra 并禁用了推理功能。请参阅 [migration
+  guide](https://developers.openai.com/api/docs/guides/migrate-to-responses) 以更新现有的
   集成。
 
 ## 工作原理
 
-让我们先了解几个关于工具调用的关键术语。在我们对工具调用有统一的词汇之后，我们将通过一些实际示例向你展示如何实现它。
+让我们先了解几个关于工具调用的关键术语。在对工具调用有统一的词汇之后，我们再通过一些实际示例向你演示其实现方式。
 
 
 
@@ -23,31 +25,31 @@ GPT-6 Astra 需要使用 Responses API 进行工具调用。Chat Completions
 
 
 
-一个 **function** 或 **tool** 在抽象概念上指的是我们告诉模型它可以使用的某项功能。当模型生成对提示的响应时，它可能会判断自己需要借助某个工具所提供的数据或功能来遵循提示的指令。
+一个 **function** 或 **tool** 在抽象意义上指的是我们告诉模型它可以访问的一项功能。当模型生成对提示的响应时，它可能会判断需要工具所提供的数据或功能才能遵循提示的指令。
 
 你可以让模型访问以下工具：
 
-- 获取指定位置的今日天气
+- 获取某个地点今天的天气
 - 访问指定用户 ID 的账户详情
 - 为丢失的订单办理退款
 
-或者任何你希望模型在响应提示时能够知晓或执行的其他内容。
+或者任何你希望模型在响应提示时能够知晓或执行的内容。
 
-当我们使用提示词向模型发起 API 请求时，可以在请求中附带模型可以考虑使用的工具列表。例如，如果我们希望模型能够回答世界各地的当前天气问题，我们可以为它提供一个 `get_weather` 接收 `location` 作为参数的。
-
-
+当我们使用提示向模型发起 API 请求时，可以包含一个模型可以考虑使用的工具列表。例如，如果我们希望模型能够回答全球各地的当前天气问题，我们可能会为它提供一个 `get_weather` 工具，它接受 `location` 作为参数。
 
 
 
 
 
-### 工具调用 - 模型发出的使用工具的请求
+
+
+### 工具调用 - 模型使用工具的请求
 
 
 
-一个 **function call** 或 **tool call** 指的是当模型检查一段提示后，如果认为需要调用我们提供的某个工具才能遵循该提示中的指令，所产生的一种特殊响应。
+一个 **function call** 或 **tool call** 指模型在检查提示词后，为遵循提示中的指令而决定调用我们为其提供的某个工具时，所返回的一种特殊响应。
 
-如果模型在API 请求中收到类似“巴黎的天气怎么样？”的提示，它可能会以对该工具的 tool call 作为响应， `get_weather` 并以 `Paris` 作为 `location` 参数。
+如果模型在某个 API 请求中收到类似“巴黎的天气怎么样？”的提示词，它可能会针对 `get_weather` 工具发出 tool call，并将 `Paris` 作为 `location` 参数。
 
 
 
@@ -59,14 +61,14 @@ GPT-6 Astra 需要使用 Responses API 进行工具调用。Chat Completions
 
 
 
-一个 **函数调用输出** 或 **工具调用输出** 指的是工具使用模型工具调用中的输入所生成的响应。工具调用输出可以是结构化的 JSON 或纯文本，并且应包含对特定模型工具调用的引用（通过 `call_id` 在接下来的示例中引用）。
-要完成我们的天气示例：
+一个 **函数调用输出** 或 **工具调用输出** 指的是工具使用模型工具调用的输入所生成的响应。工具调用输出可以是结构化的 JSON，也可以是纯文本，并且应当包含对特定模型工具调用的引用（在 `call_id` 在接下来的示例中引用）。
+为了完成我们的天气示例：
 
-- 模型可以访问一个 `get_weather` **工具** 该工具接受 `location` 作为参数。
-- 针对类似“巴黎的天气怎么样？”这样的提示，模型会返回一个 **工具调用** 其中包含一个 `location` 参数，其值为 `Paris`
-- 该 **工具调用输出** 可能返回一个 JSON 对象（例如， `{"temperature": "25", "unit": "C"}`，表示当前温度为 25 度）， [图像内容](https://developers.openai.com/api/docs/guides/images-vision)，或 [文件内容](https://developers.openai.com/api/docs/guides/file-inputs).
+- 模型可以访问一个 `get_weather` **tool** ，它接受 `location` 作为参数。
+- 针对像"what's the weather in Paris?"这样的提示，模型返回一个 **tool call** ，其中包含一个 `location` 参数，其值为 `Paris`
+- 该 **tool call output** 可能返回一个 JSON 对象（例如， `{"temperature": "25", "unit": "C"}`，表示当前温度为 25 度）， [图像内容](https://developers.openai.com/api/docs/guides/images-vision)，或 [文件内容](https://developers.openai.com/api/docs/guides/file-inputs).
 
-随后我们将所有工具定义、原始提示、模型的工具调用以及工具调用输出一起回传给模型，最终得到类似如下的文本响应：
+然后，我们将所有工具定义、原始提示、模型的工具调用以及工具调用输出一起发送回模型，以最终获取类似下面的文本响应：
 
 ```
 The weather in Paris today is 25C.
@@ -82,9 +84,9 @@ The weather in Paris today is 25C.
 
 
 
-- 函数（function）是一种由 JSON schema 定义的特定工具。函数定义允许模型将数据传递给应用程序，你的代码可以在其中访问数据或执行模型建议的操作。
-- 除了函数工具外，还有自定义工具（本指南中将介绍），它们适用于自由文本的输入和输出。
-- 还有 [内置工具](https://developers.openai.com/api/docs/guides/tools) 属于 OpenAI 平台的一部分。这些工具使模型能够 [搜索网页](https://developers.openai.com/api/docs/guides/tools-web-search), [执行代码](https://developers.openai.com/api/docs/guides/tools-code-interpreter)、访问 [MCP 服务器](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，的功能，等等。
+- 函数是一类通过 JSON schema 定义的具体工具。函数定义允许模型将数据传递给应用程序，由你的代码访问数据或执行模型建议的操作。
+- 除了函数工具之外，还有一些自定义工具（在本指南中介绍），它们支持自由文本的输入和输出。
+- OpenAI 平台还提供 [内置工具](https://developers.openai.com/api/docs/guides/tools)。这些工具使模型能够 [搜索网页](https://developers.openai.com/api/docs/guides/tools-web-search), [运行代码](https://developers.openai.com/api/docs/guides/tools-code-interpreter)、访问 [MCP 服务器](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，的功能，等等。
 
 
 
@@ -92,21 +94,21 @@ The weather in Paris today is 25C.
 
 ### 工具调用流程
 
-工具调用是你的应用程序与模型之间通过 OpenAI API 进行的多步对话。工具调用流程包含五个高层步骤：
+工具调用是通过 OpenAI API 在你的应用与模型之间进行的多步对话。工具调用流程包含五个高层步骤：
 
-1. 使用模型可能调用的工具向其发起请求
+1. 向模型发起请求，并提供它可以调用的工具
 1. 接收来自模型的工具调用
-1. 在应用端使用工具调用的输入执行代码
-1. 将工具输出一起再次请求模型
-1. 接收模型的最终响应（或更多工具调用）
+1. 使用工具调用的输入在应用端执行代码
+1. 将工具输出一起再次向模型发起请求
+1. 接收来自模型的最终响应（或更多工具调用）
 
-![函数调用图示步骤](https://cdn.openai.com/API/docs/images/function-calling-diagram-steps.png)
+![函数调用流程图步骤](https://cdn.openai.com/API/docs/images/function-calling-diagram-steps.png)
 
-借助 Responses，你的应用可以根据任务需要将这个流程延续任意次工具调用。如果你想使用一个能够围绕该循环打包可复用编排逻辑的框架，请参阅 [Responses API 与 Agents SDK 的对比](https://developers.openai.com/api/docs/guides/agents#agents-sdk-vs-responses-api).
+使用 响应接口，你的应用可以按任务所需，为任意数量的工具调用延续这一流程。如果你希望使用一个围绕该循环封装可复用编排逻辑的框架，请参阅 [Responses API 与 Agents SDK 的对比](https://developers.openai.com/api/docs/guides/agents#agents-sdk-vs-responses-api).
 
-## 函数工具示例
+## Function 工具示例
 
-让我们来看一个针对以下函数的端到端工具调用流程 `get_horoscope` ：该函数用于获取某个星座的每日运势。
+让我们来看一个针对以下函数的端到端工具调用流程： `get_horoscope` 该函数用于获取某个星座的每日运势。
 
 
 
@@ -472,23 +474,23 @@ puts(response.output_text)
 
 
 
-请注意，对于 GPT-5 或 o4-mini 等推理模型，模型响应中返回的
-  任何推理项也必须与工具调用输出一起传递回去。
-  调用输出。
+请注意，对于像 GPT-5 或 o4-mini 这样的推理模型，模型响应中返回的任何推理项
+  若包含工具调用，也必须随工具调用输出一起传回。
+  工具调用输出。
 
 ## 定义函数
 
-函数通常在每次请求的 `tools` 每个 API 请求的参数。通过 [工具搜索](https://developers.openai.com/api/docs/guides/tools-tool-search)，你的应用也可以在交互的稍后阶段加载延迟函数。无论采用哪种方式，每个可调用函数都使用相同的 schema 形状。函数定义具有以下属性：
+函数通常在每个请求的 `tools` parameter of each API request. With [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search), 你的应用还可以在交互过程中稍后加载延迟函数。无论采用哪种方式，每个可调用函数都使用相同的 schema 结构。函数定义具有以下属性：
 
 | 字段         | 描述                                                                     |
 | ------------- | ------------------------------------------------------------------------------- |
-| `type`        | 该字段应始终为 `function`                                                |
-| `name`        | 函数的名称（例如， `get_weather`)                                |
-| `description` | 有关何时以及如何使用该函数的详细信息                                     |
-| `parameters`  | [JSON schema](https://json-schema.org/) ，用于定义函数的输入参数 |
+| `type`        | 应始终为 `function`                                                |
+| `name`        | 函数名称（例如， `get_weather`)                                |
+| `description` | 关于何时以及如何使用该函数的详细信息                                     |
+| `parameters`  | [JSON schema](https://json-schema.org/) 定义函数的输入参数 |
 | `strict`      | 是否对该函数调用强制启用严格模式                            |
 
-下面是一个函数的示例定义 `get_weather` function
+下面是一个 `get_weather` function
 
 ```json
 {
@@ -515,11 +517,11 @@ puts(response.output_text)
 }
 ```
 
-由于参数 `parameters` 由一个 [JSON schema](https://json-schema.org/)，定义，因此你可以利用它的许多丰富特性，例如属性类型、枚举、描述、嵌套对象和递归对象。
+因为 `parameters` 由一个 [JSON schema](https://json-schema.org/)，定义，你可以利用它的许多丰富特性，例如属性类型、枚举、描述、嵌套对象和递归对象。
 
 ## 定义命名空间
 
-使用命名空间按领域对相关工具进行分组，例如 `crm`, `billing`，或 `shipping`。命名空间有助于组织类似的工具，在模型必须在服务于不同系统或用途的工具之间进行选择时尤其有用，例如一个用于你的 CRM 的搜索工具和另一个用于你的工单系统的搜索工具。
+使用命名空间按域对相关工具进行分组，例如 `crm`, `billing`，或 `shipping`。命名空间有助于组织类似的工具，当模型必须在服务于不同系统或用途的工具之间进行选择时（例如一个搜索工具用于你的 CRM，另一个用于你的工单系统），命名空间尤为有用。
 
 ```json
 {
@@ -560,51 +562,51 @@ puts(response.output_text)
 
 ## Tool search
 
-如果需要让模型访问大量工具生态，你可以借助 `tool_search`。来延迟加载其中部分或全部工具。 `tool_search` 工具可让模型搜索相关工具，将其加入模型上下文后再使用。仅 `gpt-5.4` 及更高版本的模型支持该功能。请参阅 [工具搜索指南](https://developers.openai.com/api/docs/guides/tools-tool-search) 了解更多信息。
+如果你需要让模型能够访问大量工具，可以通过以下方式延迟加载部分或全部工具： `tool_search`。该 `tool_search` 工具允许模型搜索相关工具，将其添加到模型上下文中，然后使用这些工具。只有 `gpt-5.4` 及更高版本的模型支持该功能。阅读 [工具搜索指南](https://developers.openai.com/api/docs/guides/tools-tool-search) 以了解更多信息。
 
 
 
-### 定义函数的最佳实践
+### 函数定义最佳实践
 
-1. **编写清晰、详尽的函数名称、参数说明和指令。**
-   - **明确描述函数以及每个参数的用途** （及其格式），以及输出所表示的含义。
-   - **使用系统提示来描述何时（以及何时不）使用每个函数。** 通常，明确告诉模型 _exactly_ 应该做什么。
-   - **包含示例和边界情况**，尤其是用于纠正反复出现的失败。（**注意：** 添加示例可能会降低 [reasoning models](https://developers.openai.com/api/docs/guides/reasoning).)
-   - **对于延迟加载的工具，将详细的使用指导放在函数描述中，并保持命名空间描述的简洁。** 命名空间帮助模型选择要加载的内容；函数描述则帮助模型正确使用已加载的工具。
+1. **编写清晰且详尽的函数名称、参数说明与指令。**
+   - **明确描述函数的用途以及每个参数** （及其格式），以及输出所代表的内容。
+   - **使用系统提示来描述何时（以及何时不）使用每个函数。** 通常，准确地告诉模型 _究竟_ 该做什么。
+   - **包含示例和边界情况**，尤其是用于纠正反复出现的失败。（**注意：** 添加示例可能会影响 [推理模型](https://developers.openai.com/api/docs/guides/reasoning).)
+   - **对于延迟加载的工具，将详细说明放在函数描述中，并保持命名空间描述简洁。** 命名空间帮助模型选择要加载的内容；函数描述帮助模型正确使用已加载的工具。
 
-1. **应用软件工程的最佳实践。**
-   - **使函数具备可预测性和直观性**. ([principle of least surprise](https://en.wikipedia.org/wiki/Principle_of_least_astonishment))
-   - **使用枚举** 以及对象结构来防止无效状态。例如， `toggle_light(on: bool, off: bool)` 允许无效调用。
-   - **通过实习生测试。** 只看模型已有的描述，实习生/真人能正确使用该函数吗？（如果不能，他们会问你哪些问题？把答案补充到 prompt 中。）
+1. **遵循软件工程的最佳实践。**
+   - **使函数可预测且符合直觉**. ([最小惊讶原则](https://en.wikipedia.org/wiki/Principle_of_least_astonishment))
+   - **使用枚举** 和对象结构来防止无效状态。例如， `toggle_light(on: bool, off: bool)` 会允许无效调用。
+   - **通过实习生测试。** 实习生或人类只凭借你提供给模型的内容，能否正确使用该函数？（如果不能，他们会向你提哪些问题？请把答案补充到提示中。）
 
-1. **把负担从模型转移到代码，能用代码就用代码。**
-   - **不要让模型填写你已经知道的参数。** 例如，如果你已经有一个 `order_id` 基于之前的菜单，就不要包含 `order_id` 参数。改为定义一个 `submit_refund()` 无参数的函数，并在代码中传入 `order_id` 。
-   - **合并那些总是被顺序调用的函数。** 例如，如果你总是在 `mark_location()` 之后调用 `query_location()`，就直接把标记逻辑合并到查询函数调用中。
+1. **将模型承担的负担转移到代码中，尽可能使用代码实现。**
+   - **不要让模型填写你已经知道的参数。** 例如，如果你已经基于之前的菜单获得了某个 `order_id` ，就不要在函数中加入 `order_id` 参数。应当定义一个无参的 `submit_refund()` ，然后在代码中传入 `order_id` 。
+   - **合并那些总是按固定顺序连续调用的函数。** 例如，如果你总是在调用 `mark_location()` 之后调用 `query_location()`，那么直接将标记逻辑移入查询函数调用即可。
 
-1. **保持初始可用的函数数量较少，以获得更高的准确率。**
-   - **使用不同数量的函数** 评估你的表现。
-   - **目标是在每一轮开始时可用的函数少于 20 个** ，不过这只是一个软性建议。
-   - **使用工具搜索** 来延迟加载那些较大或不常用的工具，而不是一次性全部暴露出来。
+1. **初始可用函数的数量应当保持较少，以获得更高的准确率。**
+   - **使用不同数量的函数评估你的表现。** 使用不同数量的函数进行评估。
+   - **目标是让一个回合内同时可用的函数少于 20 个** ，不过这只是一个软性建议。
+   - **使用工具搜索** 来推迟使用工具面中较大或不常调用的部分，而不是一次性暴露所有工具。
 
 1. **利用 OpenAI 资源。**
-   - **在 Playground 中生成并迭代函数架构** 中的 [Playground](https://platform.openai.com/playground).
-   - **考虑 [微调](https://developers.openai.com/api/docs/guides/model-optimization) 以提升函数调用准确度** ，适用于大量函数或复杂任务。（[cookbook](https://developers.openai.com/cookbook/examples/fine_tuning_for_function_calling))
+   - **生成并迭代函数架构** 在 [Playground](https://platform.openai.com/playground).
+   - **请考虑 [微调](https://developers.openai.com/api/docs/guides/model-optimization) 以提高函数调用准确度** 适用于大量函数或困难任务。（[cookbook](https://developers.openai.com/cookbook/examples/fine_tuning_for_function_calling))
 
-### Token 使用情况
+### Token 使用量
 
-在底层，函数会以模型经过训练的语法注入到系统消息中。这意味着可调用的函数定义会计入模型的上下文限制，并按输入 token 计费。如果你遇到 token 限制，建议减少一次性加载的函数数量、尽可能缩短描述，或者使用 [工具搜索](https://developers.openai.com/api/docs/guides/tools-tool-search) 以便按需延迟加载工具。
+在底层实现上，函数会以模型已训练过的语法注入到系统消息中。这意味着可调用的函数定义会计入模型的上下文长度限制，并作为输入令牌计费。如果遇到令牌限制，我们建议减少一次性加载的函数数量、尽量缩短描述，或者使用 [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) 以便仅在需要时再加载延后工具。
 
-还可以使用 [微调](https://developers.openai.com/api/docs/guides/model-optimization#fine-tuning-examples) 来减少所使用的 token 数量，前提是你的工具规范中定义了大量函数。
+也可以使用 [微调](https://developers.openai.com/api/docs/guides/model-optimization#fine-tuning-examples) 来减少令牌使用量，前提是你在工具规范中定义了较多函数。
 
 ## 处理函数调用
 
-当模型调用某个函数时，你必须执行该函数并返回结果。由于模型响应可能包含零个、一个或多个调用，因此最佳实践是假设存在多个调用。
+当模型调用函数时，你必须执行它并返回结果。由于模型响应可能包含零个、一个或多个调用，最佳实践是假设存在多个调用。
 
 
 
-响应 `output` 数组包含一个条目，其中具有 `type` 的值为 `function_call`。每个包含 `call_id` （稍后用于提交函数结果）的条目，以及 JSON 编码的）， `name`。 `arguments`.
+响应 `output` 数组中包含一个条目，其 `type` 的值为 `function_call`。每个带有 `call_id` （稍后用于提交函数结果）， `name`，以及 JSON 编码的 `arguments`.
 
-包含多个函数调用的示例响应
+包含多个函数调用的响应示例
 
 ```json
 [
@@ -633,7 +635,7 @@ puts(response.output_text)
 ```
 
 
-如果你正在使用 [工具搜索](https://developers.openai.com/api/docs/guides/tools-tool-search)，你可能还会看到 `tool_search_call` 和 `tool_search_output` 项出现在某个 `function_call`。之前。一旦函数被加载，请以本文中相同的方式处理该函数调用。
+如果你使用 [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search)，你可能还会看到 `tool_search_call` 和 `tool_search_output` 项出现在 `function_call`。之前。函数加载完成后，按照此处展示的方式处理函数调用。
 
 执行函数调用并追加结果
 
@@ -770,7 +772,7 @@ end
 
 
 
-在上面的示例中，我们有一个假设性的 `call_function` 来路由每个调用。下面是一种可能的实现：
+在上面的示例中，我们使用了一个假设性的 `call_function` 来路由每个调用。下面是一种可能的实现：
 
 执行函数调用并追加结果
 
@@ -808,6 +810,65 @@ func callFunction(name string, arguments functionArguments) (string, error) {
 }
 ```
 
+```java
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
+var argsJson = new ObjectMapper().readTree("{\"location\":\"Paris, France\"}");
+System.out.println(callFunction("get_weather", argsJson));
+
+// These local fixtures demonstrate dispatch; replace them with your application services.
+// The email fixture prints its inputs and does not send a message.
+static Map<String, Object> callFunction(String name, JsonNode arguments) {
+  return switch (name) {
+    case "get_weather" -> getWeather(arguments.get("location").asText());
+    case "send_email" -> sendEmail(arguments.get("to").asText(), arguments.get("body").asText());
+    default -> throw new IllegalArgumentException("Unknown function: " + name);
+  };
+}
+
+private static Map<String, Object> getWeather(String location) {
+  int temperature =
+      switch (location) {
+        case "Bogotá, Colombia" -> 18;
+        case "Paris, France" -> 15;
+        default -> 20;
+      };
+  return Map.of("location", location, "temperature_celsius", temperature);
+}
+
+private static Map<String, Object> sendEmail(String to, String body) {
+  System.out.println("Sending email to " + to + ": " + body);
+  return Map.of("status", "sent");
+}
+```
+
+```csharp
+using System.Text.Json;
+
+using JsonDocument arguments = JsonDocument.Parse("{\"location\":\"Paris, France\"}");
+Console.WriteLine(FunctionDispatcher.CallFunction("get_weather", arguments.RootElement));
+
+internal static class FunctionDispatcher
+{
+    // These local fixtures demonstrate dispatch; replace them with your application services.
+    // The email fixture prints its inputs and does not send a message.
+    internal static string CallFunction(string name, JsonElement arguments) => name switch
+    {
+        "get_weather" => GetWeather(arguments.GetProperty("location").GetString()!),
+        "send_email" => SendEmail(arguments.GetProperty("to").GetString()!, arguments.GetProperty("body").GetString()!),
+        _ => throw new ArgumentException($"Unknown function: {name}", nameof(name))
+    };
+    private static string GetWeather(string location) => JsonSerializer.Serialize(new { location, temperature_celsius = location switch { "Bogotá, Colombia" => 18, "Paris, France" => 15, _ => 20 } });
+    private static string SendEmail(string to, string body)
+    {
+        Console.WriteLine($"Sending email to {to}: {body}");
+        return "{\"status\":\"sent\"}";
+    }
+}
+```
+
 ```ruby
 def call_function(name, arguments)
   case name
@@ -830,17 +891,17 @@ end
 
 ### 格式化结果
 
-你在 `function_call_output` message 中传入的结果通常应为一个字符串，格式由你决定（JSON、错误码、纯文本等）。模型将根据需要解读该字符串。
+你在 `function_call_output` message 中传入的结果通常应为字符串，格式可由你自行决定（JSON、错误码、纯文本等）。模型会按需解读该字符串。
 
 对于返回图像或文件的函数，你可以传入一个 [图像或文件对象数组](https://developers.openai.com/api/reference/resources/responses/methods/create#responses_create-input-input_item_list-item-function_tool_call_output-output) 而不是字符串。
 
-如果你的函数没有返回值（例如， `send_email`），请返回一个表示成功或失败的字符串，例如 `"success"`.
+如果你的函数没有返回值（例如， `send_email`），则返回一个表示成功或失败的字符串，例如 `"success"`.
 
-### Incorporating results into response
+### 将结果合并到响应中
 
 
 
-在将结果追加到你的 `input`，后，你可以将它们发送回模型以获取最终响应。
+将结果追加到你的 `input`，后，就可以将它们发送回模型以获得最终响应。
 
 将结果发送回模型
 
@@ -988,20 +1049,20 @@ puts(response.output_text)
 
 ### 工具选择
 
-默认情况下，模型会决定何时使用以及使用多少个工具。你可以通过以下参数强制指定具体行为 `tool_choice` 参数。
+默认情况下，模型会决定何时使用工具以及使用多少工具。你可以通过以下参数强制指定特定行为 `tool_choice` 参数。
 
 1. **Auto:** (_Default_) 调用零个、一个或多个函数。 `tool_choice: "auto"`
 1. **Required:** 调用一个或多个函数。
    `tool_choice: "required"`
-1. **Forced Function:** 调用恰好一个指定的函数。
+1. **Forced Function:** 恰好调用一个指定的函数。
    `tool_choice: {"type": "function", "name": "get_weather"}`
-1. **Allowed tools:** 将模型可调用的工具限制为可用工具中的
-   一个子集。
+1. **Allowed tools:** 将模型可调用的工具限制为
+   模型可用工具的子集。
 
-**何时使用 `allowed_tools`**
+**使用时机 `allowed_tools`**
 
-如果你希望只允许使用部分工具，但不希望修改你传入的工具列表，以便最大化 `allowed_tools` 方面的节省，那么可以配置一个 tool_choice 列表。
-a subset of tools available across model requests, but not modify the list of tools you pass in, so you can maximize savings from [prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+你可能希望在以下情况下配置 `allowed_tools` 列表：当你希望仅在模型请求中提供部分工具，但又不修改传入的工具列表时，这样可以最大化地节省
+通过提示缓存带来的成本节省，同时仍能控制每个请求可调用的工具范围 [提示缓存](https://developers.openai.com/api/docs/guides/prompt-caching).
 
 ```json
 "tool_choice": {
@@ -1015,48 +1076,48 @@ a subset of tools available across model requests, but not modify the list of to
 }
 ```
 
-你也可以将 tool_choice `tool_choice` 设为 none `"none"` 来模拟不传入任何函数的行为。
+你还可以将 `tool_choice` 设置为 `"none"` 以模拟不传递任何函数时的行为。
 
-When you use tool search, `tool_choice` 仍然作用于当前这一轮可调用的工具。这在加载了部分工具并希望将模型限制在该子集内时最为有用。
+当你使用工具搜索时， `tool_choice` 仍然会作用于当前轮次中可调用的工具。这在你加载了部分工具并希望将模型限制在该子集内时最为有用。
 
-### 并行函数调用
+### Parallel function calling
 
-在以 GPT-5 开头的受支持模型上，可以并行调用函数
+在从 GPT-5 开始的支持模型上，可以并行调用函数
   当 [内置工具](https://developers.openai.com/api/docs/guides/tools) 也可用时，内置
   工具不能包含在并行函数调用批次中。
 
-模型可能选择在单轮中调用多个函数。你可以通过设置 `parallel_tool_calls` 设为 none `false`，以确保恰好调用零个或一个工具。
+模型可能选择在单轮中调用多个函数。你可以通过设置来禁止此行为， `parallel_tool_calls` 设置为 `false`，以确保恰好调用零个或一个工具。
 
-**注意：** 目前，如果你使用的是微调模型，并且该模型在单轮中调用多个函数，则 [严格模式](#strict-mode) 将对这些调用被禁用。
+**注意：** 目前，如果你使用的是微调模型，并且该模型在单轮中调用多个函数，那么 [严格模式](#strict-mode) 将对这些调用禁用。
 
-**关于 `gpt-4.1-nano-2025-04-14`:** 此 `gpt-4.1-nano` 快照有时会针对同一工具包含多个工具调用（如果启用了并行工具调用）。建议在使用此快照时禁用此功能。
+**针对 `gpt-4.1-nano-2025-04-14`:** 此 `gpt-4.1-nano` 快照有时会包含对同一工具的多个调用（如果启用了并行工具调用）。建议在使用此快照时禁用此功能。
 
-### Strict mode
+### 严格模式
 
-Setting `strict` 设为 none `true` 可确保函数调用可靠地遵循函数模式，而非仅作为尽力而为的尝试。我们建议始终启用严格模式。
+设置 `strict` 设置为 `true` 将确保函数调用可靠地遵循函数 schema，而不是仅尽最大努力。我们建议始终启用严格模式。
 
-在底层，严格模式通过利用我们的 [结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs) 功能来实现，因此引入了一些要求：
+在底层，严格模式通过利用我们的 [结构化输出](https://developers.openai.com/api/docs/guides/structured-outputs) 功能实现，因此会引入一些要求：
 
-1. `additionalProperties` 必须设置为 `false` 每个对象的 `parameters`.
+1. `additionalProperties` 必须设置为 `false` 用于 中的每个对象 `parameters`.
 1. 中的所有字段 `properties` 必须标记为 `required`.
 
-你可以通过添加来标识可选字段 `null` 作为 `type` 选项（参见下面的示例）。
+你可以通过添加 `null` 作为 `type` 选项来指定可选字段（见下方示例）。
 
-如果你发送 `strict: true` 并且你的架构不满足上述要求，
-请求将被拒绝，并返回有关缺失约束的详细信息。如果
+如果发送 `strict: true` 且你的 schema 不满足上述要求，
+请求将被拒绝，并返回关于缺失约束的详细信息。如果
 你省略 `strict`，默认值取决于 API：Responses 请求会
-在可能时尝试将你的架构规范化为严格模式，并在架构无法与严格
-模式兼容时回退到非严格、尽力而为的函数调用。当发生回退时，响应中的工具会显示
-。Chat Completions 请求默认仍然保持非严格。若要在 Responses 中退出严格模式并保持非严格、
-`strict: false`。尽力而为的函数调用，需显式设置
-以退出 Responses 中的严格模式并保持非严格、尽力而为
-的函数调用，需显式设置 `strict: false`.
+尝试在可能时将你的 schema 规范化为严格模式，并在 schema 无法被处理时
+回退到尽力而为的非严格函数调用。
+与 strict 模式兼容。当发生回退时，响应工具将显示
+`strict: false`。Chat Completions 请求默认仍为非 strict。如需在 Responses 中退出 strict 模式并保持非 strict、尽力而为的函数调用功能，请明确设置
+调用功能，请明确设置
+调用功能，请明确设置 `strict: false`.
 
 
 
 
 
-已启用严格模式
+已启用 strict 模式
 
 ```json
 {
@@ -1094,7 +1155,7 @@ Setting `strict` 设为 none `true` 可确保函数调用可靠地遵循函数�
   
 
     
-已禁用严格模式
+Strict mode disabled
 
 ```json
 {
@@ -1127,25 +1188,25 @@ Setting `strict` 设为 none `true` 可确保函数调用可靠地遵循函数�
 
 
 
-所有在
-  [playground](https://platform.openai.com/playground) 中生成的架构都已启用严格模式。
+在
+  [playground](https://platform.openai.com/playground) 中生成的所有架构都启用了严格模式。
 
-虽然我们建议你启用严格模式，但它有一些限制：
+虽然我们建议启用严格模式，但它有一些限制：
 
-1. JSON schema 的部分功能不受支持。（参见 [支持的 schema](https://developers.openai.com/api/docs/guides/structured-outputs?context=with_parse#supported-schemas).)
+1. 部分 JSON schema 特性不受支持。(参见 [支持的 schema](https://developers.openai.com/api/docs/guides/structured-outputs?context=with_parse#supported-schemas).)
 
 专门针对微调模型：
 
-1. Schema 会在首次请求时进行额外处理（之后会被缓存）。如果你的 Schema 在每次请求时都不同，可能会导致更高的延迟。
-2. Schema 会出于性能原因被缓存，并且不适用于 [零数据保留](https://developers.openai.com/api/docs/models#how-we-use-your-data).
+1. Schema 在首次请求时会进行额外的处理（之后会被缓存）。如果你的 Schema 在每次请求之间都不相同，可能会导致更高的延迟。
+2. Schema 会出于性能考虑被缓存，且不适用于 [零数据保留](https://developers.openai.com/api/docs/models#how-we-use-your-data).
 
 ## 流式传输
 
 
 
-Streaming 可用于通过显示模型在填充参数时所调用的函数来呈现进度，甚至可以实时显示参数。
+通过流式传输，你可以在模型填充参数时展示正在调用的函数，并实时显示参数，从而呈现进度。
 
-流式函数调用与流式常规响应非常相似：你需要设置 `stream` 设为 none `true` 并获取不同的 `event` 对象。
+流式函数调用的工作方式类似于流式普通响应：你设置 `stream` 设置为 `true` 并获取不同的 `event` 对象。
 
 流式函数调用
 
@@ -1348,26 +1409,26 @@ stream.each { |event| puts(event.type) }
 ```
 
 
-不过，你不是将分块聚合为一个 `content` 字符串，而是将分块聚合为一个经过编码的 `arguments` JSON 对象。
+不过，你不是在将分块聚合成单个 `content` 字符串，而是在将分块聚合成一个已编码的 `arguments` JSON 对象。
 
-当模型调用一个或多个函数时，会为每次函数调用发出一个类型为 `response.output_item.added` 的事件，其中包含以下字段：
-
-| 字段          | 描述                                                                                                  |
-| -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `response_id`  | 该函数调用所属响应的 ID                                                     |
-| `output_index` | 响应中输出项的索引，表示响应中的各个函数调用。 |
-| `item`         | 包含 id 和 type 字段的进行中函数调用项。 `name`, `arguments` 和 `id` 字段                        |
-
-之后你将收到一系列类型为 `response.function_call_arguments.delta` 的事件，其中包含 `delta` 字段的 `arguments` 。这些事件包含以下字段：
+当模型调用一个或多个函数时，会为每个函数调用发出一个类型为 `response.output_item.added` 的事件，其中包含以下字段：
 
 | 字段          | 描述                                                                                                  |
 | -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `response_id`  | 该函数调用所属响应的 ID                                                     |
+| `response_id`  | 该函数调用所属响应的 id                                                     |
+| `output_index` | 响应中输出项的索引。它表示响应中的各个函数调用。 |
+| `item`         | 包含以下字段的进行中函数调用项： `name`, `arguments` 和 `id` 字段                        |
+
+之后你将收到一系列类型为 `response.function_call_arguments.delta` 的事件，该事件将包含 `delta` 字段中的 `arguments` 字段。这些事件包含以下字段：
+
+| 字段          | 描述                                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------------------ |
+| `response_id`  | 该函数调用所属响应的 id                                                     |
 | `item_id`      | 该增量所属函数调用项的 ID                                                   |
-| `output_index` | 响应中输出项的索引，表示响应中的各个函数调用。 |
-| `delta`        | 的增量 `arguments` 字段。                                                                          |
+| `output_index` | 响应中输出项的索引。它表示响应中的各个函数调用。 |
+| `delta`        | 该字段的增量 `arguments` 字段。                                                                          |
 
-下方代码片段演示了如何将 `delta`聚合到最终的 `tool_call` 对象。
+下面的代码片段演示了如何将 `delta`聚合为最终的 `tool_call` 对象。
 
 累积 tool_call 增量
 
@@ -1576,19 +1637,19 @@ puts(final_tool_calls.sort.to_h.values)
 ```
 
 
-当模型完成函数调用后，会发出一个类型为 `response.function_call_arguments.done` 的事件。该事件包含完整的函数调用，并包括以下字段：
+当模型完成函数调用后，会发出一个类型为 `response.function_call_arguments.done` 的事件。该事件包含整个函数调用，其中包含以下字段：
 
 | 字段          | 描述                                                                                                  |
 | -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `response_id`  | 该函数调用所属响应的 ID                                                     |
-| `output_index` | 响应中输出项的索引，表示响应中的各个函数调用。 |
+| `response_id`  | 该函数调用所属响应的 id                                                     |
+| `output_index` | 响应中输出项的索引。它表示响应中的各个函数调用。 |
 | `item`         | 包含以下内容的函数调用项 `name`, `arguments` 和 `id` 字段。                                   |
 
 
 
 ## 自定义工具
 
-自定义工具的工作方式与 JSON schema 驱动的函数工具大体相同。但你无需向模型提供关于工具所需输入的显式说明，模型可以将任意字符串作为输入传回给你的工具。这对于避免不必要地将响应包装在 JSON 中，或对响应应用自定义语法非常有用（更多内容见下文）。
+自定义工具的工作方式与由 JSON schema 驱动的函数工具基本相同。但你无需向模型提供关于工具所需输入的明确说明，模型可以将任意字符串作为输入传回给你的工具。这对于避免将响应不必要地包装在 JSON 中，或对响应应用自定义语法（详见下文）非常有用。
 
 下面的代码示例展示了如何创建一个自定义工具，该工具期望接收一段包含 Python 代码的文本字符串作为响应。
 
@@ -1721,15 +1782,15 @@ puts(response.output)
 ]
 ```
 
-### Context-free grammars
+### 上下文无关文法
 
-一个 [context-free grammar](https://en.wikipedia.org/wiki/Context-free_grammar) (CFG) 是一组用于定义如何在给定格式中生成有效文本的规则。对于自定义工具，你可以提供一个 CFG，用于约束该自定义工具的模型文本输入。
+一个 [context-free grammar](https://en.wikipedia.org/wiki/Context-free_grammar) (CFG) 是一组用于定义如何在给定格式中生成有效文本的规则。对于自定义工具，你可以提供一个 CFG 来约束模型针对该自定义工具的文本输入。
 
-你可以在配置自定义工具时使用以下 `grammar` 参数提供自定义的 CFG。目前，我们在定义语法时支持两种 CFG 语法形式： `lark` 和 `regex`.
+你可以在配置自定义工具时通过 `grammar` 参数提供自定义 CFG。目前，我们在定义语法时支持两种 CFG 语法形式： `lark` 和 `regex`.
 
 #### Lark CFG
 
-Lark 无上下文文法示例
+Lark 上下文无关文法示例
 
 ```javascript
 import OpenAI from "openai";
@@ -1914,7 +1975,7 @@ puts(response.output)
 ```
 
 
-工具的输出应符合你定义的 Lark CFG：
+工具的输出随后应符合你定义的 Lark CFG：
 
 ```json
 [
@@ -1935,24 +1996,24 @@ puts(response.output)
 ]
 ```
 
-文法使用以下项目的变体来指定： [Lark](https://lark-parser.readthedocs.io/en/stable/index.html)。模型采样通过 [LLGuidance](https://github.com/guidance-ai/llguidance/blob/main/docs/syntax.md)。进行约束。Lark 的部分特性不受支持：
+文法使用以下语法的变体进行定义： [Lark](https://lark-parser.readthedocs.io/en/stable/index.html)。模型采样通过 [LLGuidance](https://github.com/guidance-ai/llguidance/blob/main/docs/syntax.md)。进行约束。Lark 的部分特性不受支持：
 
-- 词法分析器正则表达式中的环视
-- 惰性修饰符 (`*?`, `+?`, `??`) 在词法分析器正则表达式中
+- 词法分析器正则中的环视
+- 惰性修饰符（`*?`, `+?`, `??`）在词法分析器正则中
 - 终结符的优先级
 - 模板
-- 导入（除内置 `%import` common 外）
+- 导入（除内置 `%import` common 之外）
 - `%declare`s
 
-我们推荐使用 [Lark IDE](https://www.lark-parser.org/ide/) 来试验自定义语法。
+我们建议使用 [Lark IDE](https://www.lark-parser.org/ide/) 来试验自定义语法。
 
 <a id="keep-grammars-simple"></a>
 
 ### 限制语法复杂度
 
-将语法限制在工具所需的规则和模式范围内。OpenAI API 可能会在语法过于复杂时返回错误，因此在使用所需语法接入 API 之前，应先确认其兼容性。
+将你的语法限制为工具所需的规则和模式。如果语法过于复杂，OpenAI API 可能会返回错误，因此在使用前应确保你期望的语法与 API 兼容。
 
-Lark 语法要做到完善可能会很棘手。复杂度较低的语法通常表现得更稳定，而复杂的语法往往需要对语法定义本身、提示以及工具描述进行反复迭代，才能确保模型不超出训练分布范围。
+Lark 语法很难做到完美。复杂度较低的语法通常表现最稳定，而复杂度较高的语法通常需要反复迭代语法定义本身、提示词和工具描述，以确保模型不会偏离其分布。
 
 ### 正确与错误模式
 
@@ -1963,40 +2024,40 @@ start: SENTENCE
 SENTENCE: /[A-Za-z, ]*(the hero|a dragon|an old man|the princess)[A-Za-z, ]*(fought|saved|found|lost)[A-Za-z, ]*(a treasure|the kingdom|a secret|his way)[A-Za-z, ]*\./
 ```
 
-不要这样做（在多个规则/终结符之间拆分）。这试图让规则在终结符之间切分自由文本。词法分析器会贪婪地匹配自由文本片段，从而失去控制：
+不要这样做（在规则或终结符之间拆分）。这试图让规则在终结符之间划分自由文本。词法分析器会贪婪地匹配自由文本片段，你会失去控制：
 
 ```
 start: sentence
 sentence: /[A-Za-z, ]+/ subject /[A-Za-z, ]+/ verb /[A-Za-z, ]+/ object /[A-Za-z, ]+/
 ```
 
-小写规则不会影响终结符如何从输入中切分——只有终结符定义才会影响。当需要“锚点之间的自由文本”时，应将其设为一条巨大的正则终结符，使词法分析器按你期望的结构精确匹配一次。
+小写规则不会影响终结符如何从输入中切分——只有终结符定义才会影响。当你需要“锚点之间的自由文本”时，把它做成一个巨大的正则表达式终结符，这样词法分析器就能按你预期的结构精确匹配一次。
 
-### 终端与规则
+### Terminals versus rules
 
-Lark 使用 terminals 表示词法分析器 token（按照约定， `UPPERCASE`），使用 rules 表示语法分析器产生式（按照约定， `lowercase`）。要保持在受支持的子集范围内并避免意外，最实用的方法是让你的语法保持明确，避免不必要的复杂性，并清晰地分离 terminals 和 rules 的关注点。
+Lark 使用 terminals 表示词法分析器标记（按惯例， `UPPERCASE`)，使用 rules 表示语法分析器产生式（按惯例， `lowercase`)。保持在受支持子集内并避免意外的最实用方法是让你的语法保持显式并避免不必要的复杂性，同时让 terminals 和 rules 各自职责清晰、彼此分离。
 
-terminals 所使用的正则表达式语法是 [Rust regex crate 语法](https://docs.rs/regex/latest/regex/#syntax)，而不是 Python 的 `re` [模块](https://docs.python.org/3/library/re.html).
+terminals 使用的正则语法是 [Rust 的 regex crate 语法](https://docs.rs/regex/latest/regex/#syntax)，而不是 Python 的 `re` [re 模块](https://docs.python.org/3/library/re.html).
 
 ### 关键理念与最佳实践
 
 **词法分析器在解析器之前运行**
 
-终结符由词法分析器进行匹配（采用贪心 / 最长匹配优先），在任何 CFG 规则逻辑生效之前完成。如果你试图通过把一个终结符拆分成多条规则来“塑形”它，词法分析器无法被这些规则引导——它只受终结符正则表达式的约束。
+终结符由词法分析器匹配（采用贪婪 / 最长匹配优先策略），在任何 CFG 规则逻辑生效之前完成。如果你想通过把一个终结符拆成多条规则来“塑造”它，词法分析器无法被这些规则引导——它只能由终结符正则表达式驱动。
 
-**在从自由格式片段中切分文本时，优先使用单个终结符**
+**在从自由格式片段中切分文本时，优先使用单一终结符**
 
-如果需要在任意文本中识别某种模式（例如，在锚点之间带有“任意内容”的自然语言），请将其表示为单个终结符。不要试图把自由文本终结符与解析器规则交错在一起；贪心的词法分析器不会遵循你期望的边界，而且模型很可能出现分布外行为。
+如果你需要在任意文本中识别一个模式（例如，在锚点之间嵌入“任意内容”的自然语言），请把它表达为单个终结符。不要试图让自由文本终结符与解析器规则交错出现；贪婪的词法分析器不会遵守你设想的边界，模型极有可能会偏离分布。
 
-**使用规则来组合离散标记**
+**使用规则来组合离散的 token**
 
-当你把具有明确分隔的终结符（数字、关键字、标点）组合成更大的结构时，规则是理想工具。但它们不适合用来约束两个终结符之间“夹着的内容”。
+当你把显式分隔的终结符（数字、关键字、标点）组合成更大的结构时，规则是理想工具。它们并不适合用来约束两个终结符之间的“夹心内容”。
 
-**让终结符保持聚焦、有界且自包含**
+**保持终结符聚焦、有界且自包含**
 
-优先使用显式的字符类和有限量词（`{0,10}`，而不是无界的 `*` ）。如果你需要“任意文本直到句号”，更推荐使用形如 `/[^.\n]{0,10}*\./` ，而不是 `/.+\./` ，以避免失控增长。
+优先使用显式的字符类和有限量词（`{0,10}`），而不是无界的 `*` ）。如果你需要“到句号为止的任意文本”，更推荐类似 `/[^.\n]{0,10}*\./` 的写法，而不是 `/.+\./` ，以避免失控增长。
 
-**使用规则来组合标记，而不是去操控正则表达式内部实现**
+**使用规则组合 token，而不是引导正则内部实现**
 
 良好的规则使用示例：
 
@@ -2011,18 +2072,18 @@ term: NUMBER
 
 **显式处理空白字符**
 
-不要依赖开放式的 `%ignore` 指令。使用无界的 ignore 指令可能导致文法过于复杂，以及/或导致模型出现分布外行为。在允许出现空白的位置，更推荐穿插使用显式终结符。
+不要依赖开放式的 `%ignore` 指令。使用无界的 ignore 指令可能导致语法过于复杂和/或导致模型偏离分布。在允许出现空白的地方，更推荐穿插使用显式的终结符。
 
-### 故障排除
+### 故障排查
 
-- 如果 API 因语法过于复杂而拒绝，请简化规则和终结符，并移除无界 `%ignore`的情况。
-- 如果自定义工具被调用时传入了非预期的 token，请确认终结符没有重叠，并检查贪婪词法分析器。
-- 当模型出现“分布外”漂移（表现为模型生成过长或重复的输出，虽然语法有效但语义错误）时：
+- 如果 API 因语法过于复杂而拒绝，请简化规则和终结符，并移除无界的 `%ignore`匹配项。
+- 如果自定义工具被传入意外的标记调用，确认终结符没有重叠；检查贪心词法分析器。
+- 当模型出现“分布外”漂移（表现为模型生成过长或重复的输出，虽然语法正确但语义错误）：
   - 收紧语法。
-  - 迭代优化提示词（添加少样本示例）和工具描述（解释语法并指示模型进行推理，使其符合语法）。
-  - 尝试使用更高的推理力度（例如，从 medium 提升到 high）。
+  - 迭代优化提示（添加少样本示例）和工具描述（解释语法并指示模型进行推理以遵循它）。
+  - 尝试使用更高的推理力度（例如，从中提升至高）。
 
-#### 正则 CFG
+#### Regex CFG
 
 正则上下文无关文法示例
 
@@ -2167,7 +2228,7 @@ puts(response.output)
 ```
 
 
-然后，工具的输出应当符合你所定义的正则 CFG：
+工具的输出应符合你所定义的正则 CFG：
 
 ```json
 [
@@ -2188,19 +2249,19 @@ puts(response.output)
 ]
 ```
 
-与 Lark 语法一样，正则表达式使用 [Rust regex crate 语法](https://docs.rs/regex/latest/regex/#syntax)，而不是 Python 的 `re` [模块](https://docs.python.org/3/library/re.html).
+与 Lark 语法一样，正则使用 [Rust 的 regex crate 语法](https://docs.rs/regex/latest/regex/#syntax)，而不是 Python 的 `re` [re 模块](https://docs.python.org/3/library/re.html).
 
-正则的某些特性不受支持：
+某些正则特性不受支持：
 
-- 环视
-- 惰性修饰符（`*?`, `+?`, `??`)
+- Lookarounds
+- Lazy modifiers (`*?`, `+?`, `??`)
 
 ### 关键理念与最佳实践
 
-**模式必须在一行内**
+**模式必须放在同一行**
 
-如果需要在输入中匹配换行符，请使用转义序列 `\n`。不要使用详细/扩展模式，该模式允许模式跨越多行。
+如果需要在输入中匹配换行符，请使用转义序列 `\n`。请勿使用冗长/扩展模式，否则模式可以跨多行匹配。
 
-**将正则表达式作为纯模式字符串提供**
+**请将正则表达式作为普通模式字符串提供**
 
-不要将模式用 `//`.
+不要将模式包裹在 `//`.
