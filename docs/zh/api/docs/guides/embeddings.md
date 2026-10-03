@@ -1,25 +1,25 @@
-# 向量嵌入
+# Vector embeddings
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 什么是嵌入？
 
 OpenAI 的文本嵌入用于衡量文本字符串之间的相关性。嵌入通常用于：
 
-- **Search** (其中结果按与查询字符串的相关性排序)
-- **Clustering** （Clustering）
-- **Recommendations** (其中根据文本字符串的相关性推荐条目)
-- **Anomaly detection** (其中识别出相关性较低的异常值)
-- **Diversity measurement** (其中分析相似度分布)
-- **Classification** (其中文本字符串按最相似的标签进行分类)
+- **搜索** （结果按与查询字符串的相关性排序）
+- **聚类** （将文本字符串按相似度分组）
+- **推荐** （推荐具有相关文本字符串的条目）
+- **异常检测** （识别相关性较低的外离点）
+- **多样性度量** （分析相似度分布）
+- **分类** （根据最相似的标签对文本字符串进行分类）
 
-嵌入（embedding）是由浮点数构成的向量（即一组数字列表）。向量的 [距离](#which-distance-function-should-i-use) 用于衡量它们之间的相关性。距离越小表示相关性越高，距离越大则表示相关性越低。
+嵌入是浮点数组成的向量（列表）。两个向量之间的 [距离](#which-distance-function-should-i-use) 用于衡量它们的关联程度：距离越小表示关联越紧密，距离越大表示关联越疏远。
 
-请访问我们的 [定价页面](https://openai.com/api/pricing/) 以了解嵌入的计费方式。请求费用按 [tokens](https://platform.openai.com/tokenizer) 中的 [输入](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings/create-input).
+请访问我们的 [定价页面](https://openai.com/api/pricing/) 以了解嵌入的定价。请求根据以下数量计费： [tokens](https://platform.openai.com/tokenizer) 输入 [input](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings/create-input).
 
 ## 如何获取嵌入
 
-若要获取 embedding（嵌入），请将你的文本字符串发送到 [embeddings API 端点](https://developers.openai.com/api/reference/resources/embeddings) ，并在请求中指定 embedding 模型名称（例如， `text-embedding-3-small`):
+要获取 embedding，请将你的文本字符串发送到 [embeddings API 端点](https://developers.openai.com/api/reference/resources/embeddings) ，并同时传入 embedding 模型名称（例如， `text-embedding-3-small`):
 
 示例：获取 embeddings
 
@@ -130,7 +130,7 @@ curl https://api.openai.com/v1/embeddings \
 ```
 
 
-响应中包含 embedding 向量（浮点数列表）以及一些额外的元数据。你可以提取 embedding 向量，将其存入向量数据库，并用于多种不同的用例。
+响应中包含 embedding 向量（浮点数列表）以及一些额外的元数据。你可以提取该 embedding 向量，将其存入向量数据库，并用于多种不同的使用场景。
 
 ```json
 {
@@ -153,15 +153,15 @@ curl https://api.openai.com/v1/embeddings \
 }
 ```
 
-默认情况下，embedding 向量的长度为 `1536` ， `text-embedding-3-small` 或 `3072` ， `text-embedding-3-large`。若要在不丢失其概念表示能力的前提下降低 embedding 的维度，请传入 [dimensions 参数](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions)。有关 embedding 维度的更多详情，请参阅 [embedding 用例章节](#use-cases).
+默认情况下，embedding 向量的长度为 `1536` （ `text-embedding-3-small` 或 `3072` （ `text-embedding-3-large`）。如果希望在保留其概念表示能力的前提下降低 embedding 的维度，请传入 [dimensions 参数](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions)。更多关于 embedding 维度的细节，请参阅 [embedding 使用场景章节](#use-cases).
 
 ## Embedding models
 
-OpenAI 提供两款强大的第三代嵌入模型（在模型 ID 中以 `-3` 标识）。有关更多详情，请阅读嵌入 v3 [公告博客文章](https://openai.com/blog/new-embedding-models-and-api-updates) 。
+OpenAI 提供两个强大的第三代 embedding 模型（在模型 ID 中以 `-3` 标识）。阅读 embedding v3 [公告博客文章](https://openai.com/blog/new-embedding-models-and-api-updates) 了解更多详情。
 
-按输入 token 计费。以下为每美元可处理的文本页数示例（假设每页约 800 个 token）：
+费用按输入 token 计费。以下是每美元可处理的文本页数示例（假设每页约 800 个 token）：
 
-| 模型                  | ~ 每美元可处理的页数 | 在 [MTEB](https://github.com/embeddings-benchmark/mteb) 评估 | 最大输入 |
+| 模型                  | ~ 每美元可处理的页数 | 在以下基准上的性能 [MTEB](https://github.com/embeddings-benchmark/mteb) 评估 | 最大输入 |
 | ---------------------- | ------------------ | ------------------------------------------------------------------------ | --------- |
 | text-embedding-3-small | 62,500             | 62.3%                                                                    | 8192      |
 | text-embedding-3-large | 9,615              | 64.6%                                                                    | 8192      |
@@ -169,16 +169,16 @@ OpenAI 提供两款强大的第三代嵌入模型（在模型 ID 中以 `-3` 标
 
 ## 用例
 
-下面我们展示一些代表性的使用场景，使用 [Amazon fine-food reviews 数据集](https://www.kaggle.com/snap/amazon-fine-food-reviews).
+下面我们展示一些具有代表性的使用案例，使用的是 [Amazon fine-food reviews 数据集](https://www.kaggle.com/snap/amazon-fine-food-reviews).
 
-### 获取嵌入向量
+### 获取嵌入
 
-该数据集总共包含截至 2012 年 10 月由 Amazon 用户留下的 568,454 条食品评论。我们使用其中 1000 条最新评论的子集进行示例说明。这些评论为英文，并且倾向于褒义或贬义。每条评论都有一个 `ProductId`, `UserId`, `Score`、评论标题 (`Summary`) 和评论正文 (`Text`)。例如：
-
-
+该数据集共包含截至 2012 年 10 月由 Amazon 用户留下的 568,454 条食品评论。我们使用其中 1000 条最新评论的子集进行示例说明。这些评论为英文，倾向为正面或负面。每条评论都包含一个 `ProductId`, `UserId`, `Score`、评论标题（`Summary`）以及评论正文（`Text`）。例如：
 
 
-| Product Id | User Id        | Score | Summary               | Text                                              |
+
+
+| Product Id | User Id        | 评分 | 摘要               | 文本                                              |
 | ---------- | -------------- | ----- | --------------------- | ------------------------------------------------- |
 | B001E4KFG0 | A3SGXH7AUHU8GW | 5     | Good Quality Dog Food | I have bought several of the Vitality canned...   |
 | B00813GRG4 | A1D87F6ZCVE5NK | 1     | Not as Advertised     | Product arrived labeled as Jumbo Salted Peanut... |
@@ -186,7 +186,7 @@ OpenAI 提供两款强大的第三代嵌入模型（在模型 ID 中以 `-3` 标
 
 
 
-下面，我们将评论摘要和评论文本合并为一段组合文本。模型对该组合文本进行编码，并输出一个向量嵌入。
+下面，我们将评论摘要和评论文本合并成单个合并文本。模型会对该合并文本进行编码，并输出一个向量嵌入。
 
 
 
@@ -232,6 +232,77 @@ df["ada_embedding"] = df.combined.apply(
 df.to_csv("output/embedded_1k_reviews.csv", index=False)
 ```
 
+```go
+import (
+	"context"
+	"encoding/csv"
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	reviews := []string{"A rich cup of coffee.", "A bright herbal tea."}
+	if err := os.MkdirAll("output", 0755); err != nil {
+		return err
+	}
+	file, err := os.Create("output/embedded_1k_reviews.csv")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	writer := csv.NewWriter(file)
+	if err := writer.Write([]string{"combined", "ada_embedding"}); err != nil {
+		return err
+	}
+	for _, review := range reviews {
+		vector, err := embedding(ctx, &client, strings.ReplaceAll(review, "\n", " "))
+		if err != nil {
+			return err
+		}
+		encoded, err := json.Marshal(vector)
+		if err != nil {
+			return err
+		}
+		if err := writer.Write([]string{review, string(encoded)}); err != nil {
+			return err
+		}
+	}
+	writer.Flush()
+	if err := writer.Error(); err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+	fmt.Println("Saved output/embedded_1k_reviews.csv")
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -268,6 +339,35 @@ try (var writer = Files.newBufferedWriter(output)) {
 System.out.println(output);
 ```
 
+```csharp
+using System.Text.Json;
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] reviews = ["A rich cup of coffee.", "A bright herbal tea."];
+Directory.CreateDirectory("output");
+using StreamWriter writer = new("output/embedded_1k_reviews.csv");
+await writer.WriteLineAsync("combined,ada_embedding");
+foreach (string review in reviews)
+{
+    float[] vector = await EmbedAsync(client, review.Replace("\n", " ", StringComparison.Ordinal));
+    string encoded = JsonSerializer.Serialize(vector);
+    await writer.WriteLineAsync($"{CsvField(review)},{CsvField(encoded)}");
+}
+Console.WriteLine("Saved output/embedded_1k_reviews.csv");
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static string CsvField(string value) => "\"" + value.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
+```
+
 ```ruby
 require "csv"
 require "fileutils"
@@ -292,7 +392,7 @@ end
 ```
 
 
-要从已保存的文件加载数据，可以运行以下代码：
+要从已保存的文件中加载数据，你可以运行以下代码：
 
 ```python
 import pandas as pd
@@ -304,15 +404,15 @@ df["ada_embedding"] = df.ada_embedding.apply(eval).apply(np.array)
 
 
 
-#### 降低嵌入维度
+#### Reducing embedding dimensions
 
 
 
-使用更大的嵌入（例如将它们存储在向量库中用于检索）通常比使用较小的嵌入成本更高，并且会消耗更多的计算资源、内存和存储。
+使用更大的 embedding（例如将其存储在向量库中用于检索）通常比使用更小的 embedding 成本更高，并且会消耗更多的算力、内存和存储。
 
-我们的两个新嵌入模型都采用了 [一种技术](https://arxiv.org/abs/2205.13147) 进行训练，使开发者能够在使用嵌入的性能和成本之间进行权衡。具体来说，开发者可以通过传入 [`dimensions` API 参数](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions)。来缩短嵌入（即从序列末尾移除一些数字），而不会让嵌入失去其概念表示能力。例如，在 MTEB 基准测试中，一个 `text-embedding-3-large` 嵌入可以缩短到 256 的大小，同时仍然优于一个未缩短的、大小为 1536 的 `text-embedding-ada-002` 嵌入。你可以在我们的 [embeddings v3 发布博客文章](https://openai.com/blog/new-embedding-models-and-api-updates#:~:text=Native%20support%20for%20shortening%20embeddings).
+我们的两个新 embedding 模型都采用了 [一种技术](https://arxiv.org/abs/2205.13147) ，允许开发者在使用 embedding 的性能和成本之间进行权衡。具体来说，开发者可以在不损失 embedding 表示概念能力的前提下缩短 embedding（即从序列末尾删除一些数字），方法是在创建 embedding 时传入 [`dimensions` dimensions API 参数](https://developers.openai.com/api/reference/resources/embeddings/methods/create#embeddings-create-dimensions)。例如，在 MTEB 基准测试中，一个 `text-embedding-3-large` embedding 可以被缩短到 256 大小，同时仍然优于未缩短的、大小为 1536 的 `text-embedding-ada-002` embedding。你可以在我们的 [embeddings v3 发布博客文章](https://openai.com/blog/new-embedding-models-and-api-updates#:~:text=Native%20support%20for%20shortening%20embeddings).
 
-一般来说，在创建嵌入时使用 `dimensions` 参数是推荐的做法。在某些情况下，你可能需要在生成嵌入之后更改其维度。当你手动更改维度时，需要确保按照下面的示例对嵌入的维度进行归一化。
+中详细了解更改维度对性能的影响。一般来说，在创建 embedding 时使用 `dimensions` dimensions 参数是推荐的做法。在某些情况下，你可能需要在生成 embedding 之后更改其维度。当手动更改维度时，你需要确保像下面所示的那样对 embedding 的维度进行归一化。
 
 ```javascript
 import OpenAI from "openai";
@@ -430,7 +530,7 @@ puts(normalized)
 ```
 
 
-动态更改维度可以实现非常灵活的使用方式。例如，当使用的向量数据存储仅支持最长 1024 维的嵌入时，开发者现在仍然可以使用我们最好的嵌入模型 `text-embedding-3-large` ，并为 `dimensions` API 参数指定值 1024，从而将嵌入从 3072 维缩短，以牺牲一些准确率来换取更小的向量大小。
+动态更改维度可以实现非常灵活的使用方式。例如，当使用一个仅支持最长 1024 维 embedding 的向量数据库时，开发者现在仍然可以使用我们最好的 embedding 模型 `text-embedding-3-large` ，并为 `dimensions` API 参数指定值 1024，这会将 embedding 从 3072 维缩短下来，以牺牲部分精度换取更小的向量大小。
 
 
 
@@ -447,7 +547,7 @@ puts(normalized)
   
 
 Question_answering_using_embeddings.ipynb
- 在许多常见场景下，模型并未在包含你希望向用户查询响应开放的关键事实和信息的语料上进行训练。一种解决方法（如下所示）是将额外信息放入模型的上下文窗口中。这在许多用例中效果显著，但会导致 token 成本上升。在本 notebook 中，我们探讨该方法与基于嵌入的搜索之间的权衡取舍。
+ 在许多常见场景下，模型并未在包含你想要在响应用户查询时访问的关键事实和信息的训练数据上进行训练。如下所示，一种解决方法是将这些额外信息放入模型的上下文窗口中。这种方法在许多用例中都很有效，但会导致更高的 token 费用。在本 notebook 中，我们将探讨这种方法与基于 embeddings 的搜索之间的权衡取舍。
 
 ```javascript
 import OpenAI from "openai";
@@ -502,6 +602,36 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+		Model: "gpt-4.1-mini", Temperature: openai.Float(0), Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage("You answer questions about the 2022 Winter Olympics."),
+			openai.UserMessage("Use the article to answer the question. If the answer cannot be found, write \"I don't know.\"\n\nArticle: At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling.\n\nQuestion: Which athletes won the gold medal in curling at the 2022 Winter Olympics?")},
+	})
+	if err != nil {
+		return err
+	}
+	fmt.Println(completion.Choices[0].Message.Content)
+	return nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -527,6 +657,21 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4.1-mini";
+ChatClient client = new(model, key);
+
+string article = "At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling.";
+string query = $"Use the article to answer the question. If the answer cannot be found, write I don't know.\nArticle: {article}\nQuestion: Which athletes won the gold medal in curling at the 2022 Winter Olympics?";
+ChatCompletion result = await client.CompleteChatAsync(
+    [new SystemChatMessage("You answer questions about the 2022 Winter Olympics."), new UserChatMessage(query)],
+    new ChatCompletionOptions { Temperature = 0 });
+Console.WriteLine(result.Content[0].Text);
 ```
 
 ```ruby
@@ -568,7 +713,7 @@ puts(response.choices.fetch(0).message.content)
 
 
 
-#### 使用嵌入进行文本搜索
+#### 使用 embeddings 进行文本搜索
 
 
 
@@ -577,7 +722,7 @@ puts(response.choices.fetch(0).message.content)
   
 
 Semantic_text_search_using_embeddings.ipynb
- 为了检索最相关的文档，我们计算查询与各文档嵌入向量之间的余弦相似度，并返回得分最高的文档。
+ 为了检索最相关的文档，我们计算查询与每个文档的嵌入向量之间的余弦相似度，并返回得分最高的文档。
 
 ```javascript
 import OpenAI from "openai";
@@ -627,6 +772,82 @@ def search_reviews(df, product_description, n=3, pprint=True):
 res = search_reviews(df, "delicious beans", n=3)
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+	"sort"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	texts := []string{"A rich cup of coffee.", "Crunchy crackers with sea salt.", "Dark chocolate with orange.", "A bright herbal tea.", "Smooth beans in tomato sauce.", "A mild cheese with herbs.", "Spicy roasted nuts.", "A crisp sparkling water."}
+	vectors := make([][]float64, len(texts))
+	for i, text := range texts {
+		vector, err := embedding(ctx, &client, text)
+		if err != nil {
+			return err
+		}
+		vectors[i] = vector
+	}
+	query, err := embedding(ctx, &client, "delicious beans")
+	if err != nil {
+		return err
+	}
+	matches := nearest(query, vectors)
+	for _, match := range matches[:min(3, len(matches))] {
+		fmt.Printf("%0.3f: %s\n", match.Similarity, texts[match.Index])
+	}
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+
+type match struct {
+	Index      int
+	Similarity float64
+}
+
+func nearest(query []float64, vectors [][]float64) []match {
+	matches := make([]match, len(vectors))
+	for i, vector := range vectors {
+		matches[i] = match{Index: i, Similarity: cosineSimilarity(query, vector)}
+	}
+	sort.SliceStable(matches, func(i, j int) bool { return matches[i].Similarity > matches[j].Similarity })
+	return matches
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -671,6 +892,42 @@ IntStream.range(0, reviews.size())
     .limit(3)
     .map(reviews::get)
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] texts = ["A rich cup of coffee.", "Crunchy crackers with sea salt.", "Dark chocolate with orange.", "A bright herbal tea.", "Smooth beans in tomato sauce.", "A mild cheese with herbs.", "Spicy roasted nuts.", "A crisp sparkling water."];
+OpenAIEmbeddingCollection batch = await client.GenerateEmbeddingsAsync(texts);
+float[][] vectors = batch.Select(item => item.ToFloats().ToArray()).ToArray();
+float[] query = await EmbedAsync(client, "delicious beans");
+var ranked = vectors.Select((vector, index) => new { Index = index, Similarity = CosineSimilarity(query, vector) }).OrderByDescending(match => match.Similarity);
+foreach (var match in ranked.Take(3))
+{
+    Console.WriteLine($"{match.Similarity:F3}: {texts[match.Index]}");
+}
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -722,9 +979,9 @@ puts(results)
   
 
 Code_search.ipynb
- 代码搜索的工作方式与基于嵌入的文本搜索类似。我们提供了一种方法，可以从指定仓库的所有 Python 文件中提取 Python 函数。然后，每个函数都会被以下模型索引 `text-embedding-3-small` model.
+ 代码搜索的工作方式与基于嵌入的文本搜索类似。我们提供一种方法，可从指定代码仓库中的所有 Python 文件里提取函数，随后使用每个函数的 `text-embedding-3-small` model 对其建立索引。
 
-为了执行代码搜索，我们使用相同的模型将自然语言形式的查询进行嵌入。然后，我们计算查询嵌入与每个函数嵌入之间的余弦相似度。余弦相似度最高的结果最相关。
+为了执行代码搜索，我们使用同一个 model 将自然语言形式的查询转换为嵌入向量。然后计算该查询嵌入与各个函数嵌入之间的余弦相似度，余弦相似度最高的结果即为最相关的函数。
 
 ```javascript
 import OpenAI from "openai";
@@ -778,6 +1035,82 @@ def search_functions(df, code_query, n=3, pprint=True, n_lines=7):
 res = search_functions(df, "Completions API tests", n=3)
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+	"sort"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	texts := []string{"def add(a, b): return a + b", "def complete(prompt): return prompt"}
+	vectors := make([][]float64, len(texts))
+	for i, text := range texts {
+		vector, err := embedding(ctx, &client, text)
+		if err != nil {
+			return err
+		}
+		vectors[i] = vector
+	}
+	query, err := embedding(ctx, &client, "Completions API tests")
+	if err != nil {
+		return err
+	}
+	matches := nearest(query, vectors)
+	for _, match := range matches[:min(3, len(matches))] {
+		fmt.Printf("%0.3f: %s\n", match.Similarity, texts[match.Index])
+	}
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+
+type match struct {
+	Index      int
+	Similarity float64
+}
+
+func nearest(query []float64, vectors [][]float64) []match {
+	matches := make([]match, len(vectors))
+	for i, vector := range vectors {
+		matches[i] = match{Index: i, Similarity: cosineSimilarity(query, vector)}
+	}
+	sort.SliceStable(matches, func(i, j int) bool { return matches[i].Similarity > matches[j].Similarity })
+	return matches
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -817,6 +1150,45 @@ IntStream.range(0, functions.size())
             .reversed())
     .map(functions::get)
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] texts = ["def add(a, b): return a + b", "def complete(prompt): return prompt"];
+List<float[]> vectors = [];
+foreach (string text in texts)
+{
+    vectors.Add(await EmbedAsync(client, text));
+}
+float[] query = await EmbedAsync(client, "Completions API tests");
+var ranked = vectors.Select((vector, index) => new { Index = index, Similarity = CosineSimilarity(query, vector) }).OrderByDescending(match => match.Similarity);
+foreach (var match in ranked.Take(3))
+{
+    Console.WriteLine($"{match.Similarity:F3}: {texts[match.Index]}");
+}
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -867,9 +1239,9 @@ puts(results)
   
 
 Recommendation_using_embeddings.ipynb
- 由于嵌入向量之间距离越小表示相似度越高，因此嵌入可用于推荐。
+ 由于嵌入向量之间距离越短表示相似度越高，因此嵌入可用于推荐。
 
-下面，我们演示一个基础的推荐器。它接收一个字符串列表和一个“源”字符串，计算它们的嵌入，然后返回一个按相似度从高到低排序的字符串排序结果。作为具体示例，下面链接的 notebook 将该函数的一个版本应用于 [AG news 数据集](http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html) （采样缩减至 2,000 条新闻文章描述），以针对任意给定的源文章返回最相似的 5 篇文章。
+下面我们演示一个基础的推荐器。它接收一组字符串和一个“源”字符串，计算它们的嵌入，然后返回一个排序结果，按相似度从高到低对这些字符串进行排序。作为具体示例，下面的关联 notebook 将该函数的一个版本应用于 [AG 新闻数据集](http://groups.di.unipi.it/~gulli/AG_corpus_of_news_articles.html) （抽样缩减至 2,000 条新闻文章描述），以返回与任意给定源文章最相似的前 5 篇文章。
 
 ```javascript
 import OpenAI from "openai";
@@ -928,6 +1300,79 @@ def recommendations_from_strings(
     return indices_of_nearest_neighbors
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+	"sort"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	texts := []string{"A cheetah is a fast land animal.", "A peregrine falcon is a fast bird.", "A tortoise moves slowly."}
+	vectors := make([][]float64, len(texts))
+	for i, text := range texts {
+		vector, err := embedding(ctx, &client, text)
+		if err != nil {
+			return err
+		}
+		vectors[i] = vector
+	}
+	query := vectors[0]
+	matches := nearest(query, vectors)
+	for _, match := range matches {
+		fmt.Println(match.Index)
+	}
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+
+type match struct {
+	Index      int
+	Similarity float64
+}
+
+func nearest(query []float64, vectors [][]float64) []match {
+	matches := make([]match, len(vectors))
+	for i, vector := range vectors {
+		matches[i] = match{Index: i, Similarity: cosineSimilarity(query, vector)}
+	}
+	sort.SliceStable(matches, func(i, j int) bool { return matches[i].Similarity > matches[j].Similarity })
+	return matches
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -973,6 +1418,45 @@ var nearestNeighbors =
         .toList();
 
 System.out.println(nearestNeighbors);
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] texts = ["A cheetah is a fast land animal.", "A peregrine falcon is a fast bird.", "A tortoise moves slowly."];
+List<float[]> vectors = [];
+foreach (string text in texts)
+{
+    vectors.Add(await EmbedAsync(client, text));
+}
+float[] query = vectors[0];
+var ranked = vectors.Select((vector, index) => new { Index = index, Similarity = CosineSimilarity(query, vector) }).OrderByDescending(match => match.Similarity);
+foreach (var match in ranked)
+{
+    Console.WriteLine(match.Index);
+}
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -1025,17 +1509,17 @@ puts(recommendations)
   
 
 Visualizing_embeddings_in_2D.ipynb
- 嵌入的维度大小会随底层模型的复杂度而变化。为了可视化这些高维数据，我们使用 t-SNE 算法将其变换到二维空间。
+ 嵌入向量的维度会随底层模型的复杂度而变化。为了可视化这些高维数据，我们使用 t-SNE 算法将其变换到二维空间。
 
-我们根据评论者给出的星级评分为每条评论着色：
+我们根据评论者给出的星级对各条评论进行着色：
 
 - 1 星：红色
 - 2 星：深橙色
-- 3 星：金黄色
+- 3 星：金色
 - 4 星：青绿色
 - 5 星：深绿色
 
-该可视化似乎生成了大约 3 个簇，其中一个簇主要包含负面评价。
+可视化结果似乎大致生成了 3 个聚类，其中一个聚类的评论大多为负面评价。
 
 ```python
 import numpy as np
@@ -1070,7 +1554,7 @@ plt.title("Amazon ratings visualized in language using t-SNE")
 
 
 
-#### 将嵌入用作机器学习算法的文本特征编码器
+#### 将 Embedding 用作机器学习算法的文本特征编码器
 
 
 
@@ -1079,11 +1563,11 @@ plt.title("Amazon ratings visualized in language using t-SNE")
   
 
 Regression_using_embeddings.ipynb
- 嵌入可以用作机器学习模型中的通用自由文本特征编码器。在一些相关输入是自由文本的情况下，加入嵌入将提升任何机器学习模型的性能。嵌入也可以用作 ML 模型中的分类特征编码器。当分类变量的名称具有意义且数量较多（例如职位名称）时，这种做法最为有效。对于此任务，相似性嵌入通常优于搜索嵌入。
+ 嵌入可作为机器学习模型中通用的自由文本特征编码器。如果部分相关输入是自由文本，加入嵌入将提升任何机器学习模型的表现。嵌入也可以作为 ML 模型中的类别特征编码器。当类别变量的名称有意义且数量较多（如职位名称）时，这种做法尤为有价值。对于此任务，相似性嵌入通常比搜索嵌入表现更好。
 
-我们观察到，通常嵌入表示非常丰富且信息密集。例如，使用 SVD 或 PCA 降低输入的维度，即使仅降低 10%，通常也会导致在特定任务上的下游性能变差。
+我们观察到，嵌入表示通常非常丰富且信息密集。例如，使用 SVD 或 PCA 降低输入的维度，即使仅降低 10%，通常也会导致特定任务的下游表现变差。
 
-此代码将数据拆分为训练集和测试集，供以下两个用例（即回归和分类）使用。
+此代码将数据划分为训练集和测试集，供后续两个用例（即回归和分类）使用。
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -1096,9 +1580,9 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 #### 使用嵌入特征进行回归
 
-嵌入提供了一种预测数值的方式。在本示例中，我们根据评论者的评论文本来预测其星级评分。由于嵌入中包含丰富的语义信息，即使只有很少的评论样本，预测效果也相当不错。
+嵌入提供了一种预测数值的好方法。在这个示例中，我们根据评论者的评论文本来预测其星级评分。由于嵌入中包含的语义信息十分丰富，即使评论数量很少，预测效果也相当不错。
 
-我们假设评分是介于 1 到 5 之间的连续变量，并允许算法预测任意浮点值。该机器学习算法会最小化预测值与真实评分之间的距离，最终达到 0.39 的平均绝对误差，这意味着平均而言预测偏差不到半颗星。
+我们假设评分是一个介于 1 到 5 之间的连续变量，并允许算法预测任意浮点值。该机器学习算法会最小化预测值与真实评分之间的距离，最终达到 0.39 的平均绝对误差，这意味着平均而言预测偏差小于半颗星。
 
 ```python
 from sklearn.ensemble import RandomForestRegressor
@@ -1124,9 +1608,9 @@ preds = rfr.predict(X_test)
   
 
 Classification_using_embeddings.ipynb
- 这一次，我们不再让算法预测 1 到 5 之间的任意数值，而是尝试将评论的精确星级数量归入 5 个类别，范围从 1 星到 5 星。
+ 这一次，我们不再让算法预测 1 到 5 之间的任意值，而是尝试将评论的精确星级数量归入 5 个分桶，范围从 1 星到 5 星。
 
-训练完成后，模型对 1 星和 5 星评论的预测效果明显优于更细腻的评论（2-4 星），这可能是由于极端情感表达更为明显所致。
+训练后，模型对 1 星和 5 星评论的预测效果远好于更细微的评论（2-4 星），这可能是因为极端情感的表达到位。
 
 ```python
 from sklearn.ensemble import RandomForestClassifier
@@ -1153,7 +1637,7 @@ preds = clf.predict(X_test)
   
 
 Zero-shot_classification_with_embeddings.ipynb
- 我们可以使用 embeddings 进行零样本分类，无需任何标注训练数据。对于每个类别，我们对其名称或简短描述进行嵌入。为了以零样本方式分类一段新文本，我们将其嵌入与所有类别嵌入进行比较，并预测相似度最高的类别。
+ 你可以使用嵌入进行零样本分类，无需任何已标注的训练数据。对于每个类别，嵌入该类别的名称或对该类别的简短描述。要以零样本方式对一些新文本进行分类时，将其嵌入与所有类别的嵌入进行比较，并预测相似度最高的类别。
 
 ```javascript
 import OpenAI from "openai";
@@ -1200,6 +1684,68 @@ prediction = (
 )
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	negative, err := embedding(ctx, &client, "negative")
+	if err != nil {
+		return err
+	}
+	positive, err := embedding(ctx, &client, "positive")
+	if err != nil {
+		return err
+	}
+	review, err := embedding(ctx, &client, "Sample Review")
+	if err != nil {
+		return err
+	}
+	score := cosineSimilarity(review, positive) - cosineSimilarity(review, negative)
+	prediction := "negative"
+	if score > 0 {
+		prediction = "positive"
+	}
+	fmt.Println(prediction)
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -1220,6 +1766,38 @@ List<Float> review = embeddings.get(2).embedding();
 double negative = cosineSimilarity(review, embeddings.get(0).embedding());
 double positive = cosineSimilarity(review, embeddings.get(1).embedding());
 System.out.println(positive > negative ? "positive" : "negative");
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+float[] negative = await EmbedAsync(client, "negative");
+float[] positive = await EmbedAsync(client, "positive");
+float[] review = await EmbedAsync(client, "Sample Review");
+double score = CosineSimilarity(review, positive) - CosineSimilarity(review, negative);
+Console.WriteLine(score > 0 ? "positive" : "negative");
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -1254,7 +1832,7 @@ puts((positive > negative) ? "positive" : "negative")
 
 
 
-#### 获取用户和商品嵌入用于冷启动推荐
+#### 获取用于冷启动推荐的用户和产品 embeddings
 
 
 
@@ -1263,9 +1841,9 @@ puts((positive > negative) ? "positive" : "negative")
   
 
 User_and_product_embeddings.ipynb
- 我们可以通过对用户的所有评论取平均来获得该用户的 embedding。类似地，我们可以通过对某件产品的所有评论取平均来获得该产品的 embedding。为了展示这种方法的有效性，我们使用了 5 万条评论的子集，以覆盖每个用户和每件产品的更多评论。
+ 我们可以通过对某个用户的所有评论取平均来得到该用户的嵌入。类似地，我们可以通过对某件产品的所有评论取平均来得到该产品的嵌入。为了展示这种方法的有效性，我们使用了一个包含 5 万条评论的子集，以便覆盖更多用户和产品的评论。
 
-我们在单独的测试集上评估这些 embedding 的有效性，在该测试集中，我们将用户和产品的 embedding 相似度绘制为评分的函数。有趣的是，基于这种方法，甚至在用户收到产品之前，我们就能以优于随机的水平预测他们是否会喜欢该产品。
+我们在单独的测试集上评估这些嵌入的有效性，其中我们将用户嵌入和产品嵌入的相似度绘制为评分的函数。有趣的是，基于这种方法，即使在用户收到产品之前，我们也能比随机猜测更准确地预测他们是否会喜欢该产品。
 
 ```python
 user_embeddings = df.groupby("UserId").ada_embedding.apply(np.mean)
@@ -1288,9 +1866,9 @@ prod_embeddings = df.groupby("ProductId").ada_embedding.apply(np.mean)
   
 
 Clustering.ipynb
- 聚类是处理海量文本数据的一种方式。嵌入对这一任务非常有用，因为它们能为每段文本提供语义上有意义的向量表示。因此，得以通过无监督方式发现数据集中隐藏的分组。
+ 聚类是理解海量文本数据的一种方式。嵌入（embedding）非常适合用于此任务，因为它们能为每段文本提供具有语义意义的向量表示。因此，集群可以在无监督的方式下发现我们数据集中隐藏的分组。
 
-在本示例中，我们发现了四个不同的聚类：一个聚焦于狗粮，一个聚焦于负面评论，另外两个聚焦于正面评论。
+在本例中，我们发现了四个不同的聚类：一个聚焦于狗粮，一个聚焦于负面评价，还有两个聚焦于正面评价。
 
 ```python
 import numpy as np
@@ -1309,9 +1887,9 @@ df["Cluster"] = kmeans.labels_
 
 
 
-## 常见问题
+## 常见问题解答
 
-### 如何判断一段文本在嵌入之前有多少个 token？
+### 在嵌入字符串之前，如何判断它有多少个 token？
 
 在 Python 中，你可以使用 OpenAI 的分词器将字符串拆分为 token [`tiktoken`](https://github.com/openai/tiktoken).
 
@@ -1332,27 +1910,27 @@ num_tokens_from_string("tiktoken is great!", "cl100k_base")
 ```
 
 
-对于第三代 embedding 模型，例如 `text-embedding-3-small`，请使用 `cl100k_base` 编码。
+对于 `text-embedding-3-small`，等第三代嵌入模型，请使用 `cl100k_base` 编码。
 
-更多详情和示例代码请参阅 OpenAI Cookbook 指南 [如何使用 tiktoken 计算 token 数](https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken).
+更多详细信息和示例代码请参阅 OpenAI Cookbook 指南 [如何使用 tiktoken 计算 token 数](https://developers.openai.com/cookbook/examples/how_to_count_tokens_with_tiktoken).
 
 ### 如何快速检索 K 个最近的嵌入向量？
 
-为了在大量向量中快速进行搜索，我们建议使用向量数据库。你可以在我们的 Cookbook 中找到使用向量数据库和 OpenAI API [的示例](https://developers.openai.com/cookbook/examples/vector_databases/readme) （位于 GitHub 上）。
+如果需要快速检索大量向量，我们推荐使用向量数据库。你可以在我们的 Cookbook 中找到使用向量数据库和 OpenAI API 的示例 [中的示例](https://developers.openai.com/cookbook/examples/vector_databases/readme) on GitHub.
 
 ### 我应该使用哪种距离函数？
 
-我们建议使用 [余弦相似度](https://en.wikipedia.org/wiki/Cosine_similarity)。距离函数的选择通常影响不大。
+我们推荐 [余弦相似度](https://en.wikipedia.org/wiki/Cosine_similarity)。距离函数的选择通常影响不大。
 
-OpenAI 嵌入会被归一化为长度 1，这意味着：
+OpenAI 嵌入已归一化为长度 1，这意味着：
 
-- 余弦相似度可以仅通过点积稍快地计算
-- 余弦相似度和欧氏距离将产生完全相同的排序结果
+- 余弦相似度可以通过仅使用点积来略微更快地计算
+- 余弦相似度和欧几里得距离将产生相同的排名结果
 
-### 我可以在网上分享我的 embeddings 吗？
+### 我可以在网上分享我的嵌入吗？
 
-是的，客户拥有其输入和我们模型的输出，包括嵌入（embedding）的情况。你需要确保输入到我们的 API 的内容不违反任何适用法律或我们的 [使用条款](https://openai.com/policies/terms-of-use).
+是的，客户拥有我们模型输入和输出的所有权，包括在内嵌场景中也是如此。你需要确保你输入到我们API 的内容不违反任何适用法律或我们的 [使用条款](https://openai.com/policies/terms-of-use).
 
-### V3 嵌入模型是否了解近期发生的事件？
+### V3 embedding 模型是否了解近期发生的事件？
 
-否， `text-embedding-3-large` 和 `text-embedding-3-small` 模型缺乏 2021 年 9 月之后发生的事件的相关知识。这通常不会像对文本生成模型那样构成很大的限制，但在某些边缘情况下，它可能会降低性能。
+不， `text-embedding-3-large` 和 `text-embedding-3-small` 模型缺乏对 2021 年 9 月之后发生的事件的了解。这通常不像对文本生成模型那样构成限制，但在某些边缘情况下可能会降低性能。

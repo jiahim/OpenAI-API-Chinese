@@ -1,17 +1,17 @@
 # Completions API
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获得文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。页面的 Markdown 版本可通过在 `.md` 追加到页面 URL 来获取。
 
-`gpt-3.5-turbo-instruct`, `babbage-002`，并且 `davinci-002` 计划于 2026 年 9 月 28 日停用。下面的示例保留了旧的
-  请求格式作为参考。文档中记录的替代方案
-  需要迁移到， `gpt-5.6-terra`,
-  Responses [Responses
+`gpt-3.5-turbo-instruct`, `babbage-002`，以及 `davinci-002` 计划于
+  2026 年 9 月 28 日停服。下方的示例仍保留旧的
+  请求格式以供参考。文档化的替代方案， `gpt-5.6-terra`,
+  需要迁移到 [Responses
   API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 或 Chat Completions；它
-  不是旧版 Completions 端点的直接模型替代方案。详见
+  并非旧版 Completions 端点的可直接替换模型。详见
   该 [弃用
   通知](https://developers.openai.com/api/docs/deprecations#2025-09-26-legacy-gpt-model-snapshots).
 
-Completions API 端点已于 2023 年 7 月收到最后一次更新，并且与新的 Chat Completions 端点具有不同的接口。输入不是消息列表，而是一个名为 `prompt`.
+Completions API 端点已于 2023 年 7 月完成最后一次更新，其接口与新的 Chat Completions 端点不同。其输入不是消息列表，而是一段自由格式的文本字符串，称为 `prompt`.
 
 旧版 Completions API 的调用示例如下：
 
@@ -55,6 +55,21 @@ func main() {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.completions.CompletionCreateParams;
+
+var completion =
+    client
+        .completions()
+        .create(
+            CompletionCreateParams.builder()
+                .model("gpt-3.5-turbo-instruct")
+                .prompt("Write a tagline for an ice cream shop.")
+                .build());
+completion.choices().forEach(choice -> System.out.println(choice.text()));
+```
+
 ```ruby
 require "openai"
 
@@ -64,50 +79,50 @@ puts(completion.choices.fetch(0).text)
 ```
 
 
-请参阅完整的 [API 参考文档](https://platform.openai.com/docs/api-reference/completions) 以了解更多信息。
+请参阅完整的 [API 参考文档](https://platform.openai.com/docs/api-reference/completions) 以了解更多。
 
 #### 插入文本
 
-completions 端点也支持通过提供 [suffix](https://developers.openai.com/api/reference/resources/completions/methods/create#completions-create-suffix) 来插入文本，作为被视为前缀的标准提示的补充。这种需求在撰写长文本、在段落之间过渡、遵循大纲或引导模型走向特定结尾时自然产生。它同样适用于代码，可用于在函数或文件的中间位置插入内容。
+completions 端点除了支持标准的 prompt（视为前缀）之外，还支持通过提供 [suffix](https://developers.openai.com/api/reference/resources/completions/methods/create#completions-create-suffix) 来插入文本。这种需求在撰写长篇文本、在段落之间过渡、遵循大纲或引导模型走向特定结尾时自然产生。它同样适用于代码，可用于在函数或文件中间插入内容。
 
 
 
-为了说明 suffix 上下文如何影响生成的文本，可以考虑以下提示：“Today I decided to make a big change.”。可以想象，这句话有多种补全方式。但如果我们提供故事的结尾：“I’ve gotten many compliments on my new hair!”，那么预期的补全就变得清晰了。
+为了说明 suffix 上下文对生成文本的影响，考虑这样一个 prompt：“Today I decided to make a big change.”（今天我决定做出一个重大改变。）人们可以想象出多种完成这句话的方式。但如果我们现在提供故事的结尾：“I’ve gotten many compliments on my new hair!”（我的新发型收到了很多赞美！），那么预期的续写就变得清晰了。
 
 > 我在波士顿大学读的大学。拿到学位后，我决定做出一个改变**。一个巨大的改变！**
 
-> **我收拾行囊，搬到了美国的西海岸。**
+> **我收拾行囊，搬到了美国西海岸。**
 
-> 现在，我彻底爱上了太平洋！
+> 现在，我对太平洋简直欲罢不能！
 
-通过为模型提供额外的上下文，可以使模型更易于控制。然而，这对模型来说是一项约束更强、难度更大的任务。为了获得最佳效果，我们建议以下几点：
+为模型提供额外上下文可以使其更易于引导。然而，这对模型来说是一项更受约束且更具挑战性的任务。为了获得最佳效果，我们建议你遵循以下几点：
 
-**使用 `max_tokens` > 256。** 模型更擅长插入较长的补全。如果 `max_tokens`，太小，模型可能会在能够连接到后缀之前就被截断。请注意，即使使用更大的 `max_tokens`.
+**使用 `max_tokens` > 256。** 模型更擅长插入较长的补全。如果 `max_tokens`，过小，模型可能会在被截断之前无法连接到后缀。请注意，即便使用更大的 `max_tokens`.
 
-**优先选择 `finish_reason` == "stop"。** 当模型到达自然停止点或用户提供停止序列时，它会将 `finish_reason` 设为 "stop"。这表明模型很好地连接到了后缀，是补全质量良好的信号。在使用 n > 1 或重采样（在下一条中介绍）在若干补全之间进行选择时，这一点尤为重要。
+**优先选择 `finish_reason` == "stop"。** 当模型到达自然停止点或用户提供的停止序列时，它会将 `finish_reason` 设置为 "stop"。这表明模型已较好地连接到后缀，是补全质量良好的信号。在使用 n > 1 或重采样（见下一点）从若干补全中进行选择时，这一点尤为重要。
 
-**重采样 3-5 次。** 虽然几乎所有补全都能连接到前缀，但在更困难的情况下，模型可能难以连接到后缀。我们发现，在这种情况下，重采样 3 或 5 次（或使用 best_of 并设置 k=3,5），然后挑选那些将 `finish_reason` 作为 "stop" 的样本，是一种有效的方法。在重采样时，你通常会希望使用更高的 temperature 来增加多样性。
+**重采样 3 到 5 次。** 虽然几乎所有补全都能连接到前缀，但在较难的情况下，模型可能会难以连接到后缀。我们发现，在这种情况下，重采样 3 或 5 次（或使用 best_of 并设 k=3,5），然后选择将 `finish_reason` 设为 "stop" 的样本，是一种有效的方法。重采样时，通常会希望使用较高的 temperature 来增加多样性。
 
-注意：如果所有返回的样本的 `finish_reason` == "length"，很可能是 max_tokens 太小，模型在自然连接提示和后缀之前就用完了 token。请考虑在重采样之前增大 `max_tokens` 。
+注意：如果所有返回的样本其 `finish_reason` == "length"，很可能是 max_tokens 过小，模型在自然地连接提示和后缀之前就用完了 token。请考虑在重采样前增大 `max_tokens` 再进行重采样。
 
-**尝试提供更多线索。** 在某些情况下，为了更好地帮助模型生成，你可以通过提供若干模式示例来给出线索，让模型能够据此判断合适的自然停止位置。
+**尝试提供更多线索。** 在某些情况下，为了更好地帮助模型生成，你可以通过给出若干模式示例来提供线索，让模型能够据此判断自然的停止位置。
 
-> 如何制作美味的热巧克力：
+> 如何制作一杯美味的热巧克力：
 >
 > 1.** 把水煮沸**
-> **2. 把热巧克力放入杯中**
-> **3. 将沸水倒入杯中** 4. 享用热巧克力
+> **2. 把热巧克力粉倒入杯中**
+> **3. 将沸水倒入杯中** 4. 享用这杯热巧克力
 
 > 1. 狗是忠诚的动物。
 > 2. 狮子是凶猛的动物。
-> 3. 海豚** 是爱玩耍的动物。**
+> 3. 海豚** 是爱嬉戏的动物。**
 > 4. 马是雄伟的动物。
 
 
 
 ### Completions 响应格式
 
-一个 completions API 响应的示例如下：
+一个示例 completions API 响应如下：
 
 ```
 {
@@ -131,52 +146,52 @@ completions 端点也支持通过提供 [suffix](https://developers.openai.com/a
 }
 ```
 
-在 Python 中，可以通过以下方式提取输出 `response['choices'][0]['text']`.
+在 Python 中，可以使用以下方式提取输出 `response['choices'][0]['text']`.
 
 响应格式与 Chat Completions API 的响应格式类似。
 
 ### 插入文本
 
-completions 端点也支持通过提供 [suffix](https://developers.openai.com/api/reference/resources/completions/methods/create#completions-create-suffix) 来插入文本，作为被视为前缀的标准提示的补充。这种需求在撰写长文本、在段落之间过渡、遵循大纲或引导模型走向特定结尾时自然产生。它同样适用于代码，可用于在函数或文件的中间位置插入内容。
+completions 端点除了支持标准的 prompt（视为前缀）之外，还支持通过提供 [suffix](https://developers.openai.com/api/reference/resources/completions/methods/create#completions-create-suffix) 来插入文本。这种需求在撰写长篇文本、在段落之间过渡、遵循大纲或引导模型走向特定结尾时自然产生。它同样适用于代码，可用于在函数或文件中间插入内容。
 
 
 
-为了说明 suffix 上下文如何影响生成的文本，可以考虑以下提示：“Today I decided to make a big change.”。可以想象，这句话有多种补全方式。但如果我们提供故事的结尾：“I’ve gotten many compliments on my new hair!”，那么预期的补全就变得清晰了。
+为了说明 suffix 上下文对生成文本的影响，考虑这样一个 prompt：“Today I decided to make a big change.”（今天我决定做出一个重大改变。）人们可以想象出多种完成这句话的方式。但如果我们现在提供故事的结尾：“I’ve gotten many compliments on my new hair!”（我的新发型收到了很多赞美！），那么预期的续写就变得清晰了。
 
 > 我在波士顿大学读的大学。拿到学位后，我决定做出一个改变**。一个巨大的改变！**
 
-> **我收拾行囊，搬到了美国的西海岸。**
+> **我收拾行囊，搬到了美国西海岸。**
 
-> 现在，我对太平洋简直欲罢不能！
+> 现在，我对太平洋简直着了迷！
 
-通过为模型提供额外的上下文，可以使模型更易于控制。然而，这对模型来说是一项约束更强、难度更大的任务。为了获得最佳效果，我们建议以下几点：
+为模型提供额外上下文可以使其更易于引导。然而，这对模型来说是一项更受约束且更具挑战性的任务。为了获得最佳效果，我们建议你遵循以下几点：
 
-**使用 `max_tokens` > 256。** 模型更擅长插入较长的补全。如果 `max_tokens`，太小，模型可能会在能够连接到后缀之前就被截断。请注意，即使使用更大的 `max_tokens`.
+**使用 `max_tokens` > 256。** 模型更擅长插入较长的补全。如果 `max_tokens`，过小，模型可能会在被截断之前无法连接到后缀。请注意，即便使用更大的 `max_tokens`.
 
-**优先选择 `finish_reason` == "stop"。** 当模型到达自然停止点或用户提供停止序列时，它会将 `finish_reason` 设为 "stop"。这表明模型很好地连接到了后缀，是补全质量良好的信号。在使用 n > 1 或重采样（在下一条中介绍）在若干补全之间进行选择时，这一点尤为重要。
+**优先选择 `finish_reason` == "stop"。** 当模型到达自然停止点或用户提供的停止序列时，它会将 `finish_reason` 设置为 "stop"。这表明模型已较好地连接到后缀，是补全质量良好的信号。在使用 n > 1 或重采样（见下一点）从若干补全中进行选择时，这一点尤为重要。
 
-**重采样 3-5 次。** 虽然几乎所有补全都能连接到前缀，但在更困难的情况下，模型可能难以连接到后缀。我们发现，在这种情况下，重采样 3 或 5 次（或使用 best_of 并设置 k=3,5），然后挑选那些将 `finish_reason` 作为 "stop" 的样本，是一种有效的方法。在重采样时，你通常会希望使用更高的 temperature 来增加多样性。
+**重采样 3 到 5 次。** 虽然几乎所有补全都能连接到前缀，但在较难的情况下，模型可能会难以连接到后缀。我们发现，在这种情况下，重采样 3 或 5 次（或使用 best_of 并设 k=3,5），然后选择将 `finish_reason` 设为 "stop" 的样本，是一种有效的方法。重采样时，通常会希望使用较高的 temperature 来增加多样性。
 
-注意：如果所有返回的样本的 `finish_reason` == "length"，很可能是 max_tokens 太小，模型在自然连接提示和后缀之前就用完了 token。请考虑在重采样之前增大 `max_tokens` 。
+注意：如果所有返回的样本其 `finish_reason` == "length"，很可能是 max_tokens 过小，模型在自然地连接提示和后缀之前就用完了 token。请考虑在重采样前增大 `max_tokens` 再进行重采样。
 
-**尝试提供更多线索。** 在某些情况下，为了更好地帮助模型生成，你可以通过提供若干模式示例来给出线索，让模型能够据此判断合适的自然停止位置。
+**尝试提供更多线索。** 在某些情况下，为了更好地帮助模型生成，你可以通过给出若干模式示例来提供线索，让模型能够据此判断自然的停止位置。
 
-> 如何制作美味的热巧克力：
+> 如何制作一杯美味的热巧克力：
 >
 > 1.** 把水煮沸**
-> **2. 把热巧克力放入杯中**
-> **3. 将沸水倒入杯中** 4. 享用热巧克力
+> **2. 把热巧克力粉倒入杯中**
+> **3. 将沸水倒入杯中** 4. 享用这杯热巧克力
 
 > 1. 狗是忠诚的动物。
 > 2. 狮子是凶猛的动物。
-> 3. 海豚** 是爱玩耍的动物。**
+> 3. 海豚** 是爱嬉戏的动物。**
 > 4. 马是雄伟的动物。
 
 
 
 ## Chat Completions vs. Completions
 
-Chat Completions 格式可以通过构造仅包含单个用户消息的请求来模拟 completions 格式。例如，可以使用以下 completions 提示词实现英译法：
+通过使用单个用户消息构造请求，可以让 Chat Completions 格式与 completions 格式类似。例如，可以使用以下 completions 提示词完成从英文到法文的翻译：
 
 ```
 Translate the following English text to French: "{text}"
@@ -188,6 +203,6 @@ Translate the following English text to French: "{text}"
 [{"role": "user", "content": 'Translate the following English text to French: "{text}"'}]
 ```
 
-同样，可以通过相应地构造输入，使用 completions API 来模拟用户与助手之间的对话 [相应地构造输入](https://platform.openai.com/playground/p/default-chat?model=gpt-3.5-turbo-instruct).
+同样地，completions API 也可以通过相应地格式化输入来模拟用户与助手之间的对话 [相应地](https://platform.openai.com/playground/p/default-chat?model=gpt-3.5-turbo-instruct).
 
-这些 API 之间的区别在于各自可用的底层模型。Chat Completions API 支持当前的 GPT 模型，例如 [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) 以及成本更低的选项，例如 [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra).
+这些 API 之间的区别在于各自可用的底层模型。Chat Completions API 支持当前一代的 GPT 模型，例如 [`gpt-6-astra`](https://developers.openai.com/api/docs/models/gpt-6-astra) 以及更低成本的选项，例如 [`gpt-5.6-terra`](https://developers.openai.com/api/docs/models/gpt-5.6-terra).
