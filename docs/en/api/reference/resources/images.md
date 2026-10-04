@@ -869,6 +869,7 @@ curl https://api.openai.com/v1/images/generations \
           "output_format": "png",
           "partial_images": 1,
           "quality": "medium",
+          "size": "1024x1024",
           "style": "vivid",
           "user": "user-1234"
         }'

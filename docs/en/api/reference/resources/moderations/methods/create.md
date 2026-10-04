@@ -307,7 +307,8 @@ curl https://api.openai.com/v1/moderations \
     -H 'Content-Type: application/json' \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -d '{
-          "input": "I want to kill them."
+          "input": "I want to kill them.",
+          "model": "omni-moderation-2024-09-26"
         }'
 ```
 

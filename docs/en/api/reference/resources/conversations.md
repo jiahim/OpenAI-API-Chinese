@@ -4337,7 +4337,7 @@ Create a conversation.
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
 
-  - `metadata: unknown`
+  - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
@@ -4362,7 +4362,9 @@ curl https://api.openai.com/v1/conversations \
 {
   "id": "id",
   "created_at": 0,
-  "metadata": {},
+  "metadata": {
+    "foo": "string"
+  },
   "object": "conversation"
 }
 ```
@@ -4475,7 +4477,7 @@ Get a conversation
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
 
-  - `metadata: unknown`
+  - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
@@ -4499,7 +4501,9 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
 {
   "id": "id",
   "created_at": 0,
-  "metadata": {},
+  "metadata": {
+    "foo": "string"
+  },
   "object": "conversation"
 }
 ```
@@ -4551,7 +4555,7 @@ Update a conversation
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
 
-  - `metadata: unknown`
+  - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
@@ -4581,7 +4585,9 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID \
 {
   "id": "id",
   "created_at": 0,
-  "metadata": {},
+  "metadata": {
+    "foo": "string"
+  },
   "object": "conversation"
 }
 ```
@@ -4664,7 +4670,7 @@ curl https://api.openai.com/v1/conversations/conv_123 \
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
 
-  - `metadata: unknown`
+  - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
@@ -13829,7 +13835,7 @@ Delete an item from a conversation with the given IDs.
 
     The time at which the conversation was created, measured in seconds since the Unix epoch.
 
-  - `metadata: unknown`
+  - `metadata: map[string]`
 
     Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.
     Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.
@@ -13854,7 +13860,9 @@ curl https://api.openai.com/v1/conversations/$CONVERSATION_ID/items/$ITEM_ID \
 {
   "id": "id",
   "created_at": 0,
-  "metadata": {},
+  "metadata": {
+    "foo": "string"
+  },
   "object": "conversation"
 }
 ```
