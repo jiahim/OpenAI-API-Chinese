@@ -1,48 +1,49 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 上传文件
 
 **post** `/files`
 
-上传可在多个端点之间使用的文件。单个文件
-最大可达 512 MB，每个项目总共最多可存储 2.5 TB 的文件
-。组织级别没有存储容量限制。通过该
-端点上传的请求频率限制为每个已身份验证
-用户每分钟 1,000 次。
+上传一个可在各个端点使用的文件。单个文件
+最大可达 512 MB，每个项目总计最多可存储 2.5 TB 的文件。
+组织范围没有存储上限。此端点的
+上传速率限制为每个已认证用户每分钟 1,000 次请求。
+用户。
 
-- Assistants API 支持最大 2 百万 token 的文件以及特定的文件类型。
-  请参阅 [Assistants 工具指南](/api/docs/guides/tools) 了解
+- Assistants API 支持最大 200 万 token 的文件，且仅限特定文件类型。详见
+  Assistants 工具指南 [Assistants 工具指南](/api/docs/guides/tools) 以获取
   详情。
-- 微调 API 仅支持 `.jsonl` 文件。输入还需要满足
-  微调的特定格式要求
-  [对话](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 或
-  [completions](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 模型。
-- Batch API 仅支持 `.jsonl` 最大 200 MB 大小的文件。输入
-  文件还需要特定的必需
-  [格式](/api/docs/guides/batch#1-prepare-your-batch-file).
-- 对于检索或 `file_search` 摄取，请先在此处上传文件。如果
-  你需要将多个已上传文件附加到同一个向量存储，请使用
+- Fine-tuning API 仅支持 `.jsonl` .jsonl 文件。输入还需要符合
+  微调的特定格式要求，详见
+  [聊天](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 或
+  [completions](/api/docs/guides/supervised-fine-tuning#formatting-your-data) models。
+- Batch API 仅支持 `.jsonl` 最大 200 MB 的文件。输入
+  还有特定的必需
+  [format](/api/docs/guides/batch#1-prepare-your-batch-file).
+- 对于检索或 `file_search` 摄入，请先在此处上传文件。如果
+  你需要将多个已上传的文件附加到同一个向量存储，请使用
   [`/vector_stores/{vector_store_id}/file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create)
-  而不是逐个附加它们。向量存储附加具有独立的
-  limits from file upload, including 2,000 attached files per minute per
-  organization.
+  而不是逐个附加。向量存储附加有独立的
+  文件上传的限制，包括每个组织单位每分钟可附加 2,000 个文件
+  。
 
-请 [联系我们](https://help.openai.com/) 以提高这些
+请 [联系我们](https://help.openai.com/) 如果你需要提高这些
 存储限制。
 
 ### 返回值
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
-  该 `File` 对象，表示已上传到 OpenAI 的文档。
+  该 `File` object represents a document that has been uploaded to OpenAI.
 
   - `id: string`
 
-    文件标识符，可在 API 端点中引用。
+    The file identifier, which can be referenced in the API endpoints.
 
   - `bytes: number`
 
-    文件大小（以字节为单位）。
+    文件大小，以字节为单位。在已完成的文件上传响应中，当文件大小还无法获取时，该值
+    可能为 null。
 
   - `created_at: number`
 
@@ -50,7 +51,7 @@
 
   - `filename: string`
 
-    文件名称。
+    文件名。
 
   - `object: "file"`
 
@@ -60,7 +61,7 @@
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+    文件的预期用途。支持的取值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
 
     - `"assistants"`
 
@@ -90,11 +91,12 @@
 
   - `expires_at: optional number`
 
-    文件过期时的 Unix 时间戳（以秒为单位）。
+    文件到期时的 Unix 时间戳（以秒为单位）。在已
+    完成的文件上传响应中，当未设置到期时间时，该值可能为 null。
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因的详细信息，请参阅 `error` 字段，详见 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`。已完成的文件上传响应在未设置这些详情时可能返回 null。
 
 ### 示例
 

@@ -1,46 +1,46 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，请在页面 URL 末尾追加 `.md` 。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 取消上传
 
 **post** `/uploads/{upload_id}/cancel`
 
-取消该 Upload。上传被取消后,不能再添加任何 Part。
+取消该 Upload。Upload 被取消后不能再添加任何 Part。
 
-返回状态为上述值的 Upload 对象 `cancelled`.
+返回带有状态的 Upload 对象 `cancelled`.
 
 ### 路径参数
 
 - `upload_id: string`
 
-### 返回值
+### 返回
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以接受以 Parts 形式传入的字节块。
+  Upload 对象可以以 Parts 的形式接收字节分块。
 
   - `id: string`
 
-    Upload 唯一标识符，可在 API 端点中引用。
+    Upload 的唯一标识符，可在 API 端点中引用。
 
   - `bytes: number`
 
-    预期上传的字节数。
+    预期要上传的字节数。
 
   - `created_at: number`
 
-    Upload 创建时的 Unix 时间戳（秒）。
+    Upload 创建时的 Unix 时间戳（以秒为单位）。
 
   - `expires_at: number`
 
-    Upload 过期时的 Unix 时间戳（秒）。
+    Upload 到期时的 Unix 时间戳（以秒为单位）。
 
   - `filename: string`
 
-    要上传的文件的名称。
+    要上传的文件名。
 
   - `purpose: string`
 
-    文件的预期用途。 [请参阅此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 以了解可接受的值。
+    该文件的预期用途。 [请参考此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -56,7 +56,7 @@
 
   - `file: optional FileObject or null`
 
-    Upload 完成后可用的 File 对象。
+    上传完成后处于就绪状态的 File 对象。
 
     - `id: string`
 
@@ -64,11 +64,12 @@
 
     - `bytes: number`
 
-      文件的大小，以字节为单位。
+      文件的字节大小。在已完成的文件上传响应中，当文件大小尚不可用时，此字段可能
+      为 null。
 
     - `created_at: number`
 
-      文件创建时的 Unix 时间戳（秒）。
+      文件创建时的 Unix 时间戳（单位为秒）。
 
     - `filename: string`
 
@@ -82,7 +83,7 @@
 
     - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-      文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+      文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，和 `user_data`.
 
       - `"assistants"`
 
@@ -102,7 +103,7 @@
 
     - `status: "uploaded" or "processed" or "error"`
 
-      已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
+      已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
 
       - `"uploaded"`
 
@@ -112,11 +113,12 @@
 
     - `expires_at: optional number`
 
-      文件到期时的 Unix 时间戳（以秒为单位）。
+      文件将过期的 Unix 时间戳（以秒为单位）。在
+      已完成的文件上传响应中，当未设置过期时间时，此字段可为 null。
 
     - `status_details: optional string`
 
-      已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段： `fine_tuning.job`.
+      已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`。当这些详细信息未设置时，已完成的文件上传响应可以返回 null。
 
   - `object: optional "upload"`
 

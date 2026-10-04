@@ -1,4 +1,4 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
+> 有关完整文档索引,请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 列出文件
 
@@ -10,15 +10,15 @@
 
 - `after: optional string`
 
-  用于分页查询的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你后续的调用可以在 after=obj_foo 以便获取列表的下一页。
+  用于分页游标。 `after` 是一个对象 ID，用于定义列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  返回对象数量的上限。Limit 的取值范围为 1 到 10,000，默认为 10,000。
+  限制返回对象的数量。范围介于 1 到 10,000 之间，默认为 10,000。
 
 - `order: optional "asc" or "desc"`
 
-  按对象的 `created_at` 时间戳进行排序。 `asc` 表示升序， `desc` 表示降序。
+  按对象的 `created_at` 时间戳排序。 `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
@@ -34,11 +34,12 @@
 
   - `id: string`
 
-    文件标识符，可以在 API 端点中引用。
+    文件标识符，可在 API 端点中引用。
 
   - `bytes: number`
 
-    文件的字节大小。
+    文件的大小，以字节为单位。在已完成的文件上传响应中，
+    当文件大小尚不可用时，此字段可能为 null。
 
   - `created_at: number`
 
@@ -76,7 +77,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可以为 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -86,11 +87,12 @@
 
   - `expires_at: optional number`
 
-    文件过期时的 Unix 时间戳（以秒为单位）。
+    文件到期时的 Unix 时间戳（以秒为单位）。在
+    已完成的文件上传响应中，当未设置到期时间时，此字段可能为 null。
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`。已完成文件上传响应在这些详情未设置时可能返回 null。
 
 - `first_id: string`
 

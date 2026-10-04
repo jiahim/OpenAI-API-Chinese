@@ -1,12 +1,12 @@
 # Graders
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面提供 Markdown 版本，可在页面 URL 后追加 `.md` 来获取。
 
-# 评分模型
+# Grader Models
 
-## 领域类型
+## Domain Types
 
-### 评分输入
+### Grader Inputs
 
 - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
 
@@ -33,7 +33,7 @@
 
     - `prompt_cache_breakpoint: optional object { mode }`
 
-      标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
+      标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会对齐到 token 块。
 
       - `mode: "explicit"`
 
@@ -43,11 +43,11 @@
 
   - `OutputText object { text, type }`
 
-    来自模型的文本输出。
+    模型输出的文本。
 
     - `text: string`
 
-      来自模型的文本输出。
+      模型输出的文本。
 
     - `type: "output_text"`
 
@@ -57,7 +57,7 @@
 
   - `InputImage object { image_url, type, detail }`
 
-    在 EvalItem 内容数组中使用的图像输入块。
+    EvalItem 内容数组中使用的图像输入块。
 
     - `image_url: string`
 
@@ -71,7 +71,7 @@
 
     - `detail: optional string`
 
-      发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
   - `ResponseInputAudio object { input_audio, type }`
 
@@ -85,7 +85,7 @@
 
       - `format: "mp3" or "wav"`
 
-        音频数据的格式。目前支持的格式有 `mp3` 和
+        音频数据的格式。目前支持的格式包括 `mp3` 和
         `wav`.
 
         - `"mp3"`
@@ -98,12 +98,12 @@
 
       - `"input_audio"`
 
-### Label Model Grader
+### 标签模型评分器
 
 - `LabelModelGrader object { input, labels, model, 3 more }`
 
   一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
-  在评估中。
+  。
 
   - `input: array of object { content, role, type }`
 
@@ -131,7 +131,7 @@
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会对齐到 token 块。
 
           - `mode: "explicit"`
 
@@ -141,11 +141,11 @@
 
       - `OutputText object { text, type }`
 
-        来自模型的文本输出。
+        模型输出的文本。
 
         - `text: string`
 
-          来自模型的文本输出。
+          模型输出的文本。
 
         - `type: "output_text"`
 
@@ -155,7 +155,7 @@
 
       - `InputImage object { image_url, type, detail }`
 
-        在 EvalItem 内容数组中使用的图像输入块。
+        EvalItem 内容数组中使用的图像输入块。
 
         - `image_url: string`
 
@@ -169,7 +169,7 @@
 
         - `detail: optional string`
 
-          发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+          发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
       - `ResponseInputAudio object { input_audio, type }`
 
@@ -183,7 +183,7 @@
 
           - `format: "mp3" or "wav"`
 
-            音频数据的格式。目前支持的格式有 `mp3` 和
+            音频数据的格式。目前支持的格式包括 `mp3` 和
             `wav`.
 
             - `"mp3"`
@@ -211,11 +211,11 @@
 
         - `OutputText object { text, type }`
 
-          来自模型的文本输出。
+          模型输出的文本。
 
           - `text: string`
 
-            来自模型的文本输出。
+            模型输出的文本。
 
           - `type: "output_text"`
 
@@ -225,7 +225,7 @@
 
         - `InputImage object { image_url, type, detail }`
 
-          在 EvalItem 内容数组中使用的图像输入块。
+          EvalItem 内容数组中使用的图像输入块。
 
           - `image_url: string`
 
@@ -239,7 +239,7 @@
 
           - `detail: optional string`
 
-            发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+            发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
         - `ResponseInputAudio object { input_audio, type }`
 
@@ -266,7 +266,7 @@
 
   - `labels: array of string`
 
-    分配给评估中每个项目的标签。
+    为评估中每个项目分配的标签。
 
   - `model: string`
 
@@ -286,21 +286,21 @@
 
     - `"label_model"`
 
-### Multi Grader
+### 多重评分器
 
 - `MultiGrader object { calculate_output, graders, name, type }`
 
-  一个 MultiGrader 对象，可将多个评分器的输出合并为单一分数。
+  一个 MultiGrader 对象，它将多个评分器的输出合并为单个分数。
 
   - `calculate_output: string`
 
-    基于评分器结果计算输出的公式。
+    用于根据评分器结果计算输出的公式。
 
   - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
     - `StringCheckGrader object { input, name, operation, 2 more }`
 
-      一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
+      一个 StringCheckGrader 对象，使用指定的操作在输入与参考之间执行字符串比较。
 
       - `input: string`
 
@@ -366,7 +366,7 @@
 
       - `input: string`
 
-        被评分的文本。
+        正在评分的文本。
 
       - `name: string`
 
@@ -384,7 +384,7 @@
 
     - `PythonGrader object { name, source, type, image_tag }`
 
-      一个 PythonGrader 对象，对输入运行 Python 脚本。
+      一个 PythonGrader 对象，它在输入上运行 python 脚本。
 
       - `name: string`
 
@@ -392,7 +392,7 @@
 
       - `source: string`
 
-        该 Python 脚本的源代码。
+        python 脚本的源代码。
 
       - `type: "python"`
 
@@ -402,15 +402,15 @@
 
       - `image_tag: optional string`
 
-        用于该 Python 脚本的镜像标签。
+        用于 python 脚本的镜像标签。
 
     - `ScoreModelGrader object { input, model, name, 3 more }`
 
-      一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+      一个 ScoreModelGrader 对象，它使用模型为输入打分。
 
       - `input: array of object { content, role, type }`
 
-        由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+        评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
 
         - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
@@ -436,7 +436,7 @@
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
+              标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会对齐到 token 块。
 
               - `mode: "explicit"`
 
@@ -446,11 +446,11 @@
 
           - `OutputText object { text, type }`
 
-            来自模型的文本输出。
+            模型输出的文本。
 
             - `text: string`
 
-              来自模型的文本输出。
+              模型输出的文本。
 
             - `type: "output_text"`
 
@@ -460,7 +460,7 @@
 
           - `InputImage object { image_url, type, detail }`
 
-            在 EvalItem 内容数组中使用的图像输入块。
+            EvalItem 内容数组中使用的图像输入块。
 
             - `image_url: string`
 
@@ -474,7 +474,7 @@
 
             - `detail: optional string`
 
-              发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -488,7 +488,7 @@
 
               - `format: "mp3" or "wav"`
 
-                音频数据的格式。目前支持的格式有 `mp3` 和
+                音频数据的格式。目前支持的格式包括 `mp3` 和
                 `wav`.
 
                 - `"mp3"`
@@ -516,11 +516,11 @@
 
             - `OutputText object { text, type }`
 
-              来自模型的文本输出。
+              模型输出的文本。
 
               - `text: string`
 
-                来自模型的文本输出。
+                模型输出的文本。
 
               - `type: "output_text"`
 
@@ -530,7 +530,7 @@
 
             - `InputImage object { image_url, type, detail }`
 
-              在 EvalItem 内容数组中使用的图像输入块。
+              EvalItem 内容数组中使用的图像输入块。
 
               - `image_url: string`
 
@@ -544,7 +544,7 @@
 
               - `detail: optional string`
 
-                发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
@@ -585,23 +585,23 @@
 
       - `range: optional array of number`
 
-        分数范围。默认为 `[0, 1]`.
+        该服务要求为分数范围提供两个数字。默认为 `[0, 1]`.
 
       - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
-        该模型的采样参数。
+        模型的采样参数。
 
         - `max_completions_tokens: optional number or null`
 
-          评分模型在其响应中可生成的最大 token 数。
+          评分模型在其响应中可生成的最大令牌数。
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          限制推理模型在推理上的投入程度。当前支持
-          的值包括 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理投入程度可以带来更快的响应，并在响应中消耗更少用于推理的 token。并非所有推理模型都支持每个
-          值。请参阅
-          以了解具体模型支持情况，详见
+          限制推理模型在推理上的投入程度。目前支持
+          的取值有 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+          降低推理投入程度可以让响应更快，并减少在响应中用于推理的令牌数。并非所有推理模型都支持每个
+          取值。有关具体模型的支持情况，请参阅
+          推理指南
           [推理指南](/api/docs/guides/reasoning)
           。
 
@@ -625,16 +625,16 @@
 
         - `temperature: optional number or null`
 
-          较高的温度会使输出更具随机性。
+          较高的温度会使输出更加随机。
 
         - `top_p: optional number or null`
 
-          用于核采样的 temperature 替代方案；1.0 表示包含所有 token。
+          用于核采样的温度替代方案；1.0 表示包含所有令牌。
 
     - `LabelModelGrader object { input, labels, model, 3 more }`
 
       一个 LabelModelGrader 对象，使用模型为评估中的每个项目分配标签
-      在评估中。
+      。
 
       - `input: array of object { content, role, type }`
 
@@ -652,11 +652,11 @@
 
           - `OutputText object { text, type }`
 
-            来自模型的文本输出。
+            模型输出的文本。
 
             - `text: string`
 
-              来自模型的文本输出。
+              模型输出的文本。
 
             - `type: "output_text"`
 
@@ -666,7 +666,7 @@
 
           - `InputImage object { image_url, type, detail }`
 
-            在 EvalItem 内容数组中使用的图像输入块。
+            EvalItem 内容数组中使用的图像输入块。
 
             - `image_url: string`
 
@@ -680,7 +680,7 @@
 
             - `detail: optional string`
 
-              发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -712,7 +712,7 @@
 
       - `labels: array of string`
 
-        分配给评估中每个项目的标签。
+        为评估中每个项目分配的标签。
 
       - `model: string`
 
@@ -742,11 +742,11 @@
 
     - `"multi"`
 
-### Python Grader
+### Python 评分器
 
 - `PythonGrader object { name, source, type, image_tag }`
 
-  一个 PythonGrader 对象，对输入运行 Python 脚本。
+  一个 PythonGrader 对象，它在输入上运行 python 脚本。
 
   - `name: string`
 
@@ -754,7 +754,7 @@
 
   - `source: string`
 
-    该 Python 脚本的源代码。
+    python 脚本的源代码。
 
   - `type: "python"`
 
@@ -764,17 +764,17 @@
 
   - `image_tag: optional string`
 
-    用于该 Python 脚本的镜像标签。
+    用于 python 脚本的镜像标签。
 
-### Score Model Grader
+### 评分模型评分器
 
 - `ScoreModelGrader object { input, model, name, 3 more }`
 
-  一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+  一个 ScoreModelGrader 对象，它使用模型为输入打分。
 
   - `input: array of object { content, role, type }`
 
-    由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+    评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
 
     - `content: string or ResponseInputText or object { text, type }  or 3 more`
 
@@ -800,7 +800,7 @@
 
         - `prompt_cache_breakpoint: optional object { mode }`
 
-          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
+          标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会对齐到 token 块。
 
           - `mode: "explicit"`
 
@@ -810,11 +810,11 @@
 
       - `OutputText object { text, type }`
 
-        来自模型的文本输出。
+        模型输出的文本。
 
         - `text: string`
 
-          来自模型的文本输出。
+          模型输出的文本。
 
         - `type: "output_text"`
 
@@ -824,7 +824,7 @@
 
       - `InputImage object { image_url, type, detail }`
 
-        在 EvalItem 内容数组中使用的图像输入块。
+        EvalItem 内容数组中使用的图像输入块。
 
         - `image_url: string`
 
@@ -838,7 +838,7 @@
 
         - `detail: optional string`
 
-          发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+          发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
       - `ResponseInputAudio object { input_audio, type }`
 
@@ -852,7 +852,7 @@
 
           - `format: "mp3" or "wav"`
 
-            音频数据的格式。目前支持的格式有 `mp3` 和
+            音频数据的格式。目前支持的格式包括 `mp3` 和
             `wav`.
 
             - `"mp3"`
@@ -880,11 +880,11 @@
 
         - `OutputText object { text, type }`
 
-          来自模型的文本输出。
+          模型输出的文本。
 
           - `text: string`
 
-            来自模型的文本输出。
+            模型输出的文本。
 
           - `type: "output_text"`
 
@@ -894,7 +894,7 @@
 
         - `InputImage object { image_url, type, detail }`
 
-          在 EvalItem 内容数组中使用的图像输入块。
+          EvalItem 内容数组中使用的图像输入块。
 
           - `image_url: string`
 
@@ -908,7 +908,7 @@
 
           - `detail: optional string`
 
-            发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+            发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
         - `ResponseInputAudio object { input_audio, type }`
 
@@ -949,23 +949,23 @@
 
   - `range: optional array of number`
 
-    分数范围。默认为 `[0, 1]`.
+    该服务要求为分数范围提供两个数字。默认为 `[0, 1]`.
 
   - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
-    该模型的采样参数。
+    模型的采样参数。
 
     - `max_completions_tokens: optional number or null`
 
-      评分模型在其响应中可生成的最大 token 数。
+      评分模型在其响应中可生成的最大令牌数。
 
     - `reasoning_effort: optional ReasoningEffort or null`
 
-      限制推理模型在推理上的投入程度。当前支持
-      的值包括 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-      降低推理投入程度可以带来更快的响应，并在响应中消耗更少用于推理的 token。并非所有推理模型都支持每个
-      值。请参阅
-      以了解具体模型支持情况，详见
+      限制推理模型在推理上的投入程度。目前支持
+      的取值有 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
+      降低推理投入程度可以让响应更快，并减少在响应中用于推理的令牌数。并非所有推理模型都支持每个
+      取值。有关具体模型的支持情况，请参阅
+      推理指南
       [推理指南](/api/docs/guides/reasoning)
       。
 
@@ -989,17 +989,17 @@
 
     - `temperature: optional number or null`
 
-      较高的温度会使输出更具随机性。
+      较高的温度会使输出更加随机。
 
     - `top_p: optional number or null`
 
-      用于核采样的 temperature 替代方案；1.0 表示包含所有 token。
+      用于核采样的温度替代方案；1.0 表示包含所有令牌。
 
-### String Check Grader
+### 字符串检查评分器
 
 - `StringCheckGrader object { input, name, operation, 2 more }`
 
-  一个 StringCheckGrader 对象，使用指定操作在输入和参考之间进行字符串比较。
+  一个 StringCheckGrader 对象，使用指定的操作在输入与参考之间执行字符串比较。
 
   - `input: string`
 
@@ -1031,7 +1031,7 @@
 
     - `"string_check"`
 
-### Text Similarity Grader
+### 文本相似度评分器
 
 - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -1067,7 +1067,7 @@
 
   - `input: string`
 
-    被评分的文本。
+    正在评分的文本。
 
   - `name: string`
 

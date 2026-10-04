@@ -1,22 +1,22 @@
 # Chat Completions 流式事件
 
-> 如需完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取对应文档页面的 Markdown 版本。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
-实时流式输出 Chat Completions。使用服务端发送事件接收模型返回的补全分块
-。
+实时流式聊天补全。通过服务端发送事件接收模型返回的补全分块。
+返回的分块。
 [了解更多](https://developers.openai.com/api/docs/guides/streaming-responses).
 
 <a id="chat.completion.chunk"></a>
 
 ## chat.completion.chunk
 
-表示模型基于所提供的输入以流式方式返回的聊天补全响应分片。
-表示模型基于所提供的输入以流式方式返回的聊天补全响应分片。
+表示根据所提供的输入由模型返回的聊天补全响应的流式分块
+。
 [了解更多](https://developers.openai.com/api/docs/guides/streaming-responses).
 
 ### Schema
 
-Schema name: `CreateChatCompletionStreamResponse`
+Schema 名称： `CreateChatCompletionStreamResponse`
 
 - `id: string`
 
@@ -24,12 +24,14 @@ Schema name: `CreateChatCompletionStreamResponse`
 
 - `choices: array of object { delta, finish_reason, index, logprobs }`
 
-  聊天补全选项列表。如果 `n` 大于 1，则可以包含多个元素。如果你设置了
-  最后一个分块也可能为空。 `stream_options: {"include_usage": true}`.
+  聊天补全选项列表。如果 `n` 大于 1，则可以包含多个元素。如果设置为
+  ，最后一个分块也可以为空。 `stream_options: {"include_usage": true}`.
 
   - `delta: object { content, function_call, refusal, 2 more }`
 
     由流式模型响应生成的聊天补全增量。
+    流式音频可能以包含 ID、base64 数据或
+    转录文本的部分更新形式到达。最终的音频更新仅包含其过期时间戳。
 
     - `content: optional string or null`
 
@@ -37,23 +39,23 @@ Schema name: `CreateChatCompletionStreamResponse`
 
     - `function_call: optional object { arguments, name }`
 
-      已弃用，并由 `tool_calls`。取代。应调用的函数的名称和参数，由模型生成。
+      已弃用，由 `tool_calls`。替代。应被调用的函数的名称和参数，由模型生成。
 
       - `arguments: optional string`
 
-        调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+        用于调用函数的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能产生未在你的函数 schema 中定义的参数。在调用函数之前，请在代码中验证这些参数。
 
       - `name: optional string`
 
-        要调用的函数名称。
+        要调用的函数的名称。
 
     - `refusal: optional string or null`
 
-      模型生成的拒绝消息。
+      由模型生成的拒绝消息。
 
     - `role: optional "developer" or "system" or "user" or 2 more`
 
-      该消息作者的角色。
+      此消息作者的角色。
 
       - `"developer"`
 
@@ -77,24 +79,25 @@ Schema name: `CreateChatCompletionStreamResponse`
 
         - `arguments: optional string`
 
-          调用函数所使用的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能会虚构你函数 schema 中未定义的参数。在调用函数之前，请在代码中校验这些参数。
+          用于调用函数的参数，由模型以 JSON 格式生成。请注意，模型并不总是生成有效的 JSON，并且可能产生未在你的函数 schema 中定义的参数。在调用函数之前，请在代码中验证这些参数。
 
         - `name: optional string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
       - `type: optional "function"`
 
-        工具的类型。目前仅支持 `function` 。
+        工具的类型。目前，仅支持 `function` 。
 
         - `"function"`
 
   - `finish_reason: "stop" or "length" or "tool_calls" or 2 more or null`
 
-    模型停止生成 token 的原因。该值在以下情况下为 `stop` ：模型遇到自然停止点或提供的停止序列；
-    `length` ：达到请求中指定的最大 token 数；
-    `content_filter` ：因内容过滤器标记而省略了内容；
-    `tool_calls` ：模型调用了工具； `function_call` （已弃用）如果模型调用了函数。
+    模型停止生成 token 的原因。如果模型遇到自然停止点或提供了停止序列，则为 `stop` ；如果达到了请求中指定的最大 token 数，则为，
+    `length` 。
+    `content_filter` 如果内容因我们的内容过滤器的标记而被省略，
+    `tool_calls` 如果模型调用了工具，或者 `function_call` （已弃用）如果模型调用了函数。
+    从最终音频更新中省略，其中仅包含 `delta.audio.expires_at`.
 
     - `"stop"`
 
@@ -108,7 +111,7 @@ Schema name: `CreateChatCompletionStreamResponse`
 
   - `index: number`
 
-    在选项列表中的索引。
+    该选项在选项列表中的索引。
 
   - `logprobs: optional object { content, refusal }  or null`
 
@@ -124,15 +127,15 @@ Schema name: `CreateChatCompletionStreamResponse`
 
       - `bytes: array of number or null`
 
-        表示该 token 的 UTF-8 字节表示的整数列表。当某些字符由多个 token 表示时，需要将其字节表示组合起来以生成正确的文本表示。可以为 `null` 如果该 token 没有字节表示。
+        表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示以生成正确文本表示的情况下非常有用。可以为 `null` 如果该 token 没有字节表示。
 
       - `logprob: number`
 
-        该 token 的对数概率，前提是它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+        此 token 的对数概率，如果它位于最可能的 20 个 token 之内。否则，该值 `-9999.0` 用于表示该 token 极不可能出现。
 
       - `top_logprobs: array of object { token, bytes, logprob }`
 
-        在该 token 位置处，概率最高的 token 及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
+        在此 token 位置上最可能的 token 及其对数概率的列表。条目数可能少于请求的 `top_logprobs`.
 
         - `token: string`
 
@@ -140,15 +143,15 @@ Schema name: `CreateChatCompletionStreamResponse`
 
         - `bytes: array of number or null`
 
-          表示该 token 的 UTF-8 字节表示的整数列表。当某些字符由多个 token 表示时，需要将其字节表示组合起来以生成正确的文本表示。可以为 `null` 如果该 token 没有字节表示。
+          表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示以生成正确文本表示的情况下非常有用。可以为 `null` 如果该 token 没有字节表示。
 
         - `logprob: number`
 
-          该 token 的对数概率，前提是它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+          此 token 的对数概率，如果它位于最可能的 20 个 token 之内。否则，该值 `-9999.0` 用于表示该 token 极不可能出现。
 
     - `refusal: array of ChatCompletionTokenLogprob or null`
 
-      包含消息拒绝内容 token 及其对数概率信息的列表。
+      包含消息拒绝 token 及其对数概率信息的列表。
 
       - `token: string`
 
@@ -156,19 +159,19 @@ Schema name: `CreateChatCompletionStreamResponse`
 
       - `bytes: array of number or null`
 
-        表示该 token 的 UTF-8 字节表示的整数列表。当某些字符由多个 token 表示时，需要将其字节表示组合起来以生成正确的文本表示。可以为 `null` 如果该 token 没有字节表示。
+        表示该 token 的 UTF-8 字节表示的整数列表。在字符由多个 token 表示且必须组合其字节表示以生成正确文本表示的情况下非常有用。可以为 `null` 如果该 token 没有字节表示。
 
       - `logprob: number`
 
-        该 token 的对数概率，前提是它位于概率最高的前 20 个 token 之内。否则，值 `-9999.0` 用于表示该 token 出现的可能性极低。
+        此 token 的对数概率，如果它位于最可能的 20 个 token 之内。否则，该值 `-9999.0` 用于表示该 token 极不可能出现。
 
       - `top_logprobs: array of object { token, bytes, logprob }`
 
-        在该 token 位置处，概率最高的 token 及其对数概率的列表。条目数量可能少于请求的 `top_logprobs`.
+        在此 token 位置上最可能的 token 及其对数概率的列表。条目数可能少于请求的 `top_logprobs`.
 
 - `created: number`
 
-  聊天补全创建时的 Unix 时间戳（以秒为单位）。每个 chunk 的时间戳相同。
+  聊天补全创建时的 Unix 时间戳（以秒为单位）。每个分块具有相同的时间戳。
 
 - `model: string`
 
@@ -182,8 +185,8 @@ Schema name: `CreateChatCompletionStreamResponse`
 
 - `moderation: optional object { input, output }  or null`
 
-  请求输入和生成输出的审核结果。在请求经过审核的补全时，存在于
-  审核 chunk 上。
+  请求输入和生成输出的审核结果。当请求经过审核的补全时出现
+  于审核分块中。
 
   - `input: object { model, results, type }  or object { code, message, type }`
 
@@ -191,7 +194,7 @@ Schema name: `CreateChatCompletionStreamResponse`
 
     - `ModerationResults object { model, results, type }`
 
-      请求输入或生成输出的成功审核结果。
+      针对请求输入或生成输出的成功审核结果。
 
       - `model: string`
 
@@ -203,11 +206,11 @@ Schema name: `CreateChatCompletionStreamResponse`
 
         - `categories: map[boolean]`
 
-          一个由审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
+          审核类别到布尔值的字典，如果输入在该类别下被标记则为 True。
 
         - `category_applied_input_types: map[array of "text" or "image"]`
 
-          每个类别的分数所对应的输入模态。
+          每个类别的分数反映了哪些输入模态。
 
           - `"text"`
 
@@ -215,11 +218,11 @@ Schema name: `CreateChatCompletionStreamResponse`
 
         - `category_scores: map[number]`
 
-          一个由审核类别到分数的字典。
+          审核类别到分数的字典。
 
         - `flagged: boolean`
 
-          一个布尔值，指示内容是否被任何类别标记。
+          指示内容是否被任何类别标记的布尔值。
 
         - `model: string`
 
@@ -227,7 +230,7 @@ Schema name: `CreateChatCompletionStreamResponse`
 
         - `type: "moderation_result"`
 
-          对象类型，对于成功的审核结果始终为 `moderation_result` 。
+          对象类型，始终为 `moderation_result` ，表示成功的审核结果。
 
           - `"moderation_result"`
 
@@ -239,7 +242,7 @@ Schema name: `CreateChatCompletionStreamResponse`
 
     - `Error object { code, message, type }`
 
-      尝试审核时产生的错误。
+      尝试进行审核时产生的错误。
 
       - `code: string`
 
@@ -257,11 +260,11 @@ Schema name: `CreateChatCompletionStreamResponse`
 
   - `output: object { model, results, type }  or object { code, message, type }`
 
-    对生成输出进行内容审核。
+    对生成内容的审核结果。
 
     - `ModerationResults object { model, results, type }`
 
-      请求输入或生成输出的成功审核结果。
+      针对请求输入或生成输出的成功审核结果。
 
       - `model: string`
 
@@ -273,11 +276,11 @@ Schema name: `CreateChatCompletionStreamResponse`
 
         - `categories: map[boolean]`
 
-          一个由审核类别到布尔值的字典，若输入在该类别下被标记则为 True。
+          审核类别到布尔值的字典，如果输入在该类别下被标记则为 True。
 
         - `category_applied_input_types: map[array of "text" or "image"]`
 
-          每个类别的分数所对应的输入模态。
+          每个类别的分数反映了哪些输入模态。
 
           - `"text"`
 
@@ -285,11 +288,11 @@ Schema name: `CreateChatCompletionStreamResponse`
 
         - `category_scores: map[number]`
 
-          一个由审核类别到分数的字典。
+          审核类别到分数的字典。
 
         - `flagged: boolean`
 
-          一个布尔值，指示内容是否被任何类别标记。
+          指示内容是否被任何类别标记的布尔值。
 
         - `model: string`
 
@@ -297,7 +300,7 @@ Schema name: `CreateChatCompletionStreamResponse`
 
         - `type: "moderation_result"`
 
-          对象类型，对于成功的审核结果始终为 `moderation_result` 。
+          对象类型，始终为 `moderation_result` ，表示成功的审核结果。
 
           - `"moderation_result"`
 
@@ -309,7 +312,7 @@ Schema name: `CreateChatCompletionStreamResponse`
 
     - `Error object { code, message, type }`
 
-      尝试审核时产生的错误。
+      尝试进行审核时产生的错误。
 
       - `code: string`
 
@@ -327,21 +330,21 @@ Schema name: `CreateChatCompletionStreamResponse`
 
 - `obfuscation: optional string`
 
-  添加的混淆字符串，用于将流式数据块的大小归一化，
-  作为一种针对某些侧信道攻击的缓解措施。该字段默认包含，
-  在以下情况下省略： `stream_options.include_obfuscation` 为 `false`.
+  添加的混淆字符串，用于将流式分块的大小标准化，以此缓解
+  某些侧信道攻击。该字段默认包含，当
+  为 `stream_options.include_obfuscation` 时省略 `false`.
 
 - `service_tier: optional "auto" or "default" or "flex" or 3 more or null`
 
-  指定用于处理该请求的服务等级。
+  指定用于处理该请求的处理类型。
 
-  - 如果设置为 'auto'，则请求将使用项目设置中配置的服务等级进行处理。除非另行配置，否则项目将使用 'default'。
-  - 如果设置为 'default'，则请求将按照所选模型的标准定价和性能进行处理。
-  - 如果设置为 '[flex](https://developers.openai.com/api/docs/guides/flex-processing)'，则该请求将使用 Flex Processing 服务层级进行处理。
-  - 如需在请求级别启用 [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode) ，请在 Responses 或 Chat Completions 中传入 `service_tier=fast` 或 `service_tier=priority` 参数。响应中将显示 `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 或 `priority` 。
-  - 未设置时，默认行为为 'auto'。
+  - 如果设置为 'auto'，则该请求将使用项目设置中配置的服务层级进行处理。除非另行配置，项目将使用 'default'。
+  - 如果设置为 'default'，则请求将以所选模型的标准定价和性能进行处理。
+  - 如果设置为 '[flex](https://developers.openai.com/api/docs/guides/flex-processing)'，则请求将通过 Flex Processing 服务层级进行处理。
+  - 若要在请求级别启用 [Fast mode](https://developers.openai.com/api/docs/guides/fast-mode) ，请在 Responses 或 Chat Completions 中传入对应的 `service_tier=fast` 参数或 `service_tier=priority` 参数。响应中将显示 service_tier `service_tier=priority` ，无论你是否在请求中指定 `service_tier=fast` 参数或 `priority` 。
+  - 当未设置时，默认行为为 'auto'。
 
-  当设置了 `service_tier` 参数时，响应体将包含根据实际用于处理该请求的处理模式得出的 `service_tier` 值。该响应值可能与参数中设置的值不同。
+  当设置 `service_tier` 参数时，响应体将根据实际用于处理请求的处理模式返回对应的 service_tier 值。该响应值可能与参数中设置的值不同。 `service_tier` 值。此响应值可能与该参数中设置的值不同。
 
   - `"auto"`
 
@@ -357,84 +360,84 @@ Schema name: `CreateChatCompletionStreamResponse`
 
 - `system_fingerprint: optional string`
 
-  此指纹表示模型运行所使用后端配置。
-  可与 `seed` 请求参数结合使用，以了解后端何时发生可能影响确定性的更改。
+  该指纹表示模型运行所使用的基础配置。
+  可与 `seed` 请求参数配合使用，以了解何时发生了可能影响确定性的后端更改。
 
 - `usage: optional CompletionUsage or null`
 
-  一个可选字段，仅在请求中设置了
-  `stream_options: {"include_usage": true}` 时出现。如果存在，它
-  包含 null 值， **仅最后一个分块** 包含
-  整个请求的令牌用量统计。
+  这是一个可选字段，仅当你在请求中设置
+  `stream_options: {"include_usage": true}` 时才会出现。如果存在，它
+  包含一个 null 值 **除了最后一个分块** 其中包含
+  整个请求的 token 使用情况统计。
 
   **注意：** 如果流被中断或取消，你可能不会
-  收到包含本次请求总令牌用量的最终用量数据块。
-  的请求。
+  接收到包含请求总 token 使用量的最终使用情况分块，
+  请求。
 
   - `completion_tokens: number`
 
-    生成的补全中的令牌数。
+    生成补全内容中的 token 数。
 
   - `prompt_tokens: number`
 
-    提示中的令牌数。
+    提示中的 token 数。
 
   - `total_tokens: number`
 
-    请求中使用的令牌总数（提示 + 补全）。
+    请求中使用的 token 总数（提示 + 完成）。
 
   - `completion_tokens_details: optional object { accepted_prediction_tokens, audio_tokens, reasoning_tokens, 2 more }`
 
-    补全中使用的令牌明细。
+    完成中使用的 token 明细。
 
     - `accepted_prediction_tokens: optional number`
 
       使用 Predicted Outputs 时，
-      出现在补全中的预测令牌数。
+      出现在完成中的预测 token 数。
 
     - `audio_tokens: optional number`
 
-      模型生成的音频输入令牌。
+      模型生成的音频输入 token。
 
     - `reasoning_tokens: optional number`
 
-      模型为推理生成的令牌。
+      模型为推理生成的 token。
 
     - `rejected_prediction_tokens: optional number`
 
       使用 Predicted Outputs 时，
-      未出现在补全中的预测令牌数。但是，与
-      推理令牌类似，这些令牌仍会计入用于计费、输出和上下文窗口的
-      补全令牌总数中。
-      的限制。
+      未出现在完成中的预测 token。但是，与
+      推理 token 一样，这些 token 仍计入用于计费、
+      输出和上下文窗口的完成 token
+      限制中。
 
     - `text_tokens: optional number`
 
-      模型生成的文本输出令牌。
+      模型生成的文本输出 token。
 
   - `prompt_tokens_details: optional object { audio_tokens, cache_write_tokens, cached_tokens, 2 more }`
 
-    提示中使用的令牌明细。
+    提示词中使用的 token 明细。
 
     - `audio_tokens: optional number`
 
-      提示中存在的音频输入令牌。
+      提示词中存在的音频输入 token。
 
     - `cache_write_tokens: optional number`
 
-      写入缓存的未调整的提示 token 数。
+      写入缓存的、未经过调整的提示词 token 数量。
 
     - `cached_tokens: optional number`
 
-      提示中存在的已缓存 token。
+      提示词中存在的已缓存 token。
 
     - `image_tokens: optional number`
 
-      提示中存在的图像输入 token。
+      提示词中存在的图像输入 token。
 
     - `text_tokens: optional number`
 
-      提示中存在的文本输入 token。
+      提示词中存在的文本输入 token。
 
 ### 示例
 

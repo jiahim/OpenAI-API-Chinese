@@ -1,24 +1,24 @@
 # Uploads
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt). 在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 取消上传
 
 **post** `/uploads/{upload_id}/cancel`
 
-取消该 Upload。上传被取消后，无法再添加任何 Part。
+取消该 Upload。Upload 被取消后，无法再添加任何 Part。
 
-返回状态为已取消的 Upload 对象 `cancelled`.
+返回 Upload 对象，其中包含状态字段 status `cancelled`.
 
 ### 路径参数
 
 - `upload_id: string`
 
-### 返回
+### 返回值
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以以 Parts 的形式接收字节分块。
+  Upload 对象可以以 Part 的形式接收字节分块。
 
   - `id: string`
 
@@ -42,7 +42,7 @@
 
   - `purpose: string`
 
-    文件的预期用途。 [请参考此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 了解可接受的值。
+    文件的预期用途。 [请参阅此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 以了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -58,7 +58,7 @@
 
   - `file: optional FileObject or null`
 
-    上传完成后的就绪 File 对象。
+    Upload 完成后生成的可用 File 对象。
 
     - `id: string`
 
@@ -66,7 +66,8 @@
 
     - `bytes: number`
 
-      文件的大小（以字节为单位）。
+      文件大小，以字节为单位。在已完成文件上传的响应中，当文件大小尚不可用时，
+      该字段可能为 null。
 
     - `created_at: number`
 
@@ -74,7 +75,7 @@
 
     - `filename: string`
 
-      文件的名称。
+      文件名。
 
     - `object: "file"`
 
@@ -114,11 +115,12 @@
 
     - `expires_at: optional number`
 
-      文件过期的 Unix 时间戳（单位：秒）。
+      文件将过期的 Unix 时间戳（以秒为单位）。在
+      已完成文件上传响应中，如果未设置过期时间，此字段可以为 null。
 
     - `status_details: optional string`
 
-      已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
+      已废弃。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段上的 `fine_tuning.job`。已完成文件上传响应在这些详情未设置时可以返回 null。
 
   - `object: optional "upload"`
 
@@ -189,30 +191,30 @@ curl https://api.openai.com/v1/uploads/upload_abc123/cancel
 
 在返回的 Upload 对象中，包含一个嵌套的 [File](/api/reference/resources/files) 对象，可直接用于平台的其他部分。
 
-你可以通过传入一个有序的 Part ID 列表来指定 Part 的顺序。
+你可以通过传入一个有序的 Part ID 列表来指定 Parts 的顺序。
 
-完成上传时的字节数必须与创建 Upload 对象时最初指定的字节数一致。Upload 完成之后不能再添加任何 Part。
-返回的 Upload 对象状态为 `completed`，其中包含一个额外的 `file` 属性，其中包含已创建的可用的 File 对象。
+完成时上传的字节数必须与最初创建 Upload 对象时指定的字节数一致。Upload 对象完成后，不可再添加任何 Part。
+返回 Upload 对象，状态为 `completed`，并附带一个 `file` 属性，其中包含已创建且可用的 File 对象。
 
 ### 路径参数
 
 - `upload_id: string`
 
-### 请求体参数
+### Body 参数
 
 - `part_ids: array of string`
 
-  Part ID 的有序列表。
+  按顺序排列的 Part ID 列表。
 
 - `md5: optional string`
 
-  用于校验上传字节是否与预期一致的文件内容的可选 md5 校验和。
+  可选的 md5 校验和，用于验证上传的字节是否与你的预期一致。
 
-### 返回
+### 返回值
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以以 Parts 的形式接收字节分块。
+  Upload 对象可以以 Part 的形式接收字节分块。
 
   - `id: string`
 
@@ -236,7 +238,7 @@ curl https://api.openai.com/v1/uploads/upload_abc123/cancel
 
   - `purpose: string`
 
-    文件的预期用途。 [请参考此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 了解可接受的值。
+    文件的预期用途。 [请参阅此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 以了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -252,7 +254,7 @@ curl https://api.openai.com/v1/uploads/upload_abc123/cancel
 
   - `file: optional FileObject or null`
 
-    上传完成后的就绪 File 对象。
+    Upload 完成后生成的可用 File 对象。
 
     - `id: string`
 
@@ -260,7 +262,8 @@ curl https://api.openai.com/v1/uploads/upload_abc123/cancel
 
     - `bytes: number`
 
-      文件的大小（以字节为单位）。
+      文件大小，以字节为单位。在已完成文件上传的响应中，当文件大小尚不可用时，
+      该字段可能为 null。
 
     - `created_at: number`
 
@@ -268,7 +271,7 @@ curl https://api.openai.com/v1/uploads/upload_abc123/cancel
 
     - `filename: string`
 
-      文件的名称。
+      文件名。
 
     - `object: "file"`
 
@@ -308,11 +311,12 @@ curl https://api.openai.com/v1/uploads/upload_abc123/cancel
 
     - `expires_at: optional number`
 
-      文件过期的 Unix 时间戳（单位：秒）。
+      文件将过期的 Unix 时间戳（以秒为单位）。在
+      已完成文件上传响应中，如果未设置过期时间，此字段可以为 null。
 
     - `status_details: optional string`
 
-      已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
+      已废弃。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段上的 `fine_tuning.job`。已完成文件上传响应在这些详情未设置时可以返回 null。
 
   - `object: optional "upload"`
 
@@ -392,31 +396,31 @@ curl https://api.openai.com/v1/uploads/upload_abc123/complete
 }
 ```
 
-## Create upload
+## 创建上传
 
 **post** `/uploads`
 
-创建一个中间 [Upload](/api/reference/resources/uploads) 对象
-，你可以向其中添加 [Parts](/api/reference/resources/uploads/subresources/parts) 。
-目前，一个 Upload 最多可接受总共 8 GB 的数据，并且会在你创建
+创建一个中间的 [Upload](/api/reference/resources/uploads) 对象
+，你可以向其添加 [Parts](/api/reference/resources/uploads/subresources/parts) 。
+目前，一个 Upload 最多总共可接受 8 GB 的数据，并且在你创建
 一小时后过期。
 
 完成 Upload 后，我们会创建一个
-[File](/api/reference/resources/files) 对象，其中包含你上传的所有 parts
-。此 File 可在我们平台的其他部分中作为常规
+[File](/api/reference/resources/files) 对象，其中包含你上传的所有分块。
+该 File 可在我们平台的其他部分作为常规的
 File 对象使用。
 
 对于某些 `purpose` 值，必须指定正确的 `mime_type` 。
-请参阅相关文档了解你所使用的
-[支持的 MIME 类型](/api/docs/guides/tools-file-search#supported-files).
+请参阅关于你所使用场景下受支持 MIME 类型的
+[文档](/api/docs/guides/tools-file-search#supported-files).
 
-有关每个用途的适当文件扩展名指南，请
-参阅相关文档了解如何 [创建
+有关每个用途的合适文件扩展名指导，请
+参阅关于如何创建 [的文档
 File](/api/reference/resources/files/methods/create).
 
-返回状态为已取消的 Upload 对象 `pending`.
+返回 Upload 对象，其中包含状态字段 status `pending`.
 
-### 请求体参数
+### Body 参数
 
 - `bytes: number`
 
@@ -424,21 +428,21 @@ File](/api/reference/resources/files/methods/create).
 
 - `filename: string`
 
-  要上传的文件名。
+  要上传文件的名称。
 
 - `mime_type: string`
 
   文件的 MIME 类型。
 
-  该 MIME 类型必须属于你文件用途所支持的 MIME 类型。参见
+  此值必须属于你的文件用途所支持的 MIME 类型。参见
   助手和视觉所支持的 MIME 类型。
 
 - `purpose: "assistants" or "batch" or "fine-tune" or "vision"`
 
-  所上传文件的预期用途。
+  已上传文件的预期用途。
 
-  参见 [File 文档中的
-  用途](/api/reference/resources/files/methods/create#%28resource%29%20files%20%3E%20%28method%29%20create%20%3E%20%28params%29%200%20%3E%20%28param%29%20purpose%20%3E%20%28schema%29).
+  参见 [File 的相关
+  文档](/api/reference/resources/files/methods/create#%28resource%29%20files%20%3E%20%28method%29%20create%20%3E%20%28params%29%200%20%3E%20%28param%29%20purpose%20%3E%20%28schema%29).
 
   - `"assistants"`
 
@@ -450,7 +454,7 @@ File](/api/reference/resources/files/methods/create).
 
 - `expires_after: optional object { anchor, seconds }`
 
-  文件的过期策略。默认情况下，文件用途为 `purpose=batch` 的文件会在 30 天后过期，其他所有文件会持续保留，直至被手动删除。
+  文件的过期策略。默认情况下，purpose 为 `purpose=batch` 的文件会在 30 天后过期，其他所有文件会一直保留，直至被手动删除。
 
   - `anchor: "created_at"`
 
@@ -460,13 +464,13 @@ File](/api/reference/resources/files/methods/create).
 
   - `seconds: number`
 
-    文件将在锚定时间之后经过指定秒数后过期。该值必须介于 3600（1 小时）和 2592000（30 天）之间。
+    文件在锚定时间之后过期的秒数。必须介于 3600（1 小时）到 2592000（30 天）之间。
 
-### 返回
+### 返回值
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以以 Parts 的形式接收字节分块。
+  Upload 对象可以以 Part 的形式接收字节分块。
 
   - `id: string`
 
@@ -490,7 +494,7 @@ File](/api/reference/resources/files/methods/create).
 
   - `purpose: string`
 
-    文件的预期用途。 [请参考此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 了解可接受的值。
+    文件的预期用途。 [请参阅此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 以了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -506,7 +510,7 @@ File](/api/reference/resources/files/methods/create).
 
   - `file: optional FileObject or null`
 
-    上传完成后的就绪 File 对象。
+    Upload 完成后生成的可用 File 对象。
 
     - `id: string`
 
@@ -514,7 +518,8 @@ File](/api/reference/resources/files/methods/create).
 
     - `bytes: number`
 
-      文件的大小（以字节为单位）。
+      文件大小，以字节为单位。在已完成文件上传的响应中，当文件大小尚不可用时，
+      该字段可能为 null。
 
     - `created_at: number`
 
@@ -522,7 +527,7 @@ File](/api/reference/resources/files/methods/create).
 
     - `filename: string`
 
-      文件的名称。
+      文件名。
 
     - `object: "file"`
 
@@ -562,11 +567,12 @@ File](/api/reference/resources/files/methods/create).
 
     - `expires_at: optional number`
 
-      文件过期的 Unix 时间戳（单位：秒）。
+      文件将过期的 Unix 时间戳（以秒为单位）。在
+      已完成文件上传响应中，如果未设置过期时间，此字段可以为 null。
 
     - `status_details: optional string`
 
-      已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
+      已废弃。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段上的 `fine_tuning.job`。已完成文件上传响应在这些详情未设置时可以返回 null。
 
   - `object: optional "upload"`
 
@@ -652,7 +658,7 @@ curl https://api.openai.com/v1/uploads \
 
 - `Upload object { id, bytes, created_at, 6 more }`
 
-  Upload 对象可以以 Parts 的形式接收字节分块。
+  Upload 对象可以以 Part 的形式接收字节分块。
 
   - `id: string`
 
@@ -676,7 +682,7 @@ curl https://api.openai.com/v1/uploads \
 
   - `purpose: string`
 
-    文件的预期用途。 [请参考此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 了解可接受的值。
+    文件的预期用途。 [请参阅此处](/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) 以了解可接受的值。
 
   - `status: "pending" or "completed" or "cancelled" or "expired"`
 
@@ -692,7 +698,7 @@ curl https://api.openai.com/v1/uploads \
 
   - `file: optional FileObject or null`
 
-    上传完成后的就绪 File 对象。
+    Upload 完成后生成的可用 File 对象。
 
     - `id: string`
 
@@ -700,7 +706,8 @@ curl https://api.openai.com/v1/uploads \
 
     - `bytes: number`
 
-      文件的大小（以字节为单位）。
+      文件大小，以字节为单位。在已完成文件上传的响应中，当文件大小尚不可用时，
+      该字段可能为 null。
 
     - `created_at: number`
 
@@ -708,7 +715,7 @@ curl https://api.openai.com/v1/uploads \
 
     - `filename: string`
 
-      文件的名称。
+      文件名。
 
     - `object: "file"`
 
@@ -748,11 +755,12 @@ curl https://api.openai.com/v1/uploads \
 
     - `expires_at: optional number`
 
-      文件过期的 Unix 时间戳（单位：秒）。
+      文件将过期的 Unix 时间戳（以秒为单位）。在
+      已完成文件上传响应中，如果未设置过期时间，此字段可以为 null。
 
     - `status_details: optional string`
 
-      已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
+      已废弃。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段上的 `fine_tuning.job`。已完成文件上传响应在这些详情未设置时可以返回 null。
 
   - `object: optional "upload"`
 
@@ -766,29 +774,29 @@ curl https://api.openai.com/v1/uploads \
 
 **post** `/uploads/{upload_id}/parts`
 
-向 [对象添加一个 Part](/api/reference/resources/uploads/subresources/parts) 。Part 表示你正在上传的文件中一块字节数据。 [Upload](/api/reference/resources/uploads) object. A Part represents a chunk of bytes from the file you are trying to upload.
+向 [Part](/api/reference/resources/uploads/subresources/parts) 对象添加一个 [Upload](/api/reference/resources/uploads) 对象。一个 Part 代表你要上传的文件中一段字节块。
 
 每个 Part 最大为 64 MB，你可以不断添加 Part，直到达到 8 GB 的上传上限。
 
-可以并行添加多个 Part。你可以在 [完成上传时](/api/reference/resources/uploads/methods/complete).
+可以并行添加多个 Part。你可以决定这些 Part 的预期顺序，当你 [完成上传](/api/reference/resources/uploads/methods/complete).
 
 ### 路径参数
 
 - `upload_id: string`
 
-### 返回
+### 返回值
 
 - `UploadPart object { id, created_at, object, upload_id }`
 
-  upload Part 表示我们可以添加到 Upload 对象的一个字节块。
+  上传片段表示我们可以添加到 Upload 对象中的一块字节。
 
   - `id: string`
 
-    upload Part 的唯一标识符，可在 API 端点中引用。
+    上传片段的唯一标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    Part 创建时的 Unix 时间戳（以秒为单位）。
+    创建该片段时的 Unix 时间戳（以秒为单位）。
 
   - `object: "upload.part"`
 
@@ -798,7 +806,7 @@ curl https://api.openai.com/v1/uploads \
 
   - `upload_id: string`
 
-    此 Part 所添加到的 Upload 对象的 ID。
+    此片段被添加到的 Upload 对象的 ID。
 
 ### 示例
 
@@ -840,19 +848,19 @@ curl https://api.openai.com/v1/uploads/upload_abc123/parts
 
 ## Domain Types
 
-### Upload Part
+### 上传分块
 
 - `UploadPart object { id, created_at, object, upload_id }`
 
-  upload Part 表示我们可以添加到 Upload 对象的一个字节块。
+  上传片段表示我们可以添加到 Upload 对象中的一块字节。
 
   - `id: string`
 
-    upload Part 的唯一标识符，可在 API 端点中引用。
+    上传片段的唯一标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    Part 创建时的 Unix 时间戳（以秒为单位）。
+    创建该片段时的 Unix 时间戳（以秒为单位）。
 
   - `object: "upload.part"`
 
@@ -862,4 +870,4 @@ curl https://api.openai.com/v1/uploads/upload_abc123/parts
 
   - `upload_id: string`
 
-    此 Part 所添加到的 Upload 对象的 ID。
+    此片段被添加到的 Upload 对象的 ID。
