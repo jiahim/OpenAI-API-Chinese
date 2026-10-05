@@ -127,6 +127,7 @@ curl https://api.openai.com/v1/images/variations \
     -H 'Content-Type: multipart/form-data' \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -F 'image=@/path/to/image' \
+    -F model=dall-e-2 \
     -F n=1 \
     -F response_format=url \
     -F size=1024x1024 \

@@ -479,9 +479,9 @@ If you connect your custom remote MCP server through a plugin, users in your wor
 
 ### Connect in ChatGPT
 
-1. In [ChatGPT](https://chatgpt.com), open **Settings → Security and login** and turn on **Developer mode**.
-1. Go to [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button, and connect your server URL in developer mode.
-1. Test your plugin by running prompts in chat and deep research.
+1. Go to [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button, then **Add custom MCP server**.
+1. Enter your server URL and authentication details. Review the risk warning and select **I understand and want to continue**, then **Create as a plugin**.
+1. Install your plugin and test it by running prompts in chat and deep research.
 
 For detailed setup steps, see [Connect and test your plugin](https://developers.openai.com/plugins/deploy/connect-chatgpt).
 

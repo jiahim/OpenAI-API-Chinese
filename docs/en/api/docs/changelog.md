@@ -6,6 +6,14 @@
 
 Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecations).
 
+## October, 2026
+
+### Oct 5
+
+Feature
+
+Added an in-product flow for HIPAA compliance support in API [Organization settings > General](https://platform.openai.com/settings/organization/general). Admins of eligible organizations can now accept the standard Business Associate Agreement (BAA) and enable HIPAA compliance support for their organization. See the [Help Center](https://help.openai.com/en/articles/8660679-getting-a-business-associate-agreement-for-the-openai-api) for eligibility, covered services, and configuration requirements.
+
 ## September, 2026
 
 ### Sep 29

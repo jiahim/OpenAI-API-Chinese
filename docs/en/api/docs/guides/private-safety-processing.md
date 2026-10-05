@@ -577,6 +577,12 @@ Check these sources separately:
 
 Your sampling policy determines which requests create retained objects. A missing object or event alone doesn't mean storage has failed.
 
+#### Identify validation probes
+
+For AWS, Azure, and GCP, validation writes test objects to your configured storage destination. Their names include `csg_validation_` followed by a random hexadecimal suffix. Each object's body contains the text `customer-storage-gateway-validation:csg_validation_<suffix>`, using the same suffix as its name. They contain no customer prompts or responses. OpenAI reads each test object using the configured access, then attempts an unauthenticated `GET` of the same object to check for public access. Private storage is expected to reject the unauthenticated request. These requests may appear in your provider's access logs, depending on your logging configuration.
+
+For AWS, validation also checks the role's `sts:ExternalId` restriction. After successfully assuming your configured role with your project's external ID, OpenAI tests `AssumeRole` calls without an external ID and with the deliberately invalid test ID `proj_smoketest-verifier`. Both test calls are expected to return `AccessDenied`. They use the same OpenAI identity and configured role; the test ID doesn't identify another customer's project. AWS CloudTrail doesn't record these denied cross-account role-assumption attempts in your account. Keep your trust policy restricted to your real project ID; don't allow the test ID or remove the external-ID condition to make these probes succeed.
+
 ### Recover from a failure
 
 #### 1. Check the error
