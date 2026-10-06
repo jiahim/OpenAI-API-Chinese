@@ -123,7 +123,9 @@ await pc.setRemoteDescription({
 
 Connect to the dedicated translation endpoint and select the model in the URL:
 
-Before running this example, install `ws` for Node.js, `websocket-client` for Python, or `async-websocket` for Ruby (`gem install async-websocket`).
+Before running this example, install `ws` for Node.js, `websocket-client` for Python, or `async-websocket` for Ruby (`gem install async-websocket`). For Java, add the Maven dependency `com.openai:openai-java:4.75.1`.
+
+The Java examples cover connection setup, language configuration, and audio input separately. They don't show a complete translation workflow: the Java SDK supports receiving events and finishing a session, but this guide doesn't include Java examples for those steps. Use the Node.js or Python examples to follow the complete workflow below.
 
 Connect to a translation session
 
@@ -155,6 +157,41 @@ ws.connect(
 )
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.TranslationConnection;
+import com.openai.helpers.TranslationWebSocketOptions;
+import com.openai.models.realtime.*;
+
+var http = OkHttpClient.builder().build();
+var options =
+    ClientOptions.builder()
+        .fromEnv()
+        .httpClient(http)
+        .putHeader("OpenAI-Safety-Identifier", "hashed-user-id")
+        .build();
+try (http;
+    var connection =
+        TranslationConnection.connect(
+            options,
+            TranslationWebSocketOptions.builder()
+                .model("gpt-realtime-translate")
+                .sendTimeout(java.time.Duration.ofSeconds(30))
+                .build())) {
+  while (true) {
+    var event = connection.receive();
+    if (event.error().isPresent())
+      throw new IllegalStateException(event.error().orElseThrow().toString());
+    if (event.sessionCreated().isPresent()) {
+      System.out.println("Connected to translation session.");
+      System.out.println(event);
+      break;
+    }
+  }
+}
+```
+
 ```ruby
 require "async"
 require "async/http/endpoint"
@@ -181,6 +218,8 @@ end
 
 
 For Ruby, insert the following configuration and audio-append snippets inside the `Async::WebSocket::Client.connect` block, after the session-created check and before the block ends. Keep the connection open while sending audio and receiving translation events.
+
+The Java connection example closes the socket when its `try` block ends. The Java configuration and audio-input examples require an open `TranslationConnection`; keep it open while sending audio and receiving output. Before leaving the block, finish the session and drain its events through `session.closed` as described in [Close a WebSocket session](#close-a-websocket-session).
 
 Configure the target language after the socket opens:
 
@@ -222,6 +261,29 @@ ws.send(
 )
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.TranslationConnection;
+import com.openai.helpers.TranslationWebSocketOptions;
+import com.openai.models.realtime.*;
+
+connection.send(
+    RealtimeTranslationClientEvent.ofSessionUpdate(
+        RealtimeTranslationSessionUpdateEvent.builder()
+            .session(
+                RealtimeTranslationSessionUpdateRequest.builder()
+                    .audio(
+                        RealtimeTranslationSessionUpdateRequest.Audio.builder()
+                            .output(
+                                RealtimeTranslationSessionUpdateRequest.Audio.Output.builder()
+                                    .language("es")
+                                    .build())
+                            .build())
+                    .build())
+            .build()));
+```
+
 ```ruby
 connection.write(JSON.generate(type: "session.update", session: { audio: { output: { language: "es" } } }))
 connection.flush
@@ -250,6 +312,23 @@ ws.send(
         }
     )
 )
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.TranslationConnection;
+import com.openai.helpers.TranslationWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.Base64;
+
+// Call for each PCM16, 24 kHz, mono chunk supplied by your audio source.
+static void appendAudio(TranslationConnection connection, byte[] pcmAudio) {
+  String base64Pcm16 = Base64.getEncoder().encodeToString(pcmAudio);
+  connection.send(
+      RealtimeTranslationClientEvent.ofSessionInputAudioBufferAppend(
+          RealtimeTranslationInputAudioBufferAppendEvent.builder().audio(base64Pcm16).build()));
+}
 ```
 
 ```ruby

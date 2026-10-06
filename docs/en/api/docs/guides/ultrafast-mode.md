@@ -207,9 +207,9 @@ GPT-6 Astra has the following default Ultrafast token rate limits:
 
 | API usage tier | Tokens per minute (TPM) |
 | -------------- | ----------------------- |
-| Tiers 1–3      | 500,000                 |
-| Tier 4         | 1,000,000               |
-| Tier 5         | 5,000,000               |
+| Build          | 500,000                 |
+| Launch         | 1,000,000               |
+| Grow           | 5,000,000               |
 
 See the [Ultrafast pricing table](https://developers.openai.com/api/docs/pricing?latest-pricing=ultrafast) for input, cached input, cache write, and output prices.
 

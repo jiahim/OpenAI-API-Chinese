@@ -190,6 +190,138 @@ async def main():
 asyncio.run(main())
 ```
 
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Reasoning: shared.ReasoningParam{
+		Effort: shared.ReasoningEffortMedium,
+	},
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Draft a project plan for building a task-tracking app."),
+	},
+}); err != nil {
+	log.Fatal(err)
+}
+initialID, successorID := "", ""
+for {
+	event, err := conn.Recv(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	switch event.Type {
+	case "response.created":
+		id := event.OfResponsesServerEventResponseWsCreated.Response.ID
+		if initialID == "" {
+			initialID = id
+			err := conn.Send(ctx, responses.ResponsesClientEventUnionParam{
+				OfResponseSteer: &responses.ResponseSteerEventParam{
+					PreviousResponseID: id,
+					Input: responses.ResponseSteerInputUnionParam{
+						OfString: openai.String("Keep the scope small enough for one developer to finish in two weeks."),
+					},
+				},
+			})
+			if err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			successorID = id
+		}
+	case "response.steer.failed", "response.failed", "error":
+		log.Fatal(event.RawJSON())
+	case "response.incomplete":
+		r := event.OfResponsesServerEventResponseWsIncomplete.Response
+		if r.ID != initialID || r.IncompleteDetails.Reason != "steered" {
+			log.Fatal(event.RawJSON())
+		}
+	case "response.completed":
+		r := event.OfResponsesServerEventResponseWsCompleted.Response
+		if successorID != "" && r.ID == successorID {
+			fmt.Println(r.OutputText())
+			return
+		}
+	}
+	// Steering acceptance only queues input. Wait for the successor to complete.
+}
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.*;
+import java.util.*;
+
+long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(120);
+try (var conn =
+    client.async().responses().connect().get(10, java.util.concurrent.TimeUnit.SECONDS)) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .reasoning(
+                  com.openai.models.Reasoning.builder()
+                      .effort(com.openai.models.ReasoningEffort.MEDIUM)
+                      .build())
+              .store(false)
+              .input("Draft a project plan for building a task-tracking app.")
+              .build()));
+  String initialId = null, successorId = null;
+  while (true) {
+    var event =
+        conn.receive()
+            .get(
+                Math.max(1, deadline - System.nanoTime()),
+                java.util.concurrent.TimeUnit.NANOSECONDS);
+    if (event.responseCreated().isPresent()) {
+      var id = event.responseCreated().orElseThrow().response().id();
+      if (initialId == null) {
+        initialId = id;
+        conn.send(
+            ResponsesClientEvent.ofResponseSteer(
+                ResponseSteerEvent.builder()
+                    .previousResponseId(id)
+                    .input(
+                        "Keep the scope small enough for one developer to finish in two weeks.")
+                    .build()));
+      } else {
+        successorId = id;
+      }
+    } else if (event.responseSteerFailed().isPresent()
+        || event.responseFailed().isPresent()
+        || event.error().isPresent()) {
+      throw new IllegalStateException(event.toString());
+    } else if (event.responseIncomplete().isPresent()) {
+      var response = event.responseIncomplete().orElseThrow().response();
+      if (!response.id().equals(initialId)
+          || !response
+              .incompleteDetails()
+              .flatMap(Response.IncompleteDetails::reason)
+              .map(r -> r.toString().equals("steered"))
+              .orElse(false)) throw new IllegalStateException(event.toString());
+    } else if (event.responseCompleted().isPresent()
+        && event.responseCompleted().orElseThrow().response().id().equals(successorId)) {
+      event.responseCompleted().orElseThrow().response().output().stream()
+          .flatMap(item -> item.message().stream())
+          .flatMap(message -> message.content().stream())
+          .flatMap(content -> content.outputText().stream())
+          .forEach(text -> System.out.println(text.text()));
+      break;
+    }
+    // Acceptance only queues input; follow the successor through completion.
+  }
+} finally {
+  client.close();
+}
+```
+
 ```ruby
 require "async"
 require "openai"

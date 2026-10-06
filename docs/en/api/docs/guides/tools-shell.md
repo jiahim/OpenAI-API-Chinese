@@ -978,6 +978,154 @@ response = client.responses.create(
 print(response.output_text)
 ```
 
+```go
+var bundle bytes.Buffer
+archive := zip.NewWriter(&bundle)
+file, err := archive.Create("csv-insights/SKILL.md")
+if err != nil {
+	log.Fatal(err)
+}
+if _, err := file.Write([]byte("---\nname: csv-insights\ndescription: Summarize CSV files.\n---\nRead the CSV and produce a Markdown report of totals.\n")); err != nil {
+	log.Fatal(err)
+}
+if err := archive.Close(); err != nil {
+	log.Fatal(err)
+}
+client := openai.NewClient()
+inlineZip := base64.StdEncoding.EncodeToString(bundle.Bytes())
+reportCSV := base64.StdEncoding.EncodeToString([]byte("product,revenue\nA,120\nB,80\n"))
+container, err := client.Containers.New(context.Background(), openai.ContainerNewParams{
+	Name: "inline-skill-container",
+	Skills: []openai.ContainerNewParamsSkillUnion{
+		{
+			OfInline: &responses.InlineSkillParam{
+				Name:        "csv-insights",
+				Description: "Summarize CSV files and produce a markdown report.",
+				Source: responses.InlineSkillSourceParam{
+					Data: inlineZip,
+				},
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model: "gpt-6-astra",
+	Tools: []responses.ToolUnionParam{
+		{
+			OfShell: &responses.FunctionShellToolParam{
+				Environment: responses.FunctionShellToolEnvironmentUnionParam{
+					OfContainerReference: &responses.ContainerReferenceParam{
+						ContainerID: container.ID,
+					},
+				},
+			},
+		},
+	},
+	Input: responses.ResponseNewParamsInputUnion{
+		OfInputItemList: []responses.ResponseInputItemUnionParam{
+			{
+				OfMessage: &responses.EasyInputMessageParam{
+					Role: responses.EasyInputMessageRoleUser,
+					Content: responses.EasyInputMessageContentUnionParam{
+						OfInputItemContentList: []responses.ResponseInputContentUnionParam{
+							{
+								OfInputFile: &responses.ResponseInputFileParam{
+									Filename: openai.String("report.csv"),
+									FileData: openai.String("data:text/csv;base64," + reportCSV),
+								},
+							},
+							{
+								OfInputText: &responses.ResponseInputTextParam{
+									Text: "Use the csv-insights skill to summarize report.csv.",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+fmt.Println(response.OutputText())
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.containers.ContainerCreateParams;
+import com.openai.models.responses.*;
+import java.util.*;
+
+var bundle = new java.io.ByteArrayOutputStream();
+try (var zip = new java.util.zip.ZipOutputStream(bundle)) {
+  zip.putNextEntry(new java.util.zip.ZipEntry("csv-insights/SKILL.md"));
+  zip.write(
+      "---\nname: csv-insights\ndescription: Summarize CSV files.\n---\nRead the CSV and produce a Markdown report of totals.\n"
+          .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+  zip.closeEntry();
+}
+var client = OpenAIOkHttpClient.fromEnv();
+
+var inlineZip = Base64.getEncoder().encodeToString(bundle.toByteArray());
+var reportCsv =
+    Base64.getEncoder()
+        .encodeToString(
+            "product,revenue\nA,120\nB,80\n".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+var container =
+    client
+        .containers()
+        .create(
+            ContainerCreateParams.builder()
+                .name("inline-skill-container")
+                .addSkill(
+                    InlineSkill.builder()
+                        .name("csv-insights")
+                        .description("Summarize CSV files and produce a markdown report.")
+                        .source(InlineSkillSource.builder().data(inlineZip).build())
+                        .build())
+                .build());
+var response =
+    client
+        .responses()
+        .create(
+            ResponseCreateParams.builder()
+                .model("gpt-6-astra")
+                .addTool(
+                    FunctionShellTool.builder()
+                        .containerReferenceEnvironment(container.id())
+                        .build())
+                .inputOfResponse(
+                    List.of(
+                        ResponseInputItem.ofMessage(
+                            ResponseInputItem.Message.builder()
+                                .role(ResponseInputItem.Message.Role.USER)
+                                .addContent(
+                                    ResponseInputFile.builder()
+                                        .filename("report.csv")
+                                        .fileData("data:text/csv;base64," + reportCsv)
+                                        .build())
+                                .addInputTextContent(
+                                    "Use the csv-insights skill to summarize report.csv.")
+                                .build())))
+                .build());
+if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+  throw new IllegalStateException(
+      "Response ended with status " + response.status().orElse(null));
+response.output().stream()
+    .flatMap(item -> item.message().stream())
+    .flatMap(message -> message.content().stream())
+    .flatMap(content -> content.outputText().stream())
+    .forEach(text -> System.out.println(text.text()));
+```
+
 ```ruby
 require "base64"
 require "openai"

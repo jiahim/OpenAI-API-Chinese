@@ -2356,7 +2356,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
                 - `"grammar"`
 
-        - `Namespace object { description, name, tools, type }`
+        - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
           Groups function/custom tools under a shared namespace.
 
@@ -2370,11 +2370,13 @@ Learn when and how to compact long-running conversations in the [conversation st
 
           - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-            The function/custom tools available inside this namespace.
+            The function/custom tools loaded inside this namespace.
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
+
+                The name of the loaded function tool.
 
               - `type: "function"`
 
@@ -7864,7 +7866,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 

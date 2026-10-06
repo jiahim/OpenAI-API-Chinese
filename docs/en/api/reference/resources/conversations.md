@@ -2120,7 +2120,7 @@ Create a conversation.
 
               - `"grammar"`
 
-      - `Namespace object { description, name, tools, type }`
+      - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
         Groups function/custom tools under a shared namespace.
 
@@ -2134,11 +2134,13 @@ Create a conversation.
 
         - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-          The function/custom tools available inside this namespace.
+          The function/custom tools loaded inside this namespace.
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
+
+              The name of the loaded function tool.
 
             - `type: "function"`
 
@@ -7262,7 +7264,7 @@ Create items in a conversation with the given ID.
 
               - `"grammar"`
 
-      - `Namespace object { description, name, tools, type }`
+      - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
         Groups function/custom tools under a shared namespace.
 
@@ -7276,11 +7278,13 @@ Create items in a conversation with the given ID.
 
         - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-          The function/custom tools available inside this namespace.
+          The function/custom tools loaded inside this namespace.
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
+
+              The name of the loaded function tool.
 
             - `type: "function"`
 
@@ -10551,7 +10555,7 @@ Create items in a conversation with the given ID.
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -15038,7 +15042,7 @@ List all items for a conversation with the given ID.
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -19392,7 +19396,7 @@ Get a single item from a conversation with the given IDs.
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -23679,7 +23683,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -27919,7 +27923,7 @@ curl https://api.openai.com/v1/conversations/conv_123/items/msg_abc \
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 

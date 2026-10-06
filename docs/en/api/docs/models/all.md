@@ -47,8 +47,6 @@ Models for realtime, speech, and audio workflows.
 Advanced cyber models for defenders
 
 - [GPT-5.6 Cyber](/api/docs/models/gpt-5.6-cyber.md): Our most advanced cybersecurity model for authorized vulnerability research and security testing.
-- [Daybreak Red](/api/docs/models/gpt-daybreak-red-latest.md): An alias for advanced cybersecurity models for authorized vulnerability research and security testing.
-- [Daybreak Blue](/api/docs/models/gpt-daybreak-blue-latest.md): An alias for flagship general-purpose models with safeguards for defensive cybersecurity work.
 
 ## Life sciences
 
@@ -97,6 +95,8 @@ Diverse models for a variety of tasks.
 - [omni-moderation](/api/docs/models/omni-moderation-latest.md): Identify potentially harmful content in text and images
 - [GPT-4o Mini](/api/docs/models/gpt-4o-mini.md): Fast, affordable small model for focused tasks
 - [GPT-4o](/api/docs/models/gpt-4o.md): Fast, intelligent, flexible GPT model
+- [Daybreak Red](/api/docs/models/gpt-daybreak-red-latest.md): Deprecated. An alias for advanced cybersecurity models for authorized vulnerability research and security testing.
+- [Daybreak Blue](/api/docs/models/gpt-daybreak-blue-latest.md): Deprecated. An alias for flagship general-purpose models with safeguards for defensive cybersecurity work.
 - [GPT-5.4 nano](/api/docs/models/gpt-5.4-nano.md): Deprecated. Our cheapest GPT-5.4-class model for simple high-volume tasks
 - [GPT-5.3-Codex](/api/docs/models/gpt-5.3-codex.md): Deprecated. The most capable agentic coding model to date.
 - [GPT-5.1](/api/docs/models/gpt-5.1.md): Deprecated. The best model for coding and agentic tasks with configurable reasoning effort

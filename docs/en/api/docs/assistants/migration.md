@@ -760,6 +760,111 @@ async def message(message: Message):
     return {"content": response.output_text}
 ```
 
+```go
+func main() {
+	client := openai.NewClient()
+	server := &http.Server{
+		Addr:              "127.0.0.1:8000",
+		Handler:           newChatHandler(client),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
+}
+
+func newChatHandler(client openai.Client) http.Handler {
+	var mutex sync.Mutex
+	type sessionConversation struct {
+		ready        chan struct{}
+		id           string
+		err          error
+		responseSlot chan struct{}
+	}
+	conversationsBySession := map[string]*sessionConversation{}
+	mux := http.NewServeMux()
+	mux.HandleFunc("POST /messages", func(w http.ResponseWriter, r *http.Request) {
+		var message struct {
+			Content   string `json:"content"`
+			SessionID string `json:"session_id"`
+		}
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&message); err != nil || strings.TrimSpace(message.Content) == "" || strings.TrimSpace(message.SessionID) == "" {
+			http.Error(w, "content and session_id must be non-empty strings", 400)
+			return
+		}
+		// A demo session map. Bind session IDs to authenticated users in your application.
+		mutex.Lock()
+		session, exists := conversationsBySession[message.SessionID]
+		if !exists {
+			session = &sessionConversation{ready: make(chan struct{}), responseSlot: make(chan struct{}, 1)}
+			conversationsBySession[message.SessionID] = session
+		}
+		mutex.Unlock()
+		if !exists {
+			go func() {
+				// Creation belongs to the shared session, not the first HTTP request.
+				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+				defer cancel()
+				conversation, err := client.Conversations.New(ctx, conversations.ConversationNewParams{})
+				session.err = err
+				if err == nil {
+					session.id = conversation.ID
+				}
+				mutex.Lock()
+				if err != nil {
+					delete(conversationsBySession, message.SessionID)
+				}
+				close(session.ready)
+				mutex.Unlock()
+			}()
+		}
+		select {
+		case <-r.Context().Done():
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		case <-session.ready:
+		}
+		if session.err != nil {
+			http.Error(w, "Could not create conversation", http.StatusInternalServerError)
+			return
+		}
+		// Serialize responses within this conversation; waiting requests can cancel.
+		select {
+		case session.responseSlot <- struct{}{}:
+			defer func() { <-session.responseSlot }()
+		case <-r.Context().Done():
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		}
+		if r.Context().Err() != nil {
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		}
+		// Replace this illustrative stored prompt ID with your prompt.
+		result, err := client.Responses.New(r.Context(), responses.ResponseNewParams{
+			Prompt: responses.ResponsePromptParam{
+				ID: "pmpt_123",
+			},
+			Input: responses.ResponseNewParamsInputUnion{
+				OfString: openai.String(message.Content),
+			},
+			Conversation: responses.ResponseNewParamsConversationUnion{
+				OfString: openai.String(session.id),
+			},
+		})
+		if err != nil || result.Status != responses.ResponseStatusCompleted {
+			http.Error(w, "Could not create response", 500)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{
+			"content": result.OutputText(),
+		}); err != nil {
+			log.Print(err)
+		}
+	})
+	return mux
+}
+```
+
 ```ruby
 # Replace the illustrative IDs and URLs below with your own resource values.
 require "openai"

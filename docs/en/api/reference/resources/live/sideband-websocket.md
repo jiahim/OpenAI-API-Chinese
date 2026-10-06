@@ -185,11 +185,13 @@ Schema name: `LiveSessionUpdateParam`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or object { name, type }  or object { name, server_label, type }`
+        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
 
           Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
+
+            Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
             - `"auto"`
 
@@ -197,25 +199,9 @@ Schema name: `LiveSessionUpdateParam`
 
             - `"required"`
 
-          - `LiveFunctionToolChoiceParam object { name, type }`
+          - `map[unknown]`
 
-            - `name: string`
-
-            - `type: "function"`
-
-              - `"function"`
-
-          - `LiveMCPToolChoiceParam object { name, server_label, type }`
-
-            - `name: string`
-
-            - `server_label: string`
-
-            - `type: "mcp"`
-
-              - `"mcp"`
-
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 3 more`
+        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -267,21 +253,203 @@ Schema name: `LiveSessionUpdateParam`
 
               - `"code_interpreter"`
 
-          - `Shell object { environment, type }`
+          - `Shell object { type, environment }`
 
-            A Responses shell tool with a container_auto or container_reference environment. Local execution and domain secrets are not supported.
-
-            - `environment: map[unknown]`
+            A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
 
             - `type: "shell"`
 
               - `"shell"`
+
+            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+
+              - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
+
+                - `type: "container_auto"`
+
+                  Automatically creates a container for this request
+
+                  - `"container_auto"`
+
+                - `file_ids: optional array of string or null`
+
+                  An optional list of uploaded files to make available to your code.
+
+                - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
+
+                  The memory limit for the container.
+
+                  - `"1g"`
+
+                  - `"4g"`
+
+                  - `"16g"`
+
+                  - `"64g"`
+
+                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+
+                  Network access policy for the container.
+
+                  - `Disabled object { type }`
+
+                    - `type: "disabled"`
+
+                      Disable outbound network access. Always `disabled`.
+
+                      - `"disabled"`
+
+                  - `Allowlist object { allowed_domains, type }`
+
+                    - `allowed_domains: array of string`
+
+                      A list of allowed domains when type is `allowlist`.
+
+                    - `type: "allowlist"`
+
+                      Allow outbound network access only to specified domains. Always `allowlist`.
+
+                      - `"allowlist"`
+
+                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+
+                  An optional list of skills referenced by id or inline data.
+
+                  - `SkillReference object { skill_id, type, version }`
+
+                    - `skill_id: string`
+
+                      The ID of the referenced skill.
+
+                    - `type: "skill_reference"`
+
+                      References a skill created with the /v1/skills endpoint.
+
+                      - `"skill_reference"`
+
+                    - `version: optional string or null`
+
+                      Optional skill version. Use a positive integer or 'latest'. Omit for default.
+
+                  - `Inline object { description, name, source, type }`
+
+                    - `description: string`
+
+                      The description of the skill.
+
+                    - `name: string`
+
+                      The name of the skill.
+
+                    - `source: object { data, media_type, type }`
+
+                      Inline skill payload
+
+                      - `data: string`
+
+                        Base64-encoded skill zip bundle.
+
+                      - `media_type: "application/zip"`
+
+                        The media type of the inline skill payload. Must be `application/zip`.
+
+                        - `"application/zip"`
+
+                      - `type: "base64"`
+
+                        The type of the inline skill source. Must be `base64`.
+
+                        - `"base64"`
+
+                    - `type: "inline"`
+
+                      Defines an inline skill for this request.
+
+                      - `"inline"`
+
+              - `ContainerReference object { container_id, type }`
+
+                - `container_id: string`
+
+                  The ID of the referenced container.
+
+                - `type: "container_reference"`
+
+                  References a container created with the /v1/containers endpoint
+
+                  - `"container_reference"`
+
+              - `Local object { type, skills }`
+
+                - `type: "local"`
+
+                  Use a local computer environment.
+
+                  - `"local"`
+
+                - `skills: optional array of object { description, name, path }  or null`
+
+                  An optional list of skills.
+
+                  - `description: string`
+
+                    The description of the skill.
+
+                  - `name: string`
+
+                    The name of the skill.
+
+                  - `path: string`
+
+                    The path to the directory containing the skill.
 
           - `ImageGeneration object { type }`
 
             - `type: "image_generation"`
 
               - `"image_generation"`
+
+          - `Mcp object { type }`
+
+            - `type: "mcp"`
+
+              - `"mcp"`
+
+          - `Custom object { type }`
+
+            - `type: "custom"`
+
+              - `"custom"`
+
+          - `Namespace object { type }`
+
+            - `type: "namespace"`
+
+              - `"namespace"`
+
+          - `ToolSearch object { type }`
+
+            - `type: "tool_search"`
+
+              - `"tool_search"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              - `"programmatic_tool_calling"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              - `"computer"`
+
+          - `ApplyPatch object { type }`
+
+            - `type: "apply_patch"`
+
+              - `"apply_patch"`
 
 - `type: "session.update"`
 
@@ -2606,7 +2774,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `"grammar"`
 
-      - `Namespace object { description, name, tools, type }`
+      - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
         Groups function/custom tools under a shared namespace.
 
@@ -2620,11 +2788,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-          The function/custom tools available inside this namespace.
+          The function/custom tools loaded inside this namespace.
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
+
+              The name of the loaded function tool.
 
             - `type: "function"`
 
@@ -5107,21 +5277,19 @@ Schema name: `LiveSessionStarted`
 
       The voice used for speech generated by the Live model.
 
-      - `voice: optional string or "alloy" or "ash" or "aube" or 29 more or CustomVoice`
+      - `voice: optional string or "alloy" or "ash" or "ballad" or 28 more or CustomVoice`
 
         The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
         - `string`
 
-        - `"alloy" or "ash" or "aube" or 29 more`
+        - `"alloy" or "ash" or "ballad" or 28 more`
 
           The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
           - `"alloy"`
 
           - `"ash"`
-
-          - `"aube"`
 
           - `"ballad"`
 
@@ -5319,11 +5487,13 @@ Schema name: `LiveSessionStarted`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or object { name, type }  or object { name, server_label, type }`
+        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
 
           Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
+
+            Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
             - `"auto"`
 
@@ -5331,25 +5501,9 @@ Schema name: `LiveSessionStarted`
 
             - `"required"`
 
-          - `LiveFunctionToolChoiceParam object { name, type }`
+          - `map[unknown]`
 
-            - `name: string`
-
-            - `type: "function"`
-
-              - `"function"`
-
-          - `LiveMCPToolChoiceParam object { name, server_label, type }`
-
-            - `name: string`
-
-            - `server_label: string`
-
-            - `type: "mcp"`
-
-              - `"mcp"`
-
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 3 more`
+        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -5401,21 +5555,203 @@ Schema name: `LiveSessionStarted`
 
               - `"code_interpreter"`
 
-          - `Shell object { environment, type }`
+          - `Shell object { type, environment }`
 
-            A Responses shell tool with a container_auto or container_reference environment. Local execution and domain secrets are not supported.
-
-            - `environment: map[unknown]`
+            A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
 
             - `type: "shell"`
 
               - `"shell"`
+
+            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+
+              - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
+
+                - `type: "container_auto"`
+
+                  Automatically creates a container for this request
+
+                  - `"container_auto"`
+
+                - `file_ids: optional array of string or null`
+
+                  An optional list of uploaded files to make available to your code.
+
+                - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
+
+                  The memory limit for the container.
+
+                  - `"1g"`
+
+                  - `"4g"`
+
+                  - `"16g"`
+
+                  - `"64g"`
+
+                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+
+                  Network access policy for the container.
+
+                  - `Disabled object { type }`
+
+                    - `type: "disabled"`
+
+                      Disable outbound network access. Always `disabled`.
+
+                      - `"disabled"`
+
+                  - `Allowlist object { allowed_domains, type }`
+
+                    - `allowed_domains: array of string`
+
+                      A list of allowed domains when type is `allowlist`.
+
+                    - `type: "allowlist"`
+
+                      Allow outbound network access only to specified domains. Always `allowlist`.
+
+                      - `"allowlist"`
+
+                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+
+                  An optional list of skills referenced by id or inline data.
+
+                  - `SkillReference object { skill_id, type, version }`
+
+                    - `skill_id: string`
+
+                      The ID of the referenced skill.
+
+                    - `type: "skill_reference"`
+
+                      References a skill created with the /v1/skills endpoint.
+
+                      - `"skill_reference"`
+
+                    - `version: optional string or null`
+
+                      Optional skill version. Use a positive integer or 'latest'. Omit for default.
+
+                  - `Inline object { description, name, source, type }`
+
+                    - `description: string`
+
+                      The description of the skill.
+
+                    - `name: string`
+
+                      The name of the skill.
+
+                    - `source: object { data, media_type, type }`
+
+                      Inline skill payload
+
+                      - `data: string`
+
+                        Base64-encoded skill zip bundle.
+
+                      - `media_type: "application/zip"`
+
+                        The media type of the inline skill payload. Must be `application/zip`.
+
+                        - `"application/zip"`
+
+                      - `type: "base64"`
+
+                        The type of the inline skill source. Must be `base64`.
+
+                        - `"base64"`
+
+                    - `type: "inline"`
+
+                      Defines an inline skill for this request.
+
+                      - `"inline"`
+
+              - `ContainerReference object { container_id, type }`
+
+                - `container_id: string`
+
+                  The ID of the referenced container.
+
+                - `type: "container_reference"`
+
+                  References a container created with the /v1/containers endpoint
+
+                  - `"container_reference"`
+
+              - `Local object { type, skills }`
+
+                - `type: "local"`
+
+                  Use a local computer environment.
+
+                  - `"local"`
+
+                - `skills: optional array of object { description, name, path }  or null`
+
+                  An optional list of skills.
+
+                  - `description: string`
+
+                    The description of the skill.
+
+                  - `name: string`
+
+                    The name of the skill.
+
+                  - `path: string`
+
+                    The path to the directory containing the skill.
 
           - `ImageGeneration object { type }`
 
             - `type: "image_generation"`
 
               - `"image_generation"`
+
+          - `Mcp object { type }`
+
+            - `type: "mcp"`
+
+              - `"mcp"`
+
+          - `Custom object { type }`
+
+            - `type: "custom"`
+
+              - `"custom"`
+
+          - `Namespace object { type }`
+
+            - `type: "namespace"`
+
+              - `"namespace"`
+
+          - `ToolSearch object { type }`
+
+            - `type: "tool_search"`
+
+              - `"tool_search"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              - `"programmatic_tool_calling"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              - `"computer"`
+
+          - `ApplyPatch object { type }`
+
+            - `type: "apply_patch"`
+
+              - `"apply_patch"`
 
       - `type: "responses"`
 
@@ -5721,21 +6057,19 @@ Schema name: `LiveSessionUpdated`
 
       The voice used for speech generated by the Live model.
 
-      - `voice: optional string or "alloy" or "ash" or "aube" or 29 more or CustomVoice`
+      - `voice: optional string or "alloy" or "ash" or "ballad" or 28 more or CustomVoice`
 
         The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
         - `string`
 
-        - `"alloy" or "ash" or "aube" or 29 more`
+        - `"alloy" or "ash" or "ballad" or 28 more`
 
           The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
           - `"alloy"`
 
           - `"ash"`
-
-          - `"aube"`
 
           - `"ballad"`
 
@@ -5933,11 +6267,13 @@ Schema name: `LiveSessionUpdated`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or object { name, type }  or object { name, server_label, type }`
+        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
 
           Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
+
+            Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
             - `"auto"`
 
@@ -5945,25 +6281,9 @@ Schema name: `LiveSessionUpdated`
 
             - `"required"`
 
-          - `LiveFunctionToolChoiceParam object { name, type }`
+          - `map[unknown]`
 
-            - `name: string`
-
-            - `type: "function"`
-
-              - `"function"`
-
-          - `LiveMCPToolChoiceParam object { name, server_label, type }`
-
-            - `name: string`
-
-            - `server_label: string`
-
-            - `type: "mcp"`
-
-              - `"mcp"`
-
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 3 more`
+        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -6015,21 +6335,203 @@ Schema name: `LiveSessionUpdated`
 
               - `"code_interpreter"`
 
-          - `Shell object { environment, type }`
+          - `Shell object { type, environment }`
 
-            A Responses shell tool with a container_auto or container_reference environment. Local execution and domain secrets are not supported.
-
-            - `environment: map[unknown]`
+            A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
 
             - `type: "shell"`
 
               - `"shell"`
+
+            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+
+              - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
+
+                - `type: "container_auto"`
+
+                  Automatically creates a container for this request
+
+                  - `"container_auto"`
+
+                - `file_ids: optional array of string or null`
+
+                  An optional list of uploaded files to make available to your code.
+
+                - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
+
+                  The memory limit for the container.
+
+                  - `"1g"`
+
+                  - `"4g"`
+
+                  - `"16g"`
+
+                  - `"64g"`
+
+                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+
+                  Network access policy for the container.
+
+                  - `Disabled object { type }`
+
+                    - `type: "disabled"`
+
+                      Disable outbound network access. Always `disabled`.
+
+                      - `"disabled"`
+
+                  - `Allowlist object { allowed_domains, type }`
+
+                    - `allowed_domains: array of string`
+
+                      A list of allowed domains when type is `allowlist`.
+
+                    - `type: "allowlist"`
+
+                      Allow outbound network access only to specified domains. Always `allowlist`.
+
+                      - `"allowlist"`
+
+                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+
+                  An optional list of skills referenced by id or inline data.
+
+                  - `SkillReference object { skill_id, type, version }`
+
+                    - `skill_id: string`
+
+                      The ID of the referenced skill.
+
+                    - `type: "skill_reference"`
+
+                      References a skill created with the /v1/skills endpoint.
+
+                      - `"skill_reference"`
+
+                    - `version: optional string or null`
+
+                      Optional skill version. Use a positive integer or 'latest'. Omit for default.
+
+                  - `Inline object { description, name, source, type }`
+
+                    - `description: string`
+
+                      The description of the skill.
+
+                    - `name: string`
+
+                      The name of the skill.
+
+                    - `source: object { data, media_type, type }`
+
+                      Inline skill payload
+
+                      - `data: string`
+
+                        Base64-encoded skill zip bundle.
+
+                      - `media_type: "application/zip"`
+
+                        The media type of the inline skill payload. Must be `application/zip`.
+
+                        - `"application/zip"`
+
+                      - `type: "base64"`
+
+                        The type of the inline skill source. Must be `base64`.
+
+                        - `"base64"`
+
+                    - `type: "inline"`
+
+                      Defines an inline skill for this request.
+
+                      - `"inline"`
+
+              - `ContainerReference object { container_id, type }`
+
+                - `container_id: string`
+
+                  The ID of the referenced container.
+
+                - `type: "container_reference"`
+
+                  References a container created with the /v1/containers endpoint
+
+                  - `"container_reference"`
+
+              - `Local object { type, skills }`
+
+                - `type: "local"`
+
+                  Use a local computer environment.
+
+                  - `"local"`
+
+                - `skills: optional array of object { description, name, path }  or null`
+
+                  An optional list of skills.
+
+                  - `description: string`
+
+                    The description of the skill.
+
+                  - `name: string`
+
+                    The name of the skill.
+
+                  - `path: string`
+
+                    The path to the directory containing the skill.
 
           - `ImageGeneration object { type }`
 
             - `type: "image_generation"`
 
               - `"image_generation"`
+
+          - `Mcp object { type }`
+
+            - `type: "mcp"`
+
+              - `"mcp"`
+
+          - `Custom object { type }`
+
+            - `type: "custom"`
+
+              - `"custom"`
+
+          - `Namespace object { type }`
+
+            - `type: "namespace"`
+
+              - `"namespace"`
+
+          - `ToolSearch object { type }`
+
+            - `type: "tool_search"`
+
+              - `"tool_search"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              - `"programmatic_tool_calling"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              - `"computer"`
+
+          - `ApplyPatch object { type }`
+
+            - `type: "apply_patch"`
+
+              - `"apply_patch"`
 
       - `type: "responses"`
 
@@ -6873,21 +7375,19 @@ Schema name: `LiveSessionClosed`
 
       The voice used for speech generated by the Live model.
 
-      - `voice: optional string or "alloy" or "ash" or "aube" or 29 more or CustomVoice`
+      - `voice: optional string or "alloy" or "ash" or "ballad" or 28 more or CustomVoice`
 
         The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
         - `string`
 
-        - `"alloy" or "ash" or "aube" or 29 more`
+        - `"alloy" or "ash" or "ballad" or 28 more`
 
           The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
 
           - `"alloy"`
 
           - `"ash"`
-
-          - `"aube"`
 
           - `"ballad"`
 
@@ -7085,11 +7585,13 @@ Schema name: `LiveSessionClosed`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or object { name, type }  or object { name, server_label, type }`
+        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
 
           Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
+
+            Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
             - `"auto"`
 
@@ -7097,25 +7599,9 @@ Schema name: `LiveSessionClosed`
 
             - `"required"`
 
-          - `LiveFunctionToolChoiceParam object { name, type }`
+          - `map[unknown]`
 
-            - `name: string`
-
-            - `type: "function"`
-
-              - `"function"`
-
-          - `LiveMCPToolChoiceParam object { name, server_label, type }`
-
-            - `name: string`
-
-            - `server_label: string`
-
-            - `type: "mcp"`
-
-              - `"mcp"`
-
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 3 more`
+        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -7167,21 +7653,203 @@ Schema name: `LiveSessionClosed`
 
               - `"code_interpreter"`
 
-          - `Shell object { environment, type }`
+          - `Shell object { type, environment }`
 
-            A Responses shell tool with a container_auto or container_reference environment. Local execution and domain secrets are not supported.
-
-            - `environment: map[unknown]`
+            A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
 
             - `type: "shell"`
 
               - `"shell"`
+
+            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+
+              - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
+
+                - `type: "container_auto"`
+
+                  Automatically creates a container for this request
+
+                  - `"container_auto"`
+
+                - `file_ids: optional array of string or null`
+
+                  An optional list of uploaded files to make available to your code.
+
+                - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
+
+                  The memory limit for the container.
+
+                  - `"1g"`
+
+                  - `"4g"`
+
+                  - `"16g"`
+
+                  - `"64g"`
+
+                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+
+                  Network access policy for the container.
+
+                  - `Disabled object { type }`
+
+                    - `type: "disabled"`
+
+                      Disable outbound network access. Always `disabled`.
+
+                      - `"disabled"`
+
+                  - `Allowlist object { allowed_domains, type }`
+
+                    - `allowed_domains: array of string`
+
+                      A list of allowed domains when type is `allowlist`.
+
+                    - `type: "allowlist"`
+
+                      Allow outbound network access only to specified domains. Always `allowlist`.
+
+                      - `"allowlist"`
+
+                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+
+                  An optional list of skills referenced by id or inline data.
+
+                  - `SkillReference object { skill_id, type, version }`
+
+                    - `skill_id: string`
+
+                      The ID of the referenced skill.
+
+                    - `type: "skill_reference"`
+
+                      References a skill created with the /v1/skills endpoint.
+
+                      - `"skill_reference"`
+
+                    - `version: optional string or null`
+
+                      Optional skill version. Use a positive integer or 'latest'. Omit for default.
+
+                  - `Inline object { description, name, source, type }`
+
+                    - `description: string`
+
+                      The description of the skill.
+
+                    - `name: string`
+
+                      The name of the skill.
+
+                    - `source: object { data, media_type, type }`
+
+                      Inline skill payload
+
+                      - `data: string`
+
+                        Base64-encoded skill zip bundle.
+
+                      - `media_type: "application/zip"`
+
+                        The media type of the inline skill payload. Must be `application/zip`.
+
+                        - `"application/zip"`
+
+                      - `type: "base64"`
+
+                        The type of the inline skill source. Must be `base64`.
+
+                        - `"base64"`
+
+                    - `type: "inline"`
+
+                      Defines an inline skill for this request.
+
+                      - `"inline"`
+
+              - `ContainerReference object { container_id, type }`
+
+                - `container_id: string`
+
+                  The ID of the referenced container.
+
+                - `type: "container_reference"`
+
+                  References a container created with the /v1/containers endpoint
+
+                  - `"container_reference"`
+
+              - `Local object { type, skills }`
+
+                - `type: "local"`
+
+                  Use a local computer environment.
+
+                  - `"local"`
+
+                - `skills: optional array of object { description, name, path }  or null`
+
+                  An optional list of skills.
+
+                  - `description: string`
+
+                    The description of the skill.
+
+                  - `name: string`
+
+                    The name of the skill.
+
+                  - `path: string`
+
+                    The path to the directory containing the skill.
 
           - `ImageGeneration object { type }`
 
             - `type: "image_generation"`
 
               - `"image_generation"`
+
+          - `Mcp object { type }`
+
+            - `type: "mcp"`
+
+              - `"mcp"`
+
+          - `Custom object { type }`
+
+            - `type: "custom"`
+
+              - `"custom"`
+
+          - `Namespace object { type }`
+
+            - `type: "namespace"`
+
+              - `"namespace"`
+
+          - `ToolSearch object { type }`
+
+            - `type: "tool_search"`
+
+              - `"tool_search"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              - `"programmatic_tool_calling"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              - `"computer"`
+
+          - `ApplyPatch object { type }`
+
+            - `type: "apply_patch"`
+
+              - `"apply_patch"`
 
       - `type: "responses"`
 

@@ -731,6 +731,21 @@ For guidance on when and how to compact in production, see the [Conversation Sta
 
 Here is an example:
 
+```javascript
+const input = [
+  { role: "user", content: "write a very long poem about a dog." },
+];
+const response = await client.responses.create({ model: "gpt-5.2", input });
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+const compacted = await client.responses.compact({
+  model: "gpt-5.2",
+  input: [...input, ...response.output],
+});
+console.log(JSON.stringify(compacted, null, 2));
+```
+
 ```python
 from openai import OpenAI
 import json
@@ -767,41 +782,6 @@ compacted_response = client.responses.compact(
 
 
 print(json.dumps(compacted_response.model_dump(), indent=2))
-```
-
-```java
-import com.openai.client.OpenAIClient;
-import com.openai.client.okhttp.OpenAIOkHttpClient;
-import com.openai.core.JsonValue;
-import com.openai.models.responses.EasyInputMessage;
-import com.openai.models.responses.ResponseCompactParams;
-import com.openai.models.responses.ResponseCreateParams;
-import com.openai.models.responses.ResponseInputItem;
-import java.util.ArrayList;
-
-var input = new ArrayList<ResponseInputItem>();
-input.add(
-    ResponseInputItem.ofEasyInputMessage(
-        EasyInputMessage.builder()
-            .role(EasyInputMessage.Role.USER)
-            .content("Write a very long poem about a dog.")
-            .build()));
-var response =
-    client
-        .responses()
-        .create(ResponseCreateParams.builder().model("gpt-5.2").inputOfResponse(input).build());
-response.output().stream()
-    .map(item -> JsonValue.from(item).convert(ResponseInputItem.class))
-    .forEach(input::add);
-var compacted =
-    client
-        .responses()
-        .compact(
-            ResponseCompactParams.builder()
-                .model("gpt-5.2")
-                .inputOfResponseInputItems(input)
-                .build());
-System.out.println(compacted.output());
 ```
 
 ```ruby

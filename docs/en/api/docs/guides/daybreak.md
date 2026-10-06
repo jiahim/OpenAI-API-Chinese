@@ -19,15 +19,11 @@ The `model` field selects the model. The `access_programs.cyber` field selects a
 | Mainline model with Daybreak Blue        | `gpt-6-sol`                    | `daybreak_blue` | Approved defensive security work with a specific mainline model.                                                              |
 | GPT-6.1 Sol or GPT-6 Astra with Daybreak | `gpt-6.1-sol` or `gpt-6-astra` | `daybreak_blue` | Reduced refusals with either model. Requires Daybreak Red approval for your organization and access enabled for your project. |
 | Cyber model with Daybreak Red            | `gpt-5.6-cyber`                | `daybreak_red`  | Advanced, authorized security work with a specific cyber model. Requires Daybreak Red approval.                               |
-| Daybreak Blue alias                      | `gpt-daybreak-blue-latest`     | `daybreak_blue` | Approved defensive security work that follows updates to the Blue alias's underlying model.                                   |
-| Daybreak Red alias                       | `gpt-daybreak-red-latest`      | `daybreak_red`  | Advanced, authorized security work that follows updates to the Red alias's underlying model. Requires Daybreak Red approval.  |
 
 
 
 
 Match the request value to the model, not your organization's approval level. For example, when using `gpt-6-sol` with Daybreak, send `daybreak_blue` even if your organization has Daybreak Red approval. Sending `daybreak_red` with this model returns `invalid_access_program`.
-
-Daybreak aliases accept only their matching program. For example, requesting `gpt-daybreak-blue-latest` with `daybreak_red` returns an error.
 
 Reduced refusals on `gpt-6-astra` and `gpt-6.1-sol` require Daybreak Red
   access, but the request value is `daybreak_blue`. Both models reject
@@ -37,14 +33,14 @@ Reduced refusals on `gpt-6-astra` and `gpt-6.1-sol` require Daybreak Red
 
 ## Send a request
 
-To get started with Daybreak Blue approval, explicitly select `daybreak_blue` with the `gpt-daybreak-blue-latest` alias:
+To get started with Daybreak Blue approval, explicitly select `daybreak_blue` with a Daybreak-eligible model, such as `gpt-6-sol`:
 
 ```bash
 curl https://api.openai.com/v1/responses \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-daybreak-blue-latest",
+    "model": "gpt-6-sol",
     "input": "Explain how to validate a security patch in a test environment.",
     "access_programs": {
       "cyber": "daybreak_blue"
@@ -76,7 +72,7 @@ Both `access_programs` and `cyber` are optional, but neither accepts `null` in a
 If you omit `access_programs.cyber`, the API selects a compatible program based on the model and your organization and project access:
 
 - **Mainline models such as `gpt-6-sol`:** Daybreak Blue treatment when your organization and project have the required access; otherwise, standard safeguards.
-- **Daybreak aliases and Red models:** The matching Daybreak program. For example, `gpt-daybreak-blue-latest` selects `daybreak_blue`. The request fails if the required access is missing.
+- **Red models such as `gpt-5.6-cyber`:** The API selects `daybreak_red`. The request fails if the required access is missing.
 - **`gpt-6-astra` and `gpt-6.1-sol`:** Reduced refusals for eligible callers with Daybreak Red access enabled for their project; otherwise, standard safeguards.
 
 Model permissions still apply. To explicitly request standard safeguards on a compatible model, send `standard`. An explicit Daybreak selection fails if it's incompatible with the model or you don't have the required access.

@@ -1938,15 +1938,11 @@ In other words, if you're an organization with Data Residency in Europe, OpenAI 
 
 </td>
 <td style={{"maxWidth": "150px"}}>
-**Tier 1**
-
-200 RPM
-
-**Tier 2 and 3**
+**Build**
 
 1000 RPM
 
-**Tier 4 and 5**
+**Launch and Grow**
 
 2000 RPM
 

@@ -120,6 +120,56 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+// Replace pmpt_123 with your stored prompt ID.
+var pcm =
+    RealtimeAudioFormats.AudioPcm.builder()
+        .rate(RealtimeAudioFormats.AudioPcm.Rate._24000)
+        .build();
+connection.send(
+    RealtimeClientEvent.ofSessionUpdate(
+        SessionUpdateEvent.builder()
+            .session(
+                RealtimeSessionCreateRequest.builder()
+                    .model("gpt-realtime-2.1")
+                    .addOutputModality(RealtimeSessionCreateRequest.OutputModality.AUDIO)
+                    .audio(
+                        RealtimeAudioConfig.builder()
+                            .input(
+                                RealtimeAudioConfigInput.builder()
+                                    .format(pcm)
+                                    .turnDetection(
+                                        RealtimeAudioInputTurnDetection.SemanticVad.builder()
+                                            .build())
+                                    .build())
+                            .output(
+                                RealtimeAudioConfigOutput.builder()
+                                    .format(pcm)
+                                    .voice("marin")
+                                    .build())
+                            .build())
+                    .prompt(
+                        com.openai.models.responses.ResponsePrompt.builder()
+                            .id("pmpt_123")
+                            .version("89")
+                            .variables(
+                                com.openai.models.responses.ResponsePrompt.Variables.builder()
+                                    .putAdditionalProperty("city", JsonValue.from("Paris"))
+                                    .build())
+                            .build())
+                    .instructions(
+                        "Speak clearly and briefly. Confirm understanding before taking actions.")
+                    .build())
+            .build()));
+```
+
 ```ruby
 # Replace the illustrative IDs and URLs below with your own resource values.
 connection.session.update(
@@ -216,6 +266,37 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+connection.send(
+    RealtimeClientEvent.ofConversationItemCreate(
+        ConversationItemCreateEvent.builder()
+            .item(
+                RealtimeConversationItemUserMessage.builder()
+                    .addContent(
+                        RealtimeConversationItemUserMessage.Content.builder()
+                            .type(RealtimeConversationItemUserMessage.Content.Type.INPUT_TEXT)
+                            .text("What Prince album sold the most copies?")
+                            .build())
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+RealtimeMessageItem item = RealtimeItem.CreateUserMessageItem("What Prince album sold the most copies?");
+item.Id = Guid.NewGuid().ToString("N");
+await session.SendCommandAsync(new RealtimeClientCommandConversationItemCreate(item), timeout.Token);
+```
+
 ```ruby
 connection.conversation.items.create(
   type: :message,
@@ -251,6 +332,40 @@ event = {"type": "response.create", "response": {"output_modalities": ["text"]}}
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+connection.send(
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = new()
+    {
+        OutputModalities =
+        {
+            RealtimeOutputModality.Text
+        }
+    }
+}, timeout.Token);
+```
+
 ```ruby
 connection.response.create(
   output_modalities: [:text],
@@ -284,6 +399,49 @@ def on_message(ws, message):
     server_event = json.loads(message)
     if server_event["type"] == "response.done":
         print(server_event["response"]["output"][0])
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+static void handleEvent(RealtimeServerEvent event) {
+  event
+      .responseDone()
+      .ifPresent(
+          done -> {
+            if (!done.response()
+                .status()
+                .filter(RealtimeResponse.Status.COMPLETED::equals)
+                .isPresent())
+              throw new IllegalStateException(
+                  "Response ended with status "
+                      + done.response().status()
+                      + ": "
+                      + done.response().statusDetails());
+            System.out.println(done.response().output());
+          });
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+internal static void HandleEvent(RealtimeServerUpdate update)
+{
+    if (update is RealtimeServerUpdateResponseDone completion && completion.Response.Status != RealtimeResponseStatus.Completed)
+        throw new InvalidOperationException($"Response ended with status {completion.Response.Status}: {System.ClientModel.Primitives.ModelReaderWriter.Write(completion.Response)}");
+    if (update is RealtimeServerUpdateResponseDone done)
+    {
+        foreach (RealtimeItem item in done.Response.OutputItems)
+            Console.WriteLine(System.ClientModel.Primitives.ModelReaderWriter.Write(item));
+    }
+}
 ```
 
 ```ruby
@@ -616,6 +774,51 @@ for filename in files:
     ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.Base64;
+
+// Call for each PCM16, 24 kHz, mono chunk supplied by your audio source.
+static void appendAudio(RealtimeConnection connection, byte[] pcmAudio) throws Exception {
+  String base64Audio = Base64.getEncoder().encodeToString(pcmAudio);
+  send(
+      connection,
+      RealtimeClientEvent.ofInputAudioBufferAppend(
+          InputAudioBufferAppendEvent.builder().audio(base64Audio).build()));
+}
+
+// Retry only explicit admission rejections; these guarantee nothing was sent.
+private static void send(RealtimeConnection connection, RealtimeClientEvent event)
+    throws Exception {
+  long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+  while (true) {
+    try {
+      connection.send(event);
+      return;
+    } catch (com.openai.core.http.WebSocketWriteNotAttempted.Busy busy) {
+      if (System.nanoTime() >= deadline) throw busy;
+      Thread.sleep(10);
+    }
+  }
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+// Call for each PCM16, 24 kHz, mono chunk supplied by your audio source.
+internal static async Task AppendAudioAsync(RealtimeSessionClient session, BinaryData pcmAudio, CancellationToken cancellationToken)
+{
+    await session.SendCommandAsync(new RealtimeClientCommandInputAudioBufferAppend(pcmAudio), cancellationToken);
+}
+```
+
 ```ruby
 File.open("speech.pcm", "rb") do |audio|
   while (chunk = audio.read(9_600))
@@ -672,6 +875,48 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.Base64;
+
+// Pass the complete PCM16, 24 kHz, mono recording from your application.
+static void sendAudioItem(RealtimeConnection connection, byte[] pcmAudio) throws Exception {
+  String fullAudio = Base64.getEncoder().encodeToString(pcmAudio);
+  connection.send(
+      RealtimeClientEvent.ofConversationItemCreate(
+          ConversationItemCreateEvent.builder()
+              .item(
+                  RealtimeConversationItemUserMessage.builder()
+                      .addContent(
+                          RealtimeConversationItemUserMessage.Content.builder()
+                              .type(RealtimeConversationItemUserMessage.Content.Type.INPUT_AUDIO)
+                              .audio(fullAudio)
+                              .build())
+                      .build())
+              .build()));
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+// Pass the complete PCM16, 24 kHz, mono recording from your application.
+internal static async Task<string> SendAudioItemAsync(RealtimeSessionClient session, BinaryData pcmAudio, CancellationToken cancellationToken)
+{
+    RealtimeMessageItem item = RealtimeItem.CreateUserMessageItem([new RealtimeInputAudioMessageContentPart(pcmAudio)]);
+    string itemId = Guid.NewGuid().ToString("N");
+    item.Id = itemId;
+    await session.SendCommandAsync(new RealtimeClientCommandConversationItemCreate(item), cancellationToken);
+    return itemId;
+}
+```
+
 ```ruby
 audio = Base64.strict_encode64(File.binread("speech.pcm"))
 
@@ -722,6 +967,30 @@ def on_message(ws, message):
     if server_event["type"] == "response.output_audio.delta":
         # Access Base64-encoded audio chunks:
         print(server_event["delta"])
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+static void handleEvent(RealtimeServerEvent event) {
+  event.responseOutputAudioDelta().ifPresent(delta -> System.out.println(delta.delta()));
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+internal static void HandleEvent(RealtimeServerUpdate update)
+{
+    if (update is RealtimeServerUpdateResponseOutputAudioDelta delta)
+        Console.WriteLine(Convert.ToBase64String(delta.Delta.ToArray()));
+}
 ```
 
 ```ruby
@@ -866,6 +1135,54 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+connection.send(
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .conversation("none")
+                    .metadata(
+                        RealtimeResponseCreateParams.Metadata.builder()
+                            .putAdditionalProperty("topic", JsonValue.from("classification"))
+                            .build())
+                    .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
+                    .instructions(
+                        "Analyze the conversation so far. If it is related to support, output \"support\". If it is related to sales, output \"sales\".")
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = new()
+    {
+        DefaultConversationConfiguration = RealtimeResponseDefaultConversationConfiguration.None,
+        Metadata = new Dictionary<string, BinaryData>
+        {
+            ["topic"] = BinaryData.FromObjectAsJson("classification")
+        },
+        OutputModalities =
+        {
+            RealtimeOutputModality.Text
+        },
+        Instructions = "Analyze the conversation so far. If it is related to support, output \"support\". If it is related to sales, output \"sales\"."
+    }
+}, timeout.Token);
+```
+
 ```ruby
 connection.response.create(
   conversation: :none,
@@ -914,6 +1231,50 @@ def on_message(ws, message):
     if server_event["type"] == "response.done" and topic == "classification":
         # this server event pertained to our OOB model response
         print(server_event["response"]["output"][0])
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+static boolean handleEvent(RealtimeServerEvent event) {
+  if (event.responseDone().isEmpty()) return false;
+  var response = event.responseDone().orElseThrow().response();
+  if (!response
+      .metadata()
+      .map(m -> m._additionalProperties().get("topic"))
+      .flatMap(JsonValue::asString)
+      .filter("classification"::equals)
+      .isPresent()) return false;
+  if (!response.status().filter(RealtimeResponse.Status.COMPLETED::equals).isPresent())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status() + ": " + response.statusDetails());
+  System.out.println(response.output());
+  return true;
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+internal static bool HandleEvent(RealtimeServerUpdate update)
+{
+    if (update is not RealtimeServerUpdateResponseDone done ||
+        !done.Response.Metadata.TryGetValue("topic", out BinaryData? topic) ||
+        topic.ToObjectFromJson<string>() != "classification")
+        return false;
+    if (done.Response.Status != RealtimeResponseStatus.Completed)
+        throw new InvalidOperationException($"Response ended with status {done.Response.Status}: {System.ClientModel.Primitives.ModelReaderWriter.Write(done.Response)}");
+    foreach (RealtimeItem item in done.Response.OutputItems)
+        Console.WriteLine(System.ClientModel.Primitives.ModelReaderWriter.Write(item));
+    return true;
+}
 ```
 
 ```ruby
@@ -1072,6 +1433,45 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+connection.send(
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .input(List.of())
+                    .instructions(
+                        "Say exactly the following: I'm a little teapot, short and stout! This is my handle, this is my spout!")
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+RealtimeResponseOptions options = new()
+
+{
+    Instructions = "Say exactly the following: I'm a little teapot, short and stout! This is my handle, this is my spout!"
+
+};
+options.InputItems.Clear();
+// An explicitly empty list excludes conversation context.
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = options
+}, timeout.Token);
 ```
 
 ```ruby

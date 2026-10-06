@@ -105,7 +105,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -128,6 +128,10 @@ Schema name: `BetaResponseCreatedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -2562,7 +2566,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -2576,11 +2580,13 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -6008,7 +6014,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -11261,7 +11267,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -11284,6 +11290,10 @@ Schema name: `BetaResponseInProgressEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -13718,7 +13728,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -13732,11 +13742,13 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -17164,7 +17176,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -22417,7 +22429,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -22440,6 +22452,10 @@ Schema name: `BetaResponseCompletedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -24874,7 +24890,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -24888,11 +24904,13 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -28320,7 +28338,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -33597,7 +33615,7 @@ Schema name: `BetaResponseFailedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -33620,6 +33638,10 @@ Schema name: `BetaResponseFailedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -36054,7 +36076,7 @@ Schema name: `BetaResponseFailedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -36068,11 +36090,13 @@ Schema name: `BetaResponseFailedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -39500,7 +39524,7 @@ Schema name: `BetaResponseFailedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -44757,7 +44781,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -44780,6 +44804,10 @@ Schema name: `BetaResponseIncompleteEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -47214,7 +47242,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -47228,11 +47256,13 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -50660,7 +50690,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -57020,7 +57050,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -61773,7 +61803,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -67913,7 +67943,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -67936,6 +67966,10 @@ Schema name: `BetaResponseQueuedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -70370,7 +70404,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -70384,11 +70418,13 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -73816,7 +73852,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 

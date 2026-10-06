@@ -35,18 +35,66 @@ Other important things worth noting:
 
 ## Usage tiers
 
-You can view the rate and usage limits for your organization under the [limits](https://platform.openai.com/settings/organization/limits) section of your account settings. As your spend on our API goes up, we automatically graduate you to the next usage tier. This usually results in an increase in rate limits across most models.
+The three paid usage tiers are **Build**, **Launch**, and **Grow**. Your organization's usage tier upgrades automatically as its total credit purchases reach each threshold. Higher tiers generally provide higher rate limits across models.
 
-| Tier        | Qualification                                                         | Usage limits     |
-| ----------- | --------------------------------------------------------------------- | ---------------- |
-| Free        | User must be in an [allowed geography](https://developers.openai.com/api/docs/supported-countries) | $100 / month     |
-| Tier&nbsp;1 | $5 paid                                                               | $100 / month     |
-| Tier&nbsp;2 | $50 paid                                                              | $500 / month     |
-| Tier&nbsp;3 | $100 paid                                                             | $1,000 / month   |
-| Tier&nbsp;4 | $250 paid                                                             | $5,000 / month   |
-| Tier&nbsp;5 | $1,000 paid                                                           | $200,000 / month |
+| Tier   | Qualification                                                         | Usage limits     |
+| ------ | --------------------------------------------------------------------- | ---------------- |
+| Free   | User must be in an [allowed geography](https://developers.openai.com/api/docs/supported-countries) | $100 / month     |
+| Build  | $5 in total credit purchases                                          | $500 / month     |
+| Launch | $100 in total credit purchases                                        | $5,000 / month   |
+| Grow   | $500 in total credit purchases                                        | $200,000 / month |
 
-To view a high-level summary of rate limits per model, visit the [models page](https://developers.openai.com/api/docs/models).
+### Standard rate limits
+
+To view the limits for each model at your usage tier, go to [Settings > Organization > Limits](https://platform.openai.com/settings/organization/limits) and review **Rate limits**. To upgrade your usage tier, select **Upgrade tier** in the **Usage Tiers** section.
+
+These Standard rate limits differ from [Ultrafast rate limits](https://developers.openai.com/api/docs/guides/ultrafast-mode#availability).
+
+<table className="[&_th]:border-b [&_th]:border-[var(--tw-prose-th-borders)] [&_th]:py-3 [&_th]:pl-0 [&_th]:pr-4 [&_th]:text-left [&_td]:border-b [&_td]:border-[var(--tw-prose-td-borders)] [&_td]:py-2 [&_td]:pl-0 [&_td]:pr-4 [&_td]:text-left [&_td]:align-top">
+  <thead>
+    <tr>
+      <th scope="col">Tier</th>
+      <th scope="col">Model</th>
+      <th scope="col">RPM</th>
+      <th scope="col">TPM</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowSpan="2">Build</td>
+      <td>Astra, Sol, Terra</td>
+      <td>5,000</td>
+      <td>1,000,000</td>
+    </tr>
+    <tr>
+      <td>Luna</td>
+      <td>5,000</td>
+      <td>2,000,000</td>
+    </tr>
+    <tr>
+      <td rowSpan="2">Launch</td>
+      <td>Astra, Sol, Terra</td>
+      <td>10,000</td>
+      <td>4,000,000</td>
+    </tr>
+    <tr>
+      <td>Luna</td>
+      <td>10,000</td>
+      <td>10,000,000</td>
+    </tr>
+    <tr>
+      <td rowSpan="2">Grow</td>
+      <td>Astra, Sol, Terra</td>
+      <td>15,000</td>
+      <td>40,000,000</td>
+    </tr>
+    <tr>
+      <td>Luna</td>
+      <td>30,000</td>
+      <td>180,000,000</td>
+    </tr>
+  </tbody>
+</table>
 
 ### Spend limits
 

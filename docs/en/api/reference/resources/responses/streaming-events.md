@@ -105,7 +105,7 @@ Schema name: `ResponseCreatedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -128,6 +128,10 @@ Schema name: `ResponseCreatedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -2280,7 +2284,7 @@ Schema name: `ResponseCreatedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -2294,11 +2298,13 @@ Schema name: `ResponseCreatedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -5116,7 +5122,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -9830,7 +9836,7 @@ Schema name: `ResponseInProgressEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -9853,6 +9859,10 @@ Schema name: `ResponseInProgressEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -12005,7 +12015,7 @@ Schema name: `ResponseInProgressEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -12019,11 +12029,13 @@ Schema name: `ResponseInProgressEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -14841,7 +14853,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -19555,7 +19567,7 @@ Schema name: `ResponseCompletedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -19578,6 +19590,10 @@ Schema name: `ResponseCompletedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -21730,7 +21746,7 @@ Schema name: `ResponseCompletedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -21744,11 +21760,13 @@ Schema name: `ResponseCompletedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -24566,7 +24584,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -29304,7 +29322,7 @@ Schema name: `ResponseFailedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -29327,6 +29345,10 @@ Schema name: `ResponseFailedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -31479,7 +31501,7 @@ Schema name: `ResponseFailedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -31493,11 +31515,13 @@ Schema name: `ResponseFailedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -34315,7 +34339,7 @@ Schema name: `ResponseFailedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -39033,7 +39057,7 @@ Schema name: `ResponseIncompleteEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -39056,6 +39080,10 @@ Schema name: `ResponseIncompleteEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -41208,7 +41236,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -41222,11 +41250,13 @@ Schema name: `ResponseIncompleteEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -44044,7 +44074,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -49579,7 +49609,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -53737,7 +53767,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -59264,7 +59294,7 @@ Schema name: `ResponseQueuedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -59287,6 +59317,10 @@ Schema name: `ResponseQueuedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -61439,7 +61473,7 @@ Schema name: `ResponseQueuedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -61453,11 +61487,13 @@ Schema name: `ResponseQueuedEvent`
 
             - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -64275,7 +64311,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 

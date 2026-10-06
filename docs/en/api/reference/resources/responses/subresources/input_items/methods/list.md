@@ -754,7 +754,7 @@ Returns a list of input items for a given response.
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 

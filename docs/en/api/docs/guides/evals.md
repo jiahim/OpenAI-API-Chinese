@@ -282,6 +282,51 @@ eval_obj = client.evals.create(
 print(eval_obj)
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.evals.EvalCreateParams;
+import com.openai.models.graders.gradermodels.StringCheckGrader;
+import java.util.List;
+import java.util.Map;
+
+var eval =
+    client
+        .evals()
+        .create(
+            EvalCreateParams.builder()
+                .name("IT Ticket Categorization")
+                .dataSourceConfig(
+                    EvalCreateParams.DataSourceConfig.Custom.builder()
+                        .itemSchema(
+                            EvalCreateParams.DataSourceConfig.Custom.ItemSchema.builder()
+                                .additionalProperties(
+                                    Map.of(
+                                        "type", JsonValue.from("object"),
+                                        "properties",
+                                            JsonValue.from(
+                                                Map.of(
+                                                    "ticket_text",
+                                                    Map.of("type", "string"),
+                                                    "correct_label",
+                                                    Map.of("type", "string"))),
+                                        "required",
+                                            JsonValue.from(
+                                                List.of("ticket_text", "correct_label"))))
+                                .build())
+                        .includeSampleSchema(true)
+                        .build())
+                .addTestingCriterion(
+                    StringCheckGrader.builder()
+                        .name("Match output to human label")
+                        .input("{{ sample.output_text }}")
+                        .operation(StringCheckGrader.Operation.EQ)
+                        .reference("{{ item.correct_label }}")
+                        .build())
+                .build());
+System.out.println(eval);
+```
+
 ```ruby
 require "openai"
 
@@ -617,6 +662,54 @@ run = client.evals.runs.create(
 print(run)
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.evals.runs.*;
+
+// Replace these illustrative IDs with your eval and uploaded dataset file.
+var run =
+    client
+        .evals()
+        .runs()
+        .create(
+            RunCreateParams.builder()
+                .evalId("YOUR_EVAL_ID")
+                .name("Categorization text run")
+                .dataSource(
+                    RunCreateParams.DataSource.CreateEvalResponsesRunDataSource.builder()
+                        .type(
+                            RunCreateParams.DataSource.CreateEvalResponsesRunDataSource.Type
+                                .RESPONSES)
+                        .model("gpt-6-astra")
+                        .inputMessages(
+                            RunCreateParams.DataSource.CreateEvalResponsesRunDataSource
+                                .InputMessages.Template.builder()
+                                .addTemplate(
+                                    RunCreateParams.DataSource.CreateEvalResponsesRunDataSource
+                                        .InputMessages.Template.InnerTemplate.ChatMessage
+                                        .builder()
+                                        .role("developer")
+                                        .content(
+                                            "You are an expert in categorizing IT support tickets. Given the support ticket below, categorize the request into one of 'Hardware', 'Software', or 'Other'. Respond with only one of those words.")
+                                        .build())
+                                .addTemplate(
+                                    RunCreateParams.DataSource.CreateEvalResponsesRunDataSource
+                                        .InputMessages.Template.InnerTemplate.ChatMessage
+                                        .builder()
+                                        .role("user")
+                                        .content("{{ item.ticket_text }}")
+                                        .build())
+                                .build())
+                        .source(
+                            RunCreateParams.DataSource.CreateEvalResponsesRunDataSource.Source
+                                .FileId.builder()
+                                .id("YOUR_FILE_ID")
+                                .build())
+                        .build())
+                .build());
+System.out.println(run);
+```
+
 ```ruby
 require "openai"
 
@@ -756,6 +849,20 @@ client = OpenAI()
 
 run = client.evals.runs.retrieve("YOUR_RUN_ID", eval_id="YOUR_EVAL_ID")
 print(run)
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.evals.runs.RunRetrieveParams;
+
+// Replace these illustrative IDs with your eval and run.
+var run =
+    client
+        .evals()
+        .runs()
+        .retrieve(
+            RunRetrieveParams.builder().evalId("YOUR_EVAL_ID").runId("YOUR_RUN_ID").build());
+System.out.println(run);
 ```
 
 ```ruby

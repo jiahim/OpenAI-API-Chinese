@@ -1800,6 +1800,10 @@ The Python sample uses `pip install "openai[realtime]>=3.8.0"`.
 The JavaScript sample uses `npm install openai@^7.10.0 ws`.
 The Ruby sample uses `gem install openai async-websocket`.
 
+For Go, run `go get github.com/openai/openai-go/v3@v3.70.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.75.1`.
+These Go and Java SDK versions provide native Responses WebSocket support.
+
 Start a Responses API WebSocket session
 
 ```javascript
@@ -1877,6 +1881,109 @@ with client.responses.connect() as connection:
     )
     first_event = connection.recv()
     print(first_event.type)
+```
+
+```go
+tools := []responses.ToolUnionParam{}
+for _, name := range []string{
+	"search_test_logs",
+	"search_code",
+} {
+	tools = append(tools, responses.ToolUnionParam{
+		OfFunction: &responses.FunctionToolParam{
+			Name:        name,
+			Description: openai.String("Search for a query."),
+			Parameters: map[string]any{
+				"type": "object",
+				"properties": map[string]any{
+					"query": map[string]any{
+						"type": "string",
+					},
+				},
+				"required": []string{
+					"query",
+				},
+				"additionalProperties": false,
+			},
+			Strict: openai.Bool(true),
+		},
+	})
+}
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Find the flaky test in this run, call the tools you need, and keep going until you can explain the root cause."),
+	},
+	Tools: tools,
+}); err != nil {
+	log.Fatal(err)
+}
+response, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.*;
+import java.util.*;
+
+var tools = new ArrayList<Tool>();
+for (var name : List.of("search_test_logs", "search_code"))
+  tools.add(
+      Tool.ofFunction(
+          FunctionTool.builder()
+              .name(name)
+              .description("Search for a query.")
+              .strict(true)
+              .parameters(
+                  FunctionTool.Parameters.builder()
+                      .putAdditionalProperty("type", JsonValue.from("object"))
+                      .putAdditionalProperty(
+                          "properties",
+                          JsonValue.from(Map.of("query", Map.of("type", "string"))))
+                      .putAdditionalProperty("required", JsonValue.from(List.of("query")))
+                      .putAdditionalProperty("additionalProperties", JsonValue.from(false))
+                      .build())
+              .build()));
+
+try (var conn = client.responses().connect()) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .store(false)
+              .input(
+                  "Find the flaky test in this run, call the tools you need, and keep going until you can explain the root cause.")
+              .tools(tools)
+              .build()));
+  var response = conn.finalResponse();
+  if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status().orElse(null));
+  System.out.println(response.output());
+}
 ```
 
 ```ruby

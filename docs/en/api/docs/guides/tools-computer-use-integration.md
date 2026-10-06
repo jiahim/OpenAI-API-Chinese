@@ -1890,6 +1890,32 @@ The `display` helper belongs to your runtime. Encode screenshots in memory and r
 
 Set `OPENAI_API_KEY` for the API client and `OPENAI_EXAMPLE_CODE_EXECUTION_URL` to your service endpoint. Set `OPENAI_EXAMPLE_CODE_EXECUTION_TOKEN` if your service requires a bearer token. These service settings are example configuration, not OpenAI API parameters.
 
+For Go, initialize a module if your project doesn't have one, then install the pinned SDK:
+
+```bash
+go mod init example.com/computer-use
+go get github.com/openai/openai-go/v3@v3.70.0
+```
+
+For Java 17 or later, add these dependencies to your Maven `pom.xml`:
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+    <version>4.75.1</version>
+  </dependency>
+  <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>2.18.9</version>
+  </dependency>
+</dependencies>
+```
+
+The Java adapter is a standalone execution-service example with partial workflow coverage. The linked [computer use guide](https://developers.openai.com/api/docs/guides/tools-computer-use#connect-your-own-runtime) doesn't provide a complete Java API loop.
+
 Connect the API client to your execution service
 
 ```javascript
@@ -2009,6 +2035,149 @@ def execute_in_sandbox(
     return observations
 ```
 
+```go
+// This is an application adapter to your sandbox, not an SDK execution helper.
+func executeInSandbox(ctx context.Context, code, sessionID, endpoint string, input io.Reader) (responses.ResponseFunctionCallOutputItemListParam, error) {
+	fmt.Println(code)
+	fmt.Print("Run this code in the isolated runtime? Type yes: ")
+	scanner := bufio.NewScanner(input)
+	if !scanner.Scan() {
+		if err := scanner.Err(); err != nil {
+			return nil, err
+		}
+	}
+	if strings.TrimSpace(scanner.Text()) != "yes" {
+		return responses.ResponseFunctionCallOutputItemListParam{
+			{
+				OfInputText: &responses.ResponseInputTextContentParam{
+					Text: "The user declined this execution.",
+				},
+			},
+		}, nil
+	}
+	payload, err := json.Marshal(map[string]string{
+		"session_id": sessionID,
+		"language":   "python",
+		"code":       code,
+	})
+	if err != nil {
+		return nil, err
+	}
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+	request, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(payload))
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("Content-Type", "application/json")
+	if token := os.Getenv("OPENAI_EXAMPLE_CODE_EXECUTION_TOKEN"); token != "" {
+		request.Header.Set("Authorization", "Bearer "+token)
+	}
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	if response.StatusCode < 200 || response.StatusCode >= 300 {
+		return nil, fmt.Errorf("execution service returned HTTP %d", response.StatusCode)
+	}
+	var result struct {
+		Output []struct {
+			Type     string  `json:"type"`
+			Text     *string `json:"text"`
+			ImageURL *string `json:"image_url"`
+			Detail   string  `json:"detail"`
+		} `json:"output"`
+	}
+	if err := json.NewDecoder(response.Body).Decode(&result); err != nil {
+		return nil, err
+	}
+	if len(result.Output) == 0 {
+		return nil, fmt.Errorf("expected nonempty execution output")
+	}
+	output := make(responses.ResponseFunctionCallOutputItemListParam, 0, len(result.Output))
+	for _, item := range result.Output {
+		switch {
+		case item.Type == "input_text" && item.Text != nil:
+			output = append(output, responses.ResponseFunctionCallOutputItemUnionParam{
+				OfInputText: &responses.ResponseInputTextContentParam{
+					Text: *item.Text,
+				},
+			})
+		case item.Type == "input_image" && item.ImageURL != nil && item.Detail == "original":
+			output = append(output, responses.ResponseFunctionCallOutputItemUnionParam{
+				OfInputImage: &responses.ResponseInputImageContentParam{
+					ImageURL: openai.String(*item.ImageURL),
+					Detail:   "original",
+				},
+			})
+		default:
+			return nil, fmt.Errorf("expected input_text or input_image with original detail")
+		}
+	}
+	return output, nil
+}
+```
+
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.openai.models.responses.*;
+import java.net.http.*;
+import java.util.*;
+
+// Application-owned adapter: the sandbox must implement this HTTP contract.
+static List<ResponseFunctionCallOutputItem> executeInSandbox(
+    String code, String sessionId, java.net.URI endpoint, java.io.BufferedReader input)
+    throws Exception {
+  System.out.println(code);
+  System.out.print("Run this code in the isolated runtime? Type yes: ");
+  String approval = input.readLine();
+  if (approval == null || !approval.strip().equals("yes"))
+    return List.of(
+        ResponseFunctionCallOutputItem.ofInputText(
+            ResponseInputTextContent.builder()
+                .text("The user declined this execution.")
+                .build()));
+  var mapper = new ObjectMapper();
+  var request =
+      HttpRequest.newBuilder(endpoint)
+          .timeout(java.time.Duration.ofSeconds(30))
+          .header("Content-Type", "application/json")
+          .POST(
+              HttpRequest.BodyPublishers.ofString(
+                  mapper.writeValueAsString(
+                      Map.of("session_id", sessionId, "language", "python", "code", code))));
+  String token = System.getenv("OPENAI_EXAMPLE_CODE_EXECUTION_TOKEN");
+  if (token != null && !token.isBlank()) request.header("Authorization", "Bearer " + token);
+  var response =
+      HttpClient.newHttpClient().send(request.build(), HttpResponse.BodyHandlers.ofString());
+  if (response.statusCode() < 200 || response.statusCode() >= 300)
+    throw new IllegalStateException("Execution service returned HTTP " + response.statusCode());
+  var items = mapper.readTree(response.body()).path("output");
+  if (!items.isArray() || items.isEmpty())
+    throw new IllegalStateException("Expected nonempty execution output");
+  var output = new ArrayList<ResponseFunctionCallOutputItem>();
+  for (var item : items) {
+    if (item.path("type").asText().equals("input_text") && item.path("text").isTextual())
+      output.add(
+          ResponseFunctionCallOutputItem.ofInputText(
+              ResponseInputTextContent.builder().text(item.get("text").asText()).build()));
+    else if (item.path("type").asText().equals("input_image")
+        && item.path("image_url").isTextual()
+        && item.path("detail").asText().equals("original"))
+      output.add(
+          ResponseFunctionCallOutputItem.ofInputImage(
+              ResponseInputImageContent.builder()
+                  .imageUrl(item.get("image_url").asText())
+                  .detail(ResponseInputImageContent.Detail.ORIGINAL)
+                  .build()));
+    else
+      throw new IllegalStateException("Expected input_text or input_image with original detail");
+  }
+  return output;
+}
+```
+
 ```ruby
 require "net/http"
 
@@ -2060,7 +2229,7 @@ end
 ```
 
 
-Combine the adapter with the [API loop](https://developers.openai.com/api/docs/guides/tools-computer-use#connect-your-own-runtime), then call `run_computer_use` in Python or `runComputerUse` in JavaScript with your endpoint and task. The loop preserves the runtime session and uses `previous_response_id` to continue the model conversation. It stops after 20 responses if the task has not finished.
+Python, JavaScript, Ruby, and Go have complete [API loop examples](https://developers.openai.com/api/docs/guides/tools-computer-use#connect-your-own-runtime) for this execution-service contract. Use `run_computer_use` in Python or Ruby, or `runComputerUse` in JavaScript or Go, with your endpoint and task. The Go example also takes a context, SDK client, terminal scanner, and output writer; use its included adapter to preserve those inputs across calls. The loop preserves the runtime session and uses `previous_response_id` to continue the model conversation. It stops after 20 responses if the task has not finished.
 
 This adapter asks for approval before every generated script as a conservative demonstration. A production runtime must enforce the action-specific rules in [Handle user confirmation and consent](#handle-user-confirmation-and-consent). Removing the prompt does not supply those controls.
 

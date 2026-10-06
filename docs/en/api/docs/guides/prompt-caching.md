@@ -605,6 +605,31 @@ def calculate_input_cost(
     return input_cost
 ```
 
+```go
+func calculateInputCost(usage responses.ResponseUsage, pricePerMillion, cacheInputMultiplier, cacheWriteMultiplier float64) float64 {
+	ordinary := usage.InputTokens - usage.InputTokensDetails.CachedTokens - usage.InputTokensDetails.CacheWriteTokens
+	weighted := float64(ordinary) + float64(usage.InputTokensDetails.CachedTokens)*cacheInputMultiplier + float64(usage.InputTokensDetails.CacheWriteTokens)*cacheWriteMultiplier
+	return weighted * pricePerMillion / 1_000_000
+}
+```
+
+```java
+import com.openai.models.responses.ResponseUsage;
+
+static double calculateInputCost(
+    ResponseUsage usage,
+    double pricePerMillion,
+    double cacheInputMultiplier,
+    double cacheWriteMultiplier) {
+  long cached = usage.inputTokensDetails().cachedTokens();
+  long written = usage.inputTokensDetails().cacheWriteTokens();
+  long ordinary = usage.inputTokens() - cached - written;
+  return (ordinary + cached * cacheInputMultiplier + written * cacheWriteMultiplier)
+      * pricePerMillion
+      / 1_000_000;
+}
+```
+
 ```ruby
 def calculate_input_cost(
   usage,

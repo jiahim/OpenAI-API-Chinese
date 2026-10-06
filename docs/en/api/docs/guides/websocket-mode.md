@@ -16,6 +16,10 @@ Because the connection stays open and each turn sends only incremental input, We
 
 Install the WebSocket dependencies with `pip install "openai[realtime]>=3.8.0"` for Python, `npm install openai@^7.10.0 ws` for JavaScript, or `gem install openai async-websocket` for Ruby.
 
+For Go, run `go get github.com/openai/openai-go/v3@v3.70.0`.
+For Java, add the Maven dependency `com.openai:openai-java:4.75.1`.
+These Go and Java SDK versions provide native Responses WebSocket support.
+
 In WebSocket mode, start each turn by sending a `response.create` event from the client. The payload mirrors the normal [Responses create body](https://developers.openai.com/api/reference/resources/responses/methods/create), except that transport-specific fields like `stream` and `background` are not used.
 
 ```javascript
@@ -89,6 +93,63 @@ with client.responses.connect() as connection:
             break
         if event.type in {"response.failed", "response.incomplete", "error"}:
             raise RuntimeError(event.to_json())
+```
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Find fizz_buzz()"),
+	},
+	StreamID: openai.String("main"),
+	Tools:    []responses.ToolUnionParam{},
+}); err != nil {
+	log.Fatal(err)
+}
+response, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+fmt.Println(response.OutputText())
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.*;
+import java.util.*;
+
+try (var conn = client.responses().connect()) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .store(false)
+              .input("Find fizz_buzz()")
+              .streamId("main")
+              .tools(List.of())
+              .build()));
+  var response = conn.finalResponse();
+  if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status().orElse(null));
+  response.output().stream()
+      .flatMap(item -> item.message().stream())
+      .flatMap(message -> message.content().stream())
+      .flatMap(content -> content.outputText().stream())
+      .forEach(text -> System.out.println(text.text()));
+}
 ```
 
 ```ruby
@@ -294,6 +355,177 @@ with client.responses.connect() as connection:
         tool_choice="none",
     )
     print(wait_for_response(connection).output_text)
+```
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+tools := []responses.ToolUnionParam{
+	{
+		OfFunction: &responses.FunctionToolParam{
+			Name:        "get_test_results",
+			Description: openai.String("Return a local demo test result."),
+			Parameters: map[string]any{
+				"type":                 "object",
+				"properties":           map[string]any{},
+				"additionalProperties": false,
+			},
+			Strict: openai.Bool(true),
+		},
+	},
+}
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Find the failing test and suggest a fix."),
+	},
+	StreamID:          openai.String("main"),
+	Tools:             tools,
+	ParallelToolCalls: openai.Bool(false),
+	ToolChoice: responses.ResponsesClientEventResponseCreateToolChoiceUnionParam{
+		OfFunctionTool: &responses.ToolChoiceFunctionParam{
+			Name: "get_test_results",
+		},
+	},
+}); err != nil {
+	log.Fatal(err)
+}
+first, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if first.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", first.Status)
+}
+var callID string
+for _, item := range first.Output {
+	if item.Type == "function_call" && item.Name == "get_test_results" {
+		callID = item.CallID
+		break
+	}
+}
+if callID == "" {
+	log.Fatal("Expected a get_test_results function call")
+}
+// The result is a local demo fixture; carry the real response and call IDs.
+result := `{"test":"test_fizz_buzz","failure":"Expected FizzBuzz for 15, got Fizz."}`
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model:              "gpt-6-astra",
+	StreamID:           openai.String("main"),
+	Store:              openai.Bool(false),
+	PreviousResponseID: openai.String(first.ID),
+	Tools:              tools,
+	ToolChoice: responses.ResponsesClientEventResponseCreateToolChoiceUnionParam{
+		OfToolChoiceMode: openai.Opt(responses.ToolChoiceOptionsNone),
+	},
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfResponse: &responses.ResponseInputParam{
+			{
+				OfFunctionCallOutput: &responses.ResponseInputItemFunctionCallOutputParam{
+					CallID: openai.String(callID),
+					Output: responses.ResponseInputItemFunctionCallOutputOutputUnionParam{
+						OfString: openai.String(result),
+					},
+				},
+			},
+			responses.ResponseInputItemParamOfMessage("Now optimize it.", responses.EasyInputMessageRoleUser),
+		},
+	},
+}); err != nil {
+	log.Fatal(err)
+}
+response, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+fmt.Println(response.OutputText())
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.*;
+import java.util.*;
+
+var tool =
+    FunctionTool.builder()
+        .name("get_test_results")
+        .description("Return a local demo test result.")
+        .strict(true)
+        .parameters(
+            FunctionTool.Parameters.builder()
+                .putAdditionalProperty("type", JsonValue.from("object"))
+                .putAdditionalProperty("properties", JsonValue.from(Map.of()))
+                .putAdditionalProperty("additionalProperties", JsonValue.from(false))
+                .build())
+        .build();
+try (var conn = client.responses().connect()) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .store(false)
+              .input("Find the failing test and suggest a fix.")
+              .streamId("main")
+              .addTool(tool)
+              .parallelToolCalls(false)
+              .toolChoice(ToolChoiceFunction.builder().name("get_test_results").build())
+              .build()));
+  var first = conn.finalResponse();
+  if (first.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + first.status().orElse(null));
+  var call =
+      first.output().stream()
+          .flatMap(item -> item.functionCall().stream())
+          .filter(item -> item.name().equals("get_test_results"))
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException("Expected get_test_results call"));
+  // Use the real response and call IDs with a local demo result.
+  var result =
+      "{\"test\":\"test_fizz_buzz\",\"failure\":\"Expected FizzBuzz for 15, got Fizz.\"}";
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .streamId("main")
+              .store(false)
+              .previousResponseId(first.id())
+              .addTool(tool)
+              .toolChoice(ToolChoiceOptions.NONE)
+              .inputOfResponse(
+                  List.of(
+                      ResponseInputItem.ofFunctionCallOutput(
+                          ResponseInputItem.FunctionCallOutput.builder()
+                              .callId(call.callId())
+                              .output(result)
+                              .build()),
+                      ResponseInputItem.ofEasyInputMessage(
+                          EasyInputMessage.builder()
+                              .role(EasyInputMessage.Role.USER)
+                              .content("Now optimize it.")
+                              .build())))
+              .build()));
+  var response = conn.finalResponse();
+  if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status().orElse(null));
+  response.output().stream()
+      .flatMap(item -> item.message().stream())
+      .flatMap(message -> message.content().stream())
+      .flatMap(content -> content.outputText().stream())
+      .forEach(text -> System.out.println(text.text()));
+}
 ```
 
 ```ruby

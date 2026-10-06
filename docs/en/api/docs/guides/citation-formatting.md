@@ -392,6 +392,124 @@ def strip_citations(text: str, citations: Iterable[Citation]) -> str:
     return clean_text
 ```
 
+```go
+// Start and End are UTF-8 byte offsets, suitable for Go string slicing.
+type Citation struct {
+	Raw, Family string
+	SourceIDs   []string
+	Locator     string
+	Start, End  int
+}
+
+var sourceID = regexp.MustCompile(`^[A-Za-z0-9_-]+$`)
+var lineLocator = regexp.MustCompile(`^L\d+(?:-L\d+)?$`)
+
+func extractCitations(text string, families []string) []Citation {
+	citations := []Citation{}
+	if len(families) == 0 {
+		return citations
+	}
+	escaped := make([]string, len(families))
+	for i, family := range families {
+		escaped[i] = regexp.QuoteMeta(family)
+	}
+	token := regexp.MustCompile("(?s)\uE200(" + strings.Join(escaped, "|") + ")\uE202(.*?)\uE201")
+	for _, match := range token.FindAllStringSubmatchIndex(text, -1) {
+		parts := []string{}
+		for _, part := range strings.Split(text[match[4]:match[5]], "\uE202") {
+			if part = strings.TrimSpace(part); part != "" {
+				parts = append(parts, part)
+			}
+		}
+		locator := ""
+		if len(parts) > 0 && lineLocator.MatchString(parts[len(parts)-1]) {
+			locator = parts[len(parts)-1]
+			parts = parts[:len(parts)-1]
+		}
+		valid := len(parts) > 0
+		for _, part := range parts {
+			if !sourceID.MatchString(part) {
+				valid = false
+				break
+			}
+		}
+		if valid {
+			citations = append(citations, Citation{
+				text[match[0]:match[1]],
+				text[match[2]:match[3]],
+				parts,
+				locator,
+				match[0],
+				match[1],
+			})
+		}
+	}
+	return citations
+}
+func stripCitations(text string, citations []Citation) string {
+	sorted := append([]Citation(nil), citations...)
+	sort.Slice(sorted, func(i, j int) bool {
+		return sorted[i].Start > sorted[j].Start
+	})
+	for _, citation := range sorted {
+		text = text[:citation.Start] + text[citation.End:]
+	}
+	return text
+}
+```
+
+```java
+import java.util.*;
+import java.util.regex.Pattern;
+
+// Java string offsets are UTF-16 code units, matching substring().
+record Citation(
+    String raw, String family, List<String> sourceIds, String locator, int start, int end) {}
+
+static final Pattern SOURCE_ID = Pattern.compile("^[A-Za-z0-9_-]+$");
+static final Pattern LINE_LOCATOR = Pattern.compile("^L\\d+(?:-L\\d+)?$");
+
+static List<Citation> extractCitations(String text, List<String> families) {
+  var citations = new ArrayList<Citation>();
+  if (families.isEmpty()) return citations;
+  var familyPattern =
+      families.stream().map(Pattern::quote).collect(java.util.stream.Collectors.joining("|"));
+  var matcher =
+      Pattern.compile("\uE200(" + familyPattern + ")\uE202(.*?)\uE201", Pattern.DOTALL)
+          .matcher(text);
+  while (matcher.find()) {
+    var parts =
+        new ArrayList<>(
+            Arrays.stream(matcher.group(2).split("\uE202"))
+                .map(String::strip)
+                .filter(s -> !s.isEmpty())
+                .toList());
+    String locator = null;
+    if (!parts.isEmpty() && LINE_LOCATOR.matcher(parts.get(parts.size() - 1)).matches())
+      locator = parts.remove(parts.size() - 1);
+    if (parts.isEmpty() || parts.stream().anyMatch(s -> !SOURCE_ID.matcher(s).matches()))
+      continue;
+    citations.add(
+        new Citation(
+            matcher.group(),
+            matcher.group(1),
+            List.copyOf(parts),
+            locator,
+            matcher.start(),
+            matcher.end()));
+  }
+  return citations;
+}
+
+static String stripCitations(String text, List<Citation> citations) {
+  var sorted = new ArrayList<>(citations);
+  sorted.sort(Comparator.comparingInt(Citation::start).reversed());
+  for (var citation : sorted)
+    text = text.substring(0, citation.start()) + text.substring(citation.end());
+  return text;
+}
+```
+
 ```ruby
 CITATION_START = "\u{E200}"
 CITATION_DELIMITER = "\u{E202}"

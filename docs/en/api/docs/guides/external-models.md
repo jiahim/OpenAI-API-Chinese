@@ -17,7 +17,7 @@ OpenAI is deprecating the Evals platform. Existing evals content remains
 
 In order to use third-party models, the following must be true:
 
-- Your OpenAI organization must be in [usage tier 1](https://developers.openai.com/api/docs/guides/rate-limits#usage-tiers) or higher.
+- Your OpenAI organization must be in [Build](https://developers.openai.com/api/docs/guides/rate-limits#usage-tiers) or higher.
 - An admin for your OpenAI organization must enable this feature via [Settings > Organization > General](https://platform.openai.com/settings/organization/general). To enable this feature, the admin must accept the usage disclaimer shown.
 
 Calls made to external models pass data to third parties and are subject to
@@ -29,11 +29,9 @@ OpenAI currently covers inference costs on third-party models, subject to the fo
 
 | Usage tier | Monthly spend limit (USD) |
 | ---------- | ------------------------- |
-| Tier 1     | $5                        |
-| Tier 2     | $25                       |
-| Tier 3     | $50                       |
-| Tier 4     | $100                      |
-| Tier 5     | $200                      |
+| Build      | $25                       |
+| Launch     | $100                      |
+| Grow       | $200                      |
 
 We serve these models via our partner, OpenRouter. In the future, third-party models will be charged as part of your regular OpenAI billing cycle, at [OpenRouter list prices](https://openrouter.ai/models).
 

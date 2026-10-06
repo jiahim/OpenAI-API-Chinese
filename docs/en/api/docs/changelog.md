@@ -8,6 +8,18 @@ Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecatio
 
 ## October, 2026
 
+### Oct 6
+
+Feature · Model: gpt-6-luna · API: v1/decisions
+
+Released the [Decisions API](https://developers.openai.com/api/docs/guides/decisions) in beta with `gpt-6-luna`. Turn text and images into typed answers 10x faster than the Responses API.
+
+### Oct 6
+
+Update
+
+Simplified API usage tiers from five to three: Build, Launch, and Grow. Organizations automatically upgrade as total credit purchases reach tier minimums. See [usage tiers](https://developers.openai.com/api/docs/guides/rate-limits#usage-tiers) for monthly usage limits and how to view rate limits for each model.
+
 ### Oct 5
 
 Feature

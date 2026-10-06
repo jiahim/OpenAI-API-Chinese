@@ -369,6 +369,39 @@ event = client.webhooks.unwrap(
 )
 ```
 
+```go
+// Verify the original bytes, before any JSON parsing.
+event, err := client.Webhooks.Unwrap(body, r.Header)
+if err != nil {
+	http.Error(w, "Invalid webhook", http.StatusBadRequest)
+	return
+}
+fmt.Println(event.Type)
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.core.http.Headers;
+import com.openai.models.webhooks.UnwrapWebhookEvent;
+import com.openai.models.webhooks.WebhookVerificationParams;
+
+// Your HTTP framework supplies the original request bytes and headers.
+// Load secret from OPENAI_WEBHOOK_SECRET in your application.
+// Reject InvalidWebhookSignatureException (invalid signature or timestamp)
+// and IllegalArgumentException (missing required headers).
+public static UnwrapWebhookEvent verifyWebhook(
+    OpenAIClient client, byte[] body, Headers headers, String secret) {
+  return client
+      .webhooks()
+      .unwrap(
+          WebhookVerificationParams.builder()
+              .payload(body)
+              .headers(headers)
+              .secret(secret)
+              .build());
+}
+```
+
 ```ruby
 require "openai"
 require "webrick"

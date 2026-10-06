@@ -66,7 +66,7 @@ storage limits.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number`
+  - `bytes: number or null`
 
     The size of the file, in bytes. In a completed file upload response, this can
     be null when the file size is not yet available.
@@ -270,7 +270,7 @@ Returns a list of files.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number`
+  - `bytes: number or null`
 
     The size of the file, in bytes. In a completed file upload response, this can
     be null when the file size is not yet available.
@@ -427,7 +427,7 @@ Returns information about a specific file.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number`
+  - `bytes: number or null`
 
     The size of the file, in bytes. In a completed file upload response, this can
     be null when the file size is not yet available.
@@ -558,7 +558,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number`
+  - `bytes: number or null`
 
     The size of the file, in bytes. In a completed file upload response, this can
     be null when the file size is not yet available.
