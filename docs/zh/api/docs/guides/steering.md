@@ -1,20 +1,20 @@
-# Mid-turn steering
+# 中途引导
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取对应文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
 
-Mid-turn steering 让用户可以在响应完成前添加需求或改变方向。
+Mid-turn steering 允许用户在回复完成前追加需求或改变方向。
 
-Mid-turn steering 可通过 WebSocket 连接用于 GPT-6 模型系列
-  的 Responses API。GPT-5.6 及更早模型不支持
+Mid-turn steering 可通过 WebSocket 连接到
+  Responses API 在 GPT-6 模型系列上使用。GPT-5.6 及更早的模型不支持
   steering。
 
-Steering 不会重写已经发送到应用的输出、撤销之前的操作，或取消已经开始的工具调用。
+Steering 不会重写已经发送到应用的输出，也不会撤销已执行的操作或取消已启动的工具。
 
-有关连接设置和常规传输行为，请参阅 [WebSocket 模式](https://developers.openai.com/api/docs/guides/websocket-mode)。有关确切的事件定义，请参阅 [Responses WebSocket 事件参考](https://developers.openai.com/api/reference/resources/responses/websocket-events).
+有关连接设置和常规传输行为，请参阅 [WebSocket 模式](https://developers.openai.com/api/docs/guides/websocket-mode)。如需准确的事件定义，请参阅 [Responses WebSocket 事件参考](https://developers.openai.com/api/reference/resources/responses/websocket-events).
 
-## 发送一条引导消息
+## 发送引导消息
 
-使用 `response.create`。启动响应。在收到其 `response.created` 事件后，发送 `response.steer` 在同一连接上，使用该响应的 ID 作为 `previous_response_id`:
+以 `response.create`。开始一个响应。收到其 `response.created` 事件后，发送 `response.steer` 事件，在同一连接上，并使用该响应的 ID 作为 `previous_response_id`:
 
 ```json
 {
@@ -24,9 +24,9 @@ Steering 不会重写已经发送到应用的输出、撤销之前的操作，�
 }
 ```
 
-该事件仅接受 `type`, `previous_response_id`，和 `input`。将 `input` 设置为字符串或由支持的内容类型组成的非空用户消息数组。
+该事件仅接受 `type`, `previous_response_id`，和 `input`。将 `input` 设置为字符串或包含受支持内容类型的用户消息非空数组。
 
-API 使用 `response.steer.accepted`:
+该 API 通过 `response.steer.accepted`:
 
 ```json
 {
@@ -39,17 +39,17 @@ API 使用 `response.steer.accepted`:
 }
 ```
 
-确认已排队输入。“已接受”表示输入已排队，并不代表模型已对其进行处理。除非 API 需要来自你应用的 [工具结果或审批](#return-tool-results-or-approval) ，否则它会自动使用你的更新创建一个新响应。
+接受意味着输入已排队，而非模型已对其进行处理。除非需要来自你应用的API 会根据你的更新自动创建一个新响应 [工具结果或审批](#return-tool-results-or-approval) 。
 
-在创建此自动延续之前，服务端会先完成当前的输出项以及任何已在运行的托管工具工作。请持续读取事件以接收包含你更新的响应；不要再次发送 `response.create`.
+在创建该自动 延续 之前，服务器会完成当前的输出项以及任何已运行的 托管工具 工作。请持续读取事件以接收包含你更新的响应；请勿再发送 `response.create`.
 
-如果 steer 中断了原始响应，该响应会以 `response.incomplete` 和 `incomplete_details.reason: "steered"`。结束。如果原始响应先正常完成，则它会保持其已完成状态，并且仍然可以拥有一次 steer 延续。
+如果引导打断了原始响应，它将以 `response.incomplete` 和 `incomplete_details.reason: "steered"`。结束。如果原始响应先正常完成，则保留其已完成状态，并且仍可具有一个引导 延续。
 
-自动延续会继承原始请求的设置。Token 与工具调用限制分别作用于每个响应。
+自动延续会继承原始请求的设置。Token 和工具调用限制分别作用于每个响应。
 
 ## 运行完整示例
 
-.NET SDK 不提供 Responses WebSocket 客户端，因此本示例不提供 C# SDK 变体。
+.NET SDK 没有提供 Responses WebSocket 客户端，因此此示例不提供 C# SDK 变体。
 
 在项目计划运行期间更新它
 
@@ -190,6 +190,138 @@ async def main():
 asyncio.run(main())
 ```
 
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Reasoning: shared.ReasoningParam{
+		Effort: shared.ReasoningEffortMedium,
+	},
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Draft a project plan for building a task-tracking app."),
+	},
+}); err != nil {
+	log.Fatal(err)
+}
+initialID, successorID := "", ""
+for {
+	event, err := conn.Recv(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	switch event.Type {
+	case "response.created":
+		id := event.OfResponsesServerEventResponseWsCreated.Response.ID
+		if initialID == "" {
+			initialID = id
+			err := conn.Send(ctx, responses.ResponsesClientEventUnionParam{
+				OfResponseSteer: &responses.ResponseSteerEventParam{
+					PreviousResponseID: id,
+					Input: responses.ResponseSteerInputUnionParam{
+						OfString: openai.String("Keep the scope small enough for one developer to finish in two weeks."),
+					},
+				},
+			})
+			if err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			successorID = id
+		}
+	case "response.steer.failed", "response.failed", "error":
+		log.Fatal(event.RawJSON())
+	case "response.incomplete":
+		r := event.OfResponsesServerEventResponseWsIncomplete.Response
+		if r.ID != initialID || r.IncompleteDetails.Reason != "steered" {
+			log.Fatal(event.RawJSON())
+		}
+	case "response.completed":
+		r := event.OfResponsesServerEventResponseWsCompleted.Response
+		if successorID != "" && r.ID == successorID {
+			fmt.Println(r.OutputText())
+			return
+		}
+	}
+	// Steering acceptance only queues input. Wait for the successor to complete.
+}
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.*;
+import java.util.*;
+
+long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(120);
+try (var conn =
+    client.async().responses().connect().get(10, java.util.concurrent.TimeUnit.SECONDS)) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .reasoning(
+                  com.openai.models.Reasoning.builder()
+                      .effort(com.openai.models.ReasoningEffort.MEDIUM)
+                      .build())
+              .store(false)
+              .input("Draft a project plan for building a task-tracking app.")
+              .build()));
+  String initialId = null, successorId = null;
+  while (true) {
+    var event =
+        conn.receive()
+            .get(
+                Math.max(1, deadline - System.nanoTime()),
+                java.util.concurrent.TimeUnit.NANOSECONDS);
+    if (event.responseCreated().isPresent()) {
+      var id = event.responseCreated().orElseThrow().response().id();
+      if (initialId == null) {
+        initialId = id;
+        conn.send(
+            ResponsesClientEvent.ofResponseSteer(
+                ResponseSteerEvent.builder()
+                    .previousResponseId(id)
+                    .input(
+                        "Keep the scope small enough for one developer to finish in two weeks.")
+                    .build()));
+      } else {
+        successorId = id;
+      }
+    } else if (event.responseSteerFailed().isPresent()
+        || event.responseFailed().isPresent()
+        || event.error().isPresent()) {
+      throw new IllegalStateException(event.toString());
+    } else if (event.responseIncomplete().isPresent()) {
+      var response = event.responseIncomplete().orElseThrow().response();
+      if (!response.id().equals(initialId)
+          || !response
+              .incompleteDetails()
+              .flatMap(Response.IncompleteDetails::reason)
+              .map(r -> r.toString().equals("steered"))
+              .orElse(false)) throw new IllegalStateException(event.toString());
+    } else if (event.responseCompleted().isPresent()
+        && event.responseCompleted().orElseThrow().response().id().equals(successorId)) {
+      event.responseCompleted().orElseThrow().response().output().stream()
+          .flatMap(item -> item.message().stream())
+          .flatMap(message -> message.content().stream())
+          .flatMap(content -> content.outputText().stream())
+          .forEach(text -> System.out.println(text.text()));
+      break;
+    }
+    // Acceptance only queues input; follow the successor through completion.
+  }
+} finally {
+  client.close();
+}
+```
+
 ```ruby
 require "async"
 require "openai"
@@ -239,13 +371,13 @@ end
 ```
 
 
-示例在第一个 `response.created` 事件之后发送更新。在你的应用中，当用户提供更新时再发送。使用 延续 的 ID 在其 `response.created` 事件到达后用于新的引导。
+该示例在收到第一个 `response.created` 事件后发送更新。在你的应用中，当用户提供更新时再发送。在该 延续 的事件到达后，使用该 延续 的 ID 进行新的引导 `response.created` 事件到达后。
 
-## 返回工具结果或审批
+## Return tool results or approval
 
-如果响应需要客户端工具结果或审批，API 会让该 steering 继续排队。在同一连接上继续执行你正常的工具或审批流程。
+如果响应需要客户端工具结果或审批，API 会将引导指令保持在队列中。请在同一连接上继续执行常规的工具或审批流程。
 
-例如，原始响应可以通过调用以下内容来完成 `get_project_status`。以下 payload 仅展示相关字段：
+例如，原始响应可以通过调用以下内容来完成： `get_project_status`。以下载荷仅展示相关字段：
 
 ```json
 {
@@ -265,7 +397,7 @@ end
 }
 ```
 
-原始响应完成后，API 会发送 `response.steer.pending` ，用于仍需要输入的已接受 steering。其 `required_input` 字段标识了 API 在应用更新前所需的工具结果或审批：
+原始响应完成后，API 会发送 `response.steer.pending` ，用于仍需要输入的已接受引导指令。其 `required_input` 字段标识了 API 在应用更新之前所需的工具结果或审批：
 
 ```json
 {
@@ -286,9 +418,9 @@ end
 }
 ```
 
-使用以下方式在同一连接上返回所需的输入 `response.create` ，并设置 `previous_response_id` 为 `resp_1`。不要重复已接受的 steering。一个明确的 `response.create` 会使用其自身的工具、指令和其他设置。
+在同一连接上使用以下命令返回所需的输入： `response.create` 并设置 `previous_response_id` 以 `resp_1`。不要重复已接受的引导。一次明确的 `response.create` 交接使用各自的工具、指令和其他设置。
 
-此 JSONC 示例中的注释标出了服务端添加排队更新的位置：
+本 JSONC 示例的注释显示了服务端在何处添加排队的更新：
 
 ```jsonc
 {
@@ -311,19 +443,19 @@ end
 }
 ```
 
-你无需等待 `response.steer.pending` 即可返回工具结果。如果服务端已经收到了匹配的 `response.create`，则可以在不先发送该通知的情况下继续执行。
+你无需等待 `response.steer.pending` 即可返回工具结果。如果服务端已收到匹配的 `response.create`，则无需先发送此通知即可继续。
 
-## 处理故障和断开连接
+## 处理失败和断开连接
 
-`response.steer.failed` 表示 API 未通过引导应用输入，也不会在后续自动应用。该事件返回原始 `input` 和 `previous_response_id` 下的 `steer`，并附带一个 `error` 对象描述该失败。
+`response.steer.failed` 表示 API 没有对输入应用引导，也不会稍后自动应用它。该事件返回原始 `input` 和 `previous_response_id` 在 `steer`，下，附带一个 `error` 对象描述失败信息。
 
-按以下方式追踪已接受的提交 `steer.id`。后续的失败会复用同一 ID。
+通过 `steer.id`。跟踪已接受的提交。后续失败使用相同的 ID。
 
 常见错误代码：
 
-- `invalid_input`: 仅使用受支持的事件字段和用户消息输入。
+- `invalid_input`: 仅使用支持的事件字段和用户消息输入。
 - `steering_not_supported`: 模型、请求参数或两者可能与引导不兼容。
-- `response_not_found`: 目标响应必须在同一 WebSocket 连接上仍然可用。
-- `too_many_pending_steers`: 待处理的引导输入过多。使用 `response.create`；返回任何必需的工具结果或审批；否则，在提交更多引导之前，等待自动延续。请勿重新发送已被接受的引导。
+- `response_not_found`: 目标响应必须仍可在同一 WebSocket 连接上使用。
+- `too_many_pending_steers`: 待处理的引导输入过多。使用以下方式返回任何必需的工具结果或审批： `response.create`；否则，请在提交更多内容之前等待自动的延续。请勿重新发送已被接受的引导。
 
-已排队的引导输入仅存在于当前连接上，不会随原始响应一起存储。记录你发送的引导输入，并在回放之前将它们与响应事件及历史记录进行比较。不要假设挂起的引导输入在断开连接后仍然存在。参见 [WebSocket 恢复指南](https://developers.openai.com/api/docs/guides/websocket-mode#reconnect-and-recover).
+排队的引导输入仅存在于当前连接中，不会随原始响应一起存储。记录你发送的引导输入，并在重放前将它们与响应事件及历史记录进行比较。请勿假定挂起的引导在断开后仍然存在。参见 [WebSocket 恢复指南](https://developers.openai.com/api/docs/guides/websocket-mode#reconnect-and-recover).

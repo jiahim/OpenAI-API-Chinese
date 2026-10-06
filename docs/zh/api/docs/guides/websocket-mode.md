@@ -1,22 +1,26 @@
 # WebSocket Mode
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。你可以通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-Responses API 支持用于长时间运行、工具调用密集型工作流的 WebSocket 模式。除了降低延迟外， `stream_id` 还支持 WebSocket 多路复用：单条到 的持久连接 `/v1/responses` 可以并行运行多个会话，并将现有会话分叉到新的流上。每个回合只需发送新的输入项以及 `previous_response_id`.
+Responses API 支持面向长时间运行、频繁调用工具的工作流的 WebSocket 模式。除了降低延迟之外， `stream_id` 它还支持 WebSocket 多路复用：通过一条到 `/v1/responses` 的持久连接，可以并行运行多个会话，并将现有会话派生到一个新的流上。每次轮询只需发送新增的输入项和 `previous_response_id`.
 
-WebSocket 模式兼容 Zero Data Retention (ZDR) 和 `store=false`.
+WebSocket 模式同时兼容 Zero Data Retention（ZDR）和 `store=false`.
 
 ## 为什么要使用 WebSocket 模式
 
-当某个工作流涉及大量模型与工具之间的往返调用（例如，智能体编程或包含重复工具调用的编排循环）时，WebSocket 模式最为有用。
+当工作流涉及大量模型与工具之间的多轮交互（例如，智能体编码或包含重复工具调用的编排循环）时，WebSocket 模式最为实用。
 
-由于连接保持打开状态，并且每一轮只发送增量输入，WebSocket 模式降低了每轮延续开销，并在长链路中改善了端到端延迟。对于包含 20 次以上工具调用的运行，我们观察到端到端执行速度可加快约 40%。
+由于连接保持打开状态，且每一轮仅发送增量输入，WebSocket 模式降低了每轮延续开销，并改善了长链路的端到端延迟。对于包含 20 次以上工具调用的运行，端到端执行速度最高可提升约 40%。
 
 ## 连接并创建响应
 
-使用以下命令安装 WebSocket 依赖： `pip install "openai[realtime]>=3.8.0"` 适用于 Python， `npm install openai@^7.10.0 ws` 适用于 JavaScript，或 `gem install openai async-websocket` 适用于 Ruby。
+使用以下命令安装 WebSocket 依赖 `pip install "openai[realtime]>=3.8.0"` （Python）， `npm install openai@^7.10.0 ws` （JavaScript），或 `gem install openai async-websocket` （Ruby）。
 
-在 WebSocket 模式下，每一轮开始时由客户端发送一个 `response.create` 事件。其负载与普通的 [Responses 创建请求体](https://developers.openai.com/api/reference/resources/responses/methods/create)，一致，但不会使用诸如 `stream` 和 `background` 等传输相关的字段。
+对于 Go，运行 `go get github.com/openai/openai-go/v3@v3.70.0`.
+对于 Java，添加 Maven 依赖 `com.openai:openai-java:4.75.1`.
+这些 Go 和 Java SDK 版本提供原生的 Responses WebSocket 支持。
+
+在 WebSocket 模式下，每个轮次开始时由客户端发送一个 `response.create` 事件。其负载与普通的 [Responses create 请求体](https://developers.openai.com/api/reference/resources/responses/methods/create)，相同，但不会使用 `stream` 和 `background` 等传输相关的字段。
 
 ```javascript
 import OpenAI from "openai";
@@ -91,6 +95,63 @@ with client.responses.connect() as connection:
             raise RuntimeError(event.to_json())
 ```
 
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Find fizz_buzz()"),
+	},
+	StreamID: openai.String("main"),
+	Tools:    []responses.ToolUnionParam{},
+}); err != nil {
+	log.Fatal(err)
+}
+response, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+fmt.Println(response.OutputText())
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.*;
+import java.util.*;
+
+try (var conn = client.responses().connect()) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .store(false)
+              .input("Find fizz_buzz()")
+              .streamId("main")
+              .tools(List.of())
+              .build()));
+  var response = conn.finalResponse();
+  if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status().orElse(null));
+  response.output().stream()
+      .flatMap(item -> item.message().stream())
+      .flatMap(message -> message.content().stream())
+      .flatMap(content -> content.outputText().stream())
+      .forEach(text -> System.out.println(text.text()));
+}
+```
+
 ```ruby
 require "async"
 require "openai"
@@ -126,16 +187,16 @@ end
 ```
 
 
-客户端可以选择通过发送 `response.create` 并附带 `generate: false`。来预先准备请求状态。当你已经知道即将到来的轮次中计划发送的工具、指令和/或自定义消息时，这会很有用。 `generate: false` 不会返回模型输出，但会预先准备请求状态，从而让下一轮生成的开始更快。预热请求会返回一个响应 ID，你可以使用该 ID 通过 `previous_response_id`，进行链式调用，包括在响应链的后续轮次中也是如此。下一节将介绍如何使用 `previous_response_id` 和增量输入来延续会话。
+客户端可以选择性地通过发送 `response.create` 来 `generate: false`。预热请求状态。当你已经知道即将发送的工具、指令和/或自定义消息时，这非常有用。 `generate: false` 不会返回模型输出，但会准备请求状态，以便下一个生成的轮次可以更快地启动。预热请求会返回一个响应 ID，你可以使用该 ID 进行 `previous_response_id`，链接，包括在响应链的后续轮次中也是如此。下一节将介绍如何使用 `previous_response_id` 和增量输入来继续会话。
 
-## 使用增量输入继续
+## 继续增量输入
 
-要在响应仍在进行时添加用户指令，请使用 [回合中引导](https://developers.openai.com/api/docs/guides/steering)。引导会保留已完成的工作，并在 延续 中包含新的指令。请参考以下 `response.create` 模式来处理普通的回合间 延续 和工具结果。
+要在响应仍在运行时添加用户指令，请使用 [中途转向](https://developers.openai.com/api/docs/guides/steering)。转向会保留已完成的工作，并在一次延续中加入新的指令。请使用以下 `response.create` 模式处理常规的轮次间延续和工具结果。
 
-要继续一次运行，请再发送一次 `response.create` ，其中包含：
+若要继续运行，请再发送一个 `response.create` ，参数为：
 
-- `previous_response_id` 设置为上一个响应 ID。
-- `input` 仅包含新增项（例如，工具输出和下一条用户消息）。
+- `previous_response_id` 设置为上一次响应的 ID。
+- `input` 仅包含新条目（例如，工具输出和下一条用户消息）。
 
 ```javascript
 import OpenAI from "openai";
@@ -296,6 +357,177 @@ with client.responses.connect() as connection:
     print(wait_for_response(connection).output_text)
 ```
 
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+defer cancel()
+client := openai.NewClient()
+tools := []responses.ToolUnionParam{
+	{
+		OfFunction: &responses.FunctionToolParam{
+			Name:        "get_test_results",
+			Description: openai.String("Return a local demo test result."),
+			Parameters: map[string]any{
+				"type":                 "object",
+				"properties":           map[string]any{},
+				"additionalProperties": false,
+			},
+			Strict: openai.Bool(true),
+		},
+	},
+}
+conn, err := client.Responses.Connect(ctx, responses.ResponseConnectionOptions{})
+if err != nil {
+	log.Fatal(err)
+}
+defer conn.Close()
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model: "gpt-6-astra",
+	Store: openai.Bool(false),
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfString: openai.String("Find the failing test and suggest a fix."),
+	},
+	StreamID:          openai.String("main"),
+	Tools:             tools,
+	ParallelToolCalls: openai.Bool(false),
+	ToolChoice: responses.ResponsesClientEventResponseCreateToolChoiceUnionParam{
+		OfFunctionTool: &responses.ToolChoiceFunctionParam{
+			Name: "get_test_results",
+		},
+	},
+}); err != nil {
+	log.Fatal(err)
+}
+first, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if first.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", first.Status)
+}
+var callID string
+for _, item := range first.Output {
+	if item.Type == "function_call" && item.Name == "get_test_results" {
+		callID = item.CallID
+		break
+	}
+}
+if callID == "" {
+	log.Fatal("Expected a get_test_results function call")
+}
+// The result is a local demo fixture; carry the real response and call IDs.
+result := `{"test":"test_fizz_buzz","failure":"Expected FizzBuzz for 15, got Fizz."}`
+if err := conn.Create(ctx, responses.ResponsesClientEventResponseCreateParam{
+	Model:              "gpt-6-astra",
+	StreamID:           openai.String("main"),
+	Store:              openai.Bool(false),
+	PreviousResponseID: openai.String(first.ID),
+	Tools:              tools,
+	ToolChoice: responses.ResponsesClientEventResponseCreateToolChoiceUnionParam{
+		OfToolChoiceMode: openai.Opt(responses.ToolChoiceOptionsNone),
+	},
+	Input: responses.ResponsesClientEventResponseCreateInputUnionParam{
+		OfResponse: &responses.ResponseInputParam{
+			{
+				OfFunctionCallOutput: &responses.ResponseInputItemFunctionCallOutputParam{
+					CallID: openai.String(callID),
+					Output: responses.ResponseInputItemFunctionCallOutputOutputUnionParam{
+						OfString: openai.String(result),
+					},
+				},
+			},
+			responses.ResponseInputItemParamOfMessage("Now optimize it.", responses.EasyInputMessageRoleUser),
+		},
+	},
+}); err != nil {
+	log.Fatal(err)
+}
+response, err := conn.FinalResponse(ctx)
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+fmt.Println(response.OutputText())
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.core.JsonValue;
+import com.openai.models.responses.*;
+import java.util.*;
+
+var tool =
+    FunctionTool.builder()
+        .name("get_test_results")
+        .description("Return a local demo test result.")
+        .strict(true)
+        .parameters(
+            FunctionTool.Parameters.builder()
+                .putAdditionalProperty("type", JsonValue.from("object"))
+                .putAdditionalProperty("properties", JsonValue.from(Map.of()))
+                .putAdditionalProperty("additionalProperties", JsonValue.from(false))
+                .build())
+        .build();
+try (var conn = client.responses().connect()) {
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .store(false)
+              .input("Find the failing test and suggest a fix.")
+              .streamId("main")
+              .addTool(tool)
+              .parallelToolCalls(false)
+              .toolChoice(ToolChoiceFunction.builder().name("get_test_results").build())
+              .build()));
+  var first = conn.finalResponse();
+  if (first.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + first.status().orElse(null));
+  var call =
+      first.output().stream()
+          .flatMap(item -> item.functionCall().stream())
+          .filter(item -> item.name().equals("get_test_results"))
+          .findFirst()
+          .orElseThrow(() -> new IllegalStateException("Expected get_test_results call"));
+  // Use the real response and call IDs with a local demo result.
+  var result =
+      "{\"test\":\"test_fizz_buzz\",\"failure\":\"Expected FizzBuzz for 15, got Fizz.\"}";
+  conn.send(
+      ResponsesClientEvent.ofResponseCreate(
+          ResponsesClientEvent.ResponseCreate.builder()
+              .model("gpt-6-astra")
+              .streamId("main")
+              .store(false)
+              .previousResponseId(first.id())
+              .addTool(tool)
+              .toolChoice(ToolChoiceOptions.NONE)
+              .inputOfResponse(
+                  List.of(
+                      ResponseInputItem.ofFunctionCallOutput(
+                          ResponseInputItem.FunctionCallOutput.builder()
+                              .callId(call.callId())
+                              .output(result)
+                              .build()),
+                      ResponseInputItem.ofEasyInputMessage(
+                          EasyInputMessage.builder()
+                              .role(EasyInputMessage.Role.USER)
+                              .content("Now optimize it.")
+                              .build())))
+              .build()));
+  var response = conn.finalResponse();
+  if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+    throw new IllegalStateException(
+        "Response ended with status " + response.status().orElse(null));
+  response.output().stream()
+      .flatMap(item -> item.message().stream())
+      .flatMap(message -> message.content().stream())
+      .flatMap(content -> content.outputText().stream())
+      .forEach(text -> System.out.println(text.text()));
+}
+```
+
 ```ruby
 require "async"
 require "openai"
@@ -375,30 +607,30 @@ end
 
 ## 延续的工作原理
 
-WebSocket 模式使用与 HTTP 模式相同的 `previous_response_id` 链接语义，但在活跃 socket 上增加了一条更低延迟的 延续 路径。
+WebSocket 模式使用与 HTTP 模式相同的 `previous_response_id` 链式语义，但它在活动 socket 上增加了一条更低延迟的延续路径。
 
-在活跃的 WebSocket 连接上，服务会在一个连接本地的内存缓存中保留最近的 previous-response 状态。当你使用 `stream_id`，时，每个 lane 都会保留其最新的缓存响应，因此在该 lane 中从最新响应继续会很快，因为服务可以复用连接本地的状态。由于服务只在内存中保留 previous-response 状态而不会写入磁盘，你可以以兼容 `store=false` 和 Zero Data Retention（ZDR）的方式使用 WebSocket 模式。
+在活动的 WebSocket 连接上，服务会将最近的上一响应状态保存在连接本地的内存缓存中。当你使用 `stream_id`，时，每个 lane 都会保留其最新的缓存响应，因此在该 lane 中从最新响应继续速度很快，因为服务可以复用连接本地状态。由于服务仅在内存中保留上一响应状态，而不会将其写入磁盘，因此你可以以兼容 `store=false` 和零数据保留（ZDR）的方式使用 WebSocket 模式。
 
-如果某个 `previous_response_id` 不在内存缓存中，则行为取决于你是否存储了响应：
+如果某个 `previous_response_id` 不在内存缓存中，则行为取决于你是否存储响应：
 
-- 使用 `store=true`，时，服务可能会在可用时从持久化状态中恢复较早的响应 ID。延续仍然可以工作，但会失去内存中的延迟优势。
-- 使用 `store=false` （包括 ZDR）时，则不存在持久化回退。如果该 ID 未被缓存，请求将返回 `previous_response_not_found`.
+- 在 `store=true`，时，服务可在可用时从持久化状态中恢复较旧的响应 ID。延续仍然可以工作，但会失去内存中的延迟优势。
+- 在 `store=false` （包括 ZDR），则没有持久化回退。如果该 ID 未被缓存，请求将返回 `previous_response_not_found`.
 
-如果同车道的 延续返回一个 `4xx` 或 `5xx`,服务会从连接本地缓存中淘汰所引用的 `previous_response_id` 。返回错误的跨车道分叉会保留共享的父级,以便源车道可以继续。
+如果同一通道的延续返回一个 `4xx` 或 `5xx`，服务会从连接本地缓存中逐出被引用的 `previous_response_id` 。返回错误的跨通道分支会保留共享的父项，以便源通道继续执行。
 
 ## 压缩与创建新响应
 
-如果你正在使用压缩功能，则存在两种不同的 延续 模式：
+如果使用压缩功能，会存在两种不同的延续模式：
 
-### 服务端压缩（`context_management`)
+### 服务端压缩 (`context_management`)
 
-当你启用服务端压缩（`context_management` 并附带 `compact_threshold`），压缩会在正常的 `/responses` 生成过程中进行。在 WebSocket 模式下，你继续按通常的方式操作即可：发送下一个 `response.create` ，其中附带最新的 `previous_response_id` ，并且只包含新的输入项。
+当你启用服务端压缩（`context_management` 来 `compact_threshold`）时，压缩会在正常生成过程中发生。 `/responses` 在 WebSocket 模式下，你可以像往常一样继续：使用最新的 `response.create` 发送下一个 `previous_response_id` ，且仅包含新的输入项。
 
-### 独立运行 `/responses/compact`
+### 独立使用 `/responses/compact`
 
-独立 [`/responses/compact` 端点](https://developers.openai.com/api/reference/resources/responses/methods/compact) 返回一个新的压缩输入窗口，而不是响应 ID。压缩完成后，在你的 WebSocket 连接上使用压缩后的窗口作为 `input` （加上后续的用户/工具项）。
+独立的 [`/responses/compact` endpoint](https://developers.openai.com/api/reference/resources/responses/methods/compact) 会返回一个新的已压缩输入窗口，而不是响应 ID。压缩后，使用该已压缩窗口在你的 WebSocket 连接上创建一个新的 response，作为 `input` （以及后续的用户/工具条目）。
 
-省略 `previous_response_id` 或将其设置为 `null`。即可启动新的链。直接传入压缩后的输出，不要对返回的窗口进行裁剪。
+省略 `previous_response_id` 或将其设置为 `null`。即可开启新的链。直接传入压缩后的输出；不要对返回的窗口进行裁剪。
 
 ```javascript
 import { toResponseInputItems } from "openai/lib/responses/ResponseInputItems";
@@ -537,14 +769,14 @@ end
 
 ## 并行运行对话
 
-你可以在同一连接上使用 `stream_id` 参数来维持并行对话。使用不同的 `response.create` 值连续发送独立的事件。 `stream_id` 服务器可以在同一连接上并发运行它们。它们的事件可能会交错，因此请保持一个读取循环，并根据 `stream_id`.
+你可以通过以下参数在同一个连接上维护并行的会话 `stream_id` 参数。发送独立的 `response.create` 事件时使用不同的 `stream_id` 值。服务器可以在一个连接上并发运行它们。它们的事件可能交错，因此请保持单个读取循环，并通过 `stream_id`.
 
-一个 `stream_id` 为一条 WebSocket 连接上的有序通道命名。请保持 `stream_id` 和 `previous_response_id` 相互独立：
+一个 `stream_id` 命名了一条 WebSocket 连接上的有序通道。请保持 `stream_id` 和 `previous_response_id` 相互独立：
 
-- `stream_id` 控制事件的流向，以及请求按先进先出顺序运行。
-- `previous_response_id` 控制对话的血缘关系。
+- `stream_id` 控制事件去向以及请求按先进先出顺序执行。
+- `previous_response_id` 控制会话的来源链路。
 
-这种分离解锁了两种有用的模式。
+这种分离解锁了两个有用的模式。
 
 ```text
 one WebSocket connection
@@ -552,18 +784,18 @@ one WebSocket connection
 └─ stream_id="research"  list deployment risks
 ```
 
-具有相同 `stream_id` 的请求保持先进先出，且不会重叠。具有不同 `stream_id` 值的请求可以并发执行。
+具有相同 `stream_id` 的请求保持先进先出，且不会重叠。具有不同 `stream_id` 值的请求可以并发运行。
 
 ### 每个连接的限制
 
-- 一个连接最多可以同时拥有 16 个在途响应，分布在具名和默认通道中。连接会继续接收更多 `response.create` 事件并将其排队，直到某个进行中的响应结束。
-- 一个连接最多接受 32 个不同的具名 `stream_id` 值。隐式的默认通道不计入此具名流限制。达到限制后，请复用现有 `stream_id` 的连接，或打开一个新连接。
+- 一个连接可以在命名和默认通道上同时处理多达 16 个进行中的响应。该连接接受更多 `response.create` 事件并将其排队，直到一次能完成。
+- 一个连接最多接受 32 个不同的命名 `stream_id` 值。隐式的默认通道不计入此命名流限制。达到限制后可复用现有 `stream_id` 或开启一个新连接。
 
-### 将对话分叉到新流
+### 将对话分叉到新的流
 
-若要从已完成的响应分叉，请将其 ID 作为 `previous_response_id` 配合新的 `stream_id`。发送。只要该响应仍然可用，新流就会继承其上下文，而原始流可以继续运行。分叉开始后，由于两个分支使用不同的流 ID，它们可以并发执行。
+要从已完成的响应分支，请将其 ID 作为 `previous_response_id` 与一个新的 `stream_id`。一起发送。只要该响应仍然可用，新流就会继承其上下文，而原始流可以继续运行。分支开始后，两个分支可以并发运行，因为它们使用不同的流 ID。
 
-使用 `store=false` （包括 ZDR）时，跨 lane 分叉依赖父响应保留在连接本地缓存中。如果在源 lane 推进或失败时，分叉进入排队，父响应可能在分叉开始前被逐出，此时分叉会返回 `previous_response_not_found`。在推进源 lane 之前，请等待分叉 lane 发出 `response.in_progress` ，或者将 `previous_response_id` 设置为 `null` 并重放完整的输入上下文后重试。
+使用 `store=false` （包括 ZDR）时，跨通道的分支依赖于父项保留在连接本地缓存中。如果在源通道推进或失败时分支进入排队，父项可能会在分支开始前被驱逐，此时分支会返回 `previous_response_not_found`。在推进源通道之前，等待分支通道发出 `response.in_progress` ，或者使用将 `previous_response_id` 设置为 `null` 并重放完整输入上下文来进行重试。
 
 ```text
 main:   resp_1 ──▶ resp_2 ──▶ resp_3
@@ -571,7 +803,7 @@ main:   resp_1 ──▶ resp_2 ──▶ resp_3
 critic:                 resp_4 ──▶ resp_5
 ```
 
-复用不附带 `stream_id` 的 `previous_response_id` 会启动一个新的响应，而不是延续当前会话。
+复用 `stream_id` 时不带 `previous_response_id` 会启动一个新响应，而不是延续对话。
 
 关键调用如下所示：
 
@@ -598,7 +830,7 @@ send_create(
 
 ### 完整示例
 
-并行运行多个对话，然后从其中一个分叉
+并行运行会话，然后分叉其中一个
 
 ```javascript
 import OpenAI from "openai";
@@ -880,27 +1112,27 @@ end
 
 一个 `stream_id` 必须为 1–256 个字符，且只能包含字母、数字、下划线（`_`）、连字符（`-`）和句点（`.`）。仅在 WebSocket `response.create` 事件中使用它；不要在 HTTP `POST /v1/responses`.
 
-对于命名流，服务端事件会包含匹配的 `stream_id`，包括终止事件和请求范围内的错误。
+对于命名流，服务端事件包含匹配的 `stream_id`，包括终止事件和请求范围内的错误。
 
-如果你省略 `stream_id`，该请求会使用一个隐式的默认通道，其事件不包含 `stream_id`。默认通道在其他方面遵循与命名流相同的排序和并发规则。空字符串不是有效的 `stream_id`；请省略该字段以选择默认通道。
+如果你省略 `stream_id`，则请求使用隐式默认通道，其事件不包含 `stream_id`。默认通道在其他方面遵循与命名流相同的排序和并发规则。空字符串不是有效的 `stream_id`；省略该字段以选择默认通道。
 
 ## 连接行为与限制
 
 - 每个响应内的事件遵循现有的 Responses 流式事件模型。不同 lane 的事件可以交错出现。
-- 具有相同 `stream_id` 的请求按先进先出顺序运行，且不会重叠。不同 lane 上的请求可以并发运行。
-- 连接最长持续 60 分钟。达到上限时需重新连接。
+- 具有相同 `stream_id` 的请求按先进先出顺序运行，且互不重叠。不同 lane 上的请求可以并发运行。
+- 连接最长持续 60 分钟。请在达到上限时重新连接。
 
 ## 重连与恢复
 
-当某个连接关闭（或达到 60 分钟上限）时，其连接本地缓存会从所有通道中消失。请新建一个 WebSocket 连接，并使用以下任一模式来恢复每个通道：
+当连接关闭（或达到 60 分钟上限）时，每个 lane 的连接本地缓存都会消失。请打开一个新的 WebSocket 连接，并使用以下任一模式来恢复每个 lane：
 
-1. 如果你存储了先前的响应（`store=true`）并拥有有效的响应 ID，请使用 `previous_response_id` 以及新的输入项延续该通道。
-2. 如果你无法延续某个通道（例如， `store=false`/ZDR 或 `previous_response_not_found`），请通过将 `previous_response_id` 设置为 `null` （或省略它）来开启新响应，并为该通道的下一轮发送完整的输入上下文。
-3. 如果你使用 `/responses/compact`，压缩了上下文，请将返回的压缩窗口作为该新响应的基础， `input` 然后追加最新的用户/工具项。
+1. 如果你存储了先前的响应（`store=true`）并且拥有有效的响应 ID，可通过以下方式延续该对话分支 `previous_response_id` 以及新的输入条目。
+2. 如果无法延续某个对话分支（例如， `store=false`/ZDR 或 `previous_response_not_found`），可以通过将 `previous_response_id` 设置为 `null` （或省略该字段）并发送该分支下一轮所需的完整输入上下文来开启新响应。
+3. 如果你使用 `/responses/compact`，压缩了上下文，请使用返回的压缩后上下文窗口作为该新响应的 `input` 基础，然后追加最新的用户/工具条目。
 
 ## 需要处理的错误
 
-当服务端能够将错误关联到某个具名通道时，错误事件会包含 `stream_id`。在请求范围内的错误之后，其他通道可以继续执行。
+当服务端可以将错误关联到某个具名通道时，错误事件会包含 `stream_id`。其他通道在请求范围内的错误之后可以继续执行。
 
 `previous_response_not_found`
 
@@ -965,7 +1197,7 @@ end
 
 ## 相关指南
 
-- [对话状态](https://developers.openai.com/api/docs/guides/conversation-state)
+- [会话状态](https://developers.openai.com/api/docs/guides/conversation-state)
 - [流式 API 响应](https://developers.openai.com/api/docs/guides/streaming-responses)
 - [Responses 流式事件参考](https://developers.openai.com/api/reference/resources/responses)
 - [Responses WebSocket 事件参考](https://developers.openai.com/api/reference/resources/responses/websocket-events)

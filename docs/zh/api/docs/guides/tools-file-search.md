@@ -1,29 +1,29 @@
 # 文件搜索
 
-> 完整的文档索引请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取文档页面的 Markdown 版本。
 
-文件搜索是 Responses API 中可用的一个工具 [响应接口](https://developers.openai.com/api/reference/resources/responses).
-它使模型能够通过语义搜索和关键字搜索在由先前上传文件构成的知识库中检索信息。
-通过创建向量存储并向其上传文件，你可以让模型访问这些知识库或 `vector_stores`.
+文件搜索是 Responses API 中提供的工具 [响应接口](https://developers.openai.com/api/reference/resources/responses).
+它使模型能够通过语义搜索和关键字搜索，在已上传文件构建的知识库中检索信息。
+通过创建向量存储并向其中上传文件，你可以通过让模型访问这些知识库来扩展其固有知识，或 `vector_stores`.
 
 要详细了解向量存储和语义搜索的工作原理，请参阅我们的
   [检索指南](https://developers.openai.com/api/docs/guides/retrieval).
 
-这是一个由 OpenAI 管理的托管工具，你无需在自身代码中实现其执行逻辑。
-当模型决定使用它时，它会自动调用该工具，从你的文件中检索信息并返回输出。
+这是一个由 OpenAI 管理的 托管工具，你无需自行编写代码来处理其执行。
+当模型决定使用它时，它会自动调用该工具，从你的文件中检索信息，并返回结果。
 
-## 如何使用
+## 使用方法
 
-在使用 文件搜索 与 Responses API 之前，你需要先在向量存储中搭建知识库并上传文件。
+在使用 文件搜索 与 Responses API 之前,你需要先在向量存储中建立一个知识库,并向其中上传文件。
 
 
 
 ### 创建向量存储并上传文件
 
 
-按照以下步骤创建一个向量存储并向其中上传文件。你可以使用 [此示例文件](https://cdn.openai.com/API/docs/deep_research_blog.pdf) 或上传你自己的文件。
+按照以下步骤创建一个向量存储并向其上传文件。你可以使用 [此示例文件](https://cdn.openai.com/API/docs/deep_research_blog.pdf) 或上传你自己的文件。
 
-#### 将文件上传到 File API
+#### 上传文件到 File API
 
 上传文件
 
@@ -221,7 +221,7 @@ puts(store.id)
 
 #### 将文件添加到向量存储
 
-向向量存储中添加文件
+将文件添加到向量存储
 
 ```javascript
 // Use vectorStore and fileId from the earlier create and upload steps.
@@ -287,9 +287,9 @@ puts(file.id)
 ```
 
 
-#### 检查状态
+#### Check status
 
-运行此代码，直到文件可以使用（即状态为 `completed`).
+运行此代码，直到文件可以使用（即，当状态为 `completed`).
 
 检查状态
 
@@ -473,7 +473,7 @@ puts(response)
 1. 一个 `file_search_call` 输出项，其中包含 文件搜索 调用的 id。
 2. 一个 `message` 输出项，其中包含模型的响应以及文件引用。
 
-文件搜索响应
+File search response
 
 ```json
 {
@@ -531,7 +531,7 @@ puts(response)
 
 ### 限制结果数量
 
-通过 Responses API 使用 文件搜索 工具时，你可以自定义希望从向量存储中检索的结果数量。这有助于同时降低 token 使用量和延迟，但可能会以答案质量下降为代价。
+通过 文件搜索 工具与 Responses API 一起使用，你可以自定义要从向量存储中检索的结果数量。这有助于降低 token 使用量和延迟，但可能会以答案质量下降为代价。
 
 限制结果数量
 
@@ -665,7 +665,7 @@ puts(response)
 
 虽然你可以在输出文本中看到注释（对文件的引用），但 文件搜索 调用默认不会返回搜索结果。
 
-若要在响应中包含搜索结果，你可以在创建响应时使用 `include` 参数。
+若要在响应中包含搜索结果，你可以使用 `include` 参数来创建响应。
 
 包含搜索结果
 
@@ -800,14 +800,14 @@ puts(response)
 ```
 
 
-### Metadata filtering
+### 元数据筛选
 
-你可以根据文件的元数据来筛选搜索结果。有关更多详细信息，请参阅我们的 [检索指南](https://developers.openai.com/api/docs/guides/retrieval)，其中涵盖：
+你可以根据文件的元数据来过滤搜索结果。更多详情,请参阅我们的 [检索指南](https://developers.openai.com/api/docs/guides/retrieval),其中涵盖:
 
-- 如何 [在 vector store 文件上设置属性](https://developers.openai.com/api/docs/guides/retrieval#attributes)
+- 如何 [在向量存储文件上设置属性](https://developers.openai.com/api/docs/guides/retrieval#attributes)
 - 如何 [定义筛选条件](https://developers.openai.com/api/docs/guides/retrieval#attribute-filtering)
 
-元数据过滤
+Metadata 过滤
 
 ```javascript
 const response = await openai.responses.create({
@@ -977,9 +977,9 @@ puts(response)
 ```
 
 
-## 支持的文件
+## Supported files
 
-_对于 `text/` MIME 类型，编码必须是以下之一 `utf-8`, `utf-16`，或 `ascii`._
+_对于 `text/` MIME 类型，编码必须为以下之一 `utf-8`, `utf-16`，或 `ascii`._
 
 | 文件格式 | MIME 类型                                                                   |
 | ----------- | --------------------------------------------------------------------------- |
@@ -1006,7 +1006,7 @@ _对于 `text/` MIME 类型，编码必须是以下之一 `utf-8`, `utf-16`，�
 | `.ts`       | `application/typescript`                                                    |
 | `.txt`      | `text/plain`                                                                |
 
-## 使用注意事项
+## 使用说明
 
 <table>
 <tbody>
@@ -1036,15 +1036,11 @@ _对于 `text/` MIME 类型，编码必须是以下之一 `utf-8`, `utf-16`，�
 
 </td>
 <td style={{"maxWidth": "150px"}}>
-**Tier 1**
-
-100 RPM
-
-**Tier 2 and 3**
+**Build**
 
 500 RPM
 
-**Tier 4 and 5**
+**Launch and Grow**
 
 1000 RPM
 

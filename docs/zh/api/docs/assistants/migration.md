@@ -1,17 +1,17 @@
 # Assistants 迁移指南
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
-Assistants API 已于 2026 年 8 月 26 日正式下线，不再可用。请使用 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 进行新的集成。
-
-
+Assistants API 已于 2026 年 8 月 26 日正式下线，不再可用。请改用 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses) 进行新的集成。
 
 
-感谢所有使用过 Assistants API 的朋友们。感谢你们打造的一切以及一路走来的反馈。
+
+
+感谢所有使用过 Assistants API 的用户。我们感谢大家构建的一切以及一路走来的反馈。
 
 请参考本指南，将你的集成迁移到 [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
-Responses 更简单——发送输入项即可获得输出项。使用 Responses API，你还将获得更好的性能以及全新功能，例如 [网页搜索](https://developers.openai.com/api/docs/guides/tools-web-search), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，和 [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use)。这一变化还让你能够管理会话，而无需回传 `previous_response_id`.
+Responses 更简单——发送输入项即可获得输出项。使用 Responses API，你还将获得更出色的性能，以及全新功能，例如 [网页搜索](https://developers.openai.com/api/docs/guides/tools-web-search), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp)，以及 [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use)。此次变更还让你可以管理会话，而无需回传 `previous_response_id`.
 
 ### 有哪些变化？
 
@@ -57,29 +57,29 @@ Responses 更简单——发送输入项即可获得输出项。使用 Responses
 
 ## 从 assistants 到 prompts
 
-Assistants 是持久化的 API 对象，将模型选择、指令和工具声明打包在一起——完全通过 API 创建和管理。作为其替代品的 prompts 只能在仪表板中创建，在那里你可以在开发产品时对其进行版本管理。
+Assistants 是持久化的 API 对象，将模型选择、指令和工具声明捆绑在一起——完全通过 API 创建和管理。它的替代品 prompts 只能在仪表板中创建，你可以在仪表板中随着产品的开发对它们进行版本管理。
 
 ### 为什么这很有用
 
-- **可移植性与版本管理**:你可以快照、审阅、对比和回滚提示词规范。你还可以对提示词进行版本管理，让你的代码只需指向最新版本即可。
-- **关注点分离**:你的应用代码现在负责编排(历史裁剪、工具循环、重试)，而提示词专注于高层行为与约束(系统指引、工具可用性、结构化输出 schema、温度默认值)。
-- **Realtime 兼容性**:当你通过 Realtime API 连接时，可以复用同一份提示词配置，让你在聊天、流式传输和低延迟交互会话中获得统一的行为定义。
-- **工具与输出一致性**:通过使用提示词，你启动的每个 Responses 或 Realtime 会话都继承一致的契约，因为提示词封装了工具 schema 和结构化输出预期。
+- **可移植性与版本管理**：你可以对 prompt 规范进行快照、审查、对比和回滚。你还可以对 prompt 进行版本管理，这样你的代码只需指向最新版本即可。
+- **关注点分离**：你的应用代码现在负责处理编排（历史裁剪、工具循环、重试），而你的 prompt 则专注于高层行为与约束（系统指引、工具可用性、结构化输出 schema、temperature 默认值）。
+- **Realtime 兼容性**：当你通过 Realtime API 连接时，可以复用同一份 prompt 配置，从而在对话、流式传输和低延迟交互会话中拥有统一的行为定义。
+- **工具与输出的一致性**：通过使用 prompts，你启动的每个 Responses 或 Realtime 会话都会继承一致的契约，因为 prompts 封装了工具 schema 和结构化输出预期。
 
 ### 实用的迁移步骤
 
-1. 识别每个现有 Assistant 的 _指令 + 工具_ bundle。
-2. 在控制台中，将该 bundle 重新创建为一个命名的 prompt。
-3. 将 prompt ID（或其导出 spec）存储在源代码管理中，以便应用代码能够引用一个稳定的标识符。
-4. 在 rollout 期间，通过交换 prompt ID 来运行 A/B 测试——无需以编程方式创建或删除 assistant 对象。
+1. 识别每个现有 Assistant 的 _指令 + 工具_ 组合。
+2. 在仪表板中，将该组合重建为一个命名提示。
+3. 将提示 ID（或其导出规范）存入源代码管理，以便应用代码可以引用稳定的标识符。
+4. 在发布期间，通过交换提示 ID 来运行 A/B 测试——无需以编程方式创建或删除 assistant 对象。
 
-把提示看作一个 **可版本化的行为配置** ，可接入 Responses 或 Realtime API。
+把提示词看作一个 **可版本化的行为配置** ，接入到 Responses 或 Realtime API 中。
 
 ---
 
 ## 从线程到对话
 
-线程是存储在服务端的消息集合。线程只能 _只能_ 存储消息。对话存储的是条目（item），其中可以包括消息、工具调用、工具输出以及其他数据。
+线程是一组存储在 服务端的消息。线程只能 _只能_ 存储消息。对话会存储条目，其中可以包括消息、工具调用、工具输出以及其他数据。
 
 ### 请求示例
 
@@ -87,7 +87,7 @@ Assistants 是持久化的 API 对象，将模型选择、指令和工具声明�
 
 
 
-#### 线程对象
+#### Thread 对象
 
 ```python
 thread = openai.beta.threads.create(
@@ -96,7 +96,7 @@ thread = openai.beta.threads.create(
 )
 ```
 
-#### 会话对象
+#### Conversation 对象
 
 ```python
 conversation = openai.conversations.create(
@@ -111,7 +111,7 @@ conversation = openai.conversations.create(
 
 
 
-#### 线程对象 (Go)
+#### Thread 对象 (Go)
 
 ```go
 thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNewParams{
@@ -128,7 +128,7 @@ if err != nil {
 }
 ```
 
-#### 会话对象 (Go)
+#### Conversation 对象 (Go)
 
 ```go
 conversation, err := client.Conversations.New(context.Background(), conversations.ConversationNewParams{
@@ -148,7 +148,7 @@ if err != nil {
 
 
 
-#### 线程对象 (JavaScript)
+#### Thread 对象 (JavaScript)
 
 ```javascript
 import OpenAI from "openai";
@@ -161,7 +161,7 @@ const thread = await client.beta.threads.create({
 console.log(thread.id);
 ```
 
-#### 会话对象 (JavaScript)
+#### Conversation 对象 (JavaScript)
 
 ```javascript
 import OpenAI from "openai";
@@ -182,7 +182,7 @@ console.log(conversation.id);
 
 
 
-#### 线程对象
+#### Thread 对象
 
 ```json
 {
@@ -196,7 +196,7 @@ console.log(conversation.id);
 }
 ```
 
-#### 会话对象
+#### Conversation 对象
 
 ```json
 {
@@ -215,9 +215,9 @@ console.log(conversation.id);
 
 ## 从 runs 到 responses
 
-Runs 是针对线程执行的异步过程。请参见下面的示例。Responses 更简单：提供一组要执行的输入项，然后获取返回的输出项列表。
+Runs 是针对线程执行的异步进程。请参阅下方示例。Responses 更简单：提供一组输入项，然后获取返回的输出项列表。
 
-Responses 设计为可单独使用，但你也可以将其与 prompt 和 conversation 对象一起使用，以便存储上下文和配置。
+Responses 被设计为可单独使用，但你也可以结合 prompt 和 conversation 对象一起使用，以存储上下文和配置。
 
 ### 请求示例
 
@@ -225,7 +225,7 @@ Responses 设计为可单独使用，但你也可以将其与 prompt 和 convers
 
 
 
-#### Run 对象
+#### Run object
 
 ```python
 # Replace the illustrative IDs and URLs below with your own resource values.
@@ -247,7 +247,7 @@ while run.status in ("queued", "in_progress"):
     run = openai.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
 ```
 
-#### Response 对象
+#### Response object
 
 ```python
 # Replace the illustrative IDs and URLs below with your own resource values.
@@ -270,7 +270,7 @@ response = openai.responses.create(
 
 
 
-#### Run 对象 (Go)
+#### Run object (Go)
 
 ```go
 run, err := client.Beta.Threads.Runs.New(context.Background(), "thread_abc123", openai.BetaThreadRunNewParams{
@@ -288,7 +288,7 @@ for run.Status == openai.RunStatusQueued || run.Status == openai.RunStatusInProg
 }
 ```
 
-#### Response 对象 (Go)
+#### Response object (Go)
 
 ```go
 _, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
@@ -309,7 +309,7 @@ if err != nil {
 
 
 
-#### Run 对象 (JavaScript)
+#### Run object (JavaScript)
 
 ```javascript
 import { setTimeout } from "node:timers/promises";
@@ -331,7 +331,7 @@ while (run.status === "queued" || run.status === "in_progress") {
 console.log(run.status);
 ```
 
-#### Response 对象 (JavaScript)
+#### Response object (JavaScript)
 
 ```javascript
 // Replace the illustrative IDs and URLs below with your own resource values.
@@ -355,7 +355,7 @@ console.log(response.output_text);
 
 
 
-#### Run 对象
+#### Run object
 
 ```json
 {
@@ -404,7 +404,7 @@ console.log(response.output_text);
 }
 ```
 
-#### Response 对象
+#### Response object
 
 ```json
 {
@@ -480,25 +480,25 @@ console.log(response.output_text);
 
 ## 迁移你的集成
 
-按照以下迁移步骤，从 Assistants API 迁移到 Responses API，同时不丢失任何功能支持。
+按照下面的迁移步骤，从 Assistants API 迁移到 Responses API，不会丢失任何功能支持。
 
-### 1. 基于你的助手创建提示词
+### 1. Create prompts from your assistants
 
-1. 识别应用中最重要的 assistant 对象。
+1. 确定你应用中最重要的助手对象。
 1. 在仪表板中找到它们并点击 `Create prompt`.
 
-这会从每个现有的助手对象创建一个提示对象。
+这会将每个现有的助手对象转换为提示对象。
 
 可复用的提示对象也即将被弃用。如果你使用此迁移
-  路径，请查阅 [prompts deprecation
-  timeline](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 然后再在长期集成中采用
+  路径，请查看 [prompts deprecation
+  timeline](https://developers.openai.com/api/docs/deprecations#2026-06-03-reusable-prompts) 再决定是否在长期集成中采用
   提示对象。
 
 ### 2. 将新的用户聊天迁移到 conversations 和 responses
 
-使用 Conversations API 和 Responses API 开启新会话。如需保留先前的会话历史，请使用你的应用已存储的消息。
+使用 Conversations API 和 Responses API 开启新对话。若需保留更早的对话历史，请使用你的应用已存储的消息。
 
-下方示例展示了在停用前如何迁移线程历史。用于检索线程消息的 Assistants API 调用已无法使用；请改用你已存储的消息。
+下方示例展示了在停用前如何迁移会话历史。Assistants API 中用于获取会话消息的调用已不再可用；请改用已存储的消息。
 
 ```python
 # Replace the illustrative IDs and URLs below with your own resource values.
@@ -585,7 +585,7 @@ puts(conversation.id)
 
 ## 比较完整示例
 
-以下是一些同时使用 Assistants API 和 Responses API 的集成示例，方便你对比二者的用法。
+以下是同时使用 Assistants API 和 Responses API 的几个集成示例，方便你了解两者的对比。
 
 ### 用户聊天应用
 
@@ -758,6 +758,111 @@ async def message(message: Message):
     )
 
     return {"content": response.output_text}
+```
+
+```go
+func main() {
+	client := openai.NewClient()
+	server := &http.Server{
+		Addr:              "127.0.0.1:8000",
+		Handler:           newChatHandler(client),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
+}
+
+func newChatHandler(client openai.Client) http.Handler {
+	var mutex sync.Mutex
+	type sessionConversation struct {
+		ready        chan struct{}
+		id           string
+		err          error
+		responseSlot chan struct{}
+	}
+	conversationsBySession := map[string]*sessionConversation{}
+	mux := http.NewServeMux()
+	mux.HandleFunc("POST /messages", func(w http.ResponseWriter, r *http.Request) {
+		var message struct {
+			Content   string `json:"content"`
+			SessionID string `json:"session_id"`
+		}
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&message); err != nil || strings.TrimSpace(message.Content) == "" || strings.TrimSpace(message.SessionID) == "" {
+			http.Error(w, "content and session_id must be non-empty strings", 400)
+			return
+		}
+		// A demo session map. Bind session IDs to authenticated users in your application.
+		mutex.Lock()
+		session, exists := conversationsBySession[message.SessionID]
+		if !exists {
+			session = &sessionConversation{ready: make(chan struct{}), responseSlot: make(chan struct{}, 1)}
+			conversationsBySession[message.SessionID] = session
+		}
+		mutex.Unlock()
+		if !exists {
+			go func() {
+				// Creation belongs to the shared session, not the first HTTP request.
+				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+				defer cancel()
+				conversation, err := client.Conversations.New(ctx, conversations.ConversationNewParams{})
+				session.err = err
+				if err == nil {
+					session.id = conversation.ID
+				}
+				mutex.Lock()
+				if err != nil {
+					delete(conversationsBySession, message.SessionID)
+				}
+				close(session.ready)
+				mutex.Unlock()
+			}()
+		}
+		select {
+		case <-r.Context().Done():
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		case <-session.ready:
+		}
+		if session.err != nil {
+			http.Error(w, "Could not create conversation", http.StatusInternalServerError)
+			return
+		}
+		// Serialize responses within this conversation; waiting requests can cancel.
+		select {
+		case session.responseSlot <- struct{}{}:
+			defer func() { <-session.responseSlot }()
+		case <-r.Context().Done():
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		}
+		if r.Context().Err() != nil {
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		}
+		// Replace this illustrative stored prompt ID with your prompt.
+		result, err := client.Responses.New(r.Context(), responses.ResponseNewParams{
+			Prompt: responses.ResponsePromptParam{
+				ID: "pmpt_123",
+			},
+			Input: responses.ResponseNewParamsInputUnion{
+				OfString: openai.String(message.Content),
+			},
+			Conversation: responses.ResponseNewParamsConversationUnion{
+				OfString: openai.String(session.id),
+			},
+		})
+		if err != nil || result.Status != responses.ResponseStatusCompleted {
+			http.Error(w, "Could not create response", 500)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{
+			"content": result.OutputText(),
+		}); err != nil {
+			log.Print(err)
+		}
+	})
+	return mux
+}
 ```
 
 ```ruby

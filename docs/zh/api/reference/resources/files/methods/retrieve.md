@@ -1,10 +1,10 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整的文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取该页面的 Markdown 版本。
 
-## 检索文件
+## Retrieve file
 
 **get** `/files/{file_id}`
 
-返回有关特定文件的信息。
+Returns information about a specific file.
 
 ### 路径参数
 
@@ -14,16 +14,16 @@
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
-  该 `File` 对象，表示已上传到 OpenAI 的文档。
+  该 `File` object 表示已上传到 OpenAI 的文档。
 
   - `id: string`
 
     文件标识符，可在 API 端点中引用。
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    文件的大小（以字节为单位）。在已完成的文件上传响应中，当文件大小尚不可用时，此字段可为
-    null。
+    文件大小，以字节为单位。在已完成的文件上传响应中，当文件大小尚不可用时，
+    该字段可能为 null。
 
   - `created_at: number`
 
@@ -61,7 +61,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -71,12 +71,12 @@
 
   - `expires_at: optional number`
 
-    文件到期时的 Unix 时间戳（以秒为单位）。在
-    已完成的文件上传响应中，当未设置到期时间时，此字段可为 null。
+    文件过期时的 Unix 时间戳（以秒为单位）。
+    在已完成的文件上传响应中，当未设置过期时间时，该字段可以为 null。
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`。当这些详细信息未设置时，已完成的文件上传响应可能返回 null。
+    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段位于 `fine_tuning.job`。当这些详情未设置时，已完成的文件上传响应可能返回 null。
 
 ### 示例
 
@@ -85,7 +85,7 @@ curl https://api.openai.com/v1/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -108,7 +108,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {

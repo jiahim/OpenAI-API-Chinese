@@ -1,21 +1,21 @@
 # 极速模式
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
 
-Ultrafast 模式是 OpenAI API 中最快的服务等级。它已面向 GPT-6 Astra 全面开放，并 [提供预览访问](https://openai.com/index/previewing-ultrafast/) 权限（适用于 GPT-5.6 Sol）。当速度值得更高的成本时使用它。
+极速模式是 OpenAI API 中最快的服务等级。它已广泛可用于 GPT-6 Astra，并 [预览访问](https://openai.com/index/previewing-ultrafast/) GPT-5.6 Sol。当速度值得付出更高成本时使用它。
 
-我们强烈推荐 [WebSockets](https://developers.openai.com/api/docs/guides/websocket-mode)，尤其是对于需要连续进行多次工具调用的智能体应用。如果没有持久连接，网络开销可能会降低延迟带来的收益。
+我们强烈建议 [WebSockets](https://developers.openai.com/api/docs/guides/websocket-mode)，特别是对于在短时间内发起大量工具调用的智能体应用而言。如果没有持久连接，网络开销可能会降低延迟带来的收益。
 
-GPT-6 Astra 的 Ultrafast 模式目前对所有 API 用户开放，但有 [较低
+GPT-6 Astra 的极速模式目前对所有 API 用户开放，使用 [低
   速率限制](#availability)。如果你的组织与 OpenAI 账户
-  团队合作，请联系他们申请更高的速率限制或 GPT-5.6
-  Sol 的预览访问权限。
+  团队合作，请联系他们以申请更高的速率限制或 GPT-5.6
+  Sol 的预览访问。
 
 ## 配置你的请求
 
-将 `model` 设置为 `gpt-6-astra` 并在每个 `service_tier` 设置为 `ultrafast` 中 `response.create` 事件中。
+Set `model` to `gpt-6-astra` 和 `service_tier` to `ultrafast` 在每个 `response.create` 事件中。
 
-在同一 WebSocket 上跨多轮使用 Ultrafast
+在同一个 WebSocket 上的多个回合中使用 Ultrafast
 
 ```javascript
 // Install: npm install openai ws
@@ -106,11 +106,11 @@ with client.responses.connect() as connection:
 ```
 
 
-该示例在同一连接上流式输出两个响应。第二个请求发送新的提示，并将第一个响应的 ID 作为 `previous_response_id`。传入。在后续轮次和工具结果中复用该连接。参见 [使用增量输入继续](https://developers.openai.com/api/docs/guides/websocket-mode#continue-with-incremental-inputs).
+该示例通过同一连接流式传输两个响应。第二个请求发送新的提示，并将第一个响应的 ID 作为 `previous_response_id`。传入。后续回合和工具结果可复用同一连接。参见 [使用增量输入继续](https://developers.openai.com/api/docs/guides/websocket-mode#continue-with-incremental-inputs).
 
 ## HTTP 替代方案
 
-Ultrafast 也支持通过 SDK 发送 HTTP 请求。对于需要频繁调用工具的智能体应用，建议使用持久的 WebSocket 连接以降低请求间的开销。
+Ultrafast 也支持通过 SDK 发送 HTTP 请求。对于需要频繁调用工具的智能体应用，请使用持久化的 WebSocket 连接，以降低请求间的开销。
 
 通过 HTTP 创建 Ultrafast 响应
 
@@ -199,18 +199,18 @@ curl https://api.openai.com/v1/responses \
 ```
 
 
-本示例会等待完整响应生成。若要边生成边输出，请启用 [流式传输](https://developers.openai.com/api/docs/guides/streaming-responses?api-mode=responses).
+本示例会等待完整响应。若要边生成边显示输出，请启用 [流式输出](https://developers.openai.com/api/docs/guides/streaming-responses?api-mode=responses).
 
 ## 可用性
 
-GPT-6 Astra 默认的 Ultrafast 速率限制如下：
+GPT-6 Astra 具有以下默认 Ultrafast 速率限制：
 
-| API 使用层级 | 每分钟令牌数（TPM） |
+| API 使用层级 | 每分钟令牌数 (TPM) |
 | -------------- | ----------------------- |
-| 层级 1–3      | 500,000                 |
-| 层级 4         | 1,000,000               |
-| 层级 5         | 5,000,000               |
+| Build          | 500,000                 |
+| Launch         | 1,000,000               |
+| Grow           | 5,000,000               |
 
-请参阅 [Ultrafast 定价表](https://developers.openai.com/api/docs/pricing?latest-pricing=ultrafast) 以了解输入、缓存输入、缓存写入和输出的价格。
+请参阅 [Ultrafast 价格表](https://developers.openai.com/api/docs/pricing?latest-pricing=ultrafast) 以了解输入、缓存输入、缓存写入和输出的价格。
 
-Ultrafast 仅支持美国数据驻留和全球处理，不支持欧盟或其他非美国区域处理端点。
+Ultrafast 仅支持美国数据驻留和全球处理，不支持欧盟或其他非美国区域的处理端点。

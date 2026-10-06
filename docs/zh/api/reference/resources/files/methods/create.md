@@ -1,36 +1,36 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。各文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
 ## 上传文件
 
-**post** `/files`
+**发布** `/files`
 
-上传一个可在各个端点使用的文件。单个文件
-最大可达 512 MB，每个项目总计最多可存储 2.5 TB 的文件。
-组织范围没有存储上限。此端点的
-上传速率限制为每个已认证用户每分钟 1,000 次请求。
+上传可在各个端点使用的文件。单个文件
+最大可为 512 MB，每个项目最多可存储 2.5 TB 的文件。
+没有组织范围的总存储限制。该端点
+的上传速率限制为每个已认证用户每分钟 1,000 次请求。
 用户。
 
-- Assistants API 支持最大 200 万 token 的文件，且仅限特定文件类型。详见
-  Assistants 工具指南 [Assistants 工具指南](/api/docs/guides/tools) 以获取
+- Assistants API 支持最大 200 万 tokens 的文件，并要求特定的文件类型。
+  详见 [Assistants 工具指南](/api/docs/guides/tools) 以了解
   详情。
-- Fine-tuning API 仅支持 `.jsonl` .jsonl 文件。输入还需要符合
-  微调的特定格式要求，详见
+- 微调 API 仅支持 .jsonl 文件。输入还需要满足针对 `.jsonl` 微调所需的特定格式。
+  微调所需的特定格式。
   [聊天](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 或
-  [completions](/api/docs/guides/supervised-fine-tuning#formatting-your-data) models。
-- Batch API 仅支持 `.jsonl` 最大 200 MB 的文件。输入
-  还有特定的必需
-  [format](/api/docs/guides/batch#1-prepare-your-batch-file).
-- 对于检索或 `file_search` 摄入，请先在此处上传文件。如果
+  [补全](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 模型。
+- 批量 API 仅支持大小最大为 200 MB 的文件。 `.jsonl` 输入还要求使用特定的
+  格式。
+  [格式](/api/docs/guides/batch#1-prepare-your-batch-file).
+- 用于检索或 `file_search` 导入时，请先在此处上传文件。如果
   你需要将多个已上传的文件附加到同一个向量存储，请使用
   [`/vector_stores/{vector_store_id}/file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create)
-  而不是逐个附加。向量存储附加有独立的
-  文件上传的限制，包括每个组织单位每分钟可附加 2,000 个文件
-  。
+  而不是逐个附加。向量存储附加操作有单独的限制。
+  来自文件上传的限制，包括每个组织每分钟 2,000 个已附加文件
+  organization.
 
 请 [联系我们](https://help.openai.com/) 如果你需要提高这些
 存储限制。
 
-### 返回值
+### 返回
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
@@ -40,28 +40,28 @@
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    文件大小，以字节为单位。在已完成的文件上传响应中，当文件大小还无法获取时，该值
-    可能为 null。
+    The size of the file, in bytes. In a completed file upload response, this can
+    be null when the file size is not yet available.
 
   - `created_at: number`
 
-    文件创建时的 Unix 时间戳（以秒为单位）。
+    The Unix timestamp (in seconds) for when the file was created.
 
   - `filename: string`
 
-    文件名。
+    The name of the file.
 
   - `object: "file"`
 
-    对象类型，始终为 `file`.
+    The object type, which is always `file`.
 
     - `"file"`
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的取值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+    The intended purpose of the file. Supported values are `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`, and `user_data`.
 
     - `"assistants"`
 
@@ -81,7 +81,7 @@
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
+    Deprecated. The current status of the file, which can be either `uploaded`, `processed`, or `error`.
 
     - `"uploaded"`
 
@@ -91,12 +91,12 @@
 
   - `expires_at: optional number`
 
-    文件到期时的 Unix 时间戳（以秒为单位）。在已
-    完成的文件上传响应中，当未设置到期时间时，该值可能为 null。
+    The Unix timestamp (in seconds) for when the file will expire. In a
+    completed file upload response, this can be null when no expiry is set.
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`。已完成的文件上传响应在未设置这些详情时可能返回 null。
+    Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`. Completed file upload responses can return null when these details are unset.
 
 ### 示例
 
