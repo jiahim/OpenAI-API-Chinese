@@ -1,12 +1,12 @@
 # 智能体 流式事件
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt). 如需获取文档页面的 Markdown 版本，请在页面 URL 末尾追加 `.md` 。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
 <a id="agent.session.environment.ready"></a>
 
 ## 智能体.session.environment.ready
 
-当托管会话环境已准备好连接时发出。
+当托管会话环境已准备好连接时触发。
 
 ### Schema
 
@@ -30,7 +30,7 @@ Schema name: `SessionEventAgentSessionEnvironmentReady`
 
     - `message: string`
 
-      人类可读的错误消息。
+      人类可读的错误信息。
 
     - `type: string`
 
@@ -70,11 +70,11 @@ Schema name: `SessionEventAgentSessionEnvironmentReady`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.environment.ready"`
 
@@ -107,7 +107,7 @@ Schema name: `SessionEventAgentSessionEnvironmentReady`
 
 ## 智能体.session.environment.reset
 
-在托管沙箱被替换后发出。对话历史会保留；之前沙箱中的文件和进程变更不会保留。
+在托管沙箱被替换后发出。对话历史会保留，但上一个沙箱的文件和进程更改不会保留。
 
 ### Schema
 
@@ -115,7 +115,7 @@ Schema name: `SessionEventAgentSessionEnvironmentReset`
 
 - `environment_id: string`
 
-  稳定的环境 ID，在沙箱替换过程中保留不变。
+  稳定的 environment ID，在沙盒替换后保持不变。
 
 - `event_id: string`
 
@@ -123,15 +123,15 @@ Schema name: `SessionEventAgentSessionEnvironmentReset`
 
 - `reset_count: number`
 
-  单调递增的重置编号。重复的通知会共享该编号。
+  单调递增的 reset 编号。重复的通知共享该编号。
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  在适用时关联的轮次。
+  关联的 turn（如果适用）。
 
 - `type: "agent.session.environment.reset"`
 
@@ -156,7 +156,7 @@ Schema name: `SessionEventAgentSessionEnvironmentReset`
 
 ## 智能体.output.command_execution_output.delta
 
-当命令执行产生输出增量时发出。
+在命令执行产生输出增量时发出。
 
 ### Schema
 
@@ -176,15 +176,15 @@ Schema name: `SessionEventAgentOutputCommandExecutionOutputDelta`
 
 - `output_index: number`
 
-  该项在当前轮输出中的索引。
+  该轮输出中项的索引。
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.output.command_execution_output.delta"`
 
@@ -222,7 +222,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
 - `session: AgentSession`
 
-  所创建的会话。
+  已创建的会话。
 
   - `id: string`
 
@@ -230,7 +230,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
   - `agent: object { id, instructions, model, 6 more }`
 
-    在会话中运行的智能体。
+    在该会话中运行的智能体。
 
     - `id: string`
 
@@ -238,11 +238,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
     - `instructions: string or null`
 
-      追加到该智能体默认基础指令的自定义指令。
+      附加到智能体默认基础指令的自定义指令。
 
     - `model: string`
 
-      该智能体所使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -254,15 +254,15 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `max_concurrent_subagents: number or null`
 
-        允许同时运行的子智能体最大数量，若未启用则为 null。启用时默认为 6。
+        允许并发运行的最大子智能体数量；若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时可复用智能体的名称，若未保存名称则为 null。后续对智能体名称的更改不会影响该值。
+      会话创建时可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响该值。
 
     - `reasoning: AgentReasoning`
 
-      该智能体的推理配置。
+      智能体的推理配置。
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
@@ -284,7 +284,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
+        所请求的推理摘要格式，或 `null` 当禁用摘要时。
 
         - `"concise"`
 
@@ -296,11 +296,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `"auto"`
 
-          自动选择模型所支持的最详细摘要。
+          自动选择模型所支持的、最详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
-      模型请求的有效服务层级策略。默认为 `auto`.
+      用于模型请求的有效服务层级策略。默认为 `auto`.
 
       - `"auto"`
 
@@ -316,7 +316,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
     - `text: AgentText`
 
-      由该智能体生成文本的配置。
+      由智能体生成的文本的配置。
 
       - `format: TextFormat`
 
@@ -324,7 +324,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `Text object { type }`
 
-          生成不附加结构化输出约束的普通文本。
+          生成没有结构化输出约束的普通文本。
 
           - `type: "text"`
 
@@ -334,7 +334,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `JSONSchema object { schema, type }`
 
-          将生成的文本约束为 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -348,7 +348,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -358,11 +358,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
     - `tools: array of AgentTool`
 
-      智能体可使用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
@@ -406,11 +406,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          智能体 可以调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
-          对外 MCP HTTP 连接的来源。
+          出站 MCP HTTP 连接的发起来源。
 
           - `"service"`
 
@@ -418,15 +418,15 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已附加保管库凭据（若有）。当恰好有一个已附加凭据与服务器 URL 匹配时为可选。
+          为此 MCP 服务器选择的已附加保管库凭据(若有)。当恰好有一个附加凭据与服务器 URL 匹配时可选。
 
         - `request_metadata: map[unknown]`
 
-          随发往该 MCP 服务器的请求一并发送的元数据。
+          随发往此 MCP 服务器的请求一起包含的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在首轮对话之前完成初始化。
+          此 MCP 服务器是否必须在第一轮之前完成初始化。
 
         - `server_label: string`
 
@@ -434,7 +434,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -488,11 +488,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域名，或 `null` 在搜索不受限制时使用。
+          允许的搜索域，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          提供给模型使用的搜索上下文大小。默认为 `medium`.
+          可供模型使用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -502,7 +502,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于对搜索结果进行本地化的大致位置（如果提供）。
+          用于本地化搜索结果的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -542,7 +542,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `include_screenshots: boolean`
 
-          计算机工具输出是否包含屏幕截图。
+          计算机工具输出是否包含截图。
 
         - `type: "computer_use"`
 
@@ -560,7 +560,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
     - `None object { type }`
 
-      会话与 CCA 通信，但未选择或预置执行环境。
+      会话在不选择或不预置执行环境的情况下与 CCA 通信。
 
       - `type: "none"`
 
@@ -582,15 +582,15 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `desktop: object { enabled }`
 
-        生效的桌面配置。
+        有效的桌面配置。
 
         - `enabled: boolean`
 
-          环境是否预置桌面和浏览器代理。
+          该环境是否预置桌面和浏览器代理。
 
       - `files: array of HostedEnvironmentFile`
 
-        环境中可用的文件，不包含其内容。
+        环境中可用的文件，不含其内容。
 
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
@@ -598,7 +598,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
@@ -620,11 +620,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时内联提供的文件。
+          在创建会话时以内联方式提供的文件。
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -642,11 +642,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `network: object { access, allowed_domains }`
 
-        环境生效的网络访问策略。
+        该环境有效的网络访问策略。
 
         - `access: "enabled" or "disabled" or "restricted"`
 
-          环境的网络访问模式。
+          该环境的网络访问模式。
 
           - `"enabled"`
 
@@ -658,31 +658,31 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `"restricted"`
 
-            应用已配置的域名限制。
+            应用所配置的域名限制。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限情况下环境可访问的域名。
+          在网络访问受限的条件下，该环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
-        环境中已安装的包。
+        环境中安装的软件包。
 
         - `npm: array of string`
 
-          环境中全局安装的 npm 包。
+          环境中全局安装的 npm 软件包。
 
         - `python: array of string`
 
-          环境中已安装的 Python 包。
+          环境中安装的 Python 软件包。
 
         - `system: array of string`
 
-          环境中已安装的系统包。
+          环境中安装的系统软件包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中已安装的插件，不包括其归档内容。
+        环境中安装的插件，不包括其归档内容。
 
         - `description: string`
 
@@ -700,7 +700,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `skills: array of HostedSkill`
 
-        环境中已安装的技能，不包括其归档内容。
+        环境中安装的技能，不包括其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -716,7 +716,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `skill_id: string`
 
-            引用的技能 ID。
+            所引用的技能 ID。
 
           - `type: "skill_reference"`
 
@@ -726,7 +726,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `version: string`
 
-            本次会话安装的具体技能版本。
+            为本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -754,7 +754,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `container_size: optional "small" or "medium" or "large" or null`
 
-        有效的 CPU 和内存层级，若未知或不在公共层级范围内则为 null。
+        有效的 CPU 和内存层级，若未知或不在公开层级范围内则为 null。
 
         - `"small"`
 
@@ -776,7 +776,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `remote_url: string`
 
-        在连接该环境时， `codex exec-server --remote` 请原样传递此 URL。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 以连接此环境。
 
       - `type: "self_hosted"`
 
@@ -790,11 +790,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
   - `error: string or null`
 
-    导致会话失败时的错误（如有）。
+    导致会话失败的错误（如果有）。
 
   - `last_active_at: number`
 
-    会话最后一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最后活跃时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: map[string]`
 
@@ -802,13 +802,13 @@ Schema name: `SessionEventAgentSessionCreated`
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的动作。
+    会话继续前必须完成的操作。
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -820,7 +820,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
 
-          已注册、正在等待应用响应的表单。
+          正在等待应用响应的已注册表单。
 
           - `credential_origin: string or null`
 
@@ -828,7 +828,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `fields: array of object { id, label, required, type }`
 
-            要渲染的控件。所有提交的值均为敏感信息。
+            要渲染的控件。所有提交的值都是敏感的。
 
             - `id: string`
 
@@ -848,7 +848,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `options: array of object { id, field_ids, label }`
 
-            登录方法。对于普通表单为空。
+            登录方法。普通表单为空。
 
             - `id: string`
 
@@ -856,7 +856,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
             - `field_ids: array of string`
 
-              此方法接受的已注册字段中的 ID。
+              此方法接受的来自已注册字段的 ID。
 
             - `label: string`
 
@@ -864,7 +864,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `reason: string or null`
 
-            智能体需要用户登录的原因。
+            智能体 需要用户登录的原因。
 
           - `type: "browser_authentication"`
 
@@ -874,7 +874,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
         - `BrowserOriginAccess object { origin, reason, type }`
 
-          等待应用审批决策的浏览器来源。
+          正在等待应用审批决策的浏览器来源。
 
           - `origin: string`
 
@@ -882,7 +882,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
           - `reason: string or null`
 
-            浏览器对该请求的说明，如果不可用则为 null。
+            浏览器对该请求的说明，若不可用则为 null。
 
           - `type: "browser_origin_access"`
 
@@ -892,7 +892,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `request_id: string`
 
-        响应时要回显的已注册请求 ID。
+        响应时回显的已注册请求 ID。
 
       - `turn_id: string`
 
@@ -922,7 +922,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `turn_id: string`
 
-        请求函数调用的轮次 ID。
+        请求该函数调用的轮次的 ID。
 
       - `type: "function_call"`
 
@@ -936,7 +936,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       - `environment_id: string`
 
-        要重新连接的环境 ID。
+        要重新连接的环境的 ID。
 
       - `type: "environment_connection"`
 
@@ -954,11 +954,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
     - `"in_progress"`
 
-      会话正在处理一轮。
+      会话正在处理一个轮次。
 
     - `"requires_action"`
 
-      会话正在等待一个或多个必需操作。
+      会话正在等待一个或多个必需的操作。
 
     - `"failed"`
 
@@ -966,27 +966,27 @@ Schema name: `SessionEventAgentSessionCreated`
 
   - `usage: TokenUsage or null`
 
-    会话的尽力而为的 token 使用量，如果未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。记录的用量可能发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -994,11 +994,11 @@ Schema name: `SessionEventAgentSessionCreated`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
   - `vault_ids: array of string`
 
-    会话中可用的 vault 的 ID。
+    会话中可用的保险库 ID 的列表。
 
 - `type: "agent.session.created"`
 
@@ -1108,7 +1108,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
 ## 智能体.session.turn.created
 
-在创建轮次时发出。
+在一个轮次创建时发出。
 
 ### Schema
 
@@ -1120,15 +1120,15 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn: Turn`
 
-  该轮次创建时的时间。
+  轮次创建时的时间。
 
   - `id: string`
 
-    该轮次的 ID。
+    轮次的 ID。
 
   - `agent_id: string`
 
@@ -1136,17 +1136,17 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
   - `completed_at: number or null`
 
-    该轮次进入终止状态的 Unix 时间戳（以秒为单位）。
+    轮次进入终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若上述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误。仅在该轮次失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 19 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
 
       稳定且机器可读的失败类别。
 
@@ -1156,31 +1156,35 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
       - `"session_budget_exceeded"`
 
-        该会话已达到其使用预算上限。
+        会话已达到其使用预算上限。
 
       - `"usage_limit_exceeded"`
 
-        该组织已达到使用、套餐或计费上限。
+        组织已达到使用量、套餐或计费限额。
 
       - `"project_spend_limit_exceeded"`
 
-        该已达到其强制消费上限。
+        项目已达到其强制支出上限。
 
       - `"organization_spend_limit_exceeded"`
 
-        该组织已达到其强制消费上限。
+        组织已达到其强制支出上限。
 
       - `"organization_usage_limit_exceeded"`
 
-        该组织已达到OpenAI分配的使用上限。
+        组织已达到其OpenAI分配的使用量限制。
+
+      - `"billing_not_active"`
+
+        该账户的计费未激活。
 
       - `"credit_balance_exhausted"`
 
-        该组织已没有剩余的API 额度。
+        组织没有剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
-        请求超出可用的速率限制。
+        请求超过可用的速率限制。
 
       - `"flex_unavailable"`
 
@@ -1204,7 +1208,7 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
       - `"server_error"`
 
-        模型服务遇到了意外错误。
+        模型服务遇到意外错误。
 
       - `"authentication_error"`
 
@@ -1216,7 +1220,7 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
       - `"resource_not_found"`
 
-        所请求的模型或资源不可用。
+        请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -1224,15 +1228,15 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
       - `"executor_version_incompatible"`
 
-        执行器必须升级后才能运行本轮。
+        必须先升级执行器，然后才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受额外的输入。
+        会话在请求运行期间无法接受其他输入。
 
       - `"request_timeout"`
 
-        在模型服务响应之前，请求已超时。
+        请求在模型服务响应之前超时。
 
       - `"internal_error"`
 
@@ -1240,11 +1244,11 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     - `message: string`
 
-      面向客户的故障说明。
+      面向客户可安全展示的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
@@ -1290,27 +1294,27 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
   - `usage: TokenUsage or null`
 
-    当前轮次的尽力而为 token 使用量，若未知则为 null。记录的使用量可能会发生变化。
+    该轮尽力而为的 token 使用情况；如果未知则为 null。已记录的使用情况可能会发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -1318,7 +1322,7 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
 - `turn_id: string`
 
@@ -1371,7 +1375,7 @@ Schema name: `SessionEventAgentSessionTurnCreated`
 
 ## 智能体.session.turn.in_progress
 
-当一轮开始运行时发出。
+在某个轮次开始运行时发出。
 
 ### Schema
 
@@ -1383,15 +1387,15 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn: Turn`
 
-  该轮开始运行的时间。
+  开始运行时的轮次。
 
   - `id: string`
 
-    该轮次的 ID。
+    轮次的 ID。
 
   - `agent_id: string`
 
@@ -1399,17 +1403,17 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
   - `completed_at: number or null`
 
-    该轮次进入终止状态的 Unix 时间戳（以秒为单位）。
+    轮次进入终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若上述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误。仅在该轮次失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 19 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
 
       稳定且机器可读的失败类别。
 
@@ -1419,31 +1423,35 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
       - `"session_budget_exceeded"`
 
-        该会话已达到其使用预算上限。
+        会话已达到其使用预算上限。
 
       - `"usage_limit_exceeded"`
 
-        该组织已达到使用、套餐或计费上限。
+        组织已达到使用量、套餐或计费限额。
 
       - `"project_spend_limit_exceeded"`
 
-        该已达到其强制消费上限。
+        项目已达到其强制支出上限。
 
       - `"organization_spend_limit_exceeded"`
 
-        该组织已达到其强制消费上限。
+        组织已达到其强制支出上限。
 
       - `"organization_usage_limit_exceeded"`
 
-        该组织已达到OpenAI分配的使用上限。
+        组织已达到其OpenAI分配的使用量限制。
+
+      - `"billing_not_active"`
+
+        该账户的计费未激活。
 
       - `"credit_balance_exhausted"`
 
-        该组织已没有剩余的API 额度。
+        组织没有剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
-        请求超出可用的速率限制。
+        请求超过可用的速率限制。
 
       - `"flex_unavailable"`
 
@@ -1467,7 +1475,7 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
       - `"server_error"`
 
-        模型服务遇到了意外错误。
+        模型服务遇到意外错误。
 
       - `"authentication_error"`
 
@@ -1479,7 +1487,7 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
       - `"resource_not_found"`
 
-        所请求的模型或资源不可用。
+        请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -1487,15 +1495,15 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
       - `"executor_version_incompatible"`
 
-        执行器必须升级后才能运行本轮。
+        必须先升级执行器，然后才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受额外的输入。
+        会话在请求运行期间无法接受其他输入。
 
       - `"request_timeout"`
 
-        在模型服务响应之前，请求已超时。
+        请求在模型服务响应之前超时。
 
       - `"internal_error"`
 
@@ -1503,11 +1511,11 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     - `message: string`
 
-      面向客户的故障说明。
+      面向客户可安全展示的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
@@ -1553,27 +1561,27 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
   - `usage: TokenUsage or null`
 
-    当前轮次的尽力而为 token 使用量，若未知则为 null。记录的使用量可能会发生变化。
+    该轮尽力而为的 token 使用情况；如果未知则为 null。已记录的使用情况可能会发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -1581,7 +1589,7 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
 - `turn_id: string`
 
@@ -1634,7 +1642,7 @@ Schema name: `SessionEventAgentSessionTurnInProgress`
 
 ## 智能体.session.turn.completed
 
-在轮次完成时发出。
+在某个轮次完成时发出。
 
 ### Schema
 
@@ -1646,15 +1654,15 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn: Turn`
 
-  已完成的回合。
+  已完成的轮次。
 
   - `id: string`
 
-    该轮次的 ID。
+    轮次的 ID。
 
   - `agent_id: string`
 
@@ -1662,17 +1670,17 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
   - `completed_at: number or null`
 
-    该轮次进入终止状态的 Unix 时间戳（以秒为单位）。
+    轮次进入终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若上述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误。仅在该轮次失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 19 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
 
       稳定且机器可读的失败类别。
 
@@ -1682,31 +1690,35 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
       - `"session_budget_exceeded"`
 
-        该会话已达到其使用预算上限。
+        会话已达到其使用预算上限。
 
       - `"usage_limit_exceeded"`
 
-        该组织已达到使用、套餐或计费上限。
+        组织已达到使用量、套餐或计费限额。
 
       - `"project_spend_limit_exceeded"`
 
-        该已达到其强制消费上限。
+        项目已达到其强制支出上限。
 
       - `"organization_spend_limit_exceeded"`
 
-        该组织已达到其强制消费上限。
+        组织已达到其强制支出上限。
 
       - `"organization_usage_limit_exceeded"`
 
-        该组织已达到OpenAI分配的使用上限。
+        组织已达到其OpenAI分配的使用量限制。
+
+      - `"billing_not_active"`
+
+        该账户的计费未激活。
 
       - `"credit_balance_exhausted"`
 
-        该组织已没有剩余的API 额度。
+        组织没有剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
-        请求超出可用的速率限制。
+        请求超过可用的速率限制。
 
       - `"flex_unavailable"`
 
@@ -1730,7 +1742,7 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
       - `"server_error"`
 
-        模型服务遇到了意外错误。
+        模型服务遇到意外错误。
 
       - `"authentication_error"`
 
@@ -1742,7 +1754,7 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
       - `"resource_not_found"`
 
-        所请求的模型或资源不可用。
+        请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -1750,15 +1762,15 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
       - `"executor_version_incompatible"`
 
-        执行器必须升级后才能运行本轮。
+        必须先升级执行器，然后才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受额外的输入。
+        会话在请求运行期间无法接受其他输入。
 
       - `"request_timeout"`
 
-        在模型服务响应之前，请求已超时。
+        请求在模型服务响应之前超时。
 
       - `"internal_error"`
 
@@ -1766,11 +1778,11 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     - `message: string`
 
-      面向客户的故障说明。
+      面向客户可安全展示的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
@@ -1816,27 +1828,27 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
   - `usage: TokenUsage or null`
 
-    当前轮次的尽力而为 token 使用量，若未知则为 null。记录的使用量可能会发生变化。
+    该轮尽力而为的 token 使用情况；如果未知则为 null。已记录的使用情况可能会发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -1844,7 +1856,7 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
 - `turn_id: string`
 
@@ -1858,7 +1870,7 @@ Schema name: `SessionEventAgentSessionTurnCompleted`
 
 - `usage: TokenUsage or null`
 
-  回合中由根智能体产生的令牌使用情况（如果可用）。
+  该轮次中根智能体的 token 使用情况（如果可用）。
 
 ### 示例
 
@@ -1924,15 +1936,15 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn: Turn`
 
-  失败的那一轮。
+  失败的轮次。
 
   - `id: string`
 
-    该轮次的 ID。
+    轮次的 ID。
 
   - `agent_id: string`
 
@@ -1940,17 +1952,17 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
   - `completed_at: number or null`
 
-    该轮次进入终止状态的 Unix 时间戳（以秒为单位）。
+    轮次进入终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若上述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误。仅在该轮次失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 19 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
 
       稳定且机器可读的失败类别。
 
@@ -1960,31 +1972,35 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
       - `"session_budget_exceeded"`
 
-        该会话已达到其使用预算上限。
+        会话已达到其使用预算上限。
 
       - `"usage_limit_exceeded"`
 
-        该组织已达到使用、套餐或计费上限。
+        组织已达到使用量、套餐或计费限额。
 
       - `"project_spend_limit_exceeded"`
 
-        该已达到其强制消费上限。
+        项目已达到其强制支出上限。
 
       - `"organization_spend_limit_exceeded"`
 
-        该组织已达到其强制消费上限。
+        组织已达到其强制支出上限。
 
       - `"organization_usage_limit_exceeded"`
 
-        该组织已达到OpenAI分配的使用上限。
+        组织已达到其OpenAI分配的使用量限制。
+
+      - `"billing_not_active"`
+
+        该账户的计费未激活。
 
       - `"credit_balance_exhausted"`
 
-        该组织已没有剩余的API 额度。
+        组织没有剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
-        请求超出可用的速率限制。
+        请求超过可用的速率限制。
 
       - `"flex_unavailable"`
 
@@ -2008,7 +2024,7 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
       - `"server_error"`
 
-        模型服务遇到了意外错误。
+        模型服务遇到意外错误。
 
       - `"authentication_error"`
 
@@ -2020,7 +2036,7 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
       - `"resource_not_found"`
 
-        所请求的模型或资源不可用。
+        请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -2028,15 +2044,15 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
       - `"executor_version_incompatible"`
 
-        执行器必须升级后才能运行本轮。
+        必须先升级执行器，然后才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受额外的输入。
+        会话在请求运行期间无法接受其他输入。
 
       - `"request_timeout"`
 
-        在模型服务响应之前，请求已超时。
+        请求在模型服务响应之前超时。
 
       - `"internal_error"`
 
@@ -2044,11 +2060,11 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     - `message: string`
 
-      面向客户的故障说明。
+      面向客户可安全展示的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
@@ -2094,27 +2110,27 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
   - `usage: TokenUsage or null`
 
-    当前轮次的尽力而为 token 使用量，若未知则为 null。记录的使用量可能会发生变化。
+    该轮尽力而为的 token 使用情况；如果未知则为 null。已记录的使用情况可能会发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -2122,7 +2138,7 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
 - `turn_id: string`
 
@@ -2136,7 +2152,7 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
 - `usage: TokenUsage or null`
 
-  回合中由根智能体产生的令牌使用情况（如果可用）。
+  该轮次中根智能体的 token 使用情况（如果可用）。
 
 ### 示例
 
@@ -2190,7 +2206,7 @@ Schema name: `SessionEventAgentSessionTurnFailed`
 
 ## 智能体.session.turn.cancelled
 
-当一轮被取消时触发。
+当某个轮次被取消时发出。
 
 ### Schema
 
@@ -2202,7 +2218,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn: Turn`
 
@@ -2210,7 +2226,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
   - `id: string`
 
-    该轮次的 ID。
+    轮次的 ID。
 
   - `agent_id: string`
 
@@ -2218,17 +2234,17 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
   - `completed_at: number or null`
 
-    该轮次进入终止状态的 Unix 时间戳（以秒为单位）。
+    轮次进入终止状态时的 Unix 时间戳（以秒为单位）。
 
   - `created_at: number`
 
-    用于按创建时间排序该轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若上述时间戳不可用，则回退到完成时间或子智能体开启时间。
+    用于按创建时间排序轮次的 Unix 时间戳（以秒为单位）。子智能体轮次使用其开始时间，若前述时间戳不可用，则回退到完成时间或子智能体的开启时间。
 
   - `error: SessionTurnError or null`
 
-    面向客户的错误。仅在该轮次失败时为非空。
+    面向客户的错误。仅在轮次失败时为非空。
 
-    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 19 more`
+    - `code: "context_length_exceeded" or "session_budget_exceeded" or "usage_limit_exceeded" or 20 more`
 
       稳定且机器可读的失败类别。
 
@@ -2238,31 +2254,35 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
       - `"session_budget_exceeded"`
 
-        该会话已达到其使用预算上限。
+        会话已达到其使用预算上限。
 
       - `"usage_limit_exceeded"`
 
-        该组织已达到使用、套餐或计费上限。
+        组织已达到使用量、套餐或计费限额。
 
       - `"project_spend_limit_exceeded"`
 
-        该已达到其强制消费上限。
+        项目已达到其强制支出上限。
 
       - `"organization_spend_limit_exceeded"`
 
-        该组织已达到其强制消费上限。
+        组织已达到其强制支出上限。
 
       - `"organization_usage_limit_exceeded"`
 
-        该组织已达到OpenAI分配的使用上限。
+        组织已达到其OpenAI分配的使用量限制。
+
+      - `"billing_not_active"`
+
+        该账户的计费未激活。
 
       - `"credit_balance_exhausted"`
 
-        该组织已没有剩余的API 额度。
+        组织没有剩余的API额度。
 
       - `"rate_limit_exceeded"`
 
-        请求超出可用的速率限制。
+        请求超过可用的速率限制。
 
       - `"flex_unavailable"`
 
@@ -2286,7 +2306,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
       - `"server_error"`
 
-        模型服务遇到了意外错误。
+        模型服务遇到意外错误。
 
       - `"authentication_error"`
 
@@ -2298,7 +2318,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
       - `"resource_not_found"`
 
-        所请求的模型或资源不可用。
+        请求的模型或资源不可用。
 
       - `"sandbox_error"`
 
@@ -2306,15 +2326,15 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
       - `"executor_version_incompatible"`
 
-        执行器必须升级后才能运行本轮。
+        必须先升级执行器，然后才能运行此轮。
 
       - `"active_turn_not_steerable"`
 
-        在请求运行期间，会话无法接受额外的输入。
+        会话在请求运行期间无法接受其他输入。
 
       - `"request_timeout"`
 
-        在模型服务响应之前，请求已超时。
+        请求在模型服务响应之前超时。
 
       - `"internal_error"`
 
@@ -2322,11 +2342,11 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     - `message: string`
 
-      面向客户的故障说明。
+      面向客户可安全展示的失败说明。
 
   - `object: "agent.session.turn"`
 
-    对象类型。始终为 `agent.session.turn`.
+    对象类型，始终为 `agent.session.turn`.
 
     - `"agent.session.turn"`
 
@@ -2372,27 +2392,27 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
   - `usage: TokenUsage or null`
 
-    当前轮次的尽力而为 token 使用量，若未知则为 null。记录的使用量可能会发生变化。
+    该轮尽力而为的 token 使用情况；如果未知则为 null。已记录的使用情况可能会发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -2400,7 +2420,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
 - `turn_id: string`
 
@@ -2414,7 +2434,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
 - `usage: TokenUsage or null`
 
-  回合中由根智能体产生的令牌使用情况（如果可用）。
+  该轮次中根智能体的 token 使用情况（如果可用）。
 
 ### 示例
 
@@ -2468,7 +2488,7 @@ Schema name: `SessionEventAgentSessionTurnCancelled`
 
 ## 智能体.session.turn.item.added
 
-当一个 item 被添加到一轮时发出。
+当某个条目被添加到轮次时发出。
 
 ### Schema
 
@@ -2480,19 +2500,19 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
 - `item: AgentSessionItem`
 
-  已添加的 item。
+  已添加的条目。
 
   - `AgentSessionMessage object { id, content, phase, 4 more }`
 
-    会话中记录的用户或助手消息。
+    会话中记录的一条用户或助手消息。
 
     - `id: string or null`
 
-      此 item 的 ID，对于未记录 ID 的旧版用户消息为 null。
+      此条目的 ID；对于未记录 ID 的旧版用户消息为 null。
 
     - `content: array of AgentSessionMessageContent`
 
-      消息的内容。用户消息包含输入文本或图片；助手消息包含输出文本。
+      消息的内容。用户消息包含输入文本或图像；助手消息包含输出文本。
 
       - `InputText object { text, type }`
 
@@ -2510,11 +2530,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `InputImage object { image_url, type }`
 
-        由用户提供的图片。
+        由用户提供的一张图像。
 
         - `image_url: string`
 
-          由用户提供的图片的 URL，可能是 base64 编码的 data URL。
+          由用户提供的图像的 URL，可以是 base64 编码的数据 URL。
 
         - `type: "input_image"`
 
@@ -2538,15 +2558,15 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `phase: "commentary" or "final_answer" or null`
 
-      助手消息的阶段。用户消息为 null。
+      助手消息的阶段。对于用户消息为 null。
 
       - `"commentary"`
 
-        智能体 工作期间生成的评论。
+        智能体工作过程中生成的解说。
 
       - `"final_answer"`
 
-        智能体 的最终回答。
+        智能体的最终答案。
 
     - `role: "user" or "assistant"`
 
@@ -2562,23 +2582,23 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `"in_progress"`
 
-        该 item 正在进行中。
+        该条目正在进行中。
 
       - `"completed"`
 
-        该 item 已完成。
+        该条目已完成。
 
       - `"incomplete"`
 
-        该 item 在完成前已停止。
+        该条目在完成前已停止。
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "message"`
 
-      item 类型。始终为 `message`.
+      条目类型。始终为 `message`.
 
       - `"message"`
 
@@ -2610,11 +2630,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "reasoning"`
 
-      item 类型。始终为 `reasoning`.
+      条目类型。始终为 `reasoning`.
 
       - `"reasoning"`
 
@@ -2656,15 +2676,15 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `"incomplete"`
 
-        调用在完成前停止。
+        调用在完成前已停止。
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "function_call"`
 
-      item 类型。始终为 `function_call`.
+      条目类型。始终为 `function_call`.
 
       - `"function_call"`
 
@@ -2678,15 +2698,15 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `call_id: string`
 
-      产生此输出的函数调用的 ID。
+      生成此输出的函数调用的 ID。
 
     - `error: string or null`
 
-      错误消息（若调用失败）。
+      如果调用失败，则为错误消息。
 
     - `output: AgentFunctionCallOutput or null`
 
-      函数结果，如果调用成功。
+      如果调用成功，则返回函数结果。
 
       - `string`
 
@@ -2712,7 +2732,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
           - `image_url: string`
 
-            提供给智能体的图像 URL，可能是 base64 编码的 data URL。
+            提供给智能体的图像 URL，可以是 base64 编码的 data URL。
 
           - `type: "input_image"`
 
@@ -2726,11 +2746,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "function_call_output"`
 
-      item 类型。始终为 `function_call_output`.
+      条目类型。始终为 `function_call_output`.
 
       - `"function_call_output"`
 
@@ -2740,7 +2760,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `id: string`
 
-      消息的 ID。
+      该消息的 ID。
 
     - `content: array of AgentContent`
 
@@ -2784,11 +2804,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "agent_message"`
 
-      item 类型。始终为 `agent_message`.
+      条目类型。始终为 `agent_message`.
 
       - `"agent_message"`
 
@@ -2826,17 +2846,17 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "mcp_call"`
 
-      item 类型。始终为 `mcp_call`.
+      条目类型。始终为 `mcp_call`.
 
       - `"mcp_call"`
 
   - `ComputerUseCall object { id, output, status, 3 more }`
 
-    由平台提供的计算机使用能力的一次执行。
+    平台提供的计算机使用能力的一次执行。
 
     - `id: string`
 
@@ -2844,11 +2864,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `output: object { image_url, type }  or null`
 
-      模型发出的最后一张截图。当禁用截图包含功能或调用未发出截图时为 null。
+      模型发出的最后一张截图。当禁用截图包含功能或该调用未发出截图时为 null。
 
       - `image_url: string`
 
-        以 base64 数据 URL 表示的完整 JPEG 图像。
+        完整的 JPEG 图像，以 base64 数据 URL 形式提供。
 
       - `type: "computer_screenshot"`
 
@@ -2862,15 +2882,15 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `title: string or null`
 
-      在可用时，模型生成的活动描述。
+      由模型生成的活动描述（如有）。
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "computer_use_call"`
 
-      item 类型。始终为 `computer_use_call`.
+      条目类型。始终为 `computer_use_call`.
 
       - `"computer_use_call"`
 
@@ -2884,7 +2904,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `request: object { credential_origin, fields, options, 2 more }`
 
-      已注册、正在等待应用响应的表单。
+      正在等待应用响应的已注册表单。
 
       - `credential_origin: string or null`
 
@@ -2892,7 +2912,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `fields: array of object { id, label, required, type }`
 
-        要渲染的控件。所有提交的值均为敏感信息。
+        要渲染的控件。所有提交的值都是敏感的。
 
         - `id: string`
 
@@ -2912,7 +2932,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `options: array of object { id, field_ids, label }`
 
-        登录方法。对于普通表单为空。
+        登录方法。普通表单为空。
 
         - `id: string`
 
@@ -2920,7 +2940,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
         - `field_ids: array of string`
 
-          此方法接受的已注册字段中的 ID。
+          此方法接受的来自已注册字段的 ID。
 
         - `label: string`
 
@@ -2928,7 +2948,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `reason: string or null`
 
-        智能体需要用户登录的原因。
+        智能体 需要用户登录的原因。
 
       - `type: "browser_authentication"`
 
@@ -2948,7 +2968,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
   - `ComputerUseApprovalRequestResult object { id, request_id, response, 2 more }`
 
-    已接纳响应的无凭据记录，并非完成证明。
+    已准入响应的无凭据记录，不作为完成的证明。
 
     - `id: string`
 
@@ -2956,11 +2976,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `request_id: string`
 
-      此项所响应的已注册请求。
+      由此项响应的已注册请求。
 
     - `response: object { action, selected_option, type }  or object { action, type }`
 
-      已接纳的响应，不含已提交的凭据值。
+      已准入的响应，不含已提交的凭据值。
 
       - `Submit object { action, selected_option, type }`
 
@@ -2970,7 +2990,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
         - `selected_option: string or null`
 
-          所选的登录方式；若未提供任何选项则为 null。
+          所选登录方式；当未提供任何选项时为 null。
 
         - `type: "browser_authentication"`
 
@@ -2988,7 +3008,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "computer_use_approval_request_result"`
 
@@ -3012,11 +3032,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
         - `queries: array of string or null`
 
-          在使用多个查询时的搜索查询列表。
+          搜索查询列表，当使用多个查询时提供。
 
         - `query: string or null`
 
-          当使用单个查询时的搜索查询。
+          在仅使用单个查询时的搜索查询。
 
         - `type: "search"`
 
@@ -3026,7 +3046,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       - `OpenPage object { type, url }`
 
-        打开一个网页。
+        打开网页。
 
         - `type: "open_page"`
 
@@ -3044,7 +3064,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
         - `pattern: string or null`
 
-          被搜索的文本模式。
+          所搜索的文本模式。
 
         - `type: "find_in_page"`
 
@@ -3054,11 +3074,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
         - `url: string or null`
 
-          被搜索页面的 URL。
+          所搜索页面的 URL。
 
       - `Other object { type }`
 
-        另一个网页搜索操作。
+        另一个 网页搜索 操作。
 
         - `type: "other"`
 
@@ -3068,21 +3088,21 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `status: AgentOutputItemStatus`
 
-      网页搜索调用的状态。
+      网页搜索 调用的状态。
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "web_search_call"`
 
-      item 类型。始终为 `web_search_call`.
+      条目类型。始终为 `web_search_call`.
 
       - `"web_search_call"`
 
   - `AgentCommandExecutionItem object { id, command, cwd, 6 more }`
 
-    由智能体产生的命令执行。
+    由 智能体 生成的命令执行。
 
     - `id: string`
 
@@ -3098,15 +3118,15 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `duration_ms: number or null`
 
-      命令持续时间（毫秒）。
+      命令执行时长，以毫秒为单位。
 
     - `exit_code: number or null`
 
-      如果命令已完成，则为进程退出码。
+      进程退出码（若命令已完成）。
 
     - `output: string or null`
 
-      如果可用，则为命令输出。
+      命令输出（若可用）。
 
     - `status: AgentFunctionCallStatus`
 
@@ -3114,17 +3134,17 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "command_execution"`
 
-      item 类型。始终为 `command_execution`.
+      条目类型。始终为 `command_execution`.
 
       - `"command_execution"`
 
   - `AgentCreateSubagentCallItem object { id, agent_id, content, 5 more }`
 
-    生成子智能体的请求。
+    派生子智能体的请求。
 
     - `id: string`
 
@@ -3132,11 +3152,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `agent_id: string`
 
-      请求子智能体的智能体的 ID。
+      请求派生子智能体的 智能体 的 ID。
 
     - `content: array of AgentContent`
 
-      分配给已生成智能体的任务。
+      分配给派生 智能体 的任务。
 
       - `OutputText object { text, type }`
 
@@ -3148,11 +3168,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `model: string or null`
 
-      为已生成智能体请求的模型。
+      为派生 智能体 请求的模型。
 
     - `reasoning_effort: string or null`
 
-      为生成的智能体请求的推理努力程度。
+      所生成智能体请求的推理工作量。
 
     - `status: AgentFunctionCallStatus`
 
@@ -3160,11 +3180,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "create_subagent_call"`
 
-      item 类型。始终为 `create_subagent_call`.
+      条目类型。始终为 `create_subagent_call`.
 
       - `"create_subagent_call"`
 
@@ -3180,7 +3200,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `content: array of AgentContent`
 
-      发送给接收方智能体的输入。
+      发送到接收方智能体的输入。
 
       - `OutputText object { text, type }`
 
@@ -3204,11 +3224,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "send_subagent_input_call"`
 
-      item 类型。始终为 `send_subagent_input_call`.
+      条目类型。始终为 `send_subagent_input_call`.
 
       - `"send_subagent_input_call"`
 
@@ -3236,11 +3256,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "resume_subagent_call"`
 
-      item 类型。始终为 `resume_subagent_call`.
+      条目类型。始终为 `resume_subagent_call`.
 
       - `"resume_subagent_call"`
 
@@ -3268,11 +3288,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "wait_for_subagents_call"`
 
-      item 类型。始终为 `wait_for_subagents_call`.
+      条目类型。始终为 `wait_for_subagents_call`.
 
       - `"wait_for_subagents_call"`
 
@@ -3300,11 +3320,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "interrupt_subagent_call"`
 
-      item 类型。始终为 `interrupt_subagent_call`.
+      条目类型。始终为 `interrupt_subagent_call`.
 
       - `"interrupt_subagent_call"`
 
@@ -3332,11 +3352,11 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "close_subagent_call"`
 
-      item 类型。始终为 `close_subagent_call`.
+      条目类型。始终为 `close_subagent_call`.
 
       - `"close_subagent_call"`
 
@@ -3344,15 +3364,15 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
 - `output_index: number or null`
 
-  当 item 为智能体输出时，该 item 在轮次输出中的索引。
+  该 item 在轮次输出中的索引，当该 item 是智能体输出时。
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.item.added"`
 
@@ -3390,7 +3410,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
 ## 智能体.session.idle
 
-在会话变为空闲状态时发出。
+当会话变为空闲时触发。
 
 ### Schema
 
@@ -3402,7 +3422,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
 - `session: AgentSession`
 
-  变为空闲状态的会话。
+  已变为空闲的会话。
 
   - `id: string`
 
@@ -3410,7 +3430,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
   - `agent: object { id, instructions, model, 6 more }`
 
-    在会话中运行的智能体。
+    在该会话中运行的智能体。
 
     - `id: string`
 
@@ -3418,11 +3438,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
     - `instructions: string or null`
 
-      追加到该智能体默认基础指令的自定义指令。
+      附加到智能体默认基础指令的自定义指令。
 
     - `model: string`
 
-      该智能体所使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -3434,15 +3454,15 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `max_concurrent_subagents: number or null`
 
-        允许同时运行的子智能体最大数量，若未启用则为 null。启用时默认为 6。
+        允许并发运行的最大子智能体数量；若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时可复用智能体的名称，若未保存名称则为 null。后续对智能体名称的更改不会影响该值。
+      会话创建时可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响该值。
 
     - `reasoning: AgentReasoning`
 
-      该智能体的推理配置。
+      智能体的推理配置。
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
@@ -3464,7 +3484,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
+        所请求的推理摘要格式，或 `null` 当禁用摘要时。
 
         - `"concise"`
 
@@ -3476,11 +3496,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `"auto"`
 
-          自动选择模型所支持的最详细摘要。
+          自动选择模型所支持的、最详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
-      模型请求的有效服务层级策略。默认为 `auto`.
+      用于模型请求的有效服务层级策略。默认为 `auto`.
 
       - `"auto"`
 
@@ -3496,7 +3516,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
     - `text: AgentText`
 
-      由该智能体生成文本的配置。
+      由智能体生成的文本的配置。
 
       - `format: TextFormat`
 
@@ -3504,7 +3524,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `Text object { type }`
 
-          生成不附加结构化输出约束的普通文本。
+          生成没有结构化输出约束的普通文本。
 
           - `type: "text"`
 
@@ -3514,7 +3534,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `JSONSchema object { schema, type }`
 
-          将生成的文本约束为 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -3528,7 +3548,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -3538,11 +3558,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
     - `tools: array of AgentTool`
 
-      智能体可使用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
@@ -3586,11 +3606,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          智能体 可以调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
-          对外 MCP HTTP 连接的来源。
+          出站 MCP HTTP 连接的发起来源。
 
           - `"service"`
 
@@ -3598,15 +3618,15 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已附加保管库凭据（若有）。当恰好有一个已附加凭据与服务器 URL 匹配时为可选。
+          为此 MCP 服务器选择的已附加保管库凭据(若有)。当恰好有一个附加凭据与服务器 URL 匹配时可选。
 
         - `request_metadata: map[unknown]`
 
-          随发往该 MCP 服务器的请求一并发送的元数据。
+          随发往此 MCP 服务器的请求一起包含的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在首轮对话之前完成初始化。
+          此 MCP 服务器是否必须在第一轮之前完成初始化。
 
         - `server_label: string`
 
@@ -3614,7 +3634,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -3668,11 +3688,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域名，或 `null` 在搜索不受限制时使用。
+          允许的搜索域，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          提供给模型使用的搜索上下文大小。默认为 `medium`.
+          可供模型使用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -3682,7 +3702,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于对搜索结果进行本地化的大致位置（如果提供）。
+          用于本地化搜索结果的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -3722,7 +3742,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `include_screenshots: boolean`
 
-          计算机工具输出是否包含屏幕截图。
+          计算机工具输出是否包含截图。
 
         - `type: "computer_use"`
 
@@ -3740,7 +3760,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
     - `None object { type }`
 
-      会话与 CCA 通信，但未选择或预置执行环境。
+      会话在不选择或不预置执行环境的情况下与 CCA 通信。
 
       - `type: "none"`
 
@@ -3762,15 +3782,15 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `desktop: object { enabled }`
 
-        生效的桌面配置。
+        有效的桌面配置。
 
         - `enabled: boolean`
 
-          环境是否预置桌面和浏览器代理。
+          该环境是否预置桌面和浏览器代理。
 
       - `files: array of HostedEnvironmentFile`
 
-        环境中可用的文件，不包含其内容。
+        环境中可用的文件，不含其内容。
 
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
@@ -3778,7 +3798,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
@@ -3800,11 +3820,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时内联提供的文件。
+          在创建会话时以内联方式提供的文件。
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -3822,11 +3842,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `network: object { access, allowed_domains }`
 
-        环境生效的网络访问策略。
+        该环境有效的网络访问策略。
 
         - `access: "enabled" or "disabled" or "restricted"`
 
-          环境的网络访问模式。
+          该环境的网络访问模式。
 
           - `"enabled"`
 
@@ -3838,31 +3858,31 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `"restricted"`
 
-            应用已配置的域名限制。
+            应用所配置的域名限制。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限情况下环境可访问的域名。
+          在网络访问受限的条件下，该环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
-        环境中已安装的包。
+        环境中安装的软件包。
 
         - `npm: array of string`
 
-          环境中全局安装的 npm 包。
+          环境中全局安装的 npm 软件包。
 
         - `python: array of string`
 
-          环境中已安装的 Python 包。
+          环境中安装的 Python 软件包。
 
         - `system: array of string`
 
-          环境中已安装的系统包。
+          环境中安装的系统软件包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中已安装的插件，不包括其归档内容。
+        环境中安装的插件，不包括其归档内容。
 
         - `description: string`
 
@@ -3880,7 +3900,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `skills: array of HostedSkill`
 
-        环境中已安装的技能，不包括其归档内容。
+        环境中安装的技能，不包括其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -3896,7 +3916,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `skill_id: string`
 
-            引用的技能 ID。
+            所引用的技能 ID。
 
           - `type: "skill_reference"`
 
@@ -3906,7 +3926,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `version: string`
 
-            本次会话安装的具体技能版本。
+            为本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -3934,7 +3954,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `container_size: optional "small" or "medium" or "large" or null`
 
-        有效的 CPU 和内存层级，若未知或不在公共层级范围内则为 null。
+        有效的 CPU 和内存层级，若未知或不在公开层级范围内则为 null。
 
         - `"small"`
 
@@ -3956,7 +3976,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `remote_url: string`
 
-        在连接该环境时， `codex exec-server --remote` 请原样传递此 URL。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 以连接此环境。
 
       - `type: "self_hosted"`
 
@@ -3970,11 +3990,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
   - `error: string or null`
 
-    导致会话失败时的错误（如有）。
+    导致会话失败的错误（如果有）。
 
   - `last_active_at: number`
 
-    会话最后一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最后活跃时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: map[string]`
 
@@ -3982,13 +4002,13 @@ Schema name: `SessionEventAgentSessionIdle`
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的动作。
+    会话继续前必须完成的操作。
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -4000,7 +4020,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
 
-          已注册、正在等待应用响应的表单。
+          正在等待应用响应的已注册表单。
 
           - `credential_origin: string or null`
 
@@ -4008,7 +4028,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `fields: array of object { id, label, required, type }`
 
-            要渲染的控件。所有提交的值均为敏感信息。
+            要渲染的控件。所有提交的值都是敏感的。
 
             - `id: string`
 
@@ -4028,7 +4048,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `options: array of object { id, field_ids, label }`
 
-            登录方法。对于普通表单为空。
+            登录方法。普通表单为空。
 
             - `id: string`
 
@@ -4036,7 +4056,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
             - `field_ids: array of string`
 
-              此方法接受的已注册字段中的 ID。
+              此方法接受的来自已注册字段的 ID。
 
             - `label: string`
 
@@ -4044,7 +4064,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `reason: string or null`
 
-            智能体需要用户登录的原因。
+            智能体 需要用户登录的原因。
 
           - `type: "browser_authentication"`
 
@@ -4054,7 +4074,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
         - `BrowserOriginAccess object { origin, reason, type }`
 
-          等待应用审批决策的浏览器来源。
+          正在等待应用审批决策的浏览器来源。
 
           - `origin: string`
 
@@ -4062,7 +4082,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
           - `reason: string or null`
 
-            浏览器对该请求的说明，如果不可用则为 null。
+            浏览器对该请求的说明，若不可用则为 null。
 
           - `type: "browser_origin_access"`
 
@@ -4072,7 +4092,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `request_id: string`
 
-        响应时要回显的已注册请求 ID。
+        响应时回显的已注册请求 ID。
 
       - `turn_id: string`
 
@@ -4102,7 +4122,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `turn_id: string`
 
-        请求函数调用的轮次 ID。
+        请求该函数调用的轮次的 ID。
 
       - `type: "function_call"`
 
@@ -4116,7 +4136,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       - `environment_id: string`
 
-        要重新连接的环境 ID。
+        要重新连接的环境的 ID。
 
       - `type: "environment_connection"`
 
@@ -4134,11 +4154,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
     - `"in_progress"`
 
-      会话正在处理一轮。
+      会话正在处理一个轮次。
 
     - `"requires_action"`
 
-      会话正在等待一个或多个必需操作。
+      会话正在等待一个或多个必需的操作。
 
     - `"failed"`
 
@@ -4146,27 +4166,27 @@ Schema name: `SessionEventAgentSessionIdle`
 
   - `usage: TokenUsage or null`
 
-    会话的尽力而为的 token 使用量，如果未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。记录的用量可能发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -4174,11 +4194,11 @@ Schema name: `SessionEventAgentSessionIdle`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
   - `vault_ids: array of string`
 
-    会话中可用的 vault 的 ID。
+    会话中可用的保险库 ID 的列表。
 
 - `type: "agent.session.idle"`
 
@@ -4288,7 +4308,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
 ## 智能体.session.in_progress
 
-当某个会话开始处理一轮对话时发出。
+当会话开始处理一轮时发出。
 
 ### Schema
 
@@ -4308,7 +4328,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
   - `agent: object { id, instructions, model, 6 more }`
 
-    在会话中运行的智能体。
+    在该会话中运行的智能体。
 
     - `id: string`
 
@@ -4316,11 +4336,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     - `instructions: string or null`
 
-      追加到该智能体默认基础指令的自定义指令。
+      附加到智能体默认基础指令的自定义指令。
 
     - `model: string`
 
-      该智能体所使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -4332,15 +4352,15 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `max_concurrent_subagents: number or null`
 
-        允许同时运行的子智能体最大数量，若未启用则为 null。启用时默认为 6。
+        允许并发运行的最大子智能体数量；若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时可复用智能体的名称，若未保存名称则为 null。后续对智能体名称的更改不会影响该值。
+      会话创建时可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响该值。
 
     - `reasoning: AgentReasoning`
 
-      该智能体的推理配置。
+      智能体的推理配置。
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
@@ -4362,7 +4382,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
+        所请求的推理摘要格式，或 `null` 当禁用摘要时。
 
         - `"concise"`
 
@@ -4374,11 +4394,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `"auto"`
 
-          自动选择模型所支持的最详细摘要。
+          自动选择模型所支持的、最详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
-      模型请求的有效服务层级策略。默认为 `auto`.
+      用于模型请求的有效服务层级策略。默认为 `auto`.
 
       - `"auto"`
 
@@ -4394,7 +4414,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     - `text: AgentText`
 
-      由该智能体生成文本的配置。
+      由智能体生成的文本的配置。
 
       - `format: TextFormat`
 
@@ -4402,7 +4422,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `Text object { type }`
 
-          生成不附加结构化输出约束的普通文本。
+          生成没有结构化输出约束的普通文本。
 
           - `type: "text"`
 
@@ -4412,7 +4432,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `JSONSchema object { schema, type }`
 
-          将生成的文本约束为 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -4426,7 +4446,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -4436,11 +4456,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     - `tools: array of AgentTool`
 
-      智能体可使用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
@@ -4484,11 +4504,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          智能体 可以调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
-          对外 MCP HTTP 连接的来源。
+          出站 MCP HTTP 连接的发起来源。
 
           - `"service"`
 
@@ -4496,15 +4516,15 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已附加保管库凭据（若有）。当恰好有一个已附加凭据与服务器 URL 匹配时为可选。
+          为此 MCP 服务器选择的已附加保管库凭据(若有)。当恰好有一个附加凭据与服务器 URL 匹配时可选。
 
         - `request_metadata: map[unknown]`
 
-          随发往该 MCP 服务器的请求一并发送的元数据。
+          随发往此 MCP 服务器的请求一起包含的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在首轮对话之前完成初始化。
+          此 MCP 服务器是否必须在第一轮之前完成初始化。
 
         - `server_label: string`
 
@@ -4512,7 +4532,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -4566,11 +4586,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域名，或 `null` 在搜索不受限制时使用。
+          允许的搜索域，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          提供给模型使用的搜索上下文大小。默认为 `medium`.
+          可供模型使用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -4580,7 +4600,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于对搜索结果进行本地化的大致位置（如果提供）。
+          用于本地化搜索结果的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -4620,7 +4640,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `include_screenshots: boolean`
 
-          计算机工具输出是否包含屏幕截图。
+          计算机工具输出是否包含截图。
 
         - `type: "computer_use"`
 
@@ -4638,7 +4658,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     - `None object { type }`
 
-      会话与 CCA 通信，但未选择或预置执行环境。
+      会话在不选择或不预置执行环境的情况下与 CCA 通信。
 
       - `type: "none"`
 
@@ -4660,15 +4680,15 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `desktop: object { enabled }`
 
-        生效的桌面配置。
+        有效的桌面配置。
 
         - `enabled: boolean`
 
-          环境是否预置桌面和浏览器代理。
+          该环境是否预置桌面和浏览器代理。
 
       - `files: array of HostedEnvironmentFile`
 
-        环境中可用的文件，不包含其内容。
+        环境中可用的文件，不含其内容。
 
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
@@ -4676,7 +4696,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
@@ -4698,11 +4718,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时内联提供的文件。
+          在创建会话时以内联方式提供的文件。
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -4720,11 +4740,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `network: object { access, allowed_domains }`
 
-        环境生效的网络访问策略。
+        该环境有效的网络访问策略。
 
         - `access: "enabled" or "disabled" or "restricted"`
 
-          环境的网络访问模式。
+          该环境的网络访问模式。
 
           - `"enabled"`
 
@@ -4736,31 +4756,31 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `"restricted"`
 
-            应用已配置的域名限制。
+            应用所配置的域名限制。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限情况下环境可访问的域名。
+          在网络访问受限的条件下，该环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
-        环境中已安装的包。
+        环境中安装的软件包。
 
         - `npm: array of string`
 
-          环境中全局安装的 npm 包。
+          环境中全局安装的 npm 软件包。
 
         - `python: array of string`
 
-          环境中已安装的 Python 包。
+          环境中安装的 Python 软件包。
 
         - `system: array of string`
 
-          环境中已安装的系统包。
+          环境中安装的系统软件包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中已安装的插件，不包括其归档内容。
+        环境中安装的插件，不包括其归档内容。
 
         - `description: string`
 
@@ -4778,7 +4798,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `skills: array of HostedSkill`
 
-        环境中已安装的技能，不包括其归档内容。
+        环境中安装的技能，不包括其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -4794,7 +4814,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `skill_id: string`
 
-            引用的技能 ID。
+            所引用的技能 ID。
 
           - `type: "skill_reference"`
 
@@ -4804,7 +4824,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `version: string`
 
-            本次会话安装的具体技能版本。
+            为本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -4832,7 +4852,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `container_size: optional "small" or "medium" or "large" or null`
 
-        有效的 CPU 和内存层级，若未知或不在公共层级范围内则为 null。
+        有效的 CPU 和内存层级，若未知或不在公开层级范围内则为 null。
 
         - `"small"`
 
@@ -4854,7 +4874,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `remote_url: string`
 
-        在连接该环境时， `codex exec-server --remote` 请原样传递此 URL。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 以连接此环境。
 
       - `type: "self_hosted"`
 
@@ -4868,11 +4888,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
   - `error: string or null`
 
-    导致会话失败时的错误（如有）。
+    导致会话失败的错误（如果有）。
 
   - `last_active_at: number`
 
-    会话最后一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最后活跃时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: map[string]`
 
@@ -4880,13 +4900,13 @@ Schema name: `SessionEventAgentSessionInProgress`
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的动作。
+    会话继续前必须完成的操作。
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -4898,7 +4918,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
 
-          已注册、正在等待应用响应的表单。
+          正在等待应用响应的已注册表单。
 
           - `credential_origin: string or null`
 
@@ -4906,7 +4926,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `fields: array of object { id, label, required, type }`
 
-            要渲染的控件。所有提交的值均为敏感信息。
+            要渲染的控件。所有提交的值都是敏感的。
 
             - `id: string`
 
@@ -4926,7 +4946,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `options: array of object { id, field_ids, label }`
 
-            登录方法。对于普通表单为空。
+            登录方法。普通表单为空。
 
             - `id: string`
 
@@ -4934,7 +4954,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
             - `field_ids: array of string`
 
-              此方法接受的已注册字段中的 ID。
+              此方法接受的来自已注册字段的 ID。
 
             - `label: string`
 
@@ -4942,7 +4962,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `reason: string or null`
 
-            智能体需要用户登录的原因。
+            智能体 需要用户登录的原因。
 
           - `type: "browser_authentication"`
 
@@ -4952,7 +4972,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
         - `BrowserOriginAccess object { origin, reason, type }`
 
-          等待应用审批决策的浏览器来源。
+          正在等待应用审批决策的浏览器来源。
 
           - `origin: string`
 
@@ -4960,7 +4980,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
           - `reason: string or null`
 
-            浏览器对该请求的说明，如果不可用则为 null。
+            浏览器对该请求的说明，若不可用则为 null。
 
           - `type: "browser_origin_access"`
 
@@ -4970,7 +4990,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `request_id: string`
 
-        响应时要回显的已注册请求 ID。
+        响应时回显的已注册请求 ID。
 
       - `turn_id: string`
 
@@ -5000,7 +5020,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `turn_id: string`
 
-        请求函数调用的轮次 ID。
+        请求该函数调用的轮次的 ID。
 
       - `type: "function_call"`
 
@@ -5014,7 +5034,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       - `environment_id: string`
 
-        要重新连接的环境 ID。
+        要重新连接的环境的 ID。
 
       - `type: "environment_connection"`
 
@@ -5032,11 +5052,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     - `"in_progress"`
 
-      会话正在处理一轮。
+      会话正在处理一个轮次。
 
     - `"requires_action"`
 
-      会话正在等待一个或多个必需操作。
+      会话正在等待一个或多个必需的操作。
 
     - `"failed"`
 
@@ -5044,27 +5064,27 @@ Schema name: `SessionEventAgentSessionInProgress`
 
   - `usage: TokenUsage or null`
 
-    会话的尽力而为的 token 使用量，如果未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。记录的用量可能发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -5072,11 +5092,11 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
   - `vault_ids: array of string`
 
-    会话中可用的 vault 的 ID。
+    会话中可用的保险库 ID 的列表。
 
 - `type: "agent.session.in_progress"`
 
@@ -5186,7 +5206,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
 ## 智能体.session.requires_action
 
-当会话正在等待一个或多个必需操作时发出。
+当会话正在等待一个或多个必需操作时触发。
 
 ### Schema
 
@@ -5198,7 +5218,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
 - `session: AgentSession`
 
-  该会话及其当前所需执行的操作。
+  会话及其当前所需的操作。
 
   - `id: string`
 
@@ -5206,7 +5226,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
   - `agent: object { id, instructions, model, 6 more }`
 
-    在会话中运行的智能体。
+    在该会话中运行的智能体。
 
     - `id: string`
 
@@ -5214,11 +5234,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     - `instructions: string or null`
 
-      追加到该智能体默认基础指令的自定义指令。
+      附加到智能体默认基础指令的自定义指令。
 
     - `model: string`
 
-      该智能体所使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -5230,15 +5250,15 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `max_concurrent_subagents: number or null`
 
-        允许同时运行的子智能体最大数量，若未启用则为 null。启用时默认为 6。
+        允许并发运行的最大子智能体数量；若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时可复用智能体的名称，若未保存名称则为 null。后续对智能体名称的更改不会影响该值。
+      会话创建时可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响该值。
 
     - `reasoning: AgentReasoning`
 
-      该智能体的推理配置。
+      智能体的推理配置。
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
@@ -5260,7 +5280,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
+        所请求的推理摘要格式，或 `null` 当禁用摘要时。
 
         - `"concise"`
 
@@ -5272,11 +5292,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `"auto"`
 
-          自动选择模型所支持的最详细摘要。
+          自动选择模型所支持的、最详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
-      模型请求的有效服务层级策略。默认为 `auto`.
+      用于模型请求的有效服务层级策略。默认为 `auto`.
 
       - `"auto"`
 
@@ -5292,7 +5312,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     - `text: AgentText`
 
-      由该智能体生成文本的配置。
+      由智能体生成的文本的配置。
 
       - `format: TextFormat`
 
@@ -5300,7 +5320,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `Text object { type }`
 
-          生成不附加结构化输出约束的普通文本。
+          生成没有结构化输出约束的普通文本。
 
           - `type: "text"`
 
@@ -5310,7 +5330,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `JSONSchema object { schema, type }`
 
-          将生成的文本约束为 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -5324,7 +5344,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -5334,11 +5354,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     - `tools: array of AgentTool`
 
-      智能体可使用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
@@ -5382,11 +5402,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          智能体 可以调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
-          对外 MCP HTTP 连接的来源。
+          出站 MCP HTTP 连接的发起来源。
 
           - `"service"`
 
@@ -5394,15 +5414,15 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已附加保管库凭据（若有）。当恰好有一个已附加凭据与服务器 URL 匹配时为可选。
+          为此 MCP 服务器选择的已附加保管库凭据(若有)。当恰好有一个附加凭据与服务器 URL 匹配时可选。
 
         - `request_metadata: map[unknown]`
 
-          随发往该 MCP 服务器的请求一并发送的元数据。
+          随发往此 MCP 服务器的请求一起包含的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在首轮对话之前完成初始化。
+          此 MCP 服务器是否必须在第一轮之前完成初始化。
 
         - `server_label: string`
 
@@ -5410,7 +5430,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -5464,11 +5484,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域名，或 `null` 在搜索不受限制时使用。
+          允许的搜索域，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          提供给模型使用的搜索上下文大小。默认为 `medium`.
+          可供模型使用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -5478,7 +5498,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于对搜索结果进行本地化的大致位置（如果提供）。
+          用于本地化搜索结果的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -5518,7 +5538,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `include_screenshots: boolean`
 
-          计算机工具输出是否包含屏幕截图。
+          计算机工具输出是否包含截图。
 
         - `type: "computer_use"`
 
@@ -5536,7 +5556,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     - `None object { type }`
 
-      会话与 CCA 通信，但未选择或预置执行环境。
+      会话在不选择或不预置执行环境的情况下与 CCA 通信。
 
       - `type: "none"`
 
@@ -5558,15 +5578,15 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `desktop: object { enabled }`
 
-        生效的桌面配置。
+        有效的桌面配置。
 
         - `enabled: boolean`
 
-          环境是否预置桌面和浏览器代理。
+          该环境是否预置桌面和浏览器代理。
 
       - `files: array of HostedEnvironmentFile`
 
-        环境中可用的文件，不包含其内容。
+        环境中可用的文件，不含其内容。
 
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
@@ -5574,7 +5594,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
@@ -5596,11 +5616,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时内联提供的文件。
+          在创建会话时以内联方式提供的文件。
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -5618,11 +5638,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `network: object { access, allowed_domains }`
 
-        环境生效的网络访问策略。
+        该环境有效的网络访问策略。
 
         - `access: "enabled" or "disabled" or "restricted"`
 
-          环境的网络访问模式。
+          该环境的网络访问模式。
 
           - `"enabled"`
 
@@ -5634,31 +5654,31 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `"restricted"`
 
-            应用已配置的域名限制。
+            应用所配置的域名限制。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限情况下环境可访问的域名。
+          在网络访问受限的条件下，该环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
-        环境中已安装的包。
+        环境中安装的软件包。
 
         - `npm: array of string`
 
-          环境中全局安装的 npm 包。
+          环境中全局安装的 npm 软件包。
 
         - `python: array of string`
 
-          环境中已安装的 Python 包。
+          环境中安装的 Python 软件包。
 
         - `system: array of string`
 
-          环境中已安装的系统包。
+          环境中安装的系统软件包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中已安装的插件，不包括其归档内容。
+        环境中安装的插件，不包括其归档内容。
 
         - `description: string`
 
@@ -5676,7 +5696,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `skills: array of HostedSkill`
 
-        环境中已安装的技能，不包括其归档内容。
+        环境中安装的技能，不包括其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -5692,7 +5712,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `skill_id: string`
 
-            引用的技能 ID。
+            所引用的技能 ID。
 
           - `type: "skill_reference"`
 
@@ -5702,7 +5722,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `version: string`
 
-            本次会话安装的具体技能版本。
+            为本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -5730,7 +5750,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `container_size: optional "small" or "medium" or "large" or null`
 
-        有效的 CPU 和内存层级，若未知或不在公共层级范围内则为 null。
+        有效的 CPU 和内存层级，若未知或不在公开层级范围内则为 null。
 
         - `"small"`
 
@@ -5752,7 +5772,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `remote_url: string`
 
-        在连接该环境时， `codex exec-server --remote` 请原样传递此 URL。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 以连接此环境。
 
       - `type: "self_hosted"`
 
@@ -5766,11 +5786,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
   - `error: string or null`
 
-    导致会话失败时的错误（如有）。
+    导致会话失败的错误（如果有）。
 
   - `last_active_at: number`
 
-    会话最后一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最后活跃时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: map[string]`
 
@@ -5778,13 +5798,13 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的动作。
+    会话继续前必须完成的操作。
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -5796,7 +5816,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
 
-          已注册、正在等待应用响应的表单。
+          正在等待应用响应的已注册表单。
 
           - `credential_origin: string or null`
 
@@ -5804,7 +5824,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `fields: array of object { id, label, required, type }`
 
-            要渲染的控件。所有提交的值均为敏感信息。
+            要渲染的控件。所有提交的值都是敏感的。
 
             - `id: string`
 
@@ -5824,7 +5844,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `options: array of object { id, field_ids, label }`
 
-            登录方法。对于普通表单为空。
+            登录方法。普通表单为空。
 
             - `id: string`
 
@@ -5832,7 +5852,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
             - `field_ids: array of string`
 
-              此方法接受的已注册字段中的 ID。
+              此方法接受的来自已注册字段的 ID。
 
             - `label: string`
 
@@ -5840,7 +5860,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `reason: string or null`
 
-            智能体需要用户登录的原因。
+            智能体 需要用户登录的原因。
 
           - `type: "browser_authentication"`
 
@@ -5850,7 +5870,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
         - `BrowserOriginAccess object { origin, reason, type }`
 
-          等待应用审批决策的浏览器来源。
+          正在等待应用审批决策的浏览器来源。
 
           - `origin: string`
 
@@ -5858,7 +5878,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
           - `reason: string or null`
 
-            浏览器对该请求的说明，如果不可用则为 null。
+            浏览器对该请求的说明，若不可用则为 null。
 
           - `type: "browser_origin_access"`
 
@@ -5868,7 +5888,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `request_id: string`
 
-        响应时要回显的已注册请求 ID。
+        响应时回显的已注册请求 ID。
 
       - `turn_id: string`
 
@@ -5898,7 +5918,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `turn_id: string`
 
-        请求函数调用的轮次 ID。
+        请求该函数调用的轮次的 ID。
 
       - `type: "function_call"`
 
@@ -5912,7 +5932,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       - `environment_id: string`
 
-        要重新连接的环境 ID。
+        要重新连接的环境的 ID。
 
       - `type: "environment_connection"`
 
@@ -5930,11 +5950,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     - `"in_progress"`
 
-      会话正在处理一轮。
+      会话正在处理一个轮次。
 
     - `"requires_action"`
 
-      会话正在等待一个或多个必需操作。
+      会话正在等待一个或多个必需的操作。
 
     - `"failed"`
 
@@ -5942,27 +5962,27 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
   - `usage: TokenUsage or null`
 
-    会话的尽力而为的 token 使用量，如果未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。记录的用量可能发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -5970,11 +5990,11 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
   - `vault_ids: array of string`
 
-    会话中可用的 vault 的 ID。
+    会话中可用的保险库 ID 的列表。
 
 - `type: "agent.session.requires_action"`
 
@@ -6084,7 +6104,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
 ## 智能体.session.failed
 
-当会话失败时触发。
+在会话失败时发出。
 
 ### Schema
 
@@ -6096,7 +6116,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
 - `session: AgentSession`
 
-  失败会话。
+  失败的会话。
 
   - `id: string`
 
@@ -6104,7 +6124,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
   - `agent: object { id, instructions, model, 6 more }`
 
-    在会话中运行的智能体。
+    在该会话中运行的智能体。
 
     - `id: string`
 
@@ -6112,11 +6132,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
     - `instructions: string or null`
 
-      追加到该智能体默认基础指令的自定义指令。
+      附加到智能体默认基础指令的自定义指令。
 
     - `model: string`
 
-      该智能体所使用的模型。
+      智能体所使用的模型。
 
     - `multi_agent: MultiAgentConfig`
 
@@ -6128,15 +6148,15 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `max_concurrent_subagents: number or null`
 
-        允许同时运行的子智能体最大数量，若未启用则为 null。启用时默认为 6。
+        允许并发运行的最大子智能体数量；若禁用则为 null。启用时默认为 6。
 
     - `name: string or null`
 
-      会话创建时可复用智能体的名称，若未保存名称则为 null。后续对智能体名称的更改不会影响该值。
+      会话创建时可复用智能体的名称，如果未保存名称则为 null。之后对智能体名称的更改不会影响该值。
 
     - `reasoning: AgentReasoning`
 
-      该智能体的推理配置。
+      智能体的推理配置。
 
       - `effort: "none" or "minimal" or "low" or 4 more or null`
 
@@ -6158,7 +6178,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `summary: "concise" or "detailed" or "auto" or null`
 
-        所请求的推理摘要格式，或 `null` 当摘要被禁用时。
+        所请求的推理摘要格式，或 `null` 当禁用摘要时。
 
         - `"concise"`
 
@@ -6170,11 +6190,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `"auto"`
 
-          自动选择模型所支持的最详细摘要。
+          自动选择模型所支持的、最详细的摘要。
 
     - `service_tier: "auto" or "default" or "flex" or 3 more`
 
-      模型请求的有效服务层级策略。默认为 `auto`.
+      用于模型请求的有效服务层级策略。默认为 `auto`.
 
       - `"auto"`
 
@@ -6190,7 +6210,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
     - `text: AgentText`
 
-      由该智能体生成文本的配置。
+      由智能体生成的文本的配置。
 
       - `format: TextFormat`
 
@@ -6198,7 +6218,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `Text object { type }`
 
-          生成不附加结构化输出约束的普通文本。
+          生成没有结构化输出约束的普通文本。
 
           - `type: "text"`
 
@@ -6208,7 +6228,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `JSONSchema object { schema, type }`
 
-          将生成的文本约束为 JSON Schema。
+          将生成文本约束为 JSON Schema。
 
           - `schema: map[unknown]`
 
@@ -6222,7 +6242,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `verbosity: "low" or "medium" or "high"`
 
-        由智能体生成的文本量。默认为 `medium`.
+        由 智能体 生成的文本量。默认为 `medium`.
 
         - `"low"`
 
@@ -6232,11 +6252,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
     - `tools: array of AgentTool`
 
-      智能体可使用的工具。
+      可供 智能体 使用的工具。
 
       - `Function object { defer_loading, description, name, 2 more }`
 
-        由应用定义的函数。
+        由应用程序定义的函数。
 
         - `defer_loading: boolean`
 
@@ -6280,11 +6300,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `allowed_tools: array of string or null`
 
-          智能体可以调用的 MCP 工具。
+          智能体 可以调用的 MCP 工具。
 
         - `connection_origin: "service" or "environment"`
 
-          对外 MCP HTTP 连接的来源。
+          出站 MCP HTTP 连接的发起来源。
 
           - `"service"`
 
@@ -6292,15 +6312,15 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `credential_id: string or null`
 
-          为该 MCP 服务器选择的已附加保管库凭据（若有）。当恰好有一个已附加凭据与服务器 URL 匹配时为可选。
+          为此 MCP 服务器选择的已附加保管库凭据(若有)。当恰好有一个附加凭据与服务器 URL 匹配时可选。
 
         - `request_metadata: map[unknown]`
 
-          随发往该 MCP 服务器的请求一并发送的元数据。
+          随发往此 MCP 服务器的请求一起包含的元数据。
 
         - `required: boolean`
 
-          该 MCP 服务器是否必须在首轮对话之前完成初始化。
+          此 MCP 服务器是否必须在第一轮之前完成初始化。
 
         - `server_label: string`
 
@@ -6308,7 +6328,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `transport: McpTransport`
 
-          用于连接 MCP 服务器的传输方式。
+          用于连接到 MCP 服务器的传输方式。
 
           - `HTTP object { server_url, type }`
 
@@ -6362,11 +6382,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `allowed_domains: array of string or null`
 
-          允许的搜索域名，或 `null` 在搜索不受限制时使用。
+          允许的搜索域，或 `null` 当搜索不受限制时。
 
         - `context_size: "low" or "medium" or "high"`
 
-          提供给模型使用的搜索上下文大小。默认为 `medium`.
+          可供模型使用的搜索上下文数量。默认为 `medium`.
 
           - `"low"`
 
@@ -6376,7 +6396,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `location: object { city, country, region, timezone }  or null`
 
-          用于对搜索结果进行本地化的大致位置（如果提供）。
+          用于本地化搜索结果的大致位置（如果提供）。
 
           - `city: string or null`
 
@@ -6416,7 +6436,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `include_screenshots: boolean`
 
-          计算机工具输出是否包含屏幕截图。
+          计算机工具输出是否包含截图。
 
         - `type: "computer_use"`
 
@@ -6434,7 +6454,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
     - `None object { type }`
 
-      会话与 CCA 通信，但未选择或预置执行环境。
+      会话在不选择或不预置执行环境的情况下与 CCA 通信。
 
       - `type: "none"`
 
@@ -6456,15 +6476,15 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `desktop: object { enabled }`
 
-        生效的桌面配置。
+        有效的桌面配置。
 
         - `enabled: boolean`
 
-          环境是否预置桌面和浏览器代理。
+          该环境是否预置桌面和浏览器代理。
 
       - `files: array of HostedEnvironmentFile`
 
-        环境中可用的文件，不包含其内容。
+        环境中可用的文件，不含其内容。
 
         - `HostedEnvironmentFileID object { id, file_id, path, 2 more }`
 
@@ -6472,7 +6492,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `file_id: string`
 
@@ -6494,11 +6514,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `Inline object { id, path, size_bytes, type }`
 
-          创建会话时内联提供的文件。
+          在创建会话时以内联方式提供的文件。
 
           - `id: string`
 
-            文件在执行环境中的会话级 ID。
+            该文件在执行环境中的会话范围内 ID。
 
           - `path: string`
 
@@ -6516,11 +6536,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `network: object { access, allowed_domains }`
 
-        环境生效的网络访问策略。
+        该环境有效的网络访问策略。
 
         - `access: "enabled" or "disabled" or "restricted"`
 
-          环境的网络访问模式。
+          该环境的网络访问模式。
 
           - `"enabled"`
 
@@ -6532,31 +6552,31 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `"restricted"`
 
-            应用已配置的域名限制。
+            应用所配置的域名限制。
 
         - `allowed_domains: array of string`
 
-          在网络访问受限情况下环境可访问的域名。
+          在网络访问受限的条件下，该环境可以访问的域名。
 
       - `packages: object { npm, python, system }`
 
-        环境中已安装的包。
+        环境中安装的软件包。
 
         - `npm: array of string`
 
-          环境中全局安装的 npm 包。
+          环境中全局安装的 npm 软件包。
 
         - `python: array of string`
 
-          环境中已安装的 Python 包。
+          环境中安装的 Python 软件包。
 
         - `system: array of string`
 
-          环境中已安装的系统包。
+          环境中安装的系统软件包。
 
       - `plugins: array of HostedPlugin`
 
-        环境中已安装的插件，不包括其归档内容。
+        环境中安装的插件，不包括其归档内容。
 
         - `description: string`
 
@@ -6574,7 +6594,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `skills: array of HostedSkill`
 
-        环境中已安装的技能，不包括其归档内容。
+        环境中安装的技能，不包括其归档内容。
 
         - `HostedSkillReference object { description, name, skill_id, 2 more }`
 
@@ -6590,7 +6610,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `skill_id: string`
 
-            引用的技能 ID。
+            所引用的技能 ID。
 
           - `type: "skill_reference"`
 
@@ -6600,7 +6620,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `version: string`
 
-            本次会话安装的具体技能版本。
+            为本次会话安装的具体技能版本。
 
         - `Inline object { description, name, type }`
 
@@ -6628,7 +6648,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `container_size: optional "small" or "medium" or "large" or null`
 
-        有效的 CPU 和内存层级，若未知或不在公共层级范围内则为 null。
+        有效的 CPU 和内存层级，若未知或不在公开层级范围内则为 null。
 
         - `"small"`
 
@@ -6650,7 +6670,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `remote_url: string`
 
-        在连接该环境时， `codex exec-server --remote` 请原样传递此 URL。
+        连接此环境时，将此 URL 原样传递给 `codex exec-server --remote` 以连接此环境。
 
       - `type: "self_hosted"`
 
@@ -6664,11 +6684,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
   - `error: string or null`
 
-    导致会话失败时的错误（如有）。
+    导致会话失败的错误（如果有）。
 
   - `last_active_at: number`
 
-    会话最后一次活跃时的 Unix 时间戳（以秒为单位）。
+    会话最后活跃时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: map[string]`
 
@@ -6676,13 +6696,13 @@ Schema name: `SessionEventAgentSessionFailed`
 
   - `object: "agent.session"`
 
-    对象类型。始终为 `agent.session`.
+    对象类型，始终为 `agent.session`.
 
     - `"agent.session"`
 
   - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
 
-    在会话继续之前必须完成的动作。
+    会话继续前必须完成的操作。
 
     - `ComputerUseApprovalRequest object { request, request_id, turn_id, type }`
 
@@ -6694,7 +6714,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `BrowserAuthentication object { credential_origin, fields, options, 2 more }`
 
-          已注册、正在等待应用响应的表单。
+          正在等待应用响应的已注册表单。
 
           - `credential_origin: string or null`
 
@@ -6702,7 +6722,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `fields: array of object { id, label, required, type }`
 
-            要渲染的控件。所有提交的值均为敏感信息。
+            要渲染的控件。所有提交的值都是敏感的。
 
             - `id: string`
 
@@ -6722,7 +6742,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `options: array of object { id, field_ids, label }`
 
-            登录方法。对于普通表单为空。
+            登录方法。普通表单为空。
 
             - `id: string`
 
@@ -6730,7 +6750,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
             - `field_ids: array of string`
 
-              此方法接受的已注册字段中的 ID。
+              此方法接受的来自已注册字段的 ID。
 
             - `label: string`
 
@@ -6738,7 +6758,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `reason: string or null`
 
-            智能体需要用户登录的原因。
+            智能体 需要用户登录的原因。
 
           - `type: "browser_authentication"`
 
@@ -6748,7 +6768,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
         - `BrowserOriginAccess object { origin, reason, type }`
 
-          等待应用审批决策的浏览器来源。
+          正在等待应用审批决策的浏览器来源。
 
           - `origin: string`
 
@@ -6756,7 +6776,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
           - `reason: string or null`
 
-            浏览器对该请求的说明，如果不可用则为 null。
+            浏览器对该请求的说明，若不可用则为 null。
 
           - `type: "browser_origin_access"`
 
@@ -6766,7 +6786,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `request_id: string`
 
-        响应时要回显的已注册请求 ID。
+        响应时回显的已注册请求 ID。
 
       - `turn_id: string`
 
@@ -6796,7 +6816,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `turn_id: string`
 
-        请求函数调用的轮次 ID。
+        请求该函数调用的轮次的 ID。
 
       - `type: "function_call"`
 
@@ -6810,7 +6830,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       - `environment_id: string`
 
-        要重新连接的环境 ID。
+        要重新连接的环境的 ID。
 
       - `type: "environment_connection"`
 
@@ -6828,11 +6848,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
     - `"in_progress"`
 
-      会话正在处理一轮。
+      会话正在处理一个轮次。
 
     - `"requires_action"`
 
-      会话正在等待一个或多个必需操作。
+      会话正在等待一个或多个必需的操作。
 
     - `"failed"`
 
@@ -6840,27 +6860,27 @@ Schema name: `SessionEventAgentSessionFailed`
 
   - `usage: TokenUsage or null`
 
-    会话的尽力而为的 token 使用量，如果未知则为 null。已记录的使用量可能会变化。
+    会话的最佳估算 token 用量，若未知则为 null。记录的用量可能发生变化。
 
     - `input_tokens: number`
 
-      智能体使用的输入 token 数。
+      智能体 使用的输入 token 数量。
 
     - `input_tokens_details: object { cached_tokens }`
 
-      智能体输入 token 使用量的明细。
+      智能体 输入 token 用量的细分。
 
       - `cached_tokens: number`
 
-        从提示缓存中检索到的输入 token 数。
+        从提示缓存中检索到的输入 token 数量。
 
     - `output_tokens: number`
 
-      智能体生成的输出 token 数。
+      智能体 生成的输出 token 数量。
 
     - `output_tokens_details: object { reasoning_tokens }`
 
-      智能体的输出 token 用量明细。
+      对智能体输出 token 用量的细分。
 
       - `reasoning_tokens: number`
 
@@ -6868,11 +6888,11 @@ Schema name: `SessionEventAgentSessionFailed`
 
     - `total_tokens: number`
 
-      智能体使用的输入和输出 token 总数。
+      智能体使用的输入和输出 token 的总数。
 
   - `vault_ids: array of string`
 
-    会话中可用的 vault 的 ID。
+    会话中可用的保险库 ID 的列表。
 
 - `type: "agent.session.failed"`
 
@@ -6982,7 +7002,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
 ## 智能体.session.environment.pending
 
-在会话环境准备过程中发出。
+正在准备会话环境时发出。
 
 ### Schema
 
@@ -7006,7 +7026,7 @@ Schema name: `SessionEventAgentSessionEnvironmentPending`
 
     - `message: string`
 
-      人类可读的错误消息。
+      人类可读的错误信息。
 
     - `type: string`
 
@@ -7046,11 +7066,11 @@ Schema name: `SessionEventAgentSessionEnvironmentPending`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.environment.pending"`
 
@@ -7107,7 +7127,7 @@ Schema name: `SessionEventAgentSessionEnvironmentConnected`
 
     - `message: string`
 
-      人类可读的错误消息。
+      人类可读的错误信息。
 
     - `type: string`
 
@@ -7147,11 +7167,11 @@ Schema name: `SessionEventAgentSessionEnvironmentConnected`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.environment.connected"`
 
@@ -7184,7 +7204,7 @@ Schema name: `SessionEventAgentSessionEnvironmentConnected`
 
 ## 智能体.session.environment.disconnected
 
-在会话环境断开连接时发出。
+当会话环境断开连接时发出。
 
 ### Schema
 
@@ -7208,7 +7228,7 @@ Schema name: `SessionEventAgentSessionEnvironmentDisconnected`
 
     - `message: string`
 
-      人类可读的错误消息。
+      人类可读的错误信息。
 
     - `type: string`
 
@@ -7248,11 +7268,11 @@ Schema name: `SessionEventAgentSessionEnvironmentDisconnected`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.environment.disconnected"`
 
@@ -7285,7 +7305,7 @@ Schema name: `SessionEventAgentSessionEnvironmentDisconnected`
 
 ## 智能体.session.environment.failed
 
-在会话环境失败时发出。
+当会话环境失败时发出。
 
 ### Schema
 
@@ -7309,7 +7329,7 @@ Schema name: `SessionEventAgentSessionEnvironmentFailed`
 
     - `message: string`
 
-      人类可读的错误消息。
+      人类可读的错误信息。
 
     - `type: string`
 
@@ -7349,11 +7369,11 @@ Schema name: `SessionEventAgentSessionEnvironmentFailed`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.environment.failed"`
 
@@ -7386,7 +7406,7 @@ Schema name: `SessionEventAgentSessionEnvironmentFailed`
 
 ## 智能体.session.subagent.created
 
-在创建子智能体时发出。
+当创建子智能体时发出。
 
 ### Schema
 
@@ -7406,11 +7426,11 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
   - `closed_at: number or null`
 
-    子智能体被关闭时的 Unix 时间戳（秒）。处于活动状态时（包括恢复后）为 null。
+    子智能体关闭时的 Unix 时间戳（以秒为单位）。在处于活动状态时（包括恢复之后）为 null。
 
   - `instructions: array of AgentContent or null`
 
-    初始任务内容，如果不可用则为 null。当仅有预览时，文本中可能包含图像或音频的占位符。
+    初始任务内容，若不可用则为 null。当仅有预览可用时，文本中可能包含图像或音频的占位符。
 
     - `OutputText object { text, type }`
 
@@ -7442,25 +7462,25 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
   - `name: string or null`
 
-    由运行器分配的昵称，如果不可用则为 null。
+    运行器分配的昵称，若不可用则为 null。
 
   - `object: "agent.session.subagent"`
 
-    对象类型。始终为 `agent.session.subagent`.
+    对象类型，始终为 `agent.session.subagent`.
 
     - `"agent.session.subagent"`
 
   - `opened_at: number`
 
-    子智能体首次被打开时的 Unix 时间戳（秒）。恢复操作不会改变它。
+    子智能体首次打开时的 Unix 时间戳（以秒为单位）。恢复操作不会更改该时间戳。
 
   - `parent_agent_id: string`
 
-    创建此子智能体的智能体的 ID。
+    创建此子智能体的智能体 的 ID。
 
   - `session_id: string`
 
-    拥有该子智能体的会话的 ID。
+    拥有该子智能体的会话 ID。
 
   - `status: "active" or "closed"`
 
@@ -7468,7 +7488,7 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
     - `"active"`
 
-      子智能体保持可用，包括在轮次之间空闲时。
+      子智能体保持可用状态，包括在回合之间处于空闲时。
 
     - `"closed"`
 
@@ -7509,7 +7529,7 @@ Schema name: `SessionEventAgentSessionSubagentCreated`
 
 ## 智能体.session.subagent.active
 
-当已关闭的子智能体成功恢复时发出。
+当已关闭的子智能体成功恢复时触发。
 
 ### Schema
 
@@ -7521,7 +7541,7 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
 - `subagent: Subagent`
 
-  已恢复执行的子智能体。
+  恢复执行的子智能体。
 
   - `id: string`
 
@@ -7529,11 +7549,11 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
   - `closed_at: number or null`
 
-    子智能体被关闭时的 Unix 时间戳（秒）。处于活动状态时（包括恢复后）为 null。
+    子智能体关闭时的 Unix 时间戳（以秒为单位）。在处于活动状态时（包括恢复之后）为 null。
 
   - `instructions: array of AgentContent or null`
 
-    初始任务内容，如果不可用则为 null。当仅有预览时，文本中可能包含图像或音频的占位符。
+    初始任务内容，若不可用则为 null。当仅有预览可用时，文本中可能包含图像或音频的占位符。
 
     - `OutputText object { text, type }`
 
@@ -7565,25 +7585,25 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
   - `name: string or null`
 
-    由运行器分配的昵称，如果不可用则为 null。
+    运行器分配的昵称，若不可用则为 null。
 
   - `object: "agent.session.subagent"`
 
-    对象类型。始终为 `agent.session.subagent`.
+    对象类型，始终为 `agent.session.subagent`.
 
     - `"agent.session.subagent"`
 
   - `opened_at: number`
 
-    子智能体首次被打开时的 Unix 时间戳（秒）。恢复操作不会改变它。
+    子智能体首次打开时的 Unix 时间戳（以秒为单位）。恢复操作不会更改该时间戳。
 
   - `parent_agent_id: string`
 
-    创建此子智能体的智能体的 ID。
+    创建此子智能体的智能体 的 ID。
 
   - `session_id: string`
 
-    拥有该子智能体的会话的 ID。
+    拥有该子智能体的会话 ID。
 
   - `status: "active" or "closed"`
 
@@ -7591,7 +7611,7 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
     - `"active"`
 
-      子智能体保持可用，包括在轮次之间空闲时。
+      子智能体保持可用状态，包括在回合之间处于空闲时。
 
     - `"closed"`
 
@@ -7632,7 +7652,7 @@ Schema name: `SessionEventAgentSessionSubagentActive`
 
 ## 智能体.session.subagent.closed
 
-在子智能体关闭时发出。
+当子智能体关闭时触发。
 
 ### Schema
 
@@ -7652,11 +7672,11 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
   - `closed_at: number or null`
 
-    子智能体被关闭时的 Unix 时间戳（秒）。处于活动状态时（包括恢复后）为 null。
+    子智能体关闭时的 Unix 时间戳（以秒为单位）。在处于活动状态时（包括恢复之后）为 null。
 
   - `instructions: array of AgentContent or null`
 
-    初始任务内容，如果不可用则为 null。当仅有预览时，文本中可能包含图像或音频的占位符。
+    初始任务内容，若不可用则为 null。当仅有预览可用时，文本中可能包含图像或音频的占位符。
 
     - `OutputText object { text, type }`
 
@@ -7688,25 +7708,25 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
   - `name: string or null`
 
-    由运行器分配的昵称，如果不可用则为 null。
+    运行器分配的昵称，若不可用则为 null。
 
   - `object: "agent.session.subagent"`
 
-    对象类型。始终为 `agent.session.subagent`.
+    对象类型，始终为 `agent.session.subagent`.
 
     - `"agent.session.subagent"`
 
   - `opened_at: number`
 
-    子智能体首次被打开时的 Unix 时间戳（秒）。恢复操作不会改变它。
+    子智能体首次打开时的 Unix 时间戳（以秒为单位）。恢复操作不会更改该时间戳。
 
   - `parent_agent_id: string`
 
-    创建此子智能体的智能体的 ID。
+    创建此子智能体的智能体 的 ID。
 
   - `session_id: string`
 
-    拥有该子智能体的会话的 ID。
+    拥有该子智能体的会话 ID。
 
   - `status: "active" or "closed"`
 
@@ -7714,7 +7734,7 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
     - `"active"`
 
-      子智能体保持可用，包括在轮次之间空闲时。
+      子智能体保持可用状态，包括在回合之间处于空闲时。
 
     - `"closed"`
 
@@ -7755,7 +7775,7 @@ Schema name: `SessionEventAgentSessionSubagentClosed`
 
 ## 智能体.session.turn.item.done
 
-在某个输出项完成时发出。
+在输出项完成时发出。
 
 ### Schema
 
@@ -7767,19 +7787,19 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
 - `item: AgentOutputItem`
 
-  已完成输出项。
+  已完成的输出项。
 
   - `AgentSessionAssistantMessage object { id, content, phase, 4 more }`
 
-    由智能体生成的助手消息。
+    由 智能体生成的助手消息。
 
     - `id: string`
 
-      消息的 ID。
+      该消息的 ID。
 
     - `content: array of OutputText`
 
-      消息内容。
+      消息的内容。
 
       - `text: string`
 
@@ -7797,11 +7817,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `"commentary"`
 
-        智能体 工作期间生成的评论。
+        智能体工作过程中生成的解说。
 
       - `"final_answer"`
 
-        智能体 的最终回答。
+        智能体的最终答案。
 
     - `role: "assistant"`
 
@@ -7815,23 +7835,23 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `"in_progress"`
 
-        该 item 正在进行中。
+        该条目正在进行中。
 
       - `"completed"`
 
-        该 item 已完成。
+        该条目已完成。
 
       - `"incomplete"`
 
-        该 item 在完成前已停止。
+        该条目在完成前已停止。
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "message"`
 
-      item 类型。始终为 `message`.
+      条目类型。始终为 `message`.
 
       - `"message"`
 
@@ -7863,11 +7883,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "reasoning"`
 
-      item 类型。始终为 `reasoning`.
+      条目类型。始终为 `reasoning`.
 
       - `"reasoning"`
 
@@ -7909,15 +7929,15 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `"incomplete"`
 
-        调用在完成前停止。
+        调用在完成前已停止。
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "function_call"`
 
-      item 类型。始终为 `function_call`.
+      条目类型。始终为 `function_call`.
 
       - `"function_call"`
 
@@ -7955,17 +7975,17 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "mcp_call"`
 
-      item 类型。始终为 `mcp_call`.
+      条目类型。始终为 `mcp_call`.
 
       - `"mcp_call"`
 
   - `ComputerUseCall object { id, output, status, 3 more }`
 
-    由平台提供的计算机使用能力的一次执行。
+    平台提供的计算机使用能力的一次执行。
 
     - `id: string`
 
@@ -7973,11 +7993,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `output: object { image_url, type }  or null`
 
-      模型发出的最后一张截图。当禁用截图包含功能或调用未发出截图时为 null。
+      模型发出的最后一张截图。当禁用截图包含功能或该调用未发出截图时为 null。
 
       - `image_url: string`
 
-        以 base64 数据 URL 表示的完整 JPEG 图像。
+        完整的 JPEG 图像，以 base64 数据 URL 形式提供。
 
       - `type: "computer_screenshot"`
 
@@ -7991,15 +8011,15 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `title: string or null`
 
-      在可用时，模型生成的活动描述。
+      由模型生成的活动描述（如有）。
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "computer_use_call"`
 
-      item 类型。始终为 `computer_use_call`.
+      条目类型。始终为 `computer_use_call`.
 
       - `"computer_use_call"`
 
@@ -8013,7 +8033,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `request: object { credential_origin, fields, options, 2 more }`
 
-      已注册、正在等待应用响应的表单。
+      正在等待应用响应的已注册表单。
 
       - `credential_origin: string or null`
 
@@ -8021,7 +8041,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `fields: array of object { id, label, required, type }`
 
-        要渲染的控件。所有提交的值均为敏感信息。
+        要渲染的控件。所有提交的值都是敏感的。
 
         - `id: string`
 
@@ -8041,7 +8061,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `options: array of object { id, field_ids, label }`
 
-        登录方法。对于普通表单为空。
+        登录方法。普通表单为空。
 
         - `id: string`
 
@@ -8049,7 +8069,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
         - `field_ids: array of string`
 
-          此方法接受的已注册字段中的 ID。
+          此方法接受的来自已注册字段的 ID。
 
         - `label: string`
 
@@ -8057,7 +8077,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `reason: string or null`
 
-        智能体需要用户登录的原因。
+        智能体 需要用户登录的原因。
 
       - `type: "browser_authentication"`
 
@@ -8093,11 +8113,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
         - `queries: array of string or null`
 
-          在使用多个查询时的搜索查询列表。
+          搜索查询列表，当使用多个查询时提供。
 
         - `query: string or null`
 
-          当使用单个查询时的搜索查询。
+          在仅使用单个查询时的搜索查询。
 
         - `type: "search"`
 
@@ -8107,7 +8127,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
       - `OpenPage object { type, url }`
 
-        打开一个网页。
+        打开网页。
 
         - `type: "open_page"`
 
@@ -8125,7 +8145,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
         - `pattern: string or null`
 
-          被搜索的文本模式。
+          所搜索的文本模式。
 
         - `type: "find_in_page"`
 
@@ -8135,11 +8155,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
         - `url: string or null`
 
-          被搜索页面的 URL。
+          所搜索页面的 URL。
 
       - `Other object { type }`
 
-        另一个网页搜索操作。
+        另一个 网页搜索 操作。
 
         - `type: "other"`
 
@@ -8149,21 +8169,21 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `status: AgentOutputItemStatus`
 
-      网页搜索调用的状态。
+      网页搜索 调用的状态。
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "web_search_call"`
 
-      item 类型。始终为 `web_search_call`.
+      条目类型。始终为 `web_search_call`.
 
       - `"web_search_call"`
 
   - `AgentCommandExecutionItem object { id, command, cwd, 6 more }`
 
-    由智能体产生的命令执行。
+    由 智能体 生成的命令执行。
 
     - `id: string`
 
@@ -8179,15 +8199,15 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `duration_ms: number or null`
 
-      命令持续时间（毫秒）。
+      命令执行时长，以毫秒为单位。
 
     - `exit_code: number or null`
 
-      如果命令已完成，则为进程退出码。
+      进程退出码（若命令已完成）。
 
     - `output: string or null`
 
-      如果可用，则为命令输出。
+      命令输出（若可用）。
 
     - `status: AgentFunctionCallStatus`
 
@@ -8195,17 +8215,17 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "command_execution"`
 
-      item 类型。始终为 `command_execution`.
+      条目类型。始终为 `command_execution`.
 
       - `"command_execution"`
 
   - `AgentCreateSubagentCallItem object { id, agent_id, content, 5 more }`
 
-    生成子智能体的请求。
+    派生子智能体的请求。
 
     - `id: string`
 
@@ -8213,11 +8233,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `agent_id: string`
 
-      请求子智能体的智能体的 ID。
+      请求派生子智能体的 智能体 的 ID。
 
     - `content: array of AgentContent`
 
-      分配给已生成智能体的任务。
+      分配给派生 智能体 的任务。
 
       - `OutputText object { text, type }`
 
@@ -8247,11 +8267,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `model: string or null`
 
-      为已生成智能体请求的模型。
+      为派生 智能体 请求的模型。
 
     - `reasoning_effort: string or null`
 
-      为生成的智能体请求的推理努力程度。
+      所生成智能体请求的推理工作量。
 
     - `status: AgentFunctionCallStatus`
 
@@ -8259,11 +8279,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "create_subagent_call"`
 
-      item 类型。始终为 `create_subagent_call`.
+      条目类型。始终为 `create_subagent_call`.
 
       - `"create_subagent_call"`
 
@@ -8279,7 +8299,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `content: array of AgentContent`
 
-      发送给接收方智能体的输入。
+      发送到接收方智能体的输入。
 
       - `OutputText object { text, type }`
 
@@ -8303,11 +8323,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "send_subagent_input_call"`
 
-      item 类型。始终为 `send_subagent_input_call`.
+      条目类型。始终为 `send_subagent_input_call`.
 
       - `"send_subagent_input_call"`
 
@@ -8335,11 +8355,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "resume_subagent_call"`
 
-      item 类型。始终为 `resume_subagent_call`.
+      条目类型。始终为 `resume_subagent_call`.
 
       - `"resume_subagent_call"`
 
@@ -8367,11 +8387,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "wait_for_subagents_call"`
 
-      item 类型。始终为 `wait_for_subagents_call`.
+      条目类型。始终为 `wait_for_subagents_call`.
 
       - `"wait_for_subagents_call"`
 
@@ -8399,11 +8419,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "interrupt_subagent_call"`
 
-      item 类型。始终为 `interrupt_subagent_call`.
+      条目类型。始终为 `interrupt_subagent_call`.
 
       - `"interrupt_subagent_call"`
 
@@ -8431,11 +8451,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
     - `turn_id: string`
 
-      包含此 item 的轮次的 ID。
+      包含此条目的轮次的 ID。
 
     - `type: "close_subagent_call"`
 
-      item 类型。始终为 `close_subagent_call`.
+      条目类型。始终为 `close_subagent_call`.
 
       - `"close_subagent_call"`
 
@@ -8447,11 +8467,11 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.item.done"`
 
@@ -8489,7 +8509,7 @@ Schema name: `SessionEventAgentSessionTurnItemDone`
 
 ## 智能体.session.turn.content_part.added
 
-当输出文本内容部分被添加时触发。
+在输出文本内容块被添加时发出。
 
 ### Schema
 
@@ -8497,7 +8517,7 @@ Schema name: `SessionEventAgentSessionTurnContentPartAdded`
 
 - `content_index: number`
 
-  消息中内容部分的索引。
+  该内容部分在消息中的索引。
 
 - `event_id: string`
 
@@ -8509,7 +8529,7 @@ Schema name: `SessionEventAgentSessionTurnContentPartAdded`
 
 - `output_index: number`
 
-  该项在当前轮输出中的索引。
+  该轮输出中项的索引。
 
 - `part: OutputText`
 
@@ -8527,11 +8547,11 @@ Schema name: `SessionEventAgentSessionTurnContentPartAdded`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.content_part.added"`
 
@@ -8561,7 +8581,7 @@ Schema name: `SessionEventAgentSessionTurnContentPartAdded`
 
 ## 智能体.session.turn.content_part.done
 
-当输出内容块完成时触发。
+在输出内容片段完成时发出。
 
 ### Schema
 
@@ -8569,7 +8589,7 @@ Schema name: `SessionEventAgentSessionTurnContentPartDone`
 
 - `content_index: number`
 
-  消息中内容部分的索引。
+  该内容部分在消息中的索引。
 
 - `event_id: string`
 
@@ -8581,7 +8601,7 @@ Schema name: `SessionEventAgentSessionTurnContentPartDone`
 
 - `output_index: number`
 
-  该项在当前轮输出中的索引。
+  该轮输出中项的索引。
 
 - `part: OutputText`
 
@@ -8599,11 +8619,11 @@ Schema name: `SessionEventAgentSessionTurnContentPartDone`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.content_part.done"`
 
@@ -8633,7 +8653,7 @@ Schema name: `SessionEventAgentSessionTurnContentPartDone`
 
 ## 智能体.session.turn.output_text.delta
 
-当文本被追加到输出文本内容部分时发出。
+当文本被追加到输出文本内容片段时发出。
 
 ### Schema
 
@@ -8641,7 +8661,7 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDelta`
 
 - `content_index: number`
 
-  消息中内容部分的索引。
+  该内容部分在消息中的索引。
 
 - `delta: string`
 
@@ -8657,15 +8677,15 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDelta`
 
 - `output_index: number`
 
-  该项在当前轮输出中的索引。
+  该轮输出中项的索引。
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.output_text.delta"`
 
@@ -8692,7 +8712,7 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDelta`
 
 ## 智能体.session.turn.output_text.done
 
-在输出文本内容部分完成时发出。
+当某个输出文本内容部分完成时发出。
 
 ### Schema
 
@@ -8700,7 +8720,7 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDone`
 
 - `content_index: number`
 
-  消息中内容部分的索引。
+  该内容部分在消息中的索引。
 
 - `event_id: string`
 
@@ -8712,11 +8732,11 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDone`
 
 - `output_index: number`
 
-  该项在当前轮输出中的索引。
+  该轮输出中项的索引。
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `text: string`
 
@@ -8724,7 +8744,7 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDone`
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.output_text.done"`
 
@@ -8751,7 +8771,7 @@ Schema name: `SessionEventAgentSessionTurnOutputTextDone`
 
 ## 智能体.session.turn.reasoning_summary_part.added
 
-当推理摘要内容片段被添加时发出。
+当添加推理摘要内容部分时触发。
 
 ### Schema
 
@@ -8767,7 +8787,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
 
 - `output_index: number`
 
-  该项在当前轮输出中的索引。
+  该轮输出中项的索引。
 
 - `part: SummaryText`
 
@@ -8785,7 +8805,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `summary_index: number`
 
@@ -8793,7 +8813,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.reasoning_summary_part.added"`
 
@@ -8823,7 +8843,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartAdded`
 
 ## 智能体.session.turn.reasoning_summary_part.done
 
-当推理摘要部分完成时发出。
+在推理摘要部分完成时发出。
 
 ### Schema
 
@@ -8839,7 +8859,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
 
 - `output_index: number`
 
-  该项在当前轮输出中的索引。
+  该轮输出中项的索引。
 
 - `part: SummaryText`
 
@@ -8857,11 +8877,11 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `status: "incomplete" or null`
 
-  显示方式 `incomplete` 在摘要生成被中断时。
+  呈现为 `incomplete` 当摘要生成被中断时。
 
   - `"incomplete"`
 
@@ -8871,7 +8891,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.reasoning_summary_part.done"`
 
@@ -8902,7 +8922,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryPartDone`
 
 ## 智能体.session.turn.reasoning_summary_text.delta
 
-当文本被追加到推理摘要时发出。
+当文本被追加到推理摘要时触发。
 
 ### Schema
 
@@ -8922,11 +8942,11 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDelta`
 
 - `output_index: number`
 
-  该项在当前轮输出中的索引。
+  该轮输出中项的索引。
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `summary_index: number`
 
@@ -8934,7 +8954,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDelta`
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.reasoning_summary_text.delta"`
 
@@ -8961,7 +8981,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDelta`
 
 ## 智能体.session.turn.reasoning_summary_text.done
 
-当某个推理摘要内容片段完成时发出。
+当推理摘要内容部分完成时发出。
 
 ### Schema
 
@@ -8977,11 +8997,11 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDone`
 
 - `output_index: number`
 
-  该项在当前轮输出中的索引。
+  该轮输出中项的索引。
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `summary_index: number`
 
@@ -8993,7 +9013,7 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDone`
 
 - `turn_id: string or null`
 
-  与事件关联的轮次 ID（如果适用）。
+  与事件关联的轮次的 ID（如果适用）。
 
 - `type: "agent.session.turn.reasoning_summary_text.done"`
 
@@ -9018,9 +9038,9 @@ Schema name: `SessionEventAgentSessionTurnReasoningSummaryTextDone`
 
 <a id="error"></a>
 
-## error
+## 错误
 
-在轮次或会话失败时发出。
+当某个轮次或会话失败时触发。
 
 ### Schema
 
@@ -9036,7 +9056,7 @@ Schema name: `SessionEventError`
 
   - `message: string`
 
-    对用户友好的错误说明。
+    面向用户安全的错误说明。
 
   - `param: string or null`
 
@@ -9052,7 +9072,7 @@ Schema name: `SessionEventError`
 
 - `session_id: string`
 
-  与事件关联的会话 ID。
+  与事件关联的会话的 ID。
 
 - `type: "error"`
 
