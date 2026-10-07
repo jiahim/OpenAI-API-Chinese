@@ -212,9 +212,9 @@ Schema name: `LiveSessionStartEvent`
 
           - `"sage"`
 
-          - `"shimmer"`
+          - `"shida"`
 
-          - `"shitan"`
+          - `"shimmer"`
 
           - `"sillage"`
 
@@ -6128,9 +6128,9 @@ Schema name: `LiveSessionStarted`
 
           - `"sage"`
 
-          - `"shimmer"`
+          - `"shida"`
 
-          - `"shitan"`
+          - `"shimmer"`
 
           - `"sillage"`
 
@@ -6908,9 +6908,9 @@ Schema name: `LiveSessionUpdated`
 
           - `"sage"`
 
-          - `"shimmer"`
+          - `"shida"`
 
-          - `"shitan"`
+          - `"shimmer"`
 
           - `"sillage"`
 
@@ -8226,9 +8226,9 @@ Schema name: `LiveSessionClosed`
 
           - `"sage"`
 
-          - `"shimmer"`
+          - `"shida"`
 
-          - `"shitan"`
+          - `"shimmer"`
 
           - `"sillage"`
 

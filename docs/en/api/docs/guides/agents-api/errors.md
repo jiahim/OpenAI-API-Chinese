@@ -40,8 +40,34 @@ These errors describe the request to the Agents API. They are separate from the
 | 409: `conflict_error`                                    | **Cause:** The operation conflicts with the current resource state. <br /> **Solution:** Read the message and retrieve the current state before retrying.                                                                                          |
 | 409: `executor_version_incompatible`                     | **Cause:** The executor version isn't supported. <br /> **Solution:** Upgrade the executor, then retry.                                                                                                                                            |
 | 424: `mcp_server_startup_failed`                         | **Cause:** An MCP server failed to start. <br /> **Solution:** Check the server's configuration and credentials. See [Troubleshoot connections](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp#troubleshoot-connections).                                   |
+| 429: `files_api_rate_limit_exceeded`                     | **Cause:** File requests exceeded the Files API limit for your user. <br /> **Solution:** Reduce concurrent requests and follow the [Files API rate-limit guidance](#files-api-rate-limits).                                                       |
 | 500: `internal_error`                                    | **Cause:** The service encountered an unexpected error. <br /> **Solution:** [Check saved work before retrying](#retry-transient-failures). See the shared [server-error guidance](https://developers.openai.com/api/docs/guides/error-codes#api-errors).                       |
 | 503: `service_unavailable_error`, `server_is_overloaded` | **Cause:** The service or a dependency is temporarily unavailable or overloaded. <br /> **Solution:** Follow the shared [503 guidance](https://developers.openai.com/api/docs/guides/error-codes#api-errors) and [check saved work before retrying](#retry-transient-failures). |
+
+### Files API rate limits
+
+Session creation and file attachment requests can return HTTP 429 with
+`files_api_rate_limit_exceeded`. The Agents API checks files through the Files API.
+These checks consume the authenticated user's Files API allowance. Each attached file can require its own check.
+
+```json
+{
+  "error": {
+    "type": "rate_limit_error",
+    "code": "files_api_rate_limit_exceeded",
+    "message": "The Files API rate limit for your user has been exceeded. Reduce the rate of requests that access files, then try again.",
+    "param": null
+  }
+}
+```
+
+Reduce the number of concurrent requests that access files. Retry with exponential
+backoff and a limit on attempts. Immediate retries can continue to exhaust the
+allowance.
+
+This HTTP response means the operation failed. It differs from a session or turn
+that fails asynchronously after a successful creation response. Check
+`error.code` to identify this condition instead of matching the message text.
 
 ## Turn errors
 

@@ -367,6 +367,8 @@ A successful request returns HTTP 201 with JSON containing the session ID and SD
 
 Read `result.session.id` and pass `result.transport.sdp` to `setRemoteDescription`. Treat the session ID as opaque and preserve it unchanged, including its prefix.
 
+To reduce connection startup latency, see [WebRTC with WARP](https://developers.openai.com/api/docs/guides/realtime-webrtc-warp).
+
 ### Handle media and events
 
 Send microphone audio and receive generated speech through the media tracks. WebRTC negotiates the audio format through SDP, so omit `audio.format` from session configuration. Do not send `session.input_audio.append` or expect `session.output_audio.delta` on the data channel.

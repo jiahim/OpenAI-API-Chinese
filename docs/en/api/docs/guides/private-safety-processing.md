@@ -127,6 +127,28 @@ ZDR with PSP is enabled per project. Once enabled, the PSP policy applies to all
 
 Complete these steps if you're using AWS. For other clouds, skip to **Azure Blob Storage** or **Google Cloud Storage**.
 
+<figure>
+  <video
+    controls
+    playsInline
+    preload="metadata"
+    poster="/images/platform/guides/private-safety-processing/aws-onboarding-poster.webp"
+    aria-label="AWS onboarding walkthrough for ZDR with Private Safety Processing"
+    aria-describedby="aws-onboarding-video-description"
+    style={{ width: "100%", height: "auto" }}
+  >
+    <source
+      src="https://cdn.openai.com/devhub/docs/api/private-safety-processing/psp-onboarding-2026-10-05.webm"
+      type="video/webm"
+    />
+    Your browser doesn't support this video. Follow the written steps below.
+  </video>
+  <figcaption id="aws-onboarding-video-description">
+    AWS onboarding walkthrough (2 min 17 sec, no audio). Follow the written
+    steps below for configuration values.
+  </figcaption>
+</figure>
+
 #### 1. Create the bucket
 
 Create a dedicated S3 bucket in a region compatible with your project's data residency. If Data Residency is off, the recommended region is us-west-1.

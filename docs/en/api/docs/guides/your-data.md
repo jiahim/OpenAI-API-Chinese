@@ -88,6 +88,7 @@ The table below indicates when application state is stored for each endpoint. Ze
 | `/v1/audio/transcriptions` |           No           |            None            |              None              |              Yes               |                            No                            |
 | `/v1/audio/translations`   |           No           |            None            |              None              |              Yes               |                            No                            |
 | `/v1/audio/speech`         |           No           |          30 days           |              None              |              Yes               |                            No                            |
+| `/v1/audio/voices`         |           No           |          30 days           |         Until deleted          |               No               |                            No                            |
 | `/v1/files`                |           No           |          30 days           |        Until deleted\*         |               No               |                            No                            |
 | `/v1/fine_tuning/jobs`     |           No           |          30 days           |         Until deleted          |               No               |                            No                            |
 | `/v1/evals`                |           No           |          30 days           |         Until deleted          |               No               |                            No                            |

@@ -10,6 +10,8 @@ The Decisions API is in public beta, and we expect to GA in the coming weeks.
   `gpt-6-luna` is the only model currently available. Use the dedicated `POST
   /v1/decisions` endpoint.
 
+To run the SDK examples below, use these OpenAI SDK versions or later: Python 3.26.0, JavaScript 7.30.0, Go 3.73.0, Ruby 0.101.0, and Java 4.78.0. See [OpenAI SDK](https://developers.openai.com/api/docs/libraries) for installation instructions.
+
 ## How decisions work
 
 A request has three parts:
@@ -40,6 +42,8 @@ Use a `predicate` question to check a product photo for visible damage. This req
 
 
 
+Check an image for visible damage
+
 ```bash
 IMAGE_BASE64="$(base64 < product.png | tr -d '\r\n')"
 
@@ -64,6 +68,234 @@ curl https://api.openai.com/v1/decisions \
 }
 JSON
 ```
+
+```javascript
+import { readFile } from "node:fs/promises";
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const imageBase64 = (await readFile("product.png")).toString("base64");
+const decision = await client.decisions.create({
+  model: "gpt-6-luna",
+  input: [
+    {
+      role: "user",
+      content: [
+        { type: "input_text", text: "Inspect the product in this photo." },
+        {
+          type: "input_image",
+          image_url: `data:image/png;base64,${imageBase64}`,
+        },
+      ],
+    },
+  ],
+  questions: [
+    {
+      type: "predicate",
+      name: "visible_damage",
+      instructions:
+        "Does the product have visible damage, such as a crack, tear, or dent? Ignore shadows and damage to the packaging.",
+    },
+  ],
+});
+
+const answer = decision.answers[0];
+if (answer.type === "refusal") {
+  console.log(`Refused: ${answer.name}`);
+} else if (answer.type === "predicate") {
+  console.log(`Visible damage probability: ${answer.probability}`);
+}
+```
+
+```python
+import base64
+from pathlib import Path
+
+from openai import OpenAI
+
+client = OpenAI()
+image_base64 = base64.b64encode(Path("product.png").read_bytes()).decode("ascii")
+
+decision = client.decisions.create(
+    model="gpt-6-luna",
+    input=[
+        {
+            "role": "user",
+            "content": [
+                {"type": "input_text", "text": "Inspect the product in this photo."},
+                {
+                    "type": "input_image",
+                    "image_url": f"data:image/png;base64,{image_base64}",
+                },
+            ],
+        }
+    ],
+    questions=[
+        {
+            "type": "predicate",
+            "name": "visible_damage",
+            "instructions": (
+                "Does the product have visible damage, such as a crack, tear, or dent? "
+                "Ignore shadows and damage to the packaging."
+            ),
+        }
+    ],
+)
+
+answer = decision.answers[0]
+if answer.type == "refusal":
+    print(f"Refused: {answer.name}")
+elif answer.type == "predicate":
+    print(f"Visible damage probability: {answer.probability}")
+```
+
+```go
+package main
+
+import (
+	"context"
+	"encoding/base64"
+	"fmt"
+	"os"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	image, err := os.ReadFile("product.png")
+	if err != nil {
+		panic(err)
+	}
+	client := openai.NewClient()
+	decision, err := client.Decisions.New(context.Background(), openai.DecisionNewParams{
+		Model: "gpt-6-luna",
+		Input: openai.DecisionNewParamsInputUnion{
+			OfDecisionInputMessageArray: []openai.DecisionInputMessageParam{{
+				Content: openai.DecisionInputMessageContentUnionParam{
+					OfParts: []openai.DecisionInputPartUnionParam{
+						{OfInputText: &openai.DecisionInputTextParam{Text: "Inspect the product in this photo."}},
+						{OfInputImage: &openai.DecisionInputImageParam{
+							ImageURL: "data:image/png;base64," + base64.StdEncoding.EncodeToString(image),
+						}},
+					},
+				},
+			}},
+		},
+		Questions: []openai.DecisionNewParamsQuestionUnion{{
+			OfPredicate: &openai.DecisionNewParamsQuestionPredicate{
+				Name:         openai.String("visible_damage"),
+				Instructions: "Does the product have visible damage, such as a crack, tear, or dent? Ignore shadows and damage to the packaging.",
+			},
+		}},
+	})
+	if err != nil {
+		panic(err)
+	}
+	switch answer := decision.Answers[0].AsAny().(type) {
+	case openai.DecisionAnswerPredicate:
+		fmt.Println(answer.Probability)
+	case openai.DecisionAnswerRefusal:
+		fmt.Printf("Decision refused for %s\n", answer.Name)
+	default:
+		panic("unexpected answer type")
+	}
+}
+```
+
+```java
+import com.openai.models.decisions.DecisionCreateParams;
+import com.openai.models.decisions.DecisionInputImage;
+import com.openai.models.decisions.DecisionInputMessage;
+import com.openai.models.decisions.DecisionInputPart;
+import com.openai.models.decisions.DecisionInputText;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+import java.util.List;
+
+String imageBase64 =
+    Base64.getEncoder().encodeToString(Files.readAllBytes(Path.of("product.png")));
+var message =
+    DecisionInputMessage.builder()
+        .contentOfParts(
+            List.of(
+                DecisionInputPart.ofInputText(
+                    DecisionInputText.builder()
+                        .text("Inspect the product in this photo.")
+                        .build()),
+                DecisionInputPart.ofInputImage(
+                    DecisionInputImage.builder()
+                        .imageUrl("data:image/png;base64," + imageBase64)
+                        .build())))
+        .build();
+var decision =
+    client
+        .decisions()
+        .create(
+            DecisionCreateParams.builder()
+                .model("gpt-6-luna")
+                .inputOfDecisionInputMessages(List.of(message))
+                .addQuestion(
+                    DecisionCreateParams.Question.Predicate.builder()
+                        .name("visible_damage")
+                        .instructions(
+                            "Does the product have visible damage, such as a crack, tear, or"
+                                + " dent? Ignore shadows and damage to the packaging.")
+                        .build())
+                .build());
+
+var answer = decision.answers().get(0);
+if (answer.isRefusal()) {
+  System.out.println("Refused: " + answer.asRefusal().name().orElse("visible_damage"));
+} else {
+  System.out.println(answer.asPredicate().probability());
+}
+```
+
+```ruby
+require "base64"
+require "openai"
+
+image_base64 = Base64.strict_encode64(File.binread("product.png"))
+client = OpenAI::Client.new
+
+decision = client.decisions.create(
+  model: "gpt-6-luna",
+  input: [
+    {
+      role: :user,
+      content: [
+        {
+          type: :input_text,
+          text: "Inspect the product in this photo."
+        },
+        {
+          type: :input_image,
+          image_url: "data:image/png;base64,#{image_base64}"
+        }
+      ]
+    }
+  ],
+  questions: [
+    {
+      type: :predicate,
+      name: "visible_damage",
+      instructions: "Does the product have visible damage, such as a crack, tear, or dent? Ignore shadows and damage to the packaging."
+    }
+  ]
+)
+
+answer = decision.answers.fetch(0)
+case answer
+when OpenAI::Models::Decision::Answer::Predicate
+  puts(answer.probability)
+when OpenAI::Models::Decision::Answer::Refusal
+  warn("Decision refused for #{answer.name}")
+else
+  raise("Unexpected answer type: #{answer.type}")
+end
+```
+
 
 An illustrative response excerpt:
 
@@ -91,6 +323,8 @@ A `choice` question selects one value from the options you provide. Use distinct
 
 This request routes a customer complaint:
 
+Route a customer complaint
+
 ```bash
 curl https://api.openai.com/v1/decisions \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -111,6 +345,217 @@ curl https://api.openai.com/v1/decisions \
     }]
   }'
 ```
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const decision = await client.decisions.create({
+  model: "gpt-6-luna",
+  input: "I was charged twice for my order.",
+  questions: [
+    {
+      type: "choice",
+      name: "department",
+      instructions: "Which department should handle this complaint?",
+      choices: [
+        { value: "billing", description: "Payments, invoices, and refunds." },
+        { value: "technical", description: "Problems using the product." },
+        { value: "shipping", description: "Delivery and tracking." },
+        { value: "other", description: "Requests outside these categories." },
+      ],
+    },
+  ],
+});
+
+const answer = decision.answers[0];
+if (answer.type === "refusal") {
+  console.log(`Refused: ${answer.name}`);
+} else if (answer.type === "choice") {
+  console.log(
+    `Department: ${answer.choice} (confidence: ${answer.confidence})`
+  );
+}
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+decision = client.decisions.create(
+    model="gpt-6-luna",
+    input="I was charged twice for my order.",
+    questions=[
+        {
+            "type": "choice",
+            "name": "department",
+            "instructions": "Which department should handle this complaint?",
+            "choices": [
+                {"value": "billing", "description": "Payments, invoices, and refunds."},
+                {"value": "technical", "description": "Problems using the product."},
+                {"value": "shipping", "description": "Delivery and tracking."},
+                {"value": "other", "description": "Requests outside these categories."},
+            ],
+        }
+    ],
+)
+
+answer = decision.answers[0]
+if answer.type == "refusal":
+    print(f"Refused: {answer.name}")
+elif answer.type == "choice":
+    print(f"Department: {answer.choice} (confidence: {answer.confidence})")
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	client := openai.NewClient()
+	decision, err := client.Decisions.New(context.Background(), openai.DecisionNewParams{
+		Model: "gpt-6-luna",
+		Input: openai.DecisionNewParamsInputUnion{OfString: openai.String("I was charged twice for my order.")},
+		Questions: []openai.DecisionNewParamsQuestionUnion{{
+			OfChoice: &openai.DecisionNewParamsQuestionChoice{
+				Name:         openai.String("department"),
+				Instructions: "Which department should handle this complaint?",
+				Choices: []openai.DecisionNewParamsQuestionChoiceChoice{
+					{
+						Value:       openai.DecisionNewParamsQuestionChoiceChoiceValueUnion{OfString: openai.String("billing")},
+						Description: openai.String("Payments, invoices, and refunds."),
+					},
+					{
+						Value:       openai.DecisionNewParamsQuestionChoiceChoiceValueUnion{OfString: openai.String("technical")},
+						Description: openai.String("Problems using the product."),
+					},
+					{
+						Value:       openai.DecisionNewParamsQuestionChoiceChoiceValueUnion{OfString: openai.String("shipping")},
+						Description: openai.String("Delivery and tracking."),
+					},
+					{
+						Value:       openai.DecisionNewParamsQuestionChoiceChoiceValueUnion{OfString: openai.String("other")},
+						Description: openai.String("Requests outside these categories."),
+					},
+				},
+			},
+		}},
+	})
+	if err != nil {
+		panic(err)
+	}
+	switch answer := decision.Answers[0].AsAny().(type) {
+	case openai.DecisionAnswerChoice:
+		fmt.Println(answer.Choice.AsString(), answer.Confidence, answer.Probabilities)
+	case openai.DecisionAnswerRefusal:
+		fmt.Printf("Decision refused for %s\n", answer.Name)
+	default:
+		panic("unexpected answer type")
+	}
+}
+```
+
+```java
+import com.openai.models.decisions.DecisionChoiceOption;
+import com.openai.models.decisions.DecisionCreateParams;
+import com.openai.models.decisions.DecisionCreateParams.Question.Choice;
+
+var decision =
+    client
+        .decisions()
+        .create(
+            DecisionCreateParams.builder()
+                .model("gpt-6-luna")
+                .input("I was charged twice for my order.")
+                .addQuestion(
+                    Choice.builder()
+                        .name("department")
+                        .instructions("Which department should handle this complaint?")
+                        .addChoice(
+                            DecisionChoiceOption.builder()
+                                .value("billing")
+                                .description("Payments, invoices, and refunds.")
+                                .build())
+                        .addChoice(
+                            DecisionChoiceOption.builder()
+                                .value("technical")
+                                .description("Problems using the product.")
+                                .build())
+                        .addChoice(
+                            DecisionChoiceOption.builder()
+                                .value("shipping")
+                                .description("Delivery and tracking.")
+                                .build())
+                        .addChoice(
+                            DecisionChoiceOption.builder()
+                                .value("other")
+                                .description("Requests outside these categories.")
+                                .build())
+                        .build())
+                .build());
+
+var answer = decision.answers().get(0);
+if (answer.isRefusal()) {
+  System.out.println("Refused: " + answer.asRefusal().name().orElse("department"));
+} else {
+  var choice = answer.asChoice();
+  System.out.println(choice.choice().asString());
+  System.out.println(choice.probabilities());
+  System.out.println(choice.confidence());
+}
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+decision = client.decisions.create(
+  model: "gpt-6-luna",
+  input: "I was charged twice for my order.",
+  questions: [
+    {
+      type: :choice,
+      name: "department",
+      instructions: "Which department should handle this complaint?",
+      choices: [
+        {
+          value: "billing",
+          description: "Payments, invoices, and refunds."
+        },
+        {
+          value: "technical",
+          description: "Problems using the product."
+        },
+        {
+          value: "shipping",
+          description: "Delivery and tracking."
+        },
+        {
+          value: "other",
+          description: "Requests outside these categories."
+        }
+      ]
+    }
+  ]
+)
+
+answer = decision.answers.fetch(0)
+case answer
+when OpenAI::Models::Decision::Answer::Choice
+  puts(answer.choice, answer.confidence, answer.probabilities)
+when OpenAI::Models::Decision::Answer::Refusal
+  warn("Decision refused for #{answer.name}")
+else
+  raise("Unexpected answer type: #{answer.type}")
+end
+```
+
 
 An illustrative response excerpt:
 
@@ -143,6 +588,8 @@ A `score` question evaluates an input against ordered `levels`. Define the crite
 
 
 
+Score an issue against severity levels
+
 ```bash
 curl https://api.openai.com/v1/decisions \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
@@ -162,6 +609,208 @@ curl https://api.openai.com/v1/decisions \
     }]
   }'
 ```
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const decision = await client.decisions.create({
+  model: "gpt-6-luna",
+  input: "Export fails in Safari but works in Chrome.",
+  questions: [
+    {
+      type: "score",
+      name: "severity",
+      instructions: "How severe is this issue?",
+      levels: [
+        {
+          label: "Cosmetic",
+          description: "Appearance only; no lost functionality.",
+        },
+        {
+          label: "Workaround available",
+          description: "A task fails, but another way works.",
+        },
+        {
+          label: "Fully blocked",
+          description: "A task fails with no workaround.",
+        },
+      ],
+    },
+  ],
+});
+
+const answer = decision.answers[0];
+if (answer.type === "refusal") {
+  console.log(`Refused: ${answer.name}`);
+} else if (answer.type === "score") {
+  console.log(`Severity: ${answer.score} (confidence: ${answer.confidence})`);
+}
+```
+
+```python
+from openai import OpenAI
+
+client = OpenAI()
+decision = client.decisions.create(
+    model="gpt-6-luna",
+    input="Export fails in Safari but works in Chrome.",
+    questions=[
+        {
+            "type": "score",
+            "name": "severity",
+            "instructions": "How severe is this issue?",
+            "levels": [
+                {
+                    "label": "Cosmetic",
+                    "description": "Appearance only; no lost functionality.",
+                },
+                {
+                    "label": "Workaround available",
+                    "description": "A task fails, but another way works.",
+                },
+                {
+                    "label": "Fully blocked",
+                    "description": "A task fails with no workaround.",
+                },
+            ],
+        }
+    ],
+)
+
+answer = decision.answers[0]
+if answer.type == "refusal":
+    print(f"Refused: {answer.name}")
+elif answer.type == "score":
+    print(f"Severity: {answer.score} (confidence: {answer.confidence})")
+```
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	client := openai.NewClient()
+	decision, err := client.Decisions.New(context.Background(), openai.DecisionNewParams{
+		Model: "gpt-6-luna",
+		Input: openai.DecisionNewParamsInputUnion{OfString: openai.String("Export fails in Safari but works in Chrome.")},
+		Questions: []openai.DecisionNewParamsQuestionUnion{{
+			OfScore: &openai.DecisionNewParamsQuestionScore{
+				Name:         openai.String("severity"),
+				Instructions: "How severe is this issue?",
+				Levels: []openai.DecisionNewParamsQuestionScoreLevel{
+					{Label: "Cosmetic", Description: openai.String("Appearance only; no lost functionality.")},
+					{Label: "Workaround available", Description: openai.String("A task fails, but another way works.")},
+					{Label: "Fully blocked", Description: openai.String("A task fails with no workaround.")},
+				},
+			},
+		}},
+	})
+	if err != nil {
+		panic(err)
+	}
+	switch answer := decision.Answers[0].AsAny().(type) {
+	case openai.DecisionAnswerScore:
+		fmt.Println(answer.Score, answer.Confidence, answer.Probabilities)
+	case openai.DecisionAnswerRefusal:
+		fmt.Printf("Decision refused for %s\n", answer.Name)
+	default:
+		panic("unexpected answer type")
+	}
+}
+```
+
+```java
+import com.openai.models.decisions.DecisionCreateParams;
+import com.openai.models.decisions.DecisionCreateParams.Question.Score;
+
+var decision =
+    client
+        .decisions()
+        .create(
+            DecisionCreateParams.builder()
+                .model("gpt-6-luna")
+                .input("Export fails in Safari but works in Chrome.")
+                .addQuestion(
+                    Score.builder()
+                        .name("severity")
+                        .instructions("How severe is this issue?")
+                        .addLevel(
+                            Score.Level.builder()
+                                .label("Cosmetic")
+                                .description("Appearance only; no lost functionality.")
+                                .build())
+                        .addLevel(
+                            Score.Level.builder()
+                                .label("Workaround available")
+                                .description("A task fails, but another way works.")
+                                .build())
+                        .addLevel(
+                            Score.Level.builder()
+                                .label("Fully blocked")
+                                .description("A task fails with no workaround.")
+                                .build())
+                        .build())
+                .build());
+
+var answer = decision.answers().get(0);
+if (answer.isRefusal()) {
+  System.out.println("Refused: " + answer.asRefusal().name().orElse("severity"));
+} else {
+  var score = answer.asScore();
+  System.out.println(score.score());
+  System.out.println(score.probabilities());
+  System.out.println(score.confidence());
+}
+```
+
+```ruby
+require "openai"
+
+client = OpenAI::Client.new
+decision = client.decisions.create(
+  model: "gpt-6-luna",
+  input: "Export fails in Safari but works in Chrome.",
+  questions: [
+    {
+      type: :score,
+      name: "severity",
+      instructions: "How severe is this issue?",
+      levels: [
+        {
+          label: "Cosmetic",
+          description: "Appearance only; no lost functionality."
+        },
+        {
+          label: "Workaround available",
+          description: "A task fails, but another way works."
+        },
+        {
+          label: "Fully blocked",
+          description: "A task fails with no workaround."
+        }
+      ]
+    }
+  ]
+)
+
+answer = decision.answers.fetch(0)
+case answer
+when OpenAI::Models::Decision::Answer::Score
+  puts(answer.score, answer.confidence, answer.probabilities)
+when OpenAI::Models::Decision::Answer::Refusal
+  warn("Decision refused for #{answer.name}")
+else
+  raise("Unexpected answer type: #{answer.type}")
+end
+```
+
 
 An illustrative response excerpt:
 

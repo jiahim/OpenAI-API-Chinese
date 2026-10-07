@@ -18,24 +18,26 @@ If your MCP server is private, on-premises, or behind a firewall, use [Secure MC
 
 Use the `mcp` tool type in the [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create). Set `server_url` for a remote MCP server, or use `tunnel_id` for a local MCP server through [Secure MCP Tunnel](https://developers.openai.com/api/docs/guides/secure-mcp-tunnels). Depending on the server, you may also need an OAuth access token in the `authorization` parameter.
 
+The following example uses the public [OpenAI Docs MCP server](https://developers.openai.com/resources/docs-mcp) to find documentation about streaming Responses API output. This server provides read-only documentation tools and does not require authentication. The example skips tool-call approvals for this public documentation query; use approvals when sharing sensitive data.
+
 Using a remote MCP server in the Responses API
 
 ```bash
-curl https://api.openai.com/v1/responses \ 
--H "Content-Type: application/json" \ 
--H "Authorization: Bearer $OPENAI_API_KEY" \ 
+curl https://api.openai.com/v1/responses \
+-H "Content-Type: application/json" \
+-H "Authorization: Bearer $OPENAI_API_KEY" \
 -d '{
   "model": "gpt-6-astra",
     "tools": [
       {
         "type": "mcp",
-        "server_label": "dmcp",
-        "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/mcp",
+        "server_label": "openai_docs",
+        "server_description": "Search and read the public OpenAI documentation.",
+        "server_url": "https://developers.openai.com/mcp",
         "require_approval": "never"
       }
     ],
-    "input": "Roll 2d4+1"
+    "input": "Search the OpenAI docs for Responses API streaming and return the relevant links."
   }'
 ```
 
@@ -48,14 +50,14 @@ const resp = await client.responses.create({
   tools: [
     {
       type: "mcp",
-      server_label: "dmcp",
-      server_description:
-        "A Dungeons and Dragons MCP server to assist with dice rolling.",
-      server_url: "https://dmcp-server.deno.dev/mcp",
+      server_label: "openai_docs",
+      server_description: "Search and read the public OpenAI documentation.",
+      server_url: "https://developers.openai.com/mcp",
       require_approval: "never",
     },
   ],
-  input: "Roll 2d4+1",
+  input:
+    "Search the OpenAI docs for Responses API streaming and return the relevant links.",
 });
 
 console.log(resp.output_text);
@@ -71,13 +73,13 @@ resp = client.responses.create(
     tools=[
         {
             "type": "mcp",
-            "server_label": "dmcp",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_url": "https://dmcp-server.deno.dev/mcp",
+            "server_label": "openai_docs",
+            "server_description": "Search and read the public OpenAI documentation.",
+            "server_url": "https://developers.openai.com/mcp",
             "require_approval": "never",
         },
     ],
-    input="Roll 2d4+1",
+    input="Search the OpenAI docs for Responses API streaming and return the relevant links.",
 )
 
 print(resp.output_text)
@@ -96,15 +98,15 @@ import (
 
 func main() {
 	client := openai.NewClient()
-	tool := responses.ToolParamOfMcp("dmcp")
-	tool.OfMcp.ServerDescription = openai.String("A Dungeons and Dragons MCP server to assist with dice rolling.")
-	tool.OfMcp.ServerURL = openai.String("https://dmcp-server.deno.dev/mcp")
+	tool := responses.ToolParamOfMcp("openai_docs")
+	tool.OfMcp.ServerDescription = openai.String("Search and read the public OpenAI documentation.")
+	tool.OfMcp.ServerURL = openai.String("https://developers.openai.com/mcp")
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
 		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
-		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Roll 2d4+1")},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Search the OpenAI docs for Responses API streaming and return the relevant links.")},
 	})
 	if err != nil {
 		panic(err)
@@ -122,13 +124,13 @@ import com.openai.models.responses.Tool;
 ResponseCreateParams params =
     ResponseCreateParams.builder()
         .model("gpt-6-astra")
-        .input("Roll 2d4+1")
+        .input(
+            "Search the OpenAI docs for Responses API streaming and return the relevant links.")
         .addTool(
             Tool.Mcp.builder()
-                .serverLabel("dmcp")
-                .serverDescription(
-                    "A Dungeons and Dragons MCP server to assist with dice rolling.")
-                .serverUrl("https://dmcp-server.deno.dev/mcp")
+                .serverLabel("openai_docs")
+                .serverDescription("Search and read the public OpenAI documentation.")
+                .serverUrl("https://developers.openai.com/mcp")
                 .requireApproval(Tool.Mcp.RequireApproval.McpToolApprovalSetting.NEVER)
                 .build())
         .build();
@@ -150,12 +152,12 @@ ResponsesClient client = new(key);
 CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
-        serverLabel: "dmcp",
-        serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
+        serverLabel: "openai_docs",
+        serverUri: new Uri("https://developers.openai.com/mcp"),
         toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Search the OpenAI docs for Responses API streaming and return the relevant links."));
 
 ResponseResult response = await client.CreateResponseAsync(options);
 
@@ -172,13 +174,13 @@ response = openai.responses.create(
   tools: [
     {
       type: "mcp",
-      server_label: "dmcp",
-      server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
-      server_url: "https://dmcp-server.deno.dev/mcp",
+      server_label: "openai_docs",
+      server_description: "Search and read the public OpenAI documentation.",
+      server_url: "https://developers.openai.com/mcp",
       require_approval: "never"
     }
   ],
-  input: "Roll 2d4+1"
+  input: "Search the OpenAI docs for Responses API streaming and return the relevant links."
 )
 
 puts(response.output_text)
@@ -190,29 +192,40 @@ It is very important that developers trust any remote MCP server they use with
   anything that enters the model's context. Carefully review the 
   **Risks and Safety** section below before using this tool.
 
-The API will return new items in the `output` array of the model response. If the model decides to use an MCP server, it will first make a request to list available tools from the server, which will create a `mcp_list_tools` output item. From the remote MCP server example above, it contains only one tool definition:
+The API will return new items in the `output` array of the model response. If the model decides to use an MCP server, it will first make a request to list available tools from the server, which will create a `mcp_list_tools` output item. The following illustrative output shows only the search tool, with its description shortened. The server also exposes other documentation tools.
 
 ```json
 {
   "id": "mcpl_68a6102a4968819c8177b05584dd627b0679e572a900e618",
   "type": "mcp_list_tools",
-  "server_label": "dmcp",
+  "server_label": "openai_docs",
   "tools": [
     {
-      "annotations": null,
-      "description": "Given a string of text describing a dice roll...",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "description": "Search the public OpenAI documentation.",
       "input_schema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
-          "diceRollExpression": {
+          "query": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
             "type": "string"
           }
         },
-        "required": ["diceRollExpression"],
-        "additionalProperties": false
+        "required": ["query"]
       },
-      "name": "roll"
+      "name": "search_openai_docs"
     }
   ]
 }
@@ -225,11 +238,11 @@ If the model decides to call one of the available tools from the MCP server, you
   "id": "mcp_68a6102d8948819c9b1490d36d5ffa4a0679e572a900e618",
   "type": "mcp_call",
   "approval_request_id": null,
-  "arguments": "{\"diceRollExpression\":\"2d4 + 1\"}",
+  "arguments": "{\"query\":\"Responses API streaming\",\"limit\":1}",
   "error": null,
-  "name": "roll",
-  "output": "4",
-  "server_label": "dmcp"
+  "name": "search_openai_docs",
+  "output": "{\"hits\":[{\"url\":\"https://developers.openai.com/api/docs/guides/streaming-responses\"}]}",
+  "server_label": "openai_docs"
 }
 ```
 
@@ -245,29 +258,40 @@ Below, we'll step through the process the API takes when calling an MCP tool.
 
 When you specify a remote MCP server in the `tools` parameter, the API will attempt to get a list of tools from the server. The Responses API works with remote MCP servers that support either the Streamable HTTP or the HTTP/SSE transport protocols.
 
-If successful in retrieving the list of tools, a new `mcp_list_tools` output item will appear in the model response output. The `tools` property of this object will show the tools that were successfully imported.
+If successful in retrieving the list of tools, a new `mcp_list_tools` output item will appear in the model response output. The `tools` property of this object will show the tools that were successfully imported. This illustrative excerpt shows only the search tool, with its description shortened.
 
 ```json
 {
   "id": "mcpl_68a6102a4968819c8177b05584dd627b0679e572a900e618",
   "type": "mcp_list_tools",
-  "server_label": "dmcp",
+  "server_label": "openai_docs",
   "tools": [
     {
-      "annotations": null,
-      "description": "Given a string of text describing a dice roll...",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false
+      },
+      "description": "Search the public OpenAI documentation.",
       "input_schema": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$schema": "http://json-schema.org/draft-07/schema#",
         "type": "object",
         "properties": {
-          "diceRollExpression": {
+          "query": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50
+          },
+          "cursor": {
             "type": "string"
           }
         },
-        "required": ["diceRollExpression"],
-        "additionalProperties": false
+        "required": ["query"]
       },
-      "name": "roll"
+      "name": "search_openai_docs"
     }
   ]
 }
@@ -281,7 +305,7 @@ As long as the `mcp_list_tools` item is present in the context of an API
 
 #### Filtering tools
 
-Some MCP servers can have dozens of tools, and exposing many tools to the model can result in high cost and latency. If you're only interested in a subset of tools an MCP server exposes, you can use the `allowed_tools` parameter to only import those tools.
+Some MCP servers can have dozens of tools, and exposing many tools to the model can result in high cost and latency. If you're only interested in a subset of tools an MCP server exposes, you can use the `allowed_tools` parameter to only import those tools. This example imports only `search_openai_docs` to find documentation links.
 
 Constrain allowed tools
 
@@ -294,14 +318,14 @@ curl https://api.openai.com/v1/responses \
     "tools": [
       {
         "type": "mcp",
-        "server_label": "dmcp",
-        "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/mcp",
+        "server_label": "openai_docs",
+        "server_description": "Search and read the public OpenAI documentation.",
+        "server_url": "https://developers.openai.com/mcp",
         "require_approval": "never",
-        "allowed_tools": ["roll"]
+        "allowed_tools": ["search_openai_docs"]
       }
     ],
-    "input": "Roll 2d4+1"
+    "input": "Search the OpenAI docs for Responses API streaming and return the relevant links."
   }'
 ```
 
@@ -314,15 +338,15 @@ const resp = await client.responses.create({
   tools: [
     {
       type: "mcp",
-      server_label: "dmcp",
-      server_description:
-        "A Dungeons and Dragons MCP server to assist with dice rolling.",
-      server_url: "https://dmcp-server.deno.dev/mcp",
+      server_label: "openai_docs",
+      server_description: "Search and read the public OpenAI documentation.",
+      server_url: "https://developers.openai.com/mcp",
       require_approval: "never",
-      allowed_tools: ["roll"],
+      allowed_tools: ["search_openai_docs"],
     },
   ],
-  input: "Roll 2d4+1",
+  input:
+    "Search the OpenAI docs for Responses API streaming and return the relevant links.",
 });
 
 console.log(resp.output_text);
@@ -338,14 +362,14 @@ resp = client.responses.create(
     tools=[
         {
             "type": "mcp",
-            "server_label": "dmcp",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_url": "https://dmcp-server.deno.dev/mcp",
+            "server_label": "openai_docs",
+            "server_description": "Search and read the public OpenAI documentation.",
+            "server_url": "https://developers.openai.com/mcp",
             "require_approval": "never",
-            "allowed_tools": ["roll"],
+            "allowed_tools": ["search_openai_docs"],
         }
     ],
-    input="Roll 2d4+1",
+    input="Search the OpenAI docs for Responses API streaming and return the relevant links.",
 )
 
 print(resp.output_text)
@@ -364,16 +388,16 @@ import (
 
 func main() {
 	client := openai.NewClient()
-	tool := responses.ToolParamOfMcp("dmcp")
-	tool.OfMcp.ServerDescription = openai.String("A Dungeons and Dragons MCP server to assist with dice rolling.")
-	tool.OfMcp.ServerURL = openai.String("https://dmcp-server.deno.dev/mcp")
+	tool := responses.ToolParamOfMcp("openai_docs")
+	tool.OfMcp.ServerDescription = openai.String("Search and read the public OpenAI documentation.")
+	tool.OfMcp.ServerURL = openai.String("https://developers.openai.com/mcp")
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("never")}
-	tool.OfMcp.AllowedTools = responses.ToolMcpAllowedToolsUnionParam{OfMcpAllowedTools: []string{"roll"}}
+	tool.OfMcp.AllowedTools = responses.ToolMcpAllowedToolsUnionParam{OfMcpAllowedTools: []string{"search_openai_docs"}}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
 		Model: "gpt-6-astra",
 		Tools: []responses.ToolUnionParam{tool},
-		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Roll 2d4+1")},
+		Input: responses.ResponseNewParamsInputUnion{OfString: openai.String("Search the OpenAI docs for Responses API streaming and return the relevant links.")},
 	})
 	if err != nil {
 		panic(err)
@@ -392,15 +416,15 @@ import java.util.List;
 ResponseCreateParams params =
     ResponseCreateParams.builder()
         .model("gpt-6-astra")
-        .input("Roll 2d4+1")
+        .input(
+            "Search the OpenAI docs for Responses API streaming and return the relevant links.")
         .addTool(
             Tool.Mcp.builder()
-                .serverLabel("dmcp")
-                .serverDescription(
-                    "A Dungeons and Dragons MCP server to assist with dice rolling.")
-                .serverUrl("https://dmcp-server.deno.dev/mcp")
+                .serverLabel("openai_docs")
+                .serverDescription("Search and read the public OpenAI documentation.")
+                .serverUrl("https://developers.openai.com/mcp")
                 .requireApproval(Tool.Mcp.RequireApproval.McpToolApprovalSetting.NEVER)
-                .allowedToolsOfMcp(List.of("roll"))
+                .allowedToolsOfMcp(List.of("search_openai_docs"))
                 .build())
         .build();
 
@@ -421,13 +445,13 @@ ResponsesClient client = new(key);
 CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
-        serverLabel: "dmcp",
-        serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
-        allowedTools: new McpToolFilter() { ToolNames = { "roll" } },
+        serverLabel: "openai_docs",
+        serverUri: new Uri("https://developers.openai.com/mcp"),
+        allowedTools: new McpToolFilter() { ToolNames = { "search_openai_docs" } },
         toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.NeverRequireApproval
     )
 );
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Search the OpenAI docs for Responses API streaming and return the relevant links."));
 
 ResponseResult response = await client.CreateResponseAsync(options);
 
@@ -441,15 +465,15 @@ client = OpenAI::Client.new
 
 response = client.responses.create(
   model: "gpt-6-astra",
-  input: "Roll 2d4+1",
+  input: "Search the OpenAI docs for Responses API streaming and return the relevant links.",
   tools: [
     {
       type: :mcp,
-      server_label: "dmcp",
-      server_description: "A Dungeons and Dragons MCP server to assist with dice rolling.",
-      server_url: "https://dmcp-server.deno.dev/mcp",
+      server_label: "openai_docs",
+      server_description: "Search and read the public OpenAI documentation.",
+      server_url: "https://developers.openai.com/mcp",
       require_approval: :never,
-      allowed_tools: ["roll"]
+      allowed_tools: ["search_openai_docs"]
     }
   ]
 )
@@ -460,18 +484,18 @@ puts(response.output_text)
 
 ### Step 2: Calling tools
 
-Once the model has access to these tool definitions, it may choose to call them depending on what's in the model's context. When the model decides to call an MCP tool, the API will make an request to the remote MCP server to call the tool and put its output into the model's context. This creates an `mcp_call` item which looks like this:
+Once the model has access to these tool definitions, it may choose to call them depending on what's in the model's context. When the model decides to call an MCP tool, the API will make a request to the remote MCP server to call the tool and put its output into the model's context. This creates an `mcp_call` item. The following illustrative output omits search-result metadata for brevity:
 
 ```json
 {
   "id": "mcp_68a6102d8948819c9b1490d36d5ffa4a0679e572a900e618",
   "type": "mcp_call",
   "approval_request_id": null,
-  "arguments": "{\"diceRollExpression\":\"2d4 + 1\"}",
+  "arguments": "{\"query\":\"Responses API streaming\",\"limit\":1}",
   "error": null,
-  "name": "roll",
-  "output": "4",
-  "server_label": "dmcp"
+  "name": "search_openai_docs",
+  "output": "{\"hits\":[{\"url\":\"https://developers.openai.com/api/docs/guides/streaming-responses\"}]}",
+  "server_label": "openai_docs"
 }
 ```
 
@@ -481,19 +505,19 @@ Failed tool calls will populate the error field of this item with MCP protocol e
 
 #### Approvals
 
-By default, OpenAI will request your approval before any data is shared with a connector or remote MCP server. Approvals help you maintain control and visibility over what data is being sent to an MCP server. We highly recommend that you carefully review (and optionally log) all data being shared with a remote MCP server. A request for an approval to make an MCP tool call creates a `mcp_approval_request` item in the Response's output that looks like this:
+By default, OpenAI will request your approval before any data is shared with a connector or remote MCP server. Approvals help you maintain control and visibility over what data is being sent to an MCP server. We highly recommend that you carefully review (and optionally log) all data being shared with a remote MCP server. To try the approval flow, run the quickstart example with `require_approval` set to `"always"` instead of `"never"`. A request for an approval to make an MCP tool call creates a `mcp_approval_request` item in the Response's output. The following example is illustrative:
 
 ```json
 {
-  "id": "mcpr_68a619e1d82c8190b50c1ccba7ad18ef0d2d23a86136d339",
+  "id": "mcpr_682d498e3bd4819196a0ce1664f8e77b04ad1e533afccbfa",
   "type": "mcp_approval_request",
-  "arguments": "{\"diceRollExpression\":\"2d4 + 1\"}",
-  "name": "roll",
-  "server_label": "dmcp"
+  "arguments": "{\"query\":\"Responses API streaming\",\"limit\":1}",
+  "name": "search_openai_docs",
+  "server_label": "openai_docs"
 }
 ```
 
-You can then respond to this by creating a new Response object and appending an `mcp_approval_response` item to it.
+Review the requested tool and its arguments before approving. You can then respond by creating a new Response object and appending an `mcp_approval_response` item to it. Replace the illustrative response and approval-request IDs in the following examples with the IDs returned by your request. The .NET example obtains these IDs from its initial response. Each approval applies to one tool call; handle any subsequent approval requests in the same way.
 
 Approving the use of tools in an API request
 
@@ -506,10 +530,10 @@ curl https://api.openai.com/v1/responses \
     "tools": [
       {
         "type": "mcp",
-        "server_label": "dmcp",
-        "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-        "server_url": "https://dmcp-server.deno.dev/mcp",
-        "require_approval": "always",
+        "server_label": "openai_docs",
+        "server_description": "Search and read the public OpenAI documentation.",
+        "server_url": "https://developers.openai.com/mcp",
+        "require_approval": "always"
       }
     ],
     "previous_response_id": "resp_682d498bdefc81918b4a6aa477bfafd904ad1e533afccbfa",
@@ -530,10 +554,9 @@ const resp = await client.responses.create({
   tools: [
     {
       type: "mcp",
-      server_label: "dmcp",
-      server_description:
-        "A Dungeons and Dragons MCP server to assist with dice rolling.",
-      server_url: "https://dmcp-server.deno.dev/mcp",
+      server_label: "openai_docs",
+      server_description: "Search and read the public OpenAI documentation.",
+      server_url: "https://developers.openai.com/mcp",
       require_approval: "always",
     },
   ],
@@ -561,9 +584,9 @@ resp = client.responses.create(
     tools=[
         {
             "type": "mcp",
-            "server_label": "dmcp",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_url": "https://dmcp-server.deno.dev/mcp",
+            "server_label": "openai_docs",
+            "server_description": "Search and read the public OpenAI documentation.",
+            "server_url": "https://developers.openai.com/mcp",
             "require_approval": "always",
         }
     ],
@@ -593,9 +616,9 @@ import (
 
 func main() {
 	client := openai.NewClient()
-	tool := responses.ToolParamOfMcp("dmcp")
-	tool.OfMcp.ServerDescription = openai.String("A Dungeons and Dragons MCP server to assist with dice rolling.")
-	tool.OfMcp.ServerURL = openai.String("https://dmcp-server.deno.dev/mcp")
+	tool := responses.ToolParamOfMcp("openai_docs")
+	tool.OfMcp.ServerDescription = openai.String("Search and read the public OpenAI documentation.")
+	tool.OfMcp.ServerURL = openai.String("https://developers.openai.com/mcp")
 	tool.OfMcp.RequireApproval = responses.ToolMcpRequireApprovalUnionParam{OfMcpToolApprovalSetting: openai.String("always")}
 
 	response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
@@ -639,9 +662,9 @@ ResponseCreateParams params =
         .previousResponseId(responseId)
         .addTool(
             Tool.Mcp.builder()
-                .serverLabel("dmcp")
-                .serverDescription("A Dungeons and Dragons MCP server.")
-                .serverUrl("https://dmcp-server.deno.dev/mcp")
+                .serverLabel("openai_docs")
+                .serverDescription("Search and read the public OpenAI documentation.")
+                .serverUrl("https://developers.openai.com/mcp")
                 .requireApproval(Tool.Mcp.RequireApproval.McpToolApprovalSetting.ALWAYS)
                 .build())
         .build();
@@ -663,14 +686,14 @@ ResponsesClient client = new(key);
 CreateResponseOptions options = new() { Model = "gpt-6-astra" };
 options.Tools.Add(
     ResponseTool.CreateMcpTool(
-        serverLabel: "dmcp",
-        serverUri: new Uri("https://dmcp-server.deno.dev/mcp"),
+        serverLabel: "openai_docs",
+        serverUri: new Uri("https://developers.openai.com/mcp"),
         toolCallApprovalPolicy: DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval
     )
 );
 
 // Step 1: Create a response that requests tool-call approval.
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Search the OpenAI docs for Responses API streaming and return the relevant links."));
 ResponseResult response1 = await client.CreateResponseAsync(options);
 
 McpToolCallApprovalRequestItem approvalRequest =
@@ -704,9 +727,9 @@ response = client.responses.create(
   tools: [
     {
       type: :mcp,
-      server_label: "dmcp",
-      server_url: "https://dmcp-server.deno.dev/mcp",
-      server_description: "A Dungeons and Dragons MCP server.",
+      server_label: "openai_docs",
+      server_url: "https://developers.openai.com/mcp",
+      server_description: "Search and read the public OpenAI documentation.",
       require_approval: :always
     }
   ]
@@ -917,7 +940,7 @@ puts(response.output_text)
 
 ## Authentication
 
-Unlike the [example MCP server we used above](https://dash.deno.com/playground/dmcp-server), most other MCP servers require authentication. The most common scheme is an OAuth access token. Provide this token using the `authorization` field of the MCP tool:
+The [OpenAI Docs MCP server](https://developers.openai.com/resources/docs-mcp) does not require authentication. Other MCP servers may require authentication. The most common scheme is an OAuth access token. Provide this token using the `authorization` field of the MCP tool:
 
 Use Stripe MCP tool
 
@@ -1851,9 +1874,9 @@ When you defer loading an MCP server, the model can still use the MCP server's l
 ```json
 {
     "type": "mcp",
-    "server_label": "dmcp",
-    "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-    "server_url": "https://dmcp-server.deno.dev/mcp",
+    "server_label": "openai_docs",
+    "server_description": "Search and read the public OpenAI documentation.",
+    "server_url": "https://developers.openai.com/mcp",
 // highlight-start:subtle
     "defer_loading": true,
 // highlight-end

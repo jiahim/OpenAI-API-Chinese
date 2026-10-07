@@ -55,14 +55,6 @@ The following text-to-speech models are deprecated and will be removed from the 
 | Jan 6, 2027   | `gpt-4o-mini-tts-2025-03-20` | `gpt-realtime-2.1-mini` |
 | Jan 6, 2027   | `gpt-4o-mini-tts-2025-12-15` | `gpt-realtime-2.1-mini` |
 
-### 2026-09-11: GPT-5.4-Cyber
-
-The `gpt-5.4-cyber` model is deprecated and will be removed from the API on October 1, 2026. Migrate to the most capable cyber model available to you before the shutdown date.
-
-| Shutdown date | Model / system  | Recommended replacement                        |
-| ------------- | --------------- | ---------------------------------------------- |
-| Oct 1, 2026   | `gpt-5.4-cyber` | The most capable cyber model available to you. |
-
 ### 2026-08-26: Transcription models
 
 On August 26, 2026, we notified developers using `whisper-1`, `gpt-4o-transcribe`, `gpt-4o-mini-transcribe`, and `gpt-4o-transcribe-diarize` of their deprecation and removal from the API on February 26, 2027.
@@ -166,6 +158,14 @@ Inference on fine-tuned models will continue to be available until the base mode
 ## Past deprecations
 
 Past deprecations are listed below, with the most recent announcements at the top.
+
+### 2026-09-11: GPT-5.4-Cyber
+
+The `gpt-5.4-cyber` model is deprecated and will be removed from the API on October 1, 2026. Migrate to the most capable cyber model available to you before the shutdown date.
+
+| Shutdown date | Model / system  | Recommended replacement                        |
+| ------------- | --------------- | ---------------------------------------------- |
+| Oct 1, 2026   | `gpt-5.4-cyber` | The most capable cyber model available to you. |
 
 ### 2026-05-08: `gpt-5.2-chat-latest` and `gpt-5.3-chat-latest` model snapshots
 

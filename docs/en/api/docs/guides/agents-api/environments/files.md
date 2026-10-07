@@ -22,6 +22,10 @@ To add files after the environment connects, use the [environment Files API](htt
 
 ### Resolve upload errors
 
+File checks during session creation or file attachment can return HTTP 429 with
+`files_api_rate_limit_exceeded`. See [Files API rate limits](https://developers.openai.com/api/docs/guides/agents-api/errors#files-api-rate-limits)
+for the response and recovery steps.
+
 For HTTP 400, use `error.param` and `error.message` to identify the input to correct.
 For example, a destination outside `/workspace` returns:
 

@@ -610,7 +610,7 @@ func main() {
 	}, true)
 	loadedTool.OfFunction.Description = openai.String("Look up shipping ETA details for an order.")
 	loadedTool.OfFunction.DeferLoading = openai.Bool(true)
-	searchOutput := responses.ResponseInputItemParamOfToolSearchOutput([]responses.ToolUnionParam{loadedTool})
+	searchOutput := responses.ResponseInputItemParamOfToolSearchOutput([]responses.ResponseToolSearchOutputItemParamToolUnion{{OfFunction: loadedTool.OfFunction}})
 	searchOutput.OfToolSearchOutput.CallID = openai.String(callID)
 	searchOutput.OfToolSearchOutput.Execution = responses.ResponseToolSearchOutputItemParamExecutionClient
 	searchOutput.OfToolSearchOutput.Status = responses.ResponseToolSearchOutputItemParamStatusCompleted

@@ -12,19 +12,39 @@ For tasks that interact with websites through a browser, see
 
 ## Configure the sandbox
 
-Set `environment.type` to `openai_hosted` and add only the settings your workload
-needs. The working directory is `/workspace`.
+Set `environment.type` to `openai_hosted` in your create-session request. Add
+only the settings your workload needs. The sandbox's working directory is
+`/workspace`.
+
+Choose the resources and network access your task needs with `container_size`
+and `network`. If you use an environment template, omitted settings inherit the
+template.
+
+### Prepare packages and files
+
+Use these settings to make dependencies and inputs available in the sandbox:
 
 - `packages`: Install Python, system, or global `npm` packages with `python`, `system`, or `npm` lists. Pin versions when needed, such as `pandas==2.2.3`.
-- `setup_commands`: Run ordered shell commands before the agent starts, such as `[{ "command": "mkdir -p reports" }]`. Each command has its own optional `cwd`, defaulting to `/workspace`.
 - `files`: [Supply input files](https://developers.openai.com/api/docs/guides/agents-api/environments/files#upload-files) by Files API ID or inline base64 content.
-- `env`: Set string-valued environment variables. Agent-generated code can read these values. IMPORTANT: For secrets, use [vault credentials](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults#use-vault-secrets-for-api-requests-from-a-sandbox) to keep the real values outside the sandbox. Runtime-reserved names, including `PATH`, `CODEX_*`, and `OPENAI_API_KEY`, are rejected.
-- `skills`, `plugins`, `capability_directories`: Add [skills](https://developers.openai.com/api/docs/guides/tools-skills#agents-api) and [plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins).
-- `environment_template_id`: [Reuse saved configuration](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins#reuse-a-hosted-plugin-setup) across sessions. Omitted settings inherit the template; network overrides cannot broaden its policy.
 
-Packages and input files are prepared before setup commands run. A nonzero setup
-exit status prevents the agent from starting. Use a setup command to check required
-dependencies or files. Templates save configuration, not a running workspace.
+### Run setup commands
+
+Use `setup_commands` to run shell commands in order before the agent starts. For
+example, `[{ "command": "mkdir -p reports" }]` creates a directory. Each command
+can set its own `cwd`; the default is `/workspace`.
+
+Packages and input files are prepared before setup commands run. Use a setup
+command to check required dependencies or files. A nonzero setup exit status
+prevents the agent from starting.
+
+### Set environment variables
+
+Use `env` to set string-valued environment variables. Agent-generated code can
+read these values.
+
+For secrets, use [vault credentials](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults#use-vault-secrets-for-api-requests-from-a-sandbox)
+to keep the real values outside the sandbox. Runtime-reserved names, including
+`PATH`, `CODEX_*`, and `OPENAI_API_KEY`, are rejected.
 
 ### Choose a container size
 
@@ -65,13 +85,30 @@ Do not include wildcards, protocols, paths, or ports. Subdomains and redirect
 destinations need their own entries. Hosted stdio MCP servers currently require
 `enabled` access; see [stdio MCP requirements](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp#start-a-server-over-stdio).
 
+### Add skills and plugins
+
+Use `skills`, `plugins`, and `capability_directories` to add
+[skills](https://developers.openai.com/api/docs/guides/tools-skills#agents-api) and
+[plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins).
+
+### Reuse configuration across sessions
+
+Set `environment_template_id` to [reuse saved configuration](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins#reuse-a-hosted-plugin-setup).
+Omitted settings inherit the template. Network overrides cannot broaden its policy.
+Templates save configuration, not a running workspace.
+
 ### Check that setup succeeded
 
-The create-session response means setup has started. Retrieve
-`GET /v1/agents/environments/{environment_id}` using the session's `environment.id`:
-`provisioning` means setup is running; `connected` means setup succeeded.
-For `failed`, read `environment.error` in the `agent.session.environment.failed`
-event. Wait for `connected` before adding or listing live files.
+The create-session response means setup has started. To check its status, retrieve
+`GET /v1/agents/environments/{environment_id}` using the session's `environment.id`.
+
+| Status         | What to do                                                                |
+| -------------- | ------------------------------------------------------------------------- |
+| `provisioning` | Wait while setup runs.                                                    |
+| `connected`    | Setup succeeded. You can add or list live files.                          |
+| `failed`       | Read `environment.error` in the `agent.session.environment.failed` event. |
+
+Wait for `connected` before adding or listing live files.
 
 ## Files and lifetime
 
