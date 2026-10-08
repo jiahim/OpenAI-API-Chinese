@@ -78,7 +78,7 @@ List items that belong to a ChatKit thread.
 
           - `"file"`
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of InputText { text, type }  or QuotedText { text, type }`
 
         Ordered content elements supplied by the user.
 
@@ -156,7 +156,7 @@ List items that belong to a ChatKit thread.
 
         Ordered assistant response segments.
 
-        - `annotations: array of object { source, type }  or object { source, type }`
+        - `annotations: array of File { source, type }  or URL { source, type }`
 
           Ordered list of annotations attached to the response text.
 

@@ -806,7 +806,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
@@ -814,7 +814,7 @@ Schema name: `SessionEventAgentSessionCreated`
 
       Respond to a computer-use request.
 
-      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+      - `request: BrowserAuthentication { credential_origin, fields, options, 2 more }  or BrowserOriginAccess { origin, reason, type }`
 
         The information needed to render the request.
 
@@ -1000,6 +1000,18 @@ Schema name: `SessionEventAgentSessionCreated`
 
     The IDs of vaults made available to the session.
 
+  - `spend_control: optional object { consumed, limit }`
+
+    Configured spending limit and best-effort consumption, in USD cents. Unlimited sessions omit this object.
+
+    - `consumed: number or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+    - `limit: number`
+
+      The configured positive limit in USD cents.
+
 - `type: "agent.session.created"`
 
   The type of the object. Always `agent.session.created`.
@@ -1013,6 +1025,10 @@ Schema name: `SessionEventAgentSessionCreated`
   "type": "agent.session.created",
   "event_id": "event_id",
   "session": {
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },
@@ -2978,7 +2994,7 @@ Schema name: `SessionEventAgentSessionTurnItemAdded`
 
       The registered request answered by this item.
 
-    - `response: object { action, selected_option, type }  or object { action, type }`
+    - `response: Submit { action, selected_option, type }  or Cancel { action, type }`
 
       The admitted response, without submitted credential values.
 
@@ -4006,7 +4022,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
@@ -4014,7 +4030,7 @@ Schema name: `SessionEventAgentSessionIdle`
 
       Respond to a computer-use request.
 
-      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+      - `request: BrowserAuthentication { credential_origin, fields, options, 2 more }  or BrowserOriginAccess { origin, reason, type }`
 
         The information needed to render the request.
 
@@ -4200,6 +4216,18 @@ Schema name: `SessionEventAgentSessionIdle`
 
     The IDs of vaults made available to the session.
 
+  - `spend_control: optional object { consumed, limit }`
+
+    Configured spending limit and best-effort consumption, in USD cents. Unlimited sessions omit this object.
+
+    - `consumed: number or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+    - `limit: number`
+
+      The configured positive limit in USD cents.
+
 - `type: "agent.session.idle"`
 
   The type of the object. Always `agent.session.idle`.
@@ -4213,6 +4241,10 @@ Schema name: `SessionEventAgentSessionIdle`
   "type": "agent.session.idle",
   "event_id": "event_id",
   "session": {
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },
@@ -4904,7 +4936,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
@@ -4912,7 +4944,7 @@ Schema name: `SessionEventAgentSessionInProgress`
 
       Respond to a computer-use request.
 
-      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+      - `request: BrowserAuthentication { credential_origin, fields, options, 2 more }  or BrowserOriginAccess { origin, reason, type }`
 
         The information needed to render the request.
 
@@ -5098,6 +5130,18 @@ Schema name: `SessionEventAgentSessionInProgress`
 
     The IDs of vaults made available to the session.
 
+  - `spend_control: optional object { consumed, limit }`
+
+    Configured spending limit and best-effort consumption, in USD cents. Unlimited sessions omit this object.
+
+    - `consumed: number or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+    - `limit: number`
+
+      The configured positive limit in USD cents.
+
 - `type: "agent.session.in_progress"`
 
   The type of the object. Always `agent.session.in_progress`.
@@ -5111,6 +5155,10 @@ Schema name: `SessionEventAgentSessionInProgress`
   "type": "agent.session.in_progress",
   "event_id": "event_id",
   "session": {
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },
@@ -5802,7 +5850,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
@@ -5810,7 +5858,7 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
       Respond to a computer-use request.
 
-      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+      - `request: BrowserAuthentication { credential_origin, fields, options, 2 more }  or BrowserOriginAccess { origin, reason, type }`
 
         The information needed to render the request.
 
@@ -5996,6 +6044,18 @@ Schema name: `SessionEventAgentSessionRequiresAction`
 
     The IDs of vaults made available to the session.
 
+  - `spend_control: optional object { consumed, limit }`
+
+    Configured spending limit and best-effort consumption, in USD cents. Unlimited sessions omit this object.
+
+    - `consumed: number or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+    - `limit: number`
+
+      The configured positive limit in USD cents.
+
 - `type: "agent.session.requires_action"`
 
   The type of the object. Always `agent.session.requires_action`.
@@ -6009,6 +6069,10 @@ Schema name: `SessionEventAgentSessionRequiresAction`
   "type": "agent.session.requires_action",
   "event_id": "event_id",
   "session": {
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },
@@ -6700,7 +6764,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
     - `"agent.session"`
 
-  - `required_actions: array of object { request, request_id, turn_id, type }  or object { arguments, call_id, name, 2 more }  or object { environment_id, type }`
+  - `required_actions: array of ComputerUseApprovalRequest { request, request_id, turn_id, type }  or FunctionCall { arguments, call_id, name, 2 more }  or EnvironmentConnection { environment_id, type }`
 
     Actions that must be completed before the session can continue.
 
@@ -6708,7 +6772,7 @@ Schema name: `SessionEventAgentSessionFailed`
 
       Respond to a computer-use request.
 
-      - `request: object { credential_origin, fields, options, 2 more }  or object { origin, reason, type }`
+      - `request: BrowserAuthentication { credential_origin, fields, options, 2 more }  or BrowserOriginAccess { origin, reason, type }`
 
         The information needed to render the request.
 
@@ -6894,6 +6958,18 @@ Schema name: `SessionEventAgentSessionFailed`
 
     The IDs of vaults made available to the session.
 
+  - `spend_control: optional object { consumed, limit }`
+
+    Configured spending limit and best-effort consumption, in USD cents. Unlimited sessions omit this object.
+
+    - `consumed: number or null`
+
+      Best-effort recorded spend floored to whole USD cents, or null when unavailable.
+
+    - `limit: number`
+
+      The configured positive limit in USD cents.
+
 - `type: "agent.session.failed"`
 
   The type of the object. Always `agent.session.failed`.
@@ -6907,6 +6983,10 @@ Schema name: `SessionEventAgentSessionFailed`
   "type": "agent.session.failed",
   "event_id": "event_id",
   "session": {
+    "spend_control": {
+      "limit": 1,
+      "consumed": 0
+    },
     "metadata": {
       "foo": "string"
     },

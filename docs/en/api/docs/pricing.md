@@ -207,6 +207,7 @@ Ultrafast
 | Model | Short context input | Short context cached input | Short context cache writes | Short context output | Long context input | Long context cached input | Long context cache writes | Long context output |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $60.00 | $6.00 | $75.00 | $300.00 | $120.00 | $12.00 | $150.00 | $450.00 |
+| gpt-6.1-sol | $12.00 | $0.60 | $15.00 | $60.00 | $24.00 | $1.20 | $30.00 | $90.00 |
 
 Short context: ≤272K input tokens. Long context: >272K input tokens.
 

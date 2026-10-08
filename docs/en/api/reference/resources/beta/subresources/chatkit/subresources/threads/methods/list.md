@@ -52,7 +52,7 @@ List ChatKit threads with optional pagination and user filters.
 
     - `"chatkit.thread"`
 
-  - `status: object { type }  or object { reason, type }  or object { reason, type }`
+  - `status: Active { type }  or Locked { reason, type }  or Closed { reason, type }`
 
     Current status for the thread. Defaults to `active` for newly created threads.
 

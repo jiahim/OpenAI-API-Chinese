@@ -268,7 +268,7 @@ Schema name: `LiveSessionStartEvent`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
 
-  - `delegation: optional ClientDelegation or object { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
 
     Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
 
@@ -366,13 +366,11 @@ Schema name: `LiveSessionStartEvent`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
+        - `tool_choice: optional "auto" or "none" or "required" or Function { name, type }  or Mcp { server_label, type, name }  or 11 more`
 
           Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
-
-            Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
             - `"auto"`
 
@@ -380,9 +378,261 @@ Schema name: `LiveSessionStartEvent`
 
             - `"required"`
 
-          - `map[unknown]`
+          - `Function object { name, type }`
 
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
+            - `name: string`
+
+              The name of the function tool to call.
+
+            - `type: "function"`
+
+              The tool to call. Always `function`.
+
+              - `"function"`
+
+          - `Mcp object { server_label, type, name }`
+
+            - `server_label: string`
+
+              The label of the MCP server to call.
+
+            - `type: "mcp"`
+
+              The tool to call. Always `mcp`.
+
+              - `"mcp"`
+
+            - `name: optional string or null`
+
+              The name of the MCP tool to call. If omitted, the server may choose a default.
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              The tool to call. Always `file_search`.
+
+              - `"file_search"`
+
+          - `WebSearch object { type }`
+
+            - `type: "web_search"`
+
+              The tool to call. Always `web_search`.
+
+              - `"web_search"`
+
+          - `WebSearchPreview object { type }`
+
+            - `type: "web_search_preview"`
+
+              The tool to call. Always `web_search_preview`.
+
+              - `"web_search_preview"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              The tool to call. Always `image_generation`.
+
+              - `"image_generation"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              The tool to call. Always `computer`.
+
+              - `"computer"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              The tool to call. Always `code_interpreter`.
+
+              - `"code_interpreter"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              The tool to call. Always `programmatic_tool_calling`.
+
+              - `"programmatic_tool_calling"`
+
+          - `Shell object { type }`
+
+            Forces the model to call the shell tool when a tool call is required.
+
+            - `type: "shell"`
+
+              The tool to call. Always `shell`.
+
+              - `"shell"`
+
+          - `Custom object { name, type }`
+
+            - `name: string`
+
+              The name of the custom tool to call.
+
+            - `type: "custom"`
+
+              The tool to call. Always `custom`.
+
+              - `"custom"`
+
+          - `ApplyPatch object { type }`
+
+            Forces the model to call the apply_patch tool when executing a tool call.
+
+            - `type: "apply_patch"`
+
+              The tool to call. Always `apply_patch`.
+
+              - `"apply_patch"`
+
+          - `LiveAllowedToolsChoiceParam object { tools, type, mode }`
+
+            - `tools: array of Function { name, type }  or Mcp { server_label, type, name }  or FileSearch { type }  or 9 more`
+
+              The tools that the delegated Responses model may call.
+
+              - `Function object { name, type }`
+
+                - `name: string`
+
+                  The name of the function tool to call.
+
+                - `type: "function"`
+
+                  The tool to call. Always `function`.
+
+                  - `"function"`
+
+              - `Mcp object { server_label, type, name }`
+
+                - `server_label: string`
+
+                  The label of the MCP server to call.
+
+                - `type: "mcp"`
+
+                  The tool to call. Always `mcp`.
+
+                  - `"mcp"`
+
+                - `name: optional string or null`
+
+                  The name of the MCP tool to call. If omitted, the server may choose a default.
+
+              - `FileSearch object { type }`
+
+                - `type: "file_search"`
+
+                  The tool to call. Always `file_search`.
+
+                  - `"file_search"`
+
+              - `WebSearch object { type }`
+
+                - `type: "web_search"`
+
+                  The tool to call. Always `web_search`.
+
+                  - `"web_search"`
+
+              - `WebSearchPreview object { type }`
+
+                - `type: "web_search_preview"`
+
+                  The tool to call. Always `web_search_preview`.
+
+                  - `"web_search_preview"`
+
+              - `ImageGeneration object { type }`
+
+                - `type: "image_generation"`
+
+                  The tool to call. Always `image_generation`.
+
+                  - `"image_generation"`
+
+              - `Computer object { type }`
+
+                - `type: "computer"`
+
+                  The tool to call. Always `computer`.
+
+                  - `"computer"`
+
+              - `CodeInterpreter object { type }`
+
+                - `type: "code_interpreter"`
+
+                  The tool to call. Always `code_interpreter`.
+
+                  - `"code_interpreter"`
+
+              - `ProgrammaticToolCalling object { type }`
+
+                - `type: "programmatic_tool_calling"`
+
+                  The tool to call. Always `programmatic_tool_calling`.
+
+                  - `"programmatic_tool_calling"`
+
+              - `Shell object { type }`
+
+                Forces the model to call the shell tool when a tool call is required.
+
+                - `type: "shell"`
+
+                  The tool to call. Always `shell`.
+
+                  - `"shell"`
+
+              - `Custom object { name, type }`
+
+                - `name: string`
+
+                  The name of the custom tool to call.
+
+                - `type: "custom"`
+
+                  The tool to call. Always `custom`.
+
+                  - `"custom"`
+
+              - `ApplyPatch object { type }`
+
+                Forces the model to call the apply_patch tool when executing a tool call.
+
+                - `type: "apply_patch"`
+
+                  The tool to call. Always `apply_patch`.
+
+                  - `"apply_patch"`
+
+            - `type: "allowed_tools"`
+
+              The tool choice type. Always `allowed_tools`.
+
+              - `"allowed_tools"`
+
+            - `mode: optional "none" or "auto" or "required" or null`
+
+              How to select a tool from the allowed set.
+
+              - `"none"`
+
+              - `"auto"`
+
+              - `"required"`
+
+        - `tools: optional array of FunctionTool or WebSearch { type }  or FileSearch { type }  or 10 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -442,7 +692,7 @@ Schema name: `LiveSessionStartEvent`
 
               - `"shell"`
 
-            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+            - `environment: optional ContainerAuto { type, file_ids, memory_limit, 2 more }  or ContainerReference { container_id, type }  or Local { type, skills }  or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -468,7 +718,7 @@ Schema name: `LiveSessionStartEvent`
 
                   - `"64g"`
 
-                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+                - `network_policy: optional Disabled { type }  or Allowlist { allowed_domains, type }  or null`
 
                   Network access policy for the container.
 
@@ -492,7 +742,7 @@ Schema name: `LiveSessionStartEvent`
 
                       - `"allowlist"`
 
-                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+                - `skills: optional array of SkillReference { skill_id, type, version }  or Inline { description, name, source, type }  or null`
 
                   An optional list of skills referenced by id or inline data.
 
@@ -730,7 +980,7 @@ Schema name: `LiveSessionStartEvent`
 
       An assistant message included in the initial text history of a Live session.
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of Text { text, type }  or OutputText { text, type }`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
@@ -843,7 +1093,7 @@ Schema name: `LiveSessionUpdateParam`
 
   Sparse delegation updates. Omitted settings retain their values. The delegation type cannot change, including resetting Responses delegation to null or client. Model, frontend instructions, audio, and startup input are immutable.
 
-  - `delegation: optional ClientDelegation or object { type, responses }  or null`
+  - `delegation: optional ClientDelegation or Responses { type, responses }  or null`
 
     Delegation settings to update. The delegation type must match the current session; omitted settings retain their values.
 
@@ -947,13 +1197,11 @@ Schema name: `LiveSessionUpdateParam`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
+        - `tool_choice: optional "auto" or "none" or "required" or Function { name, type }  or Mcp { server_label, type, name }  or 11 more`
 
           Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
-
-            Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
             - `"auto"`
 
@@ -961,9 +1209,261 @@ Schema name: `LiveSessionUpdateParam`
 
             - `"required"`
 
-          - `map[unknown]`
+          - `Function object { name, type }`
 
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
+            - `name: string`
+
+              The name of the function tool to call.
+
+            - `type: "function"`
+
+              The tool to call. Always `function`.
+
+              - `"function"`
+
+          - `Mcp object { server_label, type, name }`
+
+            - `server_label: string`
+
+              The label of the MCP server to call.
+
+            - `type: "mcp"`
+
+              The tool to call. Always `mcp`.
+
+              - `"mcp"`
+
+            - `name: optional string or null`
+
+              The name of the MCP tool to call. If omitted, the server may choose a default.
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              The tool to call. Always `file_search`.
+
+              - `"file_search"`
+
+          - `WebSearch object { type }`
+
+            - `type: "web_search"`
+
+              The tool to call. Always `web_search`.
+
+              - `"web_search"`
+
+          - `WebSearchPreview object { type }`
+
+            - `type: "web_search_preview"`
+
+              The tool to call. Always `web_search_preview`.
+
+              - `"web_search_preview"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              The tool to call. Always `image_generation`.
+
+              - `"image_generation"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              The tool to call. Always `computer`.
+
+              - `"computer"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              The tool to call. Always `code_interpreter`.
+
+              - `"code_interpreter"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              The tool to call. Always `programmatic_tool_calling`.
+
+              - `"programmatic_tool_calling"`
+
+          - `Shell object { type }`
+
+            Forces the model to call the shell tool when a tool call is required.
+
+            - `type: "shell"`
+
+              The tool to call. Always `shell`.
+
+              - `"shell"`
+
+          - `Custom object { name, type }`
+
+            - `name: string`
+
+              The name of the custom tool to call.
+
+            - `type: "custom"`
+
+              The tool to call. Always `custom`.
+
+              - `"custom"`
+
+          - `ApplyPatch object { type }`
+
+            Forces the model to call the apply_patch tool when executing a tool call.
+
+            - `type: "apply_patch"`
+
+              The tool to call. Always `apply_patch`.
+
+              - `"apply_patch"`
+
+          - `LiveAllowedToolsChoiceParam object { tools, type, mode }`
+
+            - `tools: array of Function { name, type }  or Mcp { server_label, type, name }  or FileSearch { type }  or 9 more`
+
+              The tools that the delegated Responses model may call.
+
+              - `Function object { name, type }`
+
+                - `name: string`
+
+                  The name of the function tool to call.
+
+                - `type: "function"`
+
+                  The tool to call. Always `function`.
+
+                  - `"function"`
+
+              - `Mcp object { server_label, type, name }`
+
+                - `server_label: string`
+
+                  The label of the MCP server to call.
+
+                - `type: "mcp"`
+
+                  The tool to call. Always `mcp`.
+
+                  - `"mcp"`
+
+                - `name: optional string or null`
+
+                  The name of the MCP tool to call. If omitted, the server may choose a default.
+
+              - `FileSearch object { type }`
+
+                - `type: "file_search"`
+
+                  The tool to call. Always `file_search`.
+
+                  - `"file_search"`
+
+              - `WebSearch object { type }`
+
+                - `type: "web_search"`
+
+                  The tool to call. Always `web_search`.
+
+                  - `"web_search"`
+
+              - `WebSearchPreview object { type }`
+
+                - `type: "web_search_preview"`
+
+                  The tool to call. Always `web_search_preview`.
+
+                  - `"web_search_preview"`
+
+              - `ImageGeneration object { type }`
+
+                - `type: "image_generation"`
+
+                  The tool to call. Always `image_generation`.
+
+                  - `"image_generation"`
+
+              - `Computer object { type }`
+
+                - `type: "computer"`
+
+                  The tool to call. Always `computer`.
+
+                  - `"computer"`
+
+              - `CodeInterpreter object { type }`
+
+                - `type: "code_interpreter"`
+
+                  The tool to call. Always `code_interpreter`.
+
+                  - `"code_interpreter"`
+
+              - `ProgrammaticToolCalling object { type }`
+
+                - `type: "programmatic_tool_calling"`
+
+                  The tool to call. Always `programmatic_tool_calling`.
+
+                  - `"programmatic_tool_calling"`
+
+              - `Shell object { type }`
+
+                Forces the model to call the shell tool when a tool call is required.
+
+                - `type: "shell"`
+
+                  The tool to call. Always `shell`.
+
+                  - `"shell"`
+
+              - `Custom object { name, type }`
+
+                - `name: string`
+
+                  The name of the custom tool to call.
+
+                - `type: "custom"`
+
+                  The tool to call. Always `custom`.
+
+                  - `"custom"`
+
+              - `ApplyPatch object { type }`
+
+                Forces the model to call the apply_patch tool when executing a tool call.
+
+                - `type: "apply_patch"`
+
+                  The tool to call. Always `apply_patch`.
+
+                  - `"apply_patch"`
+
+            - `type: "allowed_tools"`
+
+              The tool choice type. Always `allowed_tools`.
+
+              - `"allowed_tools"`
+
+            - `mode: optional "none" or "auto" or "required" or null`
+
+              How to select a tool from the allowed set.
+
+              - `"none"`
+
+              - `"auto"`
+
+              - `"required"`
+
+        - `tools: optional array of FunctionTool or WebSearch { type }  or FileSearch { type }  or 10 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -1023,7 +1523,7 @@ Schema name: `LiveSessionUpdateParam`
 
               - `"shell"`
 
-            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+            - `environment: optional ContainerAuto { type, file_ids, memory_limit, 2 more }  or ContainerReference { container_id, type }  or Local { type, skills }  or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -1049,7 +1549,7 @@ Schema name: `LiveSessionUpdateParam`
 
                   - `"64g"`
 
-                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+                - `network_policy: optional Disabled { type }  or Allowlist { allowed_domains, type }  or null`
 
                   Network access policy for the container.
 
@@ -1073,7 +1573,7 @@ Schema name: `LiveSessionUpdateParam`
 
                       - `"allowlist"`
 
-                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+                - `skills: optional array of SkillReference { skill_id, type, version }  or Inline { description, name, source, type }  or null`
 
                   An optional list of skills referenced by id or inline data.
 
@@ -1459,7 +1959,7 @@ Add an input item to the Live session’s Responses backend. Requires Responses 
 
 Schema name: `LiveResponseItemCreateParam`
 
-- `item: EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+- `item: EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
   An input item to append to the Responses backend conversation, such as a user message or a function tool result.
 
@@ -1678,7 +2178,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A text output from the model.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -2293,7 +2793,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `"web_search_call"`
 
-    - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -2393,7 +2893,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       Whether the function tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -2560,7 +3060,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the function tool call generated by the model.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -2642,7 +3142,7 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The loaded tool definitions returned by the tool search output.
 
@@ -2948,7 +3448,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -3022,7 +3522,7 @@ Schema name: `LiveResponseItemCreateParam`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -3088,7 +3588,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -3581,7 +4081,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools loaded inside this namespace.
 
@@ -3805,7 +4305,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `"developer"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       A list of additional tools made available at this item.
 
@@ -4042,7 +4542,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -4116,7 +4616,7 @@ Schema name: `LiveResponseItemCreateParam`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -4182,7 +4682,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -4493,7 +4993,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -4922,7 +5422,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The ID of the container used to run the code.
 
-    - `outputs: array of object { logs, type }  or object { type, url }  or null`
+    - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
       The outputs generated by the code interpreter, such as logs or images.
       Can be null if no outputs are available.
@@ -5095,7 +5595,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the shell tool call. Populated when this item is returned via API.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -5149,7 +5649,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-      - `outcome: object { type }  or object { exit_code, type }`
+      - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
         The exit or timeout outcome associated with this shell call.
 
@@ -5195,7 +5695,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the shell tool call output. Populated when this item is returned via API.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -5241,7 +5741,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the apply patch tool call generated by the model.
 
-    - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+    - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -5313,7 +5813,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the apply patch tool call. Populated when this item is returned via API.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -5363,7 +5863,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the apply patch tool call output. Populated when this item is returned via API.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -5609,7 +6109,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       The unique ID of the custom tool call output in the OpenAI platform.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -5663,7 +6163,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       Whether the custom tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -6184,7 +6684,7 @@ Schema name: `LiveSessionStarted`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
 
-  - `delegation: optional ClientDelegation or object { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
 
     Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
 
@@ -6282,13 +6782,11 @@ Schema name: `LiveSessionStarted`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
+        - `tool_choice: optional "auto" or "none" or "required" or Function { name, type }  or Mcp { server_label, type, name }  or 11 more`
 
           Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
-
-            Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
             - `"auto"`
 
@@ -6296,9 +6794,261 @@ Schema name: `LiveSessionStarted`
 
             - `"required"`
 
-          - `map[unknown]`
+          - `Function object { name, type }`
 
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
+            - `name: string`
+
+              The name of the function tool to call.
+
+            - `type: "function"`
+
+              The tool to call. Always `function`.
+
+              - `"function"`
+
+          - `Mcp object { server_label, type, name }`
+
+            - `server_label: string`
+
+              The label of the MCP server to call.
+
+            - `type: "mcp"`
+
+              The tool to call. Always `mcp`.
+
+              - `"mcp"`
+
+            - `name: optional string or null`
+
+              The name of the MCP tool to call. If omitted, the server may choose a default.
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              The tool to call. Always `file_search`.
+
+              - `"file_search"`
+
+          - `WebSearch object { type }`
+
+            - `type: "web_search"`
+
+              The tool to call. Always `web_search`.
+
+              - `"web_search"`
+
+          - `WebSearchPreview object { type }`
+
+            - `type: "web_search_preview"`
+
+              The tool to call. Always `web_search_preview`.
+
+              - `"web_search_preview"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              The tool to call. Always `image_generation`.
+
+              - `"image_generation"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              The tool to call. Always `computer`.
+
+              - `"computer"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              The tool to call. Always `code_interpreter`.
+
+              - `"code_interpreter"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              The tool to call. Always `programmatic_tool_calling`.
+
+              - `"programmatic_tool_calling"`
+
+          - `Shell object { type }`
+
+            Forces the model to call the shell tool when a tool call is required.
+
+            - `type: "shell"`
+
+              The tool to call. Always `shell`.
+
+              - `"shell"`
+
+          - `Custom object { name, type }`
+
+            - `name: string`
+
+              The name of the custom tool to call.
+
+            - `type: "custom"`
+
+              The tool to call. Always `custom`.
+
+              - `"custom"`
+
+          - `ApplyPatch object { type }`
+
+            Forces the model to call the apply_patch tool when executing a tool call.
+
+            - `type: "apply_patch"`
+
+              The tool to call. Always `apply_patch`.
+
+              - `"apply_patch"`
+
+          - `LiveAllowedToolsChoiceParam object { tools, type, mode }`
+
+            - `tools: array of Function { name, type }  or Mcp { server_label, type, name }  or FileSearch { type }  or 9 more`
+
+              The tools that the delegated Responses model may call.
+
+              - `Function object { name, type }`
+
+                - `name: string`
+
+                  The name of the function tool to call.
+
+                - `type: "function"`
+
+                  The tool to call. Always `function`.
+
+                  - `"function"`
+
+              - `Mcp object { server_label, type, name }`
+
+                - `server_label: string`
+
+                  The label of the MCP server to call.
+
+                - `type: "mcp"`
+
+                  The tool to call. Always `mcp`.
+
+                  - `"mcp"`
+
+                - `name: optional string or null`
+
+                  The name of the MCP tool to call. If omitted, the server may choose a default.
+
+              - `FileSearch object { type }`
+
+                - `type: "file_search"`
+
+                  The tool to call. Always `file_search`.
+
+                  - `"file_search"`
+
+              - `WebSearch object { type }`
+
+                - `type: "web_search"`
+
+                  The tool to call. Always `web_search`.
+
+                  - `"web_search"`
+
+              - `WebSearchPreview object { type }`
+
+                - `type: "web_search_preview"`
+
+                  The tool to call. Always `web_search_preview`.
+
+                  - `"web_search_preview"`
+
+              - `ImageGeneration object { type }`
+
+                - `type: "image_generation"`
+
+                  The tool to call. Always `image_generation`.
+
+                  - `"image_generation"`
+
+              - `Computer object { type }`
+
+                - `type: "computer"`
+
+                  The tool to call. Always `computer`.
+
+                  - `"computer"`
+
+              - `CodeInterpreter object { type }`
+
+                - `type: "code_interpreter"`
+
+                  The tool to call. Always `code_interpreter`.
+
+                  - `"code_interpreter"`
+
+              - `ProgrammaticToolCalling object { type }`
+
+                - `type: "programmatic_tool_calling"`
+
+                  The tool to call. Always `programmatic_tool_calling`.
+
+                  - `"programmatic_tool_calling"`
+
+              - `Shell object { type }`
+
+                Forces the model to call the shell tool when a tool call is required.
+
+                - `type: "shell"`
+
+                  The tool to call. Always `shell`.
+
+                  - `"shell"`
+
+              - `Custom object { name, type }`
+
+                - `name: string`
+
+                  The name of the custom tool to call.
+
+                - `type: "custom"`
+
+                  The tool to call. Always `custom`.
+
+                  - `"custom"`
+
+              - `ApplyPatch object { type }`
+
+                Forces the model to call the apply_patch tool when executing a tool call.
+
+                - `type: "apply_patch"`
+
+                  The tool to call. Always `apply_patch`.
+
+                  - `"apply_patch"`
+
+            - `type: "allowed_tools"`
+
+              The tool choice type. Always `allowed_tools`.
+
+              - `"allowed_tools"`
+
+            - `mode: optional "none" or "auto" or "required" or null`
+
+              How to select a tool from the allowed set.
+
+              - `"none"`
+
+              - `"auto"`
+
+              - `"required"`
+
+        - `tools: optional array of FunctionTool or WebSearch { type }  or FileSearch { type }  or 10 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -6358,7 +7108,7 @@ Schema name: `LiveSessionStarted`
 
               - `"shell"`
 
-            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+            - `environment: optional ContainerAuto { type, file_ids, memory_limit, 2 more }  or ContainerReference { container_id, type }  or Local { type, skills }  or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -6384,7 +7134,7 @@ Schema name: `LiveSessionStarted`
 
                   - `"64g"`
 
-                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+                - `network_policy: optional Disabled { type }  or Allowlist { allowed_domains, type }  or null`
 
                   Network access policy for the container.
 
@@ -6408,7 +7158,7 @@ Schema name: `LiveSessionStarted`
 
                       - `"allowlist"`
 
-                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+                - `skills: optional array of SkillReference { skill_id, type, version }  or Inline { description, name, source, type }  or null`
 
                   An optional list of skills referenced by id or inline data.
 
@@ -6646,7 +7396,7 @@ Schema name: `LiveSessionStarted`
 
       An assistant message included in the initial text history of a Live session.
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of Text { text, type }  or OutputText { text, type }`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
@@ -6964,7 +7714,7 @@ Schema name: `LiveSessionUpdated`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
 
-  - `delegation: optional ClientDelegation or object { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
 
     Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
 
@@ -7062,13 +7812,11 @@ Schema name: `LiveSessionUpdated`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
+        - `tool_choice: optional "auto" or "none" or "required" or Function { name, type }  or Mcp { server_label, type, name }  or 11 more`
 
           Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
-
-            Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
             - `"auto"`
 
@@ -7076,9 +7824,261 @@ Schema name: `LiveSessionUpdated`
 
             - `"required"`
 
-          - `map[unknown]`
+          - `Function object { name, type }`
 
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
+            - `name: string`
+
+              The name of the function tool to call.
+
+            - `type: "function"`
+
+              The tool to call. Always `function`.
+
+              - `"function"`
+
+          - `Mcp object { server_label, type, name }`
+
+            - `server_label: string`
+
+              The label of the MCP server to call.
+
+            - `type: "mcp"`
+
+              The tool to call. Always `mcp`.
+
+              - `"mcp"`
+
+            - `name: optional string or null`
+
+              The name of the MCP tool to call. If omitted, the server may choose a default.
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              The tool to call. Always `file_search`.
+
+              - `"file_search"`
+
+          - `WebSearch object { type }`
+
+            - `type: "web_search"`
+
+              The tool to call. Always `web_search`.
+
+              - `"web_search"`
+
+          - `WebSearchPreview object { type }`
+
+            - `type: "web_search_preview"`
+
+              The tool to call. Always `web_search_preview`.
+
+              - `"web_search_preview"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              The tool to call. Always `image_generation`.
+
+              - `"image_generation"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              The tool to call. Always `computer`.
+
+              - `"computer"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              The tool to call. Always `code_interpreter`.
+
+              - `"code_interpreter"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              The tool to call. Always `programmatic_tool_calling`.
+
+              - `"programmatic_tool_calling"`
+
+          - `Shell object { type }`
+
+            Forces the model to call the shell tool when a tool call is required.
+
+            - `type: "shell"`
+
+              The tool to call. Always `shell`.
+
+              - `"shell"`
+
+          - `Custom object { name, type }`
+
+            - `name: string`
+
+              The name of the custom tool to call.
+
+            - `type: "custom"`
+
+              The tool to call. Always `custom`.
+
+              - `"custom"`
+
+          - `ApplyPatch object { type }`
+
+            Forces the model to call the apply_patch tool when executing a tool call.
+
+            - `type: "apply_patch"`
+
+              The tool to call. Always `apply_patch`.
+
+              - `"apply_patch"`
+
+          - `LiveAllowedToolsChoiceParam object { tools, type, mode }`
+
+            - `tools: array of Function { name, type }  or Mcp { server_label, type, name }  or FileSearch { type }  or 9 more`
+
+              The tools that the delegated Responses model may call.
+
+              - `Function object { name, type }`
+
+                - `name: string`
+
+                  The name of the function tool to call.
+
+                - `type: "function"`
+
+                  The tool to call. Always `function`.
+
+                  - `"function"`
+
+              - `Mcp object { server_label, type, name }`
+
+                - `server_label: string`
+
+                  The label of the MCP server to call.
+
+                - `type: "mcp"`
+
+                  The tool to call. Always `mcp`.
+
+                  - `"mcp"`
+
+                - `name: optional string or null`
+
+                  The name of the MCP tool to call. If omitted, the server may choose a default.
+
+              - `FileSearch object { type }`
+
+                - `type: "file_search"`
+
+                  The tool to call. Always `file_search`.
+
+                  - `"file_search"`
+
+              - `WebSearch object { type }`
+
+                - `type: "web_search"`
+
+                  The tool to call. Always `web_search`.
+
+                  - `"web_search"`
+
+              - `WebSearchPreview object { type }`
+
+                - `type: "web_search_preview"`
+
+                  The tool to call. Always `web_search_preview`.
+
+                  - `"web_search_preview"`
+
+              - `ImageGeneration object { type }`
+
+                - `type: "image_generation"`
+
+                  The tool to call. Always `image_generation`.
+
+                  - `"image_generation"`
+
+              - `Computer object { type }`
+
+                - `type: "computer"`
+
+                  The tool to call. Always `computer`.
+
+                  - `"computer"`
+
+              - `CodeInterpreter object { type }`
+
+                - `type: "code_interpreter"`
+
+                  The tool to call. Always `code_interpreter`.
+
+                  - `"code_interpreter"`
+
+              - `ProgrammaticToolCalling object { type }`
+
+                - `type: "programmatic_tool_calling"`
+
+                  The tool to call. Always `programmatic_tool_calling`.
+
+                  - `"programmatic_tool_calling"`
+
+              - `Shell object { type }`
+
+                Forces the model to call the shell tool when a tool call is required.
+
+                - `type: "shell"`
+
+                  The tool to call. Always `shell`.
+
+                  - `"shell"`
+
+              - `Custom object { name, type }`
+
+                - `name: string`
+
+                  The name of the custom tool to call.
+
+                - `type: "custom"`
+
+                  The tool to call. Always `custom`.
+
+                  - `"custom"`
+
+              - `ApplyPatch object { type }`
+
+                Forces the model to call the apply_patch tool when executing a tool call.
+
+                - `type: "apply_patch"`
+
+                  The tool to call. Always `apply_patch`.
+
+                  - `"apply_patch"`
+
+            - `type: "allowed_tools"`
+
+              The tool choice type. Always `allowed_tools`.
+
+              - `"allowed_tools"`
+
+            - `mode: optional "none" or "auto" or "required" or null`
+
+              How to select a tool from the allowed set.
+
+              - `"none"`
+
+              - `"auto"`
+
+              - `"required"`
+
+        - `tools: optional array of FunctionTool or WebSearch { type }  or FileSearch { type }  or 10 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -7138,7 +8138,7 @@ Schema name: `LiveSessionUpdated`
 
               - `"shell"`
 
-            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+            - `environment: optional ContainerAuto { type, file_ids, memory_limit, 2 more }  or ContainerReference { container_id, type }  or Local { type, skills }  or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -7164,7 +8164,7 @@ Schema name: `LiveSessionUpdated`
 
                   - `"64g"`
 
-                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+                - `network_policy: optional Disabled { type }  or Allowlist { allowed_domains, type }  or null`
 
                   Network access policy for the container.
 
@@ -7188,7 +8188,7 @@ Schema name: `LiveSessionUpdated`
 
                       - `"allowlist"`
 
-                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+                - `skills: optional array of SkillReference { skill_id, type, version }  or Inline { description, name, source, type }  or null`
 
                   An optional list of skills referenced by id or inline data.
 
@@ -7426,7 +8426,7 @@ Schema name: `LiveSessionUpdated`
 
       An assistant message included in the initial text history of a Live session.
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of Text { text, type }  or OutputText { text, type }`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 
@@ -8282,7 +9282,7 @@ Schema name: `LiveSessionClosed`
 
             The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
 
-  - `delegation: optional ClientDelegation or object { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
 
     Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
 
@@ -8380,13 +9380,11 @@ Schema name: `LiveSessionClosed`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
+        - `tool_choice: optional "auto" or "none" or "required" or Function { name, type }  or Mcp { server_label, type, name }  or 11 more`
 
           Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
-
-            Controls which tool the Responses backend uses when handling a task delegated by the Live model.
 
             - `"auto"`
 
@@ -8394,9 +9392,261 @@ Schema name: `LiveSessionClosed`
 
             - `"required"`
 
-          - `map[unknown]`
+          - `Function object { name, type }`
 
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
+            - `name: string`
+
+              The name of the function tool to call.
+
+            - `type: "function"`
+
+              The tool to call. Always `function`.
+
+              - `"function"`
+
+          - `Mcp object { server_label, type, name }`
+
+            - `server_label: string`
+
+              The label of the MCP server to call.
+
+            - `type: "mcp"`
+
+              The tool to call. Always `mcp`.
+
+              - `"mcp"`
+
+            - `name: optional string or null`
+
+              The name of the MCP tool to call. If omitted, the server may choose a default.
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              The tool to call. Always `file_search`.
+
+              - `"file_search"`
+
+          - `WebSearch object { type }`
+
+            - `type: "web_search"`
+
+              The tool to call. Always `web_search`.
+
+              - `"web_search"`
+
+          - `WebSearchPreview object { type }`
+
+            - `type: "web_search_preview"`
+
+              The tool to call. Always `web_search_preview`.
+
+              - `"web_search_preview"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              The tool to call. Always `image_generation`.
+
+              - `"image_generation"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              The tool to call. Always `computer`.
+
+              - `"computer"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              The tool to call. Always `code_interpreter`.
+
+              - `"code_interpreter"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              The tool to call. Always `programmatic_tool_calling`.
+
+              - `"programmatic_tool_calling"`
+
+          - `Shell object { type }`
+
+            Forces the model to call the shell tool when a tool call is required.
+
+            - `type: "shell"`
+
+              The tool to call. Always `shell`.
+
+              - `"shell"`
+
+          - `Custom object { name, type }`
+
+            - `name: string`
+
+              The name of the custom tool to call.
+
+            - `type: "custom"`
+
+              The tool to call. Always `custom`.
+
+              - `"custom"`
+
+          - `ApplyPatch object { type }`
+
+            Forces the model to call the apply_patch tool when executing a tool call.
+
+            - `type: "apply_patch"`
+
+              The tool to call. Always `apply_patch`.
+
+              - `"apply_patch"`
+
+          - `LiveAllowedToolsChoiceParam object { tools, type, mode }`
+
+            - `tools: array of Function { name, type }  or Mcp { server_label, type, name }  or FileSearch { type }  or 9 more`
+
+              The tools that the delegated Responses model may call.
+
+              - `Function object { name, type }`
+
+                - `name: string`
+
+                  The name of the function tool to call.
+
+                - `type: "function"`
+
+                  The tool to call. Always `function`.
+
+                  - `"function"`
+
+              - `Mcp object { server_label, type, name }`
+
+                - `server_label: string`
+
+                  The label of the MCP server to call.
+
+                - `type: "mcp"`
+
+                  The tool to call. Always `mcp`.
+
+                  - `"mcp"`
+
+                - `name: optional string or null`
+
+                  The name of the MCP tool to call. If omitted, the server may choose a default.
+
+              - `FileSearch object { type }`
+
+                - `type: "file_search"`
+
+                  The tool to call. Always `file_search`.
+
+                  - `"file_search"`
+
+              - `WebSearch object { type }`
+
+                - `type: "web_search"`
+
+                  The tool to call. Always `web_search`.
+
+                  - `"web_search"`
+
+              - `WebSearchPreview object { type }`
+
+                - `type: "web_search_preview"`
+
+                  The tool to call. Always `web_search_preview`.
+
+                  - `"web_search_preview"`
+
+              - `ImageGeneration object { type }`
+
+                - `type: "image_generation"`
+
+                  The tool to call. Always `image_generation`.
+
+                  - `"image_generation"`
+
+              - `Computer object { type }`
+
+                - `type: "computer"`
+
+                  The tool to call. Always `computer`.
+
+                  - `"computer"`
+
+              - `CodeInterpreter object { type }`
+
+                - `type: "code_interpreter"`
+
+                  The tool to call. Always `code_interpreter`.
+
+                  - `"code_interpreter"`
+
+              - `ProgrammaticToolCalling object { type }`
+
+                - `type: "programmatic_tool_calling"`
+
+                  The tool to call. Always `programmatic_tool_calling`.
+
+                  - `"programmatic_tool_calling"`
+
+              - `Shell object { type }`
+
+                Forces the model to call the shell tool when a tool call is required.
+
+                - `type: "shell"`
+
+                  The tool to call. Always `shell`.
+
+                  - `"shell"`
+
+              - `Custom object { name, type }`
+
+                - `name: string`
+
+                  The name of the custom tool to call.
+
+                - `type: "custom"`
+
+                  The tool to call. Always `custom`.
+
+                  - `"custom"`
+
+              - `ApplyPatch object { type }`
+
+                Forces the model to call the apply_patch tool when executing a tool call.
+
+                - `type: "apply_patch"`
+
+                  The tool to call. Always `apply_patch`.
+
+                  - `"apply_patch"`
+
+            - `type: "allowed_tools"`
+
+              The tool choice type. Always `allowed_tools`.
+
+              - `"allowed_tools"`
+
+            - `mode: optional "none" or "auto" or "required" or null`
+
+              How to select a tool from the allowed set.
+
+              - `"none"`
+
+              - `"auto"`
+
+              - `"required"`
+
+        - `tools: optional array of FunctionTool or WebSearch { type }  or FileSearch { type }  or 10 more`
 
           Tools available to the Responses backend while it handles tasks delegated by the Live model.
 
@@ -8456,7 +9706,7 @@ Schema name: `LiveSessionClosed`
 
               - `"shell"`
 
-            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+            - `environment: optional ContainerAuto { type, file_ids, memory_limit, 2 more }  or ContainerReference { container_id, type }  or Local { type, skills }  or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
@@ -8482,7 +9732,7 @@ Schema name: `LiveSessionClosed`
 
                   - `"64g"`
 
-                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+                - `network_policy: optional Disabled { type }  or Allowlist { allowed_domains, type }  or null`
 
                   Network access policy for the container.
 
@@ -8506,7 +9756,7 @@ Schema name: `LiveSessionClosed`
 
                       - `"allowlist"`
 
-                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+                - `skills: optional array of SkillReference { skill_id, type, version }  or Inline { description, name, source, type }  or null`
 
                   An optional list of skills referenced by id or inline data.
 
@@ -8744,7 +9994,7 @@ Schema name: `LiveSessionClosed`
 
       An assistant message included in the initial text history of a Live session.
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of Text { text, type }  or OutputText { text, type }`
 
         The message content. Supply exactly one text part for the initial Live conversation history.
 

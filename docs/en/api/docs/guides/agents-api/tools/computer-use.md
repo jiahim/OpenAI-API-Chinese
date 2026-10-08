@@ -129,7 +129,7 @@ session, err := client.Beta.Agents.Sessions.New(ctx, openai.BetaAgentSessionNewP
 		}},
 	},
 	Environment: openai.EnvironmentParamUnion{OfParamOpenAIHosted: &openai.EnvironmentParamOpenAIHosted{
-		Desktop: openai.EnvironmentParamOpenAIHostedDesktop{Enabled: openai.Bool(true)},
+		Desktop: openai.EnvironmentParamOpenAIHostedDesktop{Enabled: true},
 		Network: openai.EnvironmentParamOpenAIHostedNetwork{Access: "enabled"},
 	}},
 })
@@ -393,7 +393,7 @@ func respondToOriginApproval(ctx context.Context, client *openai.Client, session
 		if request.Reason != "" {
 			fmt.Println(request.Reason)
 		}
-		originResponse := openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserOriginAccess{Decision: "deny"}
+		originResponse := openai.AgentBrowserOriginAccessParam{Decision: "deny"}
 		reader := bufio.NewReader(os.Stdin)
 		for {
 			fmt.Print("Allow this origin? [approve/deny/cancel; default: deny] ")
@@ -417,7 +417,7 @@ func respondToOriginApproval(ctx context.Context, client *openai.Client, session
 		response.OfBrowserOriginAccess = &originResponse
 	case "browser_authentication":
 		fmt.Println("This public-page task does not sign in; cancelling the sign-in request.")
-		response.OfBrowserAuthentication = &openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthentication{Action: "cancel"}
+		response.OfBrowserAuthenticationCancel = &openai.AgentBrowserAuthenticationCancelParam{}
 	default:
 		return fmt.Errorf("unsupported computer-use approval: %s", approval.Request.Type)
 	}
@@ -1790,7 +1790,7 @@ func respondToComputerUseApproval(ctx context.Context, client *openai.Client, se
 	}
 	cancelAuthentication := func() error {
 		return send(openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseUnion{
-			OfBrowserAuthentication: &openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthentication{Action: "cancel"},
+			OfBrowserAuthenticationCancel: &openai.AgentBrowserAuthenticationCancelParam{},
 		})
 	}
 	switch approval.Request.Type {
@@ -1800,7 +1800,7 @@ func respondToComputerUseApproval(ctx context.Context, client *openai.Client, se
 		if request.Reason != "" {
 			fmt.Println(request.Reason)
 		}
-		response := openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserOriginAccess{Decision: "deny"}
+		response := openai.AgentBrowserOriginAccessParam{Decision: "deny"}
 		for {
 			choice, err := readLine("Allow this origin? [approve/deny/cancel; default: deny] ")
 			if err != nil {
@@ -1844,9 +1844,9 @@ func respondToComputerUseApproval(ctx context.Context, client *openai.Client, se
 		return cancelAuthentication()
 	}
 
-	response := openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthentication{
+	response := openai.AgentBrowserAuthenticationSubmitParam{
 		Action: "submit",
-		Fields: []openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthenticationField{},
+		Fields: []openai.AgentBrowserAuthenticationSubmitParamField{},
 	}
 	activeFields := challenge.Fields
 	if len(challenge.Options) > 0 {
@@ -1920,7 +1920,7 @@ collectFields:
 						fmt.Println("No value entered. Choose an action for this field.")
 						continue
 					}
-					response.Fields = append(response.Fields, openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthenticationField{
+					response.Fields = append(response.Fields, openai.AgentBrowserAuthenticationSubmitParamField{
 						FieldID: field.ID, Value: string(value),
 					})
 					clear(value)
@@ -1950,7 +1950,7 @@ collectFields:
 	}
 	// Admission does not establish login success; keep following the session.
 	return send(openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseUnion{
-		OfBrowserAuthentication: &response,
+		OfBrowserAuthenticationSubmit: &response,
 	})
 }
 ```
@@ -2666,7 +2666,7 @@ session, err := client.Beta.Agents.Sessions.New(ctx, openai.BetaAgentSessionNewP
 		}},
 	},
 	Environment: openai.EnvironmentParamUnion{OfParamOpenAIHosted: &openai.EnvironmentParamOpenAIHosted{
-		Desktop: openai.EnvironmentParamOpenAIHostedDesktop{Enabled: openai.Bool(true)},
+		Desktop: openai.EnvironmentParamOpenAIHostedDesktop{Enabled: true},
 		Network: openai.EnvironmentParamOpenAIHostedNetwork{Access: "enabled"},
 	}},
 })

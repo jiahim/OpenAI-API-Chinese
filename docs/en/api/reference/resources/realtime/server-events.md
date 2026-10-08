@@ -208,7 +208,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
             The prompt configured for input audio transcription, when present.
 
-        - `turn_detection: optional object { type, create_response, idle_timeout_ms, 4 more }  or object { type, create_response, eagerness, interrupt_response }  or null`
+        - `turn_detection: optional ServerVad { type, create_response, idle_timeout_ms, 4 more }  or SemanticVad { type, create_response, eagerness, interrupt_response }  or null`
 
           Configuration for turn detection, ether Server VAD or Semantic VAD. This can be set to `null` to turn off, in which case the client must manually trigger model response.
 
@@ -649,7 +649,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           The name of the tool to call on the server.
 
-    - `tools: optional array of RealtimeFunctionTool or object { server_label, type, allowed_callers, 9 more }`
+    - `tools: optional array of RealtimeFunctionTool or McpTool { server_label, type, allowed_callers, 9 more }`
 
       Tools available to the model.
 
@@ -698,7 +698,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -772,7 +772,7 @@ Schema name: `RealtimeServerEventSessionCreated`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -834,7 +834,7 @@ Schema name: `RealtimeServerEventSessionCreated`
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
 
-    - `tracing: optional "auto" or object { group_id, metadata, workflow_name }  or null`
+    - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
       Realtime API can write session traces to the [Traces Dashboard](https://platform.openai.com/logs?api=traces). Set to null to disable tracing. Once
       tracing is enabled for a session, the configuration cannot be modified.
@@ -1224,7 +1224,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
             The prompt configured for input audio transcription, when present.
 
-        - `turn_detection: optional object { type, create_response, idle_timeout_ms, 4 more }  or object { type, create_response, eagerness, interrupt_response }  or null`
+        - `turn_detection: optional ServerVad { type, create_response, idle_timeout_ms, 4 more }  or SemanticVad { type, create_response, eagerness, interrupt_response }  or null`
 
           Configuration for turn detection, ether Server VAD or Semantic VAD. This can be set to `null` to turn off, in which case the client must manually trigger model response.
 
@@ -1665,7 +1665,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           The name of the tool to call on the server.
 
-    - `tools: optional array of RealtimeFunctionTool or object { server_label, type, allowed_callers, 9 more }`
+    - `tools: optional array of RealtimeFunctionTool or McpTool { server_label, type, allowed_callers, 9 more }`
 
       Tools available to the model.
 
@@ -1714,7 +1714,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -1788,7 +1788,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -1850,7 +1850,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
 
-    - `tracing: optional "auto" or object { group_id, metadata, workflow_name }  or null`
+    - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
       Realtime API can write session traces to the [Traces Dashboard](https://platform.openai.com/logs?api=traces). Set to null to disable tracing. Once
       tracing is enabled for a session, the configuration cannot be modified.
@@ -3592,7 +3592,7 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionComplete
 
   - `"conversation.item.input_audio_transcription.completed"`
 
-- `usage: object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+- `usage: Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
   Usage statistics for the transcription, this is billed according to the ASR model's pricing rather than the realtime model's pricing.
 

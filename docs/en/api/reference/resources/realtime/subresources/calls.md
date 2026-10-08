@@ -259,14 +259,14 @@ handle it.
       This parameter is a post-processing adjustment to the audio after it is generated, it's
       also possible to prompt the model to speak faster or slower.
 
-    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
+    - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
 
       The voice the model uses to respond. Supported built-in voices are
       `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
       `marin`, and `cedar`. You may also provide a custom voice object with
       an `id`, for example `{ "id": "voice_1234" }`. Voice cannot be changed
       during the session once the model has responded with audio at least once.
-      Custom voices must be created from audio samples. Voices created from text prompts are supported only in Live.
+      Custom voices must be created from audio samples.
       We recommend `marin` and `cedar` for best quality.
 
       - `string`
@@ -644,7 +644,7 @@ handle it.
 
       - `"programmatic"`
 
-    - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+    - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
       List of allowed tool names or a filter object.
 
@@ -718,7 +718,7 @@ handle it.
       Optional HTTP headers to send to the MCP server. Use for authentication
       or other purposes.
 
-    - `require_approval: optional object { always, never }  or "always" or "never" or null`
+    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
       Specify which of the MCP server's tools require approval.
 

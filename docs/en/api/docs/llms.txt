@@ -215,7 +215,7 @@ Each entry has a Markdown twin at `/api/docs/<slug>.md`.
 - [Trace grading](https://developers.openai.com/api/docs/guides/trace-grading.md): Use trace grading to create datasets, configure graders, and track evaluation runs for your models.
 - [Tracing](https://developers.openai.com/api/docs/guides/agents-api/tracing.md): Inspect agent activity in the dashboard and export session traces as OTLP JSON.
 - [Transcription](https://developers.openai.com/api/docs/guides/transcription.md): Choose between file transcription and realtime transcription, then start with the recommended model for your audio.
-- [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode.md): Use Ultrafast mode with GPT-6 Astra over WebSockets, with SDK examples and an HTTP alternative.
+- [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode.md): Use Ultrafast mode with GPT-6 Astra and GPT-6.1 Sol over WebSockets, with SDK examples and an HTTP alternative.
 - [Under-18 guidance](https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance.md): Review regulatory standards, safety standards, and best practices for API applications that serve users under 18.
 - [Upgrading to GPT-5.4](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p4.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.4.
 - [Upgrading to GPT-5.5](https://developers.openai.com/api/docs/guides/upgrading-to-gpt-5p5.md): Guidance for upgrading OpenAI API model strings and directly related prompts to GPT-5.5.

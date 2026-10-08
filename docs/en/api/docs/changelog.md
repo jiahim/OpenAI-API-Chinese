@@ -8,6 +8,12 @@ Upcoming deprecations are listed on the [deprecations page](/api/docs/deprecatio
 
 ## October, 2026
 
+### Oct 8
+
+Feature · Model: gpt-6.1-sol · API: v1/responses
+
+Added [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode) for [GPT-6.1 Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol) in the Responses API. Use `gpt-6.1-sol` with `service_tier: "ultrafast"` to reduce the time between generated output tokens. It is available to all API users, subject to rate limits, with global processing and US and EU data residency. See [Ultrafast pricing](https://developers.openai.com/api/docs/pricing?latest-pricing=ultrafast).
+
 ### Oct 7
 
 Update · Model: chat-latest

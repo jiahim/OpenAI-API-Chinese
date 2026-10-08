@@ -44,7 +44,7 @@ transcript events. Supported formats depend on the model.
 
       The log probability of the token.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token usage statistics for the request.
 
@@ -144,7 +144,7 @@ transcript events. Supported formats depend on the model.
 
     The concatenated transcript text for the entire audio input.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token or duration usage statistics for the request.
 

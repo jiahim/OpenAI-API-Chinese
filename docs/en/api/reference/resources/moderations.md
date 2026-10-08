@@ -11,7 +11,7 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
 ### Body Parameters
 
-- `input: string or array of string or array of object { image_url, type }  or object { text, type }`
+- `input: string or array of string or array of ImageURL { image_url, type }  or Text { text, type }`
 
   Input (or inputs) to classify. Can be a single string, an array of strings, or
   an array of multi-modal input objects similar to other models.
@@ -24,7 +24,7 @@ more in the [moderation guide](/api/docs/guides/moderation).
 
     An array of strings to classify for moderation.
 
-  - `array of object { image_url, type }  or object { text, type }`
+  - `array of ImageURL { image_url, type }  or Text { text, type }`
 
     An array of multi-modal inputs to the moderation model.
 

@@ -70,15 +70,15 @@ Returns the audio file content, or a stream of audio events.
 
     - `"gpt-4o-mini-tts-2025-12-15"`
 
-- `voice: string or "alloy" or "ash" or "ballad" or 10 more or object { id }`
+- `voice: string or "alloy" or "ash" or "ballad" or 10 more or ID { id }`
 
-  The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options). Custom voices must be created from audio samples. Voices created from text prompts are supported only in Live.
+  The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options). Custom voices must be created from audio samples.
 
   - `string`
 
   - `"alloy" or "ash" or "ballad" or 10 more`
 
-    The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options). Custom voices must be created from audio samples. Voices created from text prompts are supported only in Live.
+    The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options). Custom voices must be created from audio samples.
 
     - `"alloy"`
 
@@ -247,7 +247,7 @@ transcript events. Supported formats depend on the model.
 
       The log probability of the token.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token usage statistics for the request.
 
@@ -347,7 +347,7 @@ transcript events. Supported formats depend on the model.
 
     The concatenated transcript text for the entire audio input.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token or duration usage statistics for the request.
 
@@ -877,7 +877,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       The log probability of the token.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token usage statistics for the request.
 
@@ -967,7 +967,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
         The log probability of the token.
 
-    - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+    - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
       Token usage statistics for the request.
 
@@ -1067,7 +1067,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       The concatenated transcript text for the entire audio input.
 
-    - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+    - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
       Token or duration usage statistics for the request.
 
@@ -1259,7 +1259,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     The concatenated transcript text for the entire audio input.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token or duration usage statistics for the request.
 
@@ -2506,51 +2506,17 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
 **post** `/audio/voices`
 
-Creates a voice from a text prompt or from a consent recording and an audio sample.
+Create a custom voice you can use for audio output (for example, in Text-to-Speech and the Realtime API). This requires an audio sample and a previously uploaded consent recording.
 
-For prompt-based creation, send `type: "prompt"` with a `name` and `prompt` as JSON or multipart form data. For creation from an audio sample, send `type: "audio_sample"` with a `name`, `audio_sample`, and `consent` recording ID as multipart form data. The type defaults to `audio_sample` when omitted.
+Send `name`, `audio_sample`, and the `consent` recording ID as multipart form data. The optional `type` defaults to `audio_sample`.
 
-Returns the saved voice's metadata. Voices created from text prompts are supported only in Live, not in Realtime or the speech endpoint. The response does not include preview audio.
-
-### Body Parameters
-
-- `name: string`
-
-  The name of the new voice.
-
-- `prompt: string`
-
-  A description of the desired voice. Must not contain only whitespace.
-
-- `type: "prompt"`
-
-  Set to `prompt` to create a voice from a text description.
-
-  - `"prompt"`
-
-- `model: optional string or "auto" or "2026-10-01"`
-
-  The voice creation model to use. Defaults to `auto`.
-
-  - `string`
-
-  - `"auto" or "2026-10-01"`
-
-    The voice creation model to use. Defaults to `auto`.
-
-    - `"auto"`
-
-    - `"2026-10-01"`
-
-- `script_hint: optional string`
-
-  Optional text for the voice to speak during creation. If omitted, a script is generated from the prompt. Must not be blank after trimming whitespace; scripts that are too short are rejected.
+Returns the saved voice's metadata. See the [custom voices guide](/api/docs/guides/text-to-speech#custom-voices) for requirements and best practices. Custom voices are limited to eligible customers.
 
 ### Returns
 
 - `Voice object { id, created_at, name, 2 more }`
 
-  A custom voice that can be used for audio output. Voices created from text prompts are supported only in Live.
+  A custom voice that can be used for audio output.
 
   - `id: string`
 
@@ -2570,25 +2536,21 @@ Returns the saved voice's metadata. Voices created from text prompts are support
 
     - `"audio.voice"`
 
-  - `type: "audio_sample" or "prompt"`
+  - `type: "audio_sample"`
 
-    How the voice was created. Voices created from text prompts are supported only in Live.
+    How the voice was created.
 
     - `"audio_sample"`
-
-    - `"prompt"`
 
 ### Example
 
 ```http
 curl https://api.openai.com/v1/audio/voices \
-    -H 'Content-Type: application/json' \
+    -H 'Content-Type: multipart/form-data' \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -d '{
-          "name": "x",
-          "prompt": "x",
-          "type": "prompt"
-        }'
+    -F 'audio_sample=@/path/to/audio_sample' \
+    -F consent=consent \
+    -F name=x
 ```
 
 #### Response
@@ -2609,13 +2571,9 @@ curl https://api.openai.com/v1/audio/voices \
 curl https://api.openai.com/v1/audio/voices \
   -X POST \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "type": "prompt",
-    "name": "Warm narrator",
-    "prompt": "A warm, calm narrator with a clear, measured delivery.",
-    "model": "auto"
-  }'
+  -F "name=My new voice" \
+  -F "consent=cons_1234" \
+  -F "audio_sample=@audio_sample.wav;type=audio/x-wav"
 ```
 
 ## Domain Types
@@ -2624,7 +2582,7 @@ curl https://api.openai.com/v1/audio/voices \
 
 - `Voice object { id, created_at, name, 2 more }`
 
-  A custom voice that can be used for audio output. Voices created from text prompts are supported only in Live.
+  A custom voice that can be used for audio output.
 
   - `id: string`
 
@@ -2644,10 +2602,8 @@ curl https://api.openai.com/v1/audio/voices \
 
     - `"audio.voice"`
 
-  - `type: "audio_sample" or "prompt"`
+  - `type: "audio_sample"`
 
-    How the voice was created. Voices created from text prompts are supported only in Live.
+    How the voice was created.
 
     - `"audio_sample"`
-
-    - `"prompt"`

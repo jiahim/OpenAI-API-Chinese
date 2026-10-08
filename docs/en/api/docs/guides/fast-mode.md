@@ -4,7 +4,7 @@
 
 Fast mode delivers up to 2.5× faster speeds and more consistent latency with pay-as-you-go pricing. Use it for user-facing applications with regular traffic where latency matters.
 
-For faster speeds with GPT-6 Astra, see [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode).
+For faster speeds with GPT-6 Astra or GPT-6.1 Sol, see [Ultrafast mode](https://developers.openai.com/api/docs/guides/ultrafast-mode).
 
 Priority processing was renamed Fast mode on July 30, 2026. We also increased
   the speed at which Fast mode operates for `gpt-5.6-sol` to make it up to 2.5×
@@ -178,4 +178,4 @@ Fast mode for GPT-6 Astra does not include a latency SLA. For GPT-5.6 and earlie
 
 ### Is Fast mode compatible with data residency, Zero Data Retention, and a BAA?
 
-Fast mode is compatible with data residency, Zero Data Retention, and a Business Associate Agreement (BAA), subject to model-specific availability. Fast mode is not available with EU data residency for GPT-6 Astra, GPT-6.1 Sol, GPT-6 Sol, or GPT-6 Luna. Existing endpoint, tool, eligibility, and contractual requirements still apply. See the [Your data guide](https://developers.openai.com/api/docs/guides/your-data) for details.
+Fast mode is compatible with data residency, Zero Data Retention, and a Business Associate Agreement (BAA), subject to model-specific availability. Fast mode supports EU data residency for GPT-6.1 Sol, GPT-6 Sol, and GPT-6 Luna. Fast mode is not available with EU data residency for GPT-6 Astra. Existing endpoint, tool, eligibility, and contractual requirements still apply. See the [Your data guide](https://developers.openai.com/api/docs/guides/your-data) for details.

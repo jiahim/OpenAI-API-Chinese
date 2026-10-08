@@ -138,13 +138,13 @@ Complete these steps if you're using AWS. For other clouds, skip to **Azure Blob
     style={{ width: "100%", height: "auto" }}
   >
     <source
-      src="https://cdn.openai.com/devhub/docs/api/private-safety-processing/psp-onboarding-2026-10-05.webm"
+      src="https://cdn.openai.com/devhub/docs/api/private-safety-processing/psp-onboarding-2026-10-07.webm"
       type="video/webm"
     />
     Your browser doesn't support this video. Follow the written steps below.
   </video>
   <figcaption id="aws-onboarding-video-description">
-    AWS onboarding walkthrough (2 min 17 sec, no audio). Follow the written
+    AWS onboarding walkthrough (2 min 10 sec, no audio). Follow the written
     steps below for configuration values.
   </figcaption>
 </figure>
@@ -615,6 +615,8 @@ For AWS, validation also checks the role's `sts:ExternalId` restriction. After s
 - `401 customer_storage_not_ready`: Check that validated storage exists for the requested project's geography.
 - `incorrect_hostname`: Use the hostname that matches your fixed-residency project's configuration.
 - `503 external_storage_validation_unavailable`: Retry later. Contact support if the failure persists.
+
+If you're using AWS's project-based **[Sign up for AWS (new)](https://docs.aws.amazon.com/accounts/latest/reference/sign-up-for-aws.html)** experience, its default resource control policy (RCP) blocks OpenAI's cross-account role assumption. To use that account, upgrade to a paid plan if needed, [activate advanced features](https://docs.aws.amazon.com/accounts/latest/reference/activate-advanced-features.html), and update the RCP to permit OpenAI's `sts:AssumeRole` access.
 
 #### 2. Validate again
 

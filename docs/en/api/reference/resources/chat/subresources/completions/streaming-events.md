@@ -211,7 +211,7 @@ Schema name: `CreateChatCompletionStreamResponse`
   Moderation results for the request input and generated output. Present
   on the moderation chunk when moderated completions are requested.
 
-  - `input: object { model, results, type }  or object { code, message, type }`
+  - `input: ModerationResults { model, results, type }  or Error { code, message, type }`
 
     Moderation for the request input.
 
@@ -281,7 +281,7 @@ Schema name: `CreateChatCompletionStreamResponse`
 
         - `"error"`
 
-  - `output: object { model, results, type }  or object { code, message, type }`
+  - `output: ModerationResults { model, results, type }  or Error { code, message, type }`
 
     Moderation for the generated output.
 
