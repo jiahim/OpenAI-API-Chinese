@@ -1,8 +1,8 @@
 # Realtime server events
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参见 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
 
-这些事件由 OpenAI Realtime WebSocket 服务器向客户端发出。
+这些事件由 OpenAI Realtime WebSocket 服务端向客户端发出。
 
 <a id="error"></a>
 
@@ -14,7 +14,7 @@
 
 ### Schema
 
-Schema name: `RealtimeServerEventError`
+架构名称： `RealtimeServerEventError`
 
 - `error: RealtimeError`
 
@@ -22,7 +22,7 @@ Schema name: `RealtimeServerEventError`
 
   - `message: string`
 
-    人类可读的错误消息。
+    易于阅读的错误消息。
 
   - `type: string`
 
@@ -42,7 +42,7 @@ Schema name: `RealtimeServerEventError`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `type: "error"`
 
@@ -70,17 +70,17 @@ Schema name: `RealtimeServerEventError`
 
 ## session.created
 
-在创建 Session 时返回。在新连接建立时自动发出，作为第一个服务端事件。
-该事件将包含
-默认的 Session 配置。
+在创建 Session 时返回。新连接建立时自动发送，作为第一个服务端事件。该事件将包含
+以下信息
+默认 Session 配置。
 
 ### Schema
 
-Schema name: `RealtimeServerEventSessionCreated`
+架构名称： `RealtimeServerEventSessionCreated`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `session: RealtimeSessionCreateResponse or RealtimeTranscriptionSessionCreateResponse`
 
@@ -88,11 +88,11 @@ Schema name: `RealtimeServerEventSessionCreated`
 
   - `RealtimeSessionCreateResponse object { id, object, type, 13 more }`
 
-    Realtime 会话配置对象。
+    一个 Realtime 会话配置对象。
 
     - `id: string`
 
-      会话的唯一标识符，形如 `sess_1234567890abcdef`.
+      会话的唯一标识符，格式如下 `sess_1234567890abcdef`.
 
     - `object: "realtime.session"`
 
@@ -102,7 +102,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
     - `type: "realtime"`
 
-      要创建的会话类型。始终为 `realtime` ，用于 Realtime API。
+      要创建的会话类型。始终 `realtime` 适用于 Realtime API。
 
       - `"realtime"`
 
@@ -122,13 +122,13 @@ Schema name: `RealtimeServerEventSessionCreated`
 
             - `rate: optional 24000`
 
-              音频的采样率。始终为 `24000`.
+              音频的采样率。始终 `24000`.
 
               - `24000`
 
             - `type: optional "audio/pcm"`
 
-              音频格式。始终为 `audio/pcm`.
+              音频格式。始终 `audio/pcm`.
 
               - `"audio/pcm"`
 
@@ -138,7 +138,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
             - `type: optional "audio/pcmu"`
 
-              音频格式。始终为 `audio/pcmu`.
+              音频格式。始终 `audio/pcmu`.
 
               - `"audio/pcmu"`
 
@@ -148,19 +148,19 @@ Schema name: `RealtimeServerEventSessionCreated`
 
             - `type: optional "audio/pcma"`
 
-              音频格式。始终为 `audio/pcma`.
+              音频格式。始终 `audio/pcma`.
 
               - `"audio/pcma"`
 
         - `noise_reduction: optional object { type }  or null`
 
-          输入音频降噪配置。可将其设置为 `null` 以关闭。
-          降噪会在输入音频发送至 VAD 和模型之前，对添加到输入音频缓冲区的音频进行过滤。
-          对音频进行过滤可以提高 VAD 和轮次检测的准确性（减少误报），并通过改善输入音频的感知效果来提升模型表现。
+          输入音频降噪配置。可设置为 `null` 以关闭。
+          降噪会在音频发送到 VAD 和模型之前，对添加到输入音频缓冲区的音频进行滤波。
+          音频滤波可以提高 VAD 和轮次检测的准确性（减少误检），并通过改善对输入音频的感知来提升模型性能。
 
           - `type: optional NoiseReductionType`
 
-            降噪类型。 `near_field` 适用于耳机等近距离麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
+            降噪类型。 `near_field` 适用于耳机等近距离讲话麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
 
             - `"near_field"`
 
@@ -168,7 +168,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `transcription: optional object { language, languages, model, prompt }  or null`
 
-          输入音频转写的配置，默认关闭，可以设置为 `null` 以在启用后关闭。输入音频转写并非模型原生支持，因为模型会直接消费音频。转写通过 [/audio/transcriptions 端点](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步执行，应被视为输入音频内容的参考信息，而非模型实际听到的精确内容。客户端可以可选地设置转写的语言和 prompt，这些为转写服务提供了额外的指引。
+          输入音频转录的配置，默认关闭，可以设置为 `null` 以在开启后关闭。输入音频转录并非模型原生功能，因为模型会直接消费音频。转录通过 [/audio/transcriptions 端点](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步运行，应将其视为对输入音频内容的指引，而非模型实际听到的精确内容。客户端可以选择性地设置转录的语言和提示词，这些为转录服务提供了额外的指引。
 
           - `language: optional string or null`
 
@@ -176,17 +176,17 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `languages: optional array of string`
 
-            为转写配置的可选输入音频语言，使用 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式。
+            为转录配置的输入音频语言，以 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式表示。
 
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-            用于转写的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+            用于转录的模型。当前可选项有 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
             - `string`
 
             - `"whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-              用于转写的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+              用于转录的模型。当前可选项有 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
               - `"whisper-1"`
 
@@ -206,80 +206,80 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `prompt: optional string`
 
-            存在时，输入音频转写所使用的 prompt。
+            已配置（若存在）的输入音频转录提示词。
 
-        - `turn_detection: optional object { type, create_response, idle_timeout_ms, 4 more }  or object { type, create_response, eagerness, interrupt_response }  or null`
+        - `turn_detection: optional ServerVad { type, create_response, idle_timeout_ms, 4 more }  or SemanticVad { type, create_response, eagerness, interrupt_response }  or null`
 
-          轮次检测的配置，可为 Server VAD 或 Semantic VAD。可以设置为 `null` 以关闭，此时客户端必须手动触发模型响应。
+          轮次检测的配置，可以是 Server VAD 或 Semantic VAD。可以设置为 `null` 以关闭，此时客户端必须手动触发模型响应。
 
           Server VAD 意味着模型将根据音频音量检测语音的开始和结束，并在用户语音结束时进行响应。
 
-          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 结合）来语义化地判断用户是否已说完，然后根据该概率动态设置超时。例如，如果用户音频以 "uhhm" 结尾，模型将给出较低的轮次结束概率，并等待更长时间以便用户继续说话。这在更自然的对话中很有用，但可能会带来更高的延迟。
+          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 配合）从语义上估计用户是否已说完，然后根据这一概率动态设置超时。例如，如果用户音频以“嗯……”逐渐减弱，模型将为轮次结束打出较低的概率，并等待更长时间以便用户继续说话。这有助于更自然的对话，但可能会带来更高的延迟。
 
-          对于 `gpt-realtime-whisper` 转写会话，轮次检测必须设置为
+          对于 `gpt-realtime-whisper` 转录会话，轮次检测必须
           设置为 `null`；不支持 VAD。
 
           - `ServerVad object { type, create_response, idle_timeout_ms, 4 more }`
 
-            服务端语音活动检测（VAD），在检测到用户语音时开启，并在静默一段时间后关闭。
+            服务端语音活动检测（VAD），在检测到用户语音时开启，并在静音一段时间后关闭。
 
             - `type: "server_vad"`
 
-              轮次检测类型， `server_vad` 以启用简单的服务端 VAD。
+              轮次检测的类型， `server_vad` 以启用简单的服务端 VAD。
 
               - `"server_vad"`
 
             - `create_response: optional boolean`
 
-              是否在 VAD 停止事件发生时自动生成响应。如果 `interrupt_response` 设置为 `false` ，当模型已经在响应时，这可能无法成功创建响应。
+              是否在 VAD 停止事件发生时自动生成响应。如果 `interrupt_response` 设置为 `false` ，当模型已经在响应时，这可能会导致创建响应失败。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`, 模型将永远不会自动响应，但 VAD 事件仍会被发出。
+              如果两者 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `idle_timeout_ms: optional number or null`
 
-              可选的超时时间，超过后将自动触发模型响应。这在
-              用户出现长时间停顿出乎意料的场景下非常有用，例如电话
+              可选的超时时间，超过后将自动触发模型响应。这在用户出现较长停顿且不符合预期的场景中很有用，例如电话通话。
               通话。模型将基于当前上下文有效地提示用户继续对话。
+              基于当前上下文提示用户继续对话。
               基于当前上下文。
 
-              该超时值将在最后一个模型响应的音频播放完毕后开始计算，
+              该超时值将在上一次模型响应的音频播放完毕后开始计时，
               即设置为 `response.done` 时间加上音频播放时长。
 
-              一个 `input_audio_buffer.timeout_triggered` 事件（以及与该 Response 关联的事件
-              ）将在达到超时时间时发出。
-              空闲超时目前仅支持 `server_vad` 模式。
+              一个 `input_audio_buffer.timeout_triggered` 事件（以及与 Response 相关的事件
+              ）将在达到超时时被发出。
+              空闲超时当前仅支持 `server_vad` mode。
 
             - `interrupt_response: optional boolean`
 
-              当 VAD 开始事件发生时，是否自动中断（取消）正在进行的默认会话输出响应（即
-              conversation，即。 `conversation` 的 `auto`)。如果 `true` 为真则响应将被取消，否则响应将一直持续到完成。
+              当 VAD 开始事件发生时，是否自动中断（取消）默认会话的进行中响应（即
+              会话）。如果为。 `conversation` 为 `auto`，则响应将被取消；否则将一直继续直到完成。 `true` ，则响应将被取消；否则将一直继续直到完成。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`, 模型将永远不会自动响应，但 VAD 事件仍会被发出。
+              如果两者 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `prefix_padding_ms: optional number`
 
-              仅用于 `server_vad` 模式。VAD 检测到语音之前要包含的音频时长（单位为
-              毫秒）。默认为 300ms。
+              仅用于 `server_vad` 模式。在 VAD 检测到语音之前要包含的音频量（以
+              毫秒为单位）。默认为 300ms。
 
             - `silence_duration_ms: optional number`
 
-              仅用于 `server_vad` 模式。检测语音停止的静默时长（单位为毫秒）。默认为
-              500ms。使用较小的值时，模型响应会更快，
-              但可能会在用户短暂停顿时插话。
+              仅用于 `server_vad` 模式。检测语音停止的静音时长（以毫秒为单位）。默认为
+              500ms。使用较短的时长可以让模型更快地响应，
+              但可能会在用户短暂的停顿时插话。
 
             - `threshold: optional number`
 
-              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认为 0.5。较高的
-              阈值要求更大的音量才能激活模型，因此
-              在嘈杂环境下可能表现更好。
+              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。较
+              高的阈值需要更大的音量才能激活模型，
+              因此在嘈杂环境中可能表现更好。
 
           - `SemanticVad object { type, create_response, eagerness, interrupt_response }`
 
-            使用模型判断用户何时结束说话的服务端语义轮次检测。
+            服务端语义轮次检测，使用模型来判断用户何时结束说话。
 
             - `type: "semantic_vad"`
 
-              轮次检测类型， `semantic_vad` 以开启 Semantic VAD。
+              轮次检测的类型， `semantic_vad` 以开启语义 VAD。
 
               - `"semantic_vad"`
 
@@ -289,7 +289,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
             - `eagerness: optional "low" or "medium" or "high" or "auto"`
 
-              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会等待用户继续说话的时长更久， `high` 响应会更快。 `auto` 是默认值，等同于 `medium`. `low`, `medium`，和 `high` 的最大超时分别为 8 秒、4 秒和 2 秒。
+              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会更长时间地等待用户继续说话， `high` 响应速度会更快。 `auto` 是默认值，等同于 `medium`. `low`, `medium`，以及 `high` 的最大超时时间分别为 8 秒、4 秒和 2 秒。
 
               - `"low"`
 
@@ -301,8 +301,8 @@ Schema name: `RealtimeServerEventSessionCreated`
 
             - `interrupt_response: optional boolean`
 
-              当发生 VAD start 事件时，是否自动中断任何正在进行的响应并向默认
-              conversation，即。 `conversation` 的 `auto`）输出。
+              是否在发生 VAD start 事件时自动使用输出中断任何进行中的响应，默认发送给
+              会话）。如果为。 `conversation` 为 `auto`)。
 
       - `output: optional object { format, speed, voice }`
 
@@ -312,29 +312,29 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `speed: optional number`
 
-          模型语音响应的速度，以原始速度的倍数表示。
-          1.0 是默认速度。0.25 是最低速度。1.5 是最高速度。该值只能在模型轮次之间更改，不能在响应进行中更改。
+          模型口头响应的速度，为原始速度的倍数。
+          1.0 是默认速度。0.25 是最低速度。1.5 是最高速度。此值只能在模型轮次之间修改，不能在响应进行中修改。
 
-          该参数是对生成后音频的后处理调整，
-          也可以通过提示让模型说得更快或更慢。
+          此参数是对生成后音频的后处理调整，
+          也可以提示模型说得更快或更慢。
 
         - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
 
-          模型用于响应的声音。一旦模型至少响应过一次音频后，
-          会话中就无法再更改声音。当前
-          可用的声音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-          `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
-          最佳质量。
+          模型用于响应的语音。一旦模型至少响应过一次音频，语音就无法在
+          会话期间再次更改。当前
+          可选的语音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+          `shimmer`, `verse`, `marin`，以及 `cedar`。我们推荐 `marin` 和 `cedar` 用于
+          获得最佳质量。
 
           - `string`
 
           - `"alloy" or "ash" or "ballad" or 7 more`
 
-            模型用于响应的声音。一旦模型至少响应过一次音频后，
-            会话中就无法再更改声音。当前
-            可用的声音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-            `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
-            最佳质量。
+            模型用于响应的语音。一旦模型至少响应过一次音频，语音就无法在
+            会话期间再次更改。当前
+            可选的语音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+            `shimmer`, `verse`, `marin`，以及 `cedar`。我们推荐 `marin` 和 `cedar` 用于
+            获得最佳质量。
 
             - `"alloy"`
 
@@ -358,28 +358,28 @@ Schema name: `RealtimeServerEventSessionCreated`
 
     - `expires_at: optional number`
 
-      会话的过期时间戳，自纪元以来的秒数。
+      会话的过期时间戳，自 epoch 起以秒为单位。
 
     - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
-      包含在服务端输出中的其他字段。
+      要包含在服务端输出中的其他字段。
 
-      `item.input_audio_transcription.logprobs`：在输入音频转录中包含 logprobs。
+      `item.input_audio_transcription.logprobs`:为输入音频转写包含 logprobs。
 
       - `"item.input_audio_transcription.logprobs"`
 
     - `instructions: optional string`
 
-      在模型调用前添加的默认系统指令（即系统消息）。该字段允许客户端引导模型给出期望的响应。可以指示模型响应的内容和格式（例如“极其简洁”、“表现得友好”、“以下是良好响应的示例”），以及音频行为（例如“说得快一点”、“在声音中加入情绪”、“经常笑”）。这些指令不一定会被模型遵循，但它们为模型提供了关于期望行为的指导。
+      在模型调用前添加的默认系统指令（即系统消息）。此字段允许客户端引导模型给出所需的响应。可以指示模型响应的内容和格式（例如 "be extremely succinct"、"act friendly"、"here are examples of good responses"）以及音频行为（例如 "talk quickly"、"inject emotion into your voice"、"laugh frequently"）。这些指令不保证会被模型遵循，但它们为模型提供了关于期望行为的指导。
 
-      注意，服务端会设置默认指令，如果未设置此字段则会使用默认指令，这些默认指令可在 `session.created` 事件中会话开始时查看。
+      注意，服务端会设置默认指令，如果该字段未设置，则会使用默认指令，且这些指令在 `session.created` 会话开始时的事件中可见。
 
     - `max_output_tokens: optional number or "inf"`
 
       单次助手响应的最大输出 token 数，
-      包括工具调用在内。提供一个介于 1 到 4096 之间的整数以
-      限制输出 token，或 `inf` 以获取给定模型可用的最大 token 数。默认为
-      给定模型可用的最大 token 数。默认为 `inf`.
+      包含工具调用。请提供一个介于 1 到 4096 之间的整数以
+      限制输出 token 数，或 `inf` 使用指定模型可用的最大 token 数。默认为
+      给定模型的最大可用 token 数。默认为 `inf`.
 
       - `number`
 
@@ -437,9 +437,9 @@ Schema name: `RealtimeServerEventSessionCreated`
 
     - `output_modalities: optional array of "text" or "audio"`
 
-      模型可以响应的模态集合。默认为 `["audio"]`,表示
-      让模型同时返回音频和转录文本。 `["text"]` 可用于使
-      模型只输出文本。无法同时请求两者 `text` 和 `audio` 。
+      模型可以响应的模态集合。默认值为 `["audio"]`，表示
+      模型将以音频加文字转录的形式响应。 `["text"]` 可用于让
+      模型仅以文本形式响应。不能同时请求两种形式 `text` 和 `audio` 。
 
       - `"text"`
 
@@ -456,19 +456,19 @@ Schema name: `RealtimeServerEventSessionCreated`
 
       - `variables: optional map[string or ResponseInputText or ResponseInputImage or ResponseInputFile] or null`
 
-        要在你的
+        用于在
         提示中替换变量的可选值映射。替换值可以是字符串，也可以是其他
-        Response 输入类型，例如图片或文件。
+        响应输入类型，例如图像或文件。
 
         - `string`
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          发送到模型的文本输入。
+          发送给模型的文本输入。
 
           - `text: string`
 
-            发送到模型的文本输入。
+            发送给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -478,7 +478,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点会沿用请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -488,11 +488,11 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          发送到模型的图像输入。了解有关 [图像输入](https://developers.openai.com/api/docs/guides/images-vision).
+          发送给模型的图像输入。了解有关 [图像输入](https://developers.openai.com/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
-            发送到模型的图像的细节级别。取值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送给模型的图像细节级别。取值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
             - `"low"`
 
@@ -510,15 +510,15 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `file_id: optional string or null`
 
-            要发送到模型的文件 ID。
+            发送给模型的文件 ID。
 
           - `image_url: optional string or null`
 
-            要发送到模型的图像 URL。可以是完整的 URL，也可以是 data URL 中 base64 编码的图像。
+            发送给模型的图像 URL。可以是完全限定的 URL，也可以是 data URL 中的 base64 编码图像。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点会沿用请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -528,7 +528,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          发送到模型的文件输入。
+          发送给模型的文件输入。
 
           - `type: "input_file"`
 
@@ -538,7 +538,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `detail: optional "auto" or "low" or "high"`
 
-            发送到模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+            发送给模型的文件细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 使用量。使用 `low` 进行较低成本的渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -548,23 +548,23 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `file_data: optional string`
 
-            要发送到模型的文件内容。
+            发送给模型的文件内容。
 
           - `file_id: optional string or null`
 
-            要发送到模型的文件 ID。
+            发送给模型的文件 ID。
 
           - `file_url: optional string`
 
-            要发送给模型的文件的 URL。
+            发送给模型的文件的 URL。
 
           - `filename: optional string`
 
-            要发送给模型的文件的名称。
+            发送给模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点会沿用请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -574,15 +574,15 @@ Schema name: `RealtimeServerEventSessionCreated`
 
       - `version: optional string or null`
 
-        可选的提示模板版本。
+        提示词模板的可选版本。
 
     - `reasoning: optional RealtimeReasoning`
 
-      适用于具备推理能力的 Realtime 模型的配置，例如 `gpt-realtime-2`.
+      适用于具有推理能力的 Realtime 模型（例如 `gpt-realtime-2`.
 
       - `effort: optional RealtimeReasoningEffort`
 
-        限制具备推理能力的 Realtime 模型（例如
+        限制具有推理能力的 Realtime 模型（例如
         `gpt-realtime-2`.
 
         - `"minimal"`
@@ -597,19 +597,19 @@ Schema name: `RealtimeServerEventSessionCreated`
 
     - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
 
-      模型选择工具的方式。可提供一个字符串模式，或强制指定特定的
-      function/MCP 工具。
+      模型选择工具的方式。提供某个字符串模式，或强制使用特定的
+      函数/MCP 工具。
 
       - `ToolChoiceOptions = "none" or "auto" or "required"`
 
-        控制模型调用哪个工具（如果有）。
+        控制模型调用哪个工具（如果有的话）。
 
-        `none` 意味着模型不会调用任何工具，而是生成一条消息。
+        `none` 表示模型不会调用任何工具，而是生成一条消息。
 
-        `auto` 意味着模型可以在生成消息与调用一个或
-        多个工具之间进行选择。
+        `auto` 表示模型可以自行选择是生成一条消息，还是调用一个或
+        更多工具。
 
-        `required` 意味着模型必须调用一个或多个工具。
+        `required` 表示模型必须调用一个或多个工具。
 
         - `"none"`
 
@@ -619,7 +619,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
       - `ToolChoiceFunction object { name, type }`
 
-        使用此选项可强制模型调用特定的函数。
+        使用此选项可强制模型调用特定函数。
 
         - `name: string`
 
@@ -627,7 +627,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `type: "function"`
 
-          对于函数调用，type 始终为 `function`.
+          对于函数调用，类型始终为 `function`.
 
           - `"function"`
 
@@ -641,15 +641,15 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `type: "mcp"`
 
-          对于 MCP 工具，type 始终为 `mcp`.
+          对于 MCP 工具，类型始终为 `mcp`.
 
           - `"mcp"`
 
         - `name: optional string or null`
 
-          要在服务器上调用的工具的名称。
+          要在服务器上调用的工具名称。
 
-    - `tools: optional array of RealtimeFunctionTool or object { server_label, type, allowed_callers, 9 more }`
+    - `tools: optional array of RealtimeFunctionTool or McpTool { server_label, type, allowed_callers, 9 more }`
 
       模型可用的工具。
 
@@ -657,32 +657,32 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `description: optional string`
 
-          函数的描述，包括何时以及如何调用的指引，以及调用时需要告知用户的内容（如有）的指引。
-          时需要告知用户的内容（如有）的指引。
+          函数说明，包括何时以及如何
+          调用它的指导，以及调用时告知用户什么的指导
           （如有）。
 
         - `name: optional string`
 
-          函数的名称。
+          函数名称。
 
         - `parameters: optional unknown`
 
-          函数的参数，采用 JSON Schema 格式。
+          以 JSON Schema 表示的函数参数。
 
         - `type: optional "function"`
 
-          工具的类型，即 `function`.
+          工具类型，即 `function`.
 
           - `"function"`
 
       - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol
-        （MCP）服务器为模型提供额外的工具访问能力。 [了解更多关于 MCP 的信息](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
+        通过远程 Model Context Protocol 访问更多工具
+        (MCP) 服务器。 [详细了解 MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
-          该 MCP 服务器的标签，用于在工具调用中识别它。
+          此 MCP 服务器的标签，用于在工具调用中标识它。
 
         - `type: "mcp"`
 
@@ -698,7 +698,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           允许使用的工具名称列表或过滤对象。
 
@@ -708,13 +708,13 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `McpToolFilter object { read_only, tool_names }`
 
-            用于指定允许使用哪些工具的过滤对象。
+            用于指定允许使用的工具的过滤对象。
 
             - `read_only: optional boolean`
 
-              指示该工具是否会修改数据或为只读。如果
-              MCP 服务器被 [标记为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤条件。
+              指示工具是否会修改数据或是否为只读。如果某个
+              MCP 服务器 [使用以下标注： `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              则会匹配此过滤器。
 
             - `tool_names: optional array of string`
 
@@ -722,30 +722,30 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `authorization: optional string`
 
-          一个 OAuth 访问令牌，可与远程 MCP 服务器一起使用，可以配合
-          自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-          必须处理 OAuth 授权流程，并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可与自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+          程序必须处理 OAuth 授权流程并在此提供该令牌。
+          必须处理 OAuth 授权流程并在此提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，例如 ChatGPT 中提供的服务连接器。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 其中之一。了解更多
-          关于服务连接器的信息 [请参见此处](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的那些连接器。必须提供
+          `server_url`, `connector_id`，或 `tunnel_id` 其中一个。了解更多
+          关于服务连接器的信息 [请参阅此处](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
-          此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
-          使用 `server_url` 连接到远程 MCP 服务器，或 `tunnel_id` 到
+          此字段对 2026 年 9 月 1 日之后发布的模型已弃用。
+          使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道
           通过安全 MCP 隧道连接。
 
           当前支持 `connector_id` 的值为：
 
           - Dropbox： `connector_dropbox`
           - Gmail： `connector_gmail`
-          - Google 日历： `connector_googlecalendar`
+          - Google Calendar： `connector_googlecalendar`
           - Google Drive： `connector_googledrive`
           - Microsoft Teams： `connector_microsoftteams`
-          - Outlook 日历： `connector_outlookcalendar`
-          - Outlook Email: `connector_outlookemail`
-          - SharePoint: `connector_sharepoint`
+          - Outlook Calendar： `connector_outlookcalendar`
+          - Outlook 邮件： `connector_outlookemail`
+          - SharePoint： `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -765,32 +765,32 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟，并通过工具搜索发现。
+          此 MCP 工具是否为延迟加载，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
           或其他用途。
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
-          指定 MCP 服务器的哪些工具需要审批。
+          指定 MCP 服务器中哪些工具需要审批。
 
           - `McpToolApprovalFilter object { always, never }`
 
-            指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或与需要审批的工具关联的过滤器对象
-            。
+            指定 MCP 服务器中哪些工具需要审批。可以是
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
-              用于指定允许使用哪些工具的过滤对象。
+              用于指定允许使用的工具的过滤对象。
 
               - `read_only: optional boolean`
 
-                指示该工具是否会修改数据或为只读。如果
-                MCP 服务器被 [标记为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤条件。
+                指示工具是否会修改数据或是否为只读。如果某个
+                MCP 服务器 [使用以下标注： `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                则会匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -798,13 +798,13 @@ Schema name: `RealtimeServerEventSessionCreated`
 
             - `never: optional object { read_only, tool_names }`
 
-              用于指定允许使用哪些工具的过滤对象。
+              用于指定允许使用的工具的过滤对象。
 
               - `read_only: optional boolean`
 
-                指示该工具是否会修改数据或为只读。如果
-                MCP 服务器被 [标记为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤条件。
+                指示工具是否会修改数据或是否为只读。如果某个
+                MCP 服务器 [使用以下标注： `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                则会匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -812,8 +812,8 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单个审批策略。可选值为 `always` 或
-            `never`。当设置为 `always`，时，所有工具都需要审批。当设置为
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -826,60 +826,60 @@ Schema name: `RealtimeServerEventSessionCreated`
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
+          MCP 服务器的 URL。需要提供 `server_url`, `connector_id`，或
           `tunnel_id` 之一。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。需要提供
           `server_url`, `connector_id`，或 `tunnel_id` 之一。
 
-    - `tracing: optional "auto" or object { group_id, metadata, workflow_name }  or null`
+    - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
-      Realtime API 可以将会话追踪写入到 [Traces Dashboard](https://platform.openai.com/logs?api=traces). 设为 null 以禁用追踪。一旦
-      在某个会话中启用了追踪，就再也无法修改该配置。
+      实时 API 可以将会话追踪写入到 [追踪仪表板](https://platform.openai.com/logs?api=traces). 设为 null 以禁用 追踪。一旦
+      追踪 在某个会话中启用，就无法再修改其配置。
 
-      `auto` 将为该会话创建一个追踪，并使用默认值填充
-      工作流名称、group id 和元数据。
+      `auto` 将会为该会话创建一个 追踪，并使用默认值填充
+      工作流 名称、group id 和 metadata。
 
       - `Auto = "auto"`
 
-        启用追踪并设置追踪配置选项的默认值。该字段始终 `auto`.
+        启用 追踪 并设置 追踪 配置选项的默认值。始终 `auto`.
 
         - `"auto"`
 
       - `TracingConfiguration object { group_id, metadata, workflow_name }`
 
-        针对追踪的细粒度配置。
+        对 追踪 的细粒度配置。
 
         - `group_id: optional string`
 
-          附加到此追踪的 group id，用于在 Traces Dashboard 中进行筛选和
+          附加到此 追踪 的 group id，用于在 Traces Dashboard 中进行筛选与
           分组。
 
         - `metadata: optional unknown`
 
-          附加到此追踪的自定义元数据，用于在 Traces Dashboard 中进行筛选。
-          用于筛选。
+          附加到此 追踪 的任意 metadata，用于在
+          Traces Dashboard 中进行筛选。
 
         - `workflow_name: optional string`
 
-          附加到此追踪的工作流名称。该名称用于
-          在 Traces Dashboard 中标识此追踪。
+          附加到此 追踪 的 工作流 名称。它用于
+          在 Traces Dashboard 中命名该 追踪。
 
     - `truncation: optional RealtimeTruncation`
 
-      当对话中的 token 数量超过模型的输入 token 上限时，对话将被截断，这意味着最早的消息将不会包含在模型的上下文内。一个具有 32k 上下文、4,096 最大输出 token 的模型在发生截断之前，上下文只能容纳 28,224 个 token。
+      当对话中的 token 数量超过模型的输入 token 上限时，对话将被截断，意味着从最早的消息开始，部分消息将不会被纳入模型的上下文。一个 32k 上下文、最大输出 4,096 token 的模型，在发生截断之前的上下文中只能容纳 28,224 个 token。
 
-      客户端可以配置截断行为，使用更低的最大 token 限制进行截断，这是控制 token 用量和成本的有效方式。
+      客户端可以配置截断行为，以更低的最大 token 上限进行截断，这是控制 token 用量和成本的有效方式。
 
-      由于消息会从上下文的开头被丢弃，截断会减少下一轮中被缓存的 token 数量（导致缓存失效）。不过，客户端也可以将截断配置为最多保留最大上下文大小一定比例的消息，从而减少后续截断的需要，提高缓存命中率。
+      截断会减少下一轮中被缓存的 token 数量（导致缓存失效），因为消息会从上下文开头被丢弃。然而，客户端也可以将截断配置为保留到最大上下文大小一定比例的消息，从而减少后续截断的次数，进而提升缓存命中率。
 
-      也可以完全禁用截断，这意味着服务端永远不会进行截断，但会在对话超出模型输入 token 上限时报错。
+      可以完全禁用截断，这意味着服务端永远不会截断，而是当对话超过模型的输入 token 上限时返回错误。
 
       - `"auto" or "disabled"`
 
-        该会话所使用的截断策略。 `auto` 是默认的截断策略。 `disabled` 将禁用截断，在对话超出输入 token 上限时抛出错误。
+        会话所使用的截断策略。 `auto` 是默认的截断策略。 `disabled` 会禁用截断，并在对话超过输入 token 上限时抛出错误。
 
         - `"auto"`
 
@@ -887,11 +887,11 @@ Schema name: `RealtimeServerEventSessionCreated`
 
       - `RetentionRatioTruncation object { retention_ratio, type, token_limits }`
 
-        当对话超出输入 token 上限时，保留对话 token 中的一部分。这允许你将截断分摊到多个轮次，有助于提升缓存 token 的使用率。
+        当对话超过输入 token 上限时，保留一定比例的对话 token。这样可以在多轮之间分摊截断开销，有助于提高缓存 token 的利用率。
 
         - `retention_ratio: number`
 
-          在指令之后的会话 token 中保留的比例（`0.0` - `1.0`)，当会话超出输入 token 上限时生效。将该值设置为 `0.8` 意味着会丢弃消息，直到使用了最大允许 token 的 80%。这有助于降低截断频率并提升缓存命中率。
+          在指令之后保留的对话 token 比例（`0.0` - `1.0`），用于在对话超过输入 token 上限时生效。设置此项为 `0.8` 表示会丢弃消息，直至使用率达到最大允许 token 的 80%。这有助于降低截断频率并提升缓存命中率。
 
         - `type: "retention_ratio"`
 
@@ -905,15 +905,15 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `post_instructions: optional number`
 
-            指令之后（包括工具定义）会话中允许的最大 token 数。例如，将该值设置为 5,000 意味着当指令之后的会话超过 5,000 token 时就会发生截断。该值不能高于模型上下文窗口大小减去最大输出 token 数。
+            指令之后对话中允许的最大 token 数（包括工具定义）。例如，设置为 5,000 意味着在指令之后对话超过 5,000 token 时会进行截断。此值不能高于模型上下文窗口大小减去最大输出 token 数。
 
   - `RealtimeTranscriptionSessionCreateResponse object { id, object, type, 3 more }`
 
-    Realtime 转写会话配置对象。
+    一个实时转写会话配置对象。
 
     - `id: string`
 
-      会话的唯一标识符，形如 `sess_1234567890abcdef`.
+      会话的唯一标识符，格式如下 `sess_1234567890abcdef`.
 
     - `object: string`
 
@@ -921,7 +921,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
     - `type: "transcription"`
 
-      会话类型。转写会话始终为 `transcription` 。
+      会话的类型。始终为 `transcription` 用于转写会话。
 
       - `"transcription"`
 
@@ -941,7 +941,7 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `type: optional NoiseReductionType`
 
-            降噪类型。 `near_field` 适用于耳机等近距离麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
+            降噪类型。 `near_field` 适用于耳机等近距离讲话麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
 
         - `transcription: optional object { language, languages, model, prompt }  or null`
 
@@ -953,17 +953,17 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `languages: optional array of string`
 
-            为转写配置的可选输入音频语言，使用 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式。
+            为转录配置的输入音频语言，以 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式表示。
 
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-            用于转写的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+            用于转录的模型。当前可选项有 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
             - `string`
 
             - `"whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-              用于转写的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+              用于转录的模型。当前可选项有 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
               - `"whisper-1"`
 
@@ -983,44 +983,44 @@ Schema name: `RealtimeServerEventSessionCreated`
 
           - `prompt: optional string`
 
-            存在时，输入音频转写所使用的 prompt。
+            已配置（若存在）的输入音频转录提示词。
 
         - `turn_detection: optional RealtimeTranscriptionSessionTurnDetection or null`
 
-          轮次检测配置。可设置为 `null` 以关闭。服务端
-          VAD 意味着模型将根据
-          音频音量检测语音的开始和结束，并在用户语音结束时做出响应。对于 `gpt-realtime-whisper`，此值必须为 `null`；不支持 VAD。
+          轮次检测的配置。可以设置为 `null` 以关闭。服务端
+          VAD 意味着模型将基于音频音量检测语音的开始和结束，并在用户语音结束时作出响应。对于
+          ，这必须是服务端 VAD，模型会根据 `gpt-realtime-whisper`，这必须设置为 `null`；不支持 VAD。
 
           - `prefix_padding_ms: optional number`
 
-            VAD 检测到语音之前要包含的音频量（以
-            毫秒）。默认为 300ms。
+            VAD 检测到的语音之前要包含的音频量（以
+            毫秒为单位）。默认为 300ms。
 
           - `silence_duration_ms: optional number`
 
-            检测语音停止的静音持续时长（以毫秒为单位）。默认值
-            500ms。使用较小的值时，模型响应会更快，
-            但可能会在用户短暂停顿时插话。
+            用于检测语音停止的静默时长（以毫秒为单位）。默认
+            500ms。使用较短的时长可以让模型更快地响应，
+            但可能会在用户短暂的停顿时插话。
 
           - `threshold: optional number`
 
-            VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。
-            阈值要求更大的音量才能激活模型，因此
-            在嘈杂环境下可能表现更好。
+            VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。更
+            高的阈值需要更大的音量才能激活模型，
+            因此在嘈杂环境中可能表现更好。
 
           - `type: optional string`
 
-            轮次检测的类型，当前仅 `server_vad` 受支持。
+            目前仅支持回合检测类型， `server_vad` 。
 
     - `expires_at: optional number`
 
-      会话的过期时间戳，自纪元以来的秒数。
+      会话的过期时间戳，自 epoch 起以秒为单位。
 
     - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
-      包含在服务端输出中的其他字段。
+      要包含在服务端输出中的其他字段。
 
-      - `item.input_audio_transcription.logprobs`：在输入音频转录中包含 logprobs。
+      - `item.input_audio_transcription.logprobs`:为输入音频转写包含 logprobs。
 
       - `"item.input_audio_transcription.logprobs"`
 
@@ -1087,16 +1087,16 @@ Schema name: `RealtimeServerEventSessionCreated`
 
 ## session.updated
 
-当会话被更新时返回，伴随着一个 `session.update` 事件，除非
-there is an error.
+当会话通过某个 `session.update` 事件进行更新时返回，除非
+发生错误。
 
 ### Schema
 
-Schema name: `RealtimeServerEventSessionUpdated`
+架构名称： `RealtimeServerEventSessionUpdated`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `session: RealtimeSessionCreateResponse or RealtimeTranscriptionSessionCreateResponse`
 
@@ -1104,11 +1104,11 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
   - `RealtimeSessionCreateResponse object { id, object, type, 13 more }`
 
-    Realtime 会话配置对象。
+    一个 Realtime 会话配置对象。
 
     - `id: string`
 
-      会话的唯一标识符，形如 `sess_1234567890abcdef`.
+      会话的唯一标识符，格式如下 `sess_1234567890abcdef`.
 
     - `object: "realtime.session"`
 
@@ -1118,7 +1118,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
     - `type: "realtime"`
 
-      要创建的会话类型。始终为 `realtime` ，用于 Realtime API。
+      要创建的会话类型。始终 `realtime` 适用于 Realtime API。
 
       - `"realtime"`
 
@@ -1138,13 +1138,13 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
             - `rate: optional 24000`
 
-              音频的采样率。始终为 `24000`.
+              音频的采样率。始终 `24000`.
 
               - `24000`
 
             - `type: optional "audio/pcm"`
 
-              音频格式。始终为 `audio/pcm`.
+              音频格式。始终 `audio/pcm`.
 
               - `"audio/pcm"`
 
@@ -1154,7 +1154,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
             - `type: optional "audio/pcmu"`
 
-              音频格式。始终为 `audio/pcmu`.
+              音频格式。始终 `audio/pcmu`.
 
               - `"audio/pcmu"`
 
@@ -1164,19 +1164,19 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
             - `type: optional "audio/pcma"`
 
-              音频格式。始终为 `audio/pcma`.
+              音频格式。始终 `audio/pcma`.
 
               - `"audio/pcma"`
 
         - `noise_reduction: optional object { type }  or null`
 
-          输入音频降噪配置。可将其设置为 `null` 以关闭。
-          降噪会在输入音频发送至 VAD 和模型之前，对添加到输入音频缓冲区的音频进行过滤。
-          对音频进行过滤可以提高 VAD 和轮次检测的准确性（减少误报），并通过改善输入音频的感知效果来提升模型表现。
+          输入音频降噪配置。可设置为 `null` 以关闭。
+          降噪会在音频发送到 VAD 和模型之前，对添加到输入音频缓冲区的音频进行滤波。
+          音频滤波可以提高 VAD 和轮次检测的准确性（减少误检），并通过改善对输入音频的感知来提升模型性能。
 
           - `type: optional NoiseReductionType`
 
-            降噪类型。 `near_field` 适用于耳机等近距离麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
+            降噪类型。 `near_field` 适用于耳机等近距离讲话麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
 
             - `"near_field"`
 
@@ -1184,7 +1184,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `transcription: optional object { language, languages, model, prompt }  or null`
 
-          输入音频转写的配置，默认关闭，可以设置为 `null` 以在启用后关闭。输入音频转写并非模型原生支持，因为模型会直接消费音频。转写通过 [/audio/transcriptions 端点](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步执行，应被视为输入音频内容的参考信息，而非模型实际听到的精确内容。客户端可以可选地设置转写的语言和 prompt，这些为转写服务提供了额外的指引。
+          输入音频转录的配置，默认关闭，可以设置为 `null` 以在开启后关闭。输入音频转录并非模型原生功能，因为模型会直接消费音频。转录通过 [/audio/transcriptions 端点](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) 异步运行，应将其视为对输入音频内容的指引，而非模型实际听到的精确内容。客户端可以选择性地设置转录的语言和提示词，这些为转录服务提供了额外的指引。
 
           - `language: optional string or null`
 
@@ -1192,17 +1192,17 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `languages: optional array of string`
 
-            为转写配置的可选输入音频语言，使用 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式。
+            为转录配置的输入音频语言，以 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式表示。
 
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-            用于转写的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+            用于转录的模型。当前可选项有 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
             - `string`
 
             - `"whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-              用于转写的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+              用于转录的模型。当前可选项有 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
               - `"whisper-1"`
 
@@ -1222,80 +1222,80 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `prompt: optional string`
 
-            存在时，输入音频转写所使用的 prompt。
+            已配置（若存在）的输入音频转录提示词。
 
-        - `turn_detection: optional object { type, create_response, idle_timeout_ms, 4 more }  or object { type, create_response, eagerness, interrupt_response }  or null`
+        - `turn_detection: optional ServerVad { type, create_response, idle_timeout_ms, 4 more }  or SemanticVad { type, create_response, eagerness, interrupt_response }  or null`
 
-          轮次检测的配置，可为 Server VAD 或 Semantic VAD。可以设置为 `null` 以关闭，此时客户端必须手动触发模型响应。
+          轮次检测的配置，可以是 Server VAD 或 Semantic VAD。可以设置为 `null` 以关闭，此时客户端必须手动触发模型响应。
 
           Server VAD 意味着模型将根据音频音量检测语音的开始和结束，并在用户语音结束时进行响应。
 
-          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 结合）来语义化地判断用户是否已说完，然后根据该概率动态设置超时。例如，如果用户音频以 "uhhm" 结尾，模型将给出较低的轮次结束概率，并等待更长时间以便用户继续说话。这在更自然的对话中很有用，但可能会带来更高的延迟。
+          Semantic VAD 更为先进，它使用轮次检测模型（与 VAD 配合）从语义上估计用户是否已说完，然后根据这一概率动态设置超时。例如，如果用户音频以“嗯……”逐渐减弱，模型将为轮次结束打出较低的概率，并等待更长时间以便用户继续说话。这有助于更自然的对话，但可能会带来更高的延迟。
 
-          对于 `gpt-realtime-whisper` 转写会话，轮次检测必须设置为
+          对于 `gpt-realtime-whisper` 转录会话，轮次检测必须
           设置为 `null`；不支持 VAD。
 
           - `ServerVad object { type, create_response, idle_timeout_ms, 4 more }`
 
-            服务端语音活动检测（VAD），在检测到用户语音时开启，并在静默一段时间后关闭。
+            服务端语音活动检测（VAD），在检测到用户语音时开启，并在静音一段时间后关闭。
 
             - `type: "server_vad"`
 
-              轮次检测类型， `server_vad` 以启用简单的服务端 VAD。
+              轮次检测的类型， `server_vad` 以启用简单的服务端 VAD。
 
               - `"server_vad"`
 
             - `create_response: optional boolean`
 
-              是否在 VAD 停止事件发生时自动生成响应。如果 `interrupt_response` 设置为 `false` ，当模型已经在响应时，这可能无法成功创建响应。
+              是否在 VAD 停止事件发生时自动生成响应。如果 `interrupt_response` 设置为 `false` ，当模型已经在响应时，这可能会导致创建响应失败。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`, 模型将永远不会自动响应，但 VAD 事件仍会被发出。
+              如果两者 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `idle_timeout_ms: optional number or null`
 
-              可选的超时时间，超过后将自动触发模型响应。这在
-              用户出现长时间停顿出乎意料的场景下非常有用，例如电话
+              可选的超时时间，超过后将自动触发模型响应。这在用户出现较长停顿且不符合预期的场景中很有用，例如电话通话。
               通话。模型将基于当前上下文有效地提示用户继续对话。
+              基于当前上下文提示用户继续对话。
               基于当前上下文。
 
-              该超时值将在最后一个模型响应的音频播放完毕后开始计算，
+              该超时值将在上一次模型响应的音频播放完毕后开始计时，
               即设置为 `response.done` 时间加上音频播放时长。
 
-              一个 `input_audio_buffer.timeout_triggered` 事件（以及与该 Response 关联的事件
-              ）将在达到超时时间时发出。
-              空闲超时目前仅支持 `server_vad` 模式。
+              一个 `input_audio_buffer.timeout_triggered` 事件（以及与 Response 相关的事件
+              ）将在达到超时时被发出。
+              空闲超时当前仅支持 `server_vad` mode。
 
             - `interrupt_response: optional boolean`
 
-              当 VAD 开始事件发生时，是否自动中断（取消）正在进行的默认会话输出响应（即
-              conversation，即。 `conversation` 的 `auto`)。如果 `true` 为真则响应将被取消，否则响应将一直持续到完成。
+              当 VAD 开始事件发生时，是否自动中断（取消）默认会话的进行中响应（即
+              会话）。如果为。 `conversation` 为 `auto`，则响应将被取消；否则将一直继续直到完成。 `true` ，则响应将被取消；否则将一直继续直到完成。
 
-              如果同时将 `create_response` 和 `interrupt_response` 都设置为 `false`, 模型将永远不会自动响应，但 VAD 事件仍会被发出。
+              如果两者 `create_response` 和 `interrupt_response` 都设置为 `false`，模型将永远不会自动响应，但仍会发出 VAD 事件。
 
             - `prefix_padding_ms: optional number`
 
-              仅用于 `server_vad` 模式。VAD 检测到语音之前要包含的音频时长（单位为
-              毫秒）。默认为 300ms。
+              仅用于 `server_vad` 模式。在 VAD 检测到语音之前要包含的音频量（以
+              毫秒为单位）。默认为 300ms。
 
             - `silence_duration_ms: optional number`
 
-              仅用于 `server_vad` 模式。检测语音停止的静默时长（单位为毫秒）。默认为
-              500ms。使用较小的值时，模型响应会更快，
-              但可能会在用户短暂停顿时插话。
+              仅用于 `server_vad` 模式。检测语音停止的静音时长（以毫秒为单位）。默认为
+              500ms。使用较短的时长可以让模型更快地响应，
+              但可能会在用户短暂的停顿时插话。
 
             - `threshold: optional number`
 
-              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认为 0.5。较高的
-              阈值要求更大的音量才能激活模型，因此
-              在嘈杂环境下可能表现更好。
+              仅用于 `server_vad` 模式。VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。较
+              高的阈值需要更大的音量才能激活模型，
+              因此在嘈杂环境中可能表现更好。
 
           - `SemanticVad object { type, create_response, eagerness, interrupt_response }`
 
-            使用模型判断用户何时结束说话的服务端语义轮次检测。
+            服务端语义轮次检测，使用模型来判断用户何时结束说话。
 
             - `type: "semantic_vad"`
 
-              轮次检测类型， `semantic_vad` 以开启 Semantic VAD。
+              轮次检测的类型， `semantic_vad` 以开启语义 VAD。
 
               - `"semantic_vad"`
 
@@ -1305,7 +1305,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
             - `eagerness: optional "low" or "medium" or "high" or "auto"`
 
-              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会等待用户继续说话的时长更久， `high` 响应会更快。 `auto` 是默认值，等同于 `medium`. `low`, `medium`，和 `high` 的最大超时分别为 8 秒、4 秒和 2 秒。
+              仅用于 `semantic_vad` 模式。模型响应的积极程度。 `low` 会更长时间地等待用户继续说话， `high` 响应速度会更快。 `auto` 是默认值，等同于 `medium`. `low`, `medium`，以及 `high` 的最大超时时间分别为 8 秒、4 秒和 2 秒。
 
               - `"low"`
 
@@ -1317,8 +1317,8 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
             - `interrupt_response: optional boolean`
 
-              当发生 VAD start 事件时，是否自动中断任何正在进行的响应并向默认
-              conversation，即。 `conversation` 的 `auto`）输出。
+              是否在发生 VAD start 事件时自动使用输出中断任何进行中的响应，默认发送给
+              会话）。如果为。 `conversation` 为 `auto`)。
 
       - `output: optional object { format, speed, voice }`
 
@@ -1328,29 +1328,29 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `speed: optional number`
 
-          模型语音响应的速度，以原始速度的倍数表示。
-          1.0 是默认速度。0.25 是最低速度。1.5 是最高速度。该值只能在模型轮次之间更改，不能在响应进行中更改。
+          模型口头响应的速度，为原始速度的倍数。
+          1.0 是默认速度。0.25 是最低速度。1.5 是最高速度。此值只能在模型轮次之间修改，不能在响应进行中修改。
 
-          该参数是对生成后音频的后处理调整，
-          也可以通过提示让模型说得更快或更慢。
+          此参数是对生成后音频的后处理调整，
+          也可以提示模型说得更快或更慢。
 
         - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
 
-          模型用于响应的声音。一旦模型至少响应过一次音频后，
-          会话中就无法再更改声音。当前
-          可用的声音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-          `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
-          最佳质量。
+          模型用于响应的语音。一旦模型至少响应过一次音频，语音就无法在
+          会话期间再次更改。当前
+          可选的语音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+          `shimmer`, `verse`, `marin`，以及 `cedar`。我们推荐 `marin` 和 `cedar` 用于
+          获得最佳质量。
 
           - `string`
 
           - `"alloy" or "ash" or "ballad" or 7 more`
 
-            模型用于响应的声音。一旦模型至少响应过一次音频后，
-            会话中就无法再更改声音。当前
-            可用的声音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-            `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
-            最佳质量。
+            模型用于响应的语音。一旦模型至少响应过一次音频，语音就无法在
+            会话期间再次更改。当前
+            可选的语音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+            `shimmer`, `verse`, `marin`，以及 `cedar`。我们推荐 `marin` 和 `cedar` 用于
+            获得最佳质量。
 
             - `"alloy"`
 
@@ -1374,28 +1374,28 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
     - `expires_at: optional number`
 
-      会话的过期时间戳，自纪元以来的秒数。
+      会话的过期时间戳，自 epoch 起以秒为单位。
 
     - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
-      包含在服务端输出中的其他字段。
+      要包含在服务端输出中的其他字段。
 
-      `item.input_audio_transcription.logprobs`：在输入音频转录中包含 logprobs。
+      `item.input_audio_transcription.logprobs`:为输入音频转写包含 logprobs。
 
       - `"item.input_audio_transcription.logprobs"`
 
     - `instructions: optional string`
 
-      在模型调用前添加的默认系统指令（即系统消息）。该字段允许客户端引导模型给出期望的响应。可以指示模型响应的内容和格式（例如“极其简洁”、“表现得友好”、“以下是良好响应的示例”），以及音频行为（例如“说得快一点”、“在声音中加入情绪”、“经常笑”）。这些指令不一定会被模型遵循，但它们为模型提供了关于期望行为的指导。
+      在模型调用前添加的默认系统指令（即系统消息）。此字段允许客户端引导模型给出所需的响应。可以指示模型响应的内容和格式（例如 "be extremely succinct"、"act friendly"、"here are examples of good responses"）以及音频行为（例如 "talk quickly"、"inject emotion into your voice"、"laugh frequently"）。这些指令不保证会被模型遵循，但它们为模型提供了关于期望行为的指导。
 
-      注意，服务端会设置默认指令，如果未设置此字段则会使用默认指令，这些默认指令可在 `session.created` 事件中会话开始时查看。
+      注意，服务端会设置默认指令，如果该字段未设置，则会使用默认指令，且这些指令在 `session.created` 会话开始时的事件中可见。
 
     - `max_output_tokens: optional number or "inf"`
 
       单次助手响应的最大输出 token 数，
-      包括工具调用在内。提供一个介于 1 到 4096 之间的整数以
-      限制输出 token，或 `inf` 以获取给定模型可用的最大 token 数。默认为
-      给定模型可用的最大 token 数。默认为 `inf`.
+      包含工具调用。请提供一个介于 1 到 4096 之间的整数以
+      限制输出 token 数，或 `inf` 使用指定模型可用的最大 token 数。默认为
+      给定模型的最大可用 token 数。默认为 `inf`.
 
       - `number`
 
@@ -1453,9 +1453,9 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
     - `output_modalities: optional array of "text" or "audio"`
 
-      模型可以响应的模态集合。默认为 `["audio"]`,表示
-      让模型同时返回音频和转录文本。 `["text"]` 可用于使
-      模型只输出文本。无法同时请求两者 `text` 和 `audio` 。
+      模型可以响应的模态集合。默认值为 `["audio"]`，表示
+      模型将以音频加文字转录的形式响应。 `["text"]` 可用于让
+      模型仅以文本形式响应。不能同时请求两种形式 `text` 和 `audio` 。
 
       - `"text"`
 
@@ -1472,19 +1472,19 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
       - `variables: optional map[string or ResponseInputText or ResponseInputImage or ResponseInputFile] or null`
 
-        要在你的
+        用于在
         提示中替换变量的可选值映射。替换值可以是字符串，也可以是其他
-        Response 输入类型，例如图片或文件。
+        响应输入类型，例如图像或文件。
 
         - `string`
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          发送到模型的文本输入。
+          发送给模型的文本输入。
 
           - `text: string`
 
-            发送到模型的文本输入。
+            发送给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -1494,7 +1494,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点会沿用请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1504,11 +1504,11 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `ResponseInputImage object { detail, type, file_id, 2 more }`
 
-          发送到模型的图像输入。了解有关 [图像输入](https://developers.openai.com/api/docs/guides/images-vision).
+          发送给模型的图像输入。了解有关 [图像输入](https://developers.openai.com/api/docs/guides/images-vision).
 
           - `detail: ImageDetail`
 
-            发送到模型的图像的细节级别。取值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送给模型的图像细节级别。取值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
             - `"low"`
 
@@ -1526,15 +1526,15 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `file_id: optional string or null`
 
-            要发送到模型的文件 ID。
+            发送给模型的文件 ID。
 
           - `image_url: optional string or null`
 
-            要发送到模型的图像 URL。可以是完整的 URL，也可以是 data URL 中 base64 编码的图像。
+            发送给模型的图像 URL。可以是完全限定的 URL，也可以是 data URL 中的 base64 编码图像。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点会沿用请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1544,7 +1544,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          发送到模型的文件输入。
+          发送给模型的文件输入。
 
           - `type: "input_file"`
 
@@ -1554,7 +1554,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `detail: optional "auto" or "low" or "high"`
 
-            发送到模型的文件的细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 使用量。使用 `low` 进行低成本渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
+            发送给模型的文件细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 使用量。使用 `low` 进行较低成本的渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -1564,23 +1564,23 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `file_data: optional string`
 
-            要发送到模型的文件内容。
+            发送给模型的文件内容。
 
           - `file_id: optional string or null`
 
-            要发送到模型的文件 ID。
+            发送给模型的文件 ID。
 
           - `file_url: optional string`
 
-            要发送给模型的文件的 URL。
+            发送给模型的文件的 URL。
 
           - `filename: optional string`
 
-            要发送给模型的文件的名称。
+            发送给模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点会沿用请求的 `prompt_cache_options.ttl`；边界不会取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1590,15 +1590,15 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
       - `version: optional string or null`
 
-        可选的提示模板版本。
+        提示词模板的可选版本。
 
     - `reasoning: optional RealtimeReasoning`
 
-      适用于具备推理能力的 Realtime 模型的配置，例如 `gpt-realtime-2`.
+      适用于具有推理能力的 Realtime 模型（例如 `gpt-realtime-2`.
 
       - `effort: optional RealtimeReasoningEffort`
 
-        限制具备推理能力的 Realtime 模型（例如
+        限制具有推理能力的 Realtime 模型（例如
         `gpt-realtime-2`.
 
         - `"minimal"`
@@ -1613,19 +1613,19 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
     - `tool_choice: optional ToolChoiceOptions or ToolChoiceFunction or ToolChoiceMcp`
 
-      模型选择工具的方式。可提供一个字符串模式，或强制指定特定的
-      function/MCP 工具。
+      模型选择工具的方式。提供某个字符串模式，或强制使用特定的
+      函数/MCP 工具。
 
       - `ToolChoiceOptions = "none" or "auto" or "required"`
 
-        控制模型调用哪个工具（如果有）。
+        控制模型调用哪个工具（如果有的话）。
 
-        `none` 意味着模型不会调用任何工具，而是生成一条消息。
+        `none` 表示模型不会调用任何工具，而是生成一条消息。
 
-        `auto` 意味着模型可以在生成消息与调用一个或
-        多个工具之间进行选择。
+        `auto` 表示模型可以自行选择是生成一条消息，还是调用一个或
+        更多工具。
 
-        `required` 意味着模型必须调用一个或多个工具。
+        `required` 表示模型必须调用一个或多个工具。
 
         - `"none"`
 
@@ -1635,7 +1635,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
       - `ToolChoiceFunction object { name, type }`
 
-        使用此选项可强制模型调用特定的函数。
+        使用此选项可强制模型调用特定函数。
 
         - `name: string`
 
@@ -1643,7 +1643,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `type: "function"`
 
-          对于函数调用，type 始终为 `function`.
+          对于函数调用，类型始终为 `function`.
 
           - `"function"`
 
@@ -1657,15 +1657,15 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `type: "mcp"`
 
-          对于 MCP 工具，type 始终为 `mcp`.
+          对于 MCP 工具，类型始终为 `mcp`.
 
           - `"mcp"`
 
         - `name: optional string or null`
 
-          要在服务器上调用的工具的名称。
+          要在服务器上调用的工具名称。
 
-    - `tools: optional array of RealtimeFunctionTool or object { server_label, type, allowed_callers, 9 more }`
+    - `tools: optional array of RealtimeFunctionTool or McpTool { server_label, type, allowed_callers, 9 more }`
 
       模型可用的工具。
 
@@ -1673,32 +1673,32 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `description: optional string`
 
-          函数的描述，包括何时以及如何调用的指引，以及调用时需要告知用户的内容（如有）的指引。
-          时需要告知用户的内容（如有）的指引。
+          函数说明，包括何时以及如何
+          调用它的指导，以及调用时告知用户什么的指导
           （如有）。
 
         - `name: optional string`
 
-          函数的名称。
+          函数名称。
 
         - `parameters: optional unknown`
 
-          函数的参数，采用 JSON Schema 格式。
+          以 JSON Schema 表示的函数参数。
 
         - `type: optional "function"`
 
-          工具的类型，即 `function`.
+          工具类型，即 `function`.
 
           - `"function"`
 
       - `McpTool object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程 Model Context Protocol
-        （MCP）服务器为模型提供额外的工具访问能力。 [了解更多关于 MCP 的信息](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
+        通过远程 Model Context Protocol 访问更多工具
+        (MCP) 服务器。 [详细了解 MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
-          该 MCP 服务器的标签，用于在工具调用中识别它。
+          此 MCP 服务器的标签，用于在工具调用中标识它。
 
         - `type: "mcp"`
 
@@ -1714,7 +1714,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           允许使用的工具名称列表或过滤对象。
 
@@ -1724,13 +1724,13 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `McpToolFilter object { read_only, tool_names }`
 
-            用于指定允许使用哪些工具的过滤对象。
+            用于指定允许使用的工具的过滤对象。
 
             - `read_only: optional boolean`
 
-              指示该工具是否会修改数据或为只读。如果
-              MCP 服务器被 [标记为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              ，它将匹配此过滤条件。
+              指示工具是否会修改数据或是否为只读。如果某个
+              MCP 服务器 [使用以下标注： `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+              则会匹配此过滤器。
 
             - `tool_names: optional array of string`
 
@@ -1738,30 +1738,30 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `authorization: optional string`
 
-          一个 OAuth 访问令牌，可与远程 MCP 服务器一起使用，可以配合
-          自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-          必须处理 OAuth 授权流程，并在此处提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可与自定义 MCP 服务器 URL 或服务连接器一起使用。你的应用
+          程序必须处理 OAuth 授权流程并在此提供该令牌。
+          必须处理 OAuth 授权流程并在此提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，例如 ChatGPT 中提供的服务连接器。必须提供
-          `server_url`, `connector_id`，或 `tunnel_id` 其中之一。了解更多
-          关于服务连接器的信息 [请参见此处](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中提供的那些连接器。必须提供
+          `server_url`, `connector_id`，或 `tunnel_id` 其中一个。了解更多
+          关于服务连接器的信息 [请参阅此处](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
-          此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
-          使用 `server_url` 连接到远程 MCP 服务器，或 `tunnel_id` 到
+          此字段对 2026 年 9 月 1 日之后发布的模型已弃用。
+          使用 `server_url` 连接到远程 MCP 服务器，或使用 `tunnel_id` 通过安全 MCP 隧道
           通过安全 MCP 隧道连接。
 
           当前支持 `connector_id` 的值为：
 
           - Dropbox： `connector_dropbox`
           - Gmail： `connector_gmail`
-          - Google 日历： `connector_googlecalendar`
+          - Google Calendar： `connector_googlecalendar`
           - Google Drive： `connector_googledrive`
           - Microsoft Teams： `connector_microsoftteams`
-          - Outlook 日历： `connector_outlookcalendar`
-          - Outlook Email: `connector_outlookemail`
-          - SharePoint: `connector_sharepoint`
+          - Outlook Calendar： `connector_outlookcalendar`
+          - Outlook 邮件： `connector_outlookemail`
+          - SharePoint： `connector_sharepoint`
 
           - `"connector_dropbox"`
 
@@ -1781,32 +1781,32 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `defer_loading: optional boolean`
 
-          此 MCP 工具是否被延迟，并通过工具搜索发现。
+          此 MCP 工具是否为延迟加载，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 标头。用于身份验证
+          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
           或其他用途。
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
-          指定 MCP 服务器的哪些工具需要审批。
+          指定 MCP 服务器中哪些工具需要审批。
 
           - `McpToolApprovalFilter object { always, never }`
 
-            指定 MCP 服务器的哪些工具需要审批。可以是
-            `always`, `never`，或与需要审批的工具关联的过滤器对象
-            。
+            指定 MCP 服务器中哪些工具需要审批。可以是
+            `always`, `never`，或与工具关联的过滤对象
+            ，这些工具需要审批。
 
             - `always: optional object { read_only, tool_names }`
 
-              用于指定允许使用哪些工具的过滤对象。
+              用于指定允许使用的工具的过滤对象。
 
               - `read_only: optional boolean`
 
-                指示该工具是否会修改数据或为只读。如果
-                MCP 服务器被 [标记为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤条件。
+                指示工具是否会修改数据或是否为只读。如果某个
+                MCP 服务器 [使用以下标注： `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                则会匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -1814,13 +1814,13 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
             - `never: optional object { read_only, tool_names }`
 
-              用于指定允许使用哪些工具的过滤对象。
+              用于指定允许使用的工具的过滤对象。
 
               - `read_only: optional boolean`
 
-                指示该工具是否会修改数据或为只读。如果
-                MCP 服务器被 [标记为 `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                ，它将匹配此过滤条件。
+                指示工具是否会修改数据或是否为只读。如果某个
+                MCP 服务器 [使用以下标注： `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+                则会匹配此过滤器。
 
               - `tool_names: optional array of string`
 
@@ -1828,8 +1828,8 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `McpToolApprovalSetting = "always" or "never"`
 
-            为所有工具指定单个审批策略。可选值为 `always` 或
-            `never`。当设置为 `always`，时，所有工具都需要审批。当设置为
+            为所有工具指定统一的审批策略。可选值为 `always` 或
+            `never`。之一。当设置为 `always`，时，所有工具都需要审批。当设置为
             设置为 `never`，时，所有工具都不需要审批。
 
             - `"always"`
@@ -1842,60 +1842,60 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。必须提供 `server_url`, `connector_id`，或
+          MCP 服务器的 URL。需要提供 `server_url`, `connector_id`，或
           `tunnel_id` 之一。
 
         - `tunnel_id: optional string`
 
-          用于替代直接服务器 URL 的安全 MCP 隧道 ID。必须提供
+          用于替代直接服务器 URL 的安全 MCP 隧道 ID。需要提供
           `server_url`, `connector_id`，或 `tunnel_id` 之一。
 
-    - `tracing: optional "auto" or object { group_id, metadata, workflow_name }  or null`
+    - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
-      Realtime API 可以将会话追踪写入到 [Traces Dashboard](https://platform.openai.com/logs?api=traces). 设为 null 以禁用追踪。一旦
-      在某个会话中启用了追踪，就再也无法修改该配置。
+      实时 API 可以将会话追踪写入到 [追踪仪表板](https://platform.openai.com/logs?api=traces). 设为 null 以禁用 追踪。一旦
+      追踪 在某个会话中启用，就无法再修改其配置。
 
-      `auto` 将为该会话创建一个追踪，并使用默认值填充
-      工作流名称、group id 和元数据。
+      `auto` 将会为该会话创建一个 追踪，并使用默认值填充
+      工作流 名称、group id 和 metadata。
 
       - `Auto = "auto"`
 
-        启用追踪并设置追踪配置选项的默认值。该字段始终 `auto`.
+        启用 追踪 并设置 追踪 配置选项的默认值。始终 `auto`.
 
         - `"auto"`
 
       - `TracingConfiguration object { group_id, metadata, workflow_name }`
 
-        针对追踪的细粒度配置。
+        对 追踪 的细粒度配置。
 
         - `group_id: optional string`
 
-          附加到此追踪的 group id，用于在 Traces Dashboard 中进行筛选和
+          附加到此 追踪 的 group id，用于在 Traces Dashboard 中进行筛选与
           分组。
 
         - `metadata: optional unknown`
 
-          附加到此追踪的自定义元数据，用于在 Traces Dashboard 中进行筛选。
-          用于筛选。
+          附加到此 追踪 的任意 metadata，用于在
+          Traces Dashboard 中进行筛选。
 
         - `workflow_name: optional string`
 
-          附加到此追踪的工作流名称。该名称用于
-          在 Traces Dashboard 中标识此追踪。
+          附加到此 追踪 的 工作流 名称。它用于
+          在 Traces Dashboard 中命名该 追踪。
 
     - `truncation: optional RealtimeTruncation`
 
-      当对话中的 token 数量超过模型的输入 token 上限时，对话将被截断，这意味着最早的消息将不会包含在模型的上下文内。一个具有 32k 上下文、4,096 最大输出 token 的模型在发生截断之前，上下文只能容纳 28,224 个 token。
+      当对话中的 token 数量超过模型的输入 token 上限时，对话将被截断，意味着从最早的消息开始，部分消息将不会被纳入模型的上下文。一个 32k 上下文、最大输出 4,096 token 的模型，在发生截断之前的上下文中只能容纳 28,224 个 token。
 
-      客户端可以配置截断行为，使用更低的最大 token 限制进行截断，这是控制 token 用量和成本的有效方式。
+      客户端可以配置截断行为，以更低的最大 token 上限进行截断，这是控制 token 用量和成本的有效方式。
 
-      由于消息会从上下文的开头被丢弃，截断会减少下一轮中被缓存的 token 数量（导致缓存失效）。不过，客户端也可以将截断配置为最多保留最大上下文大小一定比例的消息，从而减少后续截断的需要，提高缓存命中率。
+      截断会减少下一轮中被缓存的 token 数量（导致缓存失效），因为消息会从上下文开头被丢弃。然而，客户端也可以将截断配置为保留到最大上下文大小一定比例的消息，从而减少后续截断的次数，进而提升缓存命中率。
 
-      也可以完全禁用截断，这意味着服务端永远不会进行截断，但会在对话超出模型输入 token 上限时报错。
+      可以完全禁用截断，这意味着服务端永远不会截断，而是当对话超过模型的输入 token 上限时返回错误。
 
       - `"auto" or "disabled"`
 
-        该会话所使用的截断策略。 `auto` 是默认的截断策略。 `disabled` 将禁用截断，在对话超出输入 token 上限时抛出错误。
+        会话所使用的截断策略。 `auto` 是默认的截断策略。 `disabled` 会禁用截断，并在对话超过输入 token 上限时抛出错误。
 
         - `"auto"`
 
@@ -1903,11 +1903,11 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
       - `RetentionRatioTruncation object { retention_ratio, type, token_limits }`
 
-        当对话超出输入 token 上限时，保留对话 token 中的一部分。这允许你将截断分摊到多个轮次，有助于提升缓存 token 的使用率。
+        当对话超过输入 token 上限时，保留一定比例的对话 token。这样可以在多轮之间分摊截断开销，有助于提高缓存 token 的利用率。
 
         - `retention_ratio: number`
 
-          在指令之后的会话 token 中保留的比例（`0.0` - `1.0`)，当会话超出输入 token 上限时生效。将该值设置为 `0.8` 意味着会丢弃消息，直到使用了最大允许 token 的 80%。这有助于降低截断频率并提升缓存命中率。
+          在指令之后保留的对话 token 比例（`0.0` - `1.0`），用于在对话超过输入 token 上限时生效。设置此项为 `0.8` 表示会丢弃消息，直至使用率达到最大允许 token 的 80%。这有助于降低截断频率并提升缓存命中率。
 
         - `type: "retention_ratio"`
 
@@ -1921,15 +1921,15 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `post_instructions: optional number`
 
-            指令之后（包括工具定义）会话中允许的最大 token 数。例如，将该值设置为 5,000 意味着当指令之后的会话超过 5,000 token 时就会发生截断。该值不能高于模型上下文窗口大小减去最大输出 token 数。
+            指令之后对话中允许的最大 token 数（包括工具定义）。例如，设置为 5,000 意味着在指令之后对话超过 5,000 token 时会进行截断。此值不能高于模型上下文窗口大小减去最大输出 token 数。
 
   - `RealtimeTranscriptionSessionCreateResponse object { id, object, type, 3 more }`
 
-    Realtime 转写会话配置对象。
+    一个实时转写会话配置对象。
 
     - `id: string`
 
-      会话的唯一标识符，形如 `sess_1234567890abcdef`.
+      会话的唯一标识符，格式如下 `sess_1234567890abcdef`.
 
     - `object: string`
 
@@ -1937,7 +1937,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
     - `type: "transcription"`
 
-      会话类型。转写会话始终为 `transcription` 。
+      会话的类型。始终为 `transcription` 用于转写会话。
 
       - `"transcription"`
 
@@ -1957,7 +1957,7 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `type: optional NoiseReductionType`
 
-            降噪类型。 `near_field` 适用于耳机等近距离麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
+            降噪类型。 `near_field` 适用于耳机等近距离讲话麦克风， `far_field` 适用于笔记本电脑或会议室麦克风等远场麦克风。
 
         - `transcription: optional object { language, languages, model, prompt }  or null`
 
@@ -1969,17 +1969,17 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `languages: optional array of string`
 
-            为转写配置的可选输入音频语言，使用 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式。
+            为转录配置的输入音频语言，以 [ISO-639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) 格式表示。
 
           - `model: optional string or "whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-            用于转写的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+            用于转录的模型。当前可选项有 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
             - `string`
 
             - `"whisper-1" or "gpt-transcribe" or "gpt-live-transcribe" or 5 more`
 
-              用于转写的模型。当前可选值为 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，和 `gpt-realtime-whisper`.
+              用于转录的模型。当前可选项有 `whisper-1`, `gpt-transcribe`, `gpt-live-transcribe`, `gpt-4o-mini-transcribe`, `gpt-4o-mini-transcribe-2025-12-15`, `gpt-4o-transcribe`, `gpt-4o-transcribe-diarize`，以及 `gpt-realtime-whisper`.
 
               - `"whisper-1"`
 
@@ -1999,44 +1999,44 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
           - `prompt: optional string`
 
-            存在时，输入音频转写所使用的 prompt。
+            已配置（若存在）的输入音频转录提示词。
 
         - `turn_detection: optional RealtimeTranscriptionSessionTurnDetection or null`
 
-          轮次检测配置。可设置为 `null` 以关闭。服务端
-          VAD 意味着模型将根据
-          音频音量检测语音的开始和结束，并在用户语音结束时做出响应。对于 `gpt-realtime-whisper`，此值必须为 `null`；不支持 VAD。
+          轮次检测的配置。可以设置为 `null` 以关闭。服务端
+          VAD 意味着模型将基于音频音量检测语音的开始和结束，并在用户语音结束时作出响应。对于
+          ，这必须是服务端 VAD，模型会根据 `gpt-realtime-whisper`，这必须设置为 `null`；不支持 VAD。
 
           - `prefix_padding_ms: optional number`
 
-            VAD 检测到语音之前要包含的音频量（以
-            毫秒）。默认为 300ms。
+            VAD 检测到的语音之前要包含的音频量（以
+            毫秒为单位）。默认为 300ms。
 
           - `silence_duration_ms: optional number`
 
-            检测语音停止的静音持续时长（以毫秒为单位）。默认值
-            500ms。使用较小的值时，模型响应会更快，
-            但可能会在用户短暂停顿时插话。
+            用于检测语音停止的静默时长（以毫秒为单位）。默认
+            500ms。使用较短的时长可以让模型更快地响应，
+            但可能会在用户短暂的停顿时插话。
 
           - `threshold: optional number`
 
-            VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。
-            阈值要求更大的音量才能激活模型，因此
-            在嘈杂环境下可能表现更好。
+            VAD 的激活阈值（0.0 到 1.0），默认值为 0.5。更
+            高的阈值需要更大的音量才能激活模型，
+            因此在嘈杂环境中可能表现更好。
 
           - `type: optional string`
 
-            轮次检测的类型，当前仅 `server_vad` 受支持。
+            目前仅支持回合检测类型， `server_vad` 。
 
     - `expires_at: optional number`
 
-      会话的过期时间戳，自纪元以来的秒数。
+      会话的过期时间戳，自 epoch 起以秒为单位。
 
     - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
-      包含在服务端输出中的其他字段。
+      要包含在服务端输出中的其他字段。
 
-      - `item.input_audio_transcription.logprobs`：在输入音频转录中包含 logprobs。
+      - `item.input_audio_transcription.logprobs`:为输入音频转写包含 logprobs。
 
       - `"item.input_audio_transcription.logprobs"`
 
@@ -2131,20 +2131,20 @@ Schema name: `RealtimeServerEventSessionUpdated`
 
 ## conversation.item.added
 
-当某个 Item 被添加到默认会话时由服务端发送。可能在以下几种情况下发生：
-- 当客户端发送 `conversation.item.create` 事件。
-- 当输入音频缓冲区被提交时。此时该 item 将是一条包含缓冲区中音频的用户消息。
-- 当模型正在生成 Response 时。此时将发送 `conversation.item.added` 事件，事件会在模型开始生成特定的 Item 时发送，因此此时它还没有任何内容（并且 `status` 将是 `in_progress`).
+当一个 Item 被添加到默认会话时由服务端发送。这种情况可能在以下几种情形中发生：
+- 当客户端发送 `conversation.item.create` 事件时。
+- 输入音频缓冲区被提交时。此时，该项目将是一条用户消息，其中包含来自缓冲区的音频。
+- 当模型正在生成响应时。此时， `conversation.item.added` 事件将在模型开始生成特定项目时发送，因此该事件尚不会包含任何内容（并且 `status` 将会是 `in_progress`).
 
-该事件将包含 Item 的完整内容（模型正在生成 Response 时除外），音频数据除外，音频数据可在需要时通过单独的 `conversation.item.retrieve` 事件获取。
+该事件将包含该条目的完整内容（模型正在生成 Response 时除外），但音频数据除外，音频数据可使用以下事件单独检索： `conversation.item.retrieve` 事件（如有必要）。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemAdded`
+架构名称： `RealtimeServerEventConversationItemAdded`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item: ConversationItem`
 
@@ -2152,7 +2152,7 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
   - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与会话开始时提供的指令提示类似但又不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；但对于较小的更新（例如“用户现在正在询问另一个主题”），请使用系统消息。
+    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与对话开始时提供的指令提示类似但有所不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；对于较小的更新（例如“用户现在正在询问不同的话题”），请使用系统消息。
 
     - `content: array of object { text, type }`
 
@@ -2164,29 +2164,29 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
       - `type: optional "input_text"`
 
-        内容类型。始终为 `input_text` （适用于系统消息）。
+        内容类型。始终 `input_text` 表示系统消息。
 
         - `"input_text"`
 
     - `role: "system"`
 
-      消息发送者的角色。始终为 `system`.
+      消息发送者的角色。始终 `system`.
 
       - `"system"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2224,15 +2224,15 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
       - `image_url: optional string`
 
-        Base64 编码的图像字节（对于 `input_image`）作为数据 URI。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式为 PNG 和 JPEG。
+        Base64 编码的图像字节（对于 `input_image`）以 data URI 的形式。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式包括 PNG 和 JPEG。
 
       - `text: optional string`
 
-        文本内容（用于 `input_text`).
+        文本内容（适用于 `input_text`).
 
       - `transcript: optional string`
 
-        音频的转写文本（用于 `input_audio`）。该内容不会发送给模型，但会附加到消息项中以供参考。
+        音频的转录文本（适用于 `input_audio`）。这部分内容不会发送给模型，但会附加到消息条目中以供参考。
 
       - `type: optional "input_text" or "input_audio" or "input_image"`
 
@@ -2246,23 +2246,23 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
     - `role: "user"`
 
-      消息发送者的角色。始终为 `user`.
+      消息发送者的角色。始终 `user`.
 
       - `"user"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2278,7 +2278,7 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
   - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的一条助手消息项。
+    Realtime 对话中的一条助手消息条目。
 
     - `content: array of object { audio, text, transcript, type }`
 
@@ -2286,7 +2286,7 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
       - `audio: optional string`
 
-        Base64 编码的音频字节，将按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认使用 PCM 16-bit 24kHz mono。
+        Base64 编码的音频字节，会按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认采用 PCM 16 位 24kHz 单声道。
 
       - `text: optional string`
 
@@ -2294,11 +2294,11 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
       - `transcript: optional string`
 
-        音频内容的转写文本，如果输出类型为 `audio`.
+        音频内容的转录文本，当输出类型为 `audio`.
 
       - `type: optional "output_text" or "output_audio"`
 
-        内容类型， `output_text` 或 `output_audio` 取决于会话的 `output_modalities` 配置。
+        内容类型， `output_text` 或 `output_audio` 取决于会话 `output_modalities` 配置。
 
         - `"output_text"`
 
@@ -2306,23 +2306,23 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
     - `role: "assistant"`
 
-      消息发送者的角色。始终为 `assistant`.
+      消息发送者的角色。始终 `assistant`.
 
       - `"assistant"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2338,25 +2338,25 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
   - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
 
-    Realtime 对话中的一项函数调用项。
+    Realtime 对话中的一条函数调用条目。
 
     - `arguments: string`
 
-      函数调用的参数。这是一个 JSON 编码的字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
+      该函数调用的参数。这是一个 JSON 编码字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
 
     - `name: string`
 
-      被调用函数的名称。
+      被调用的函数名称。
 
     - `type: "function_call"`
 
-      条目的类型。始终为 `function_call`.
+      条目的类型。始终 `function_call`.
 
       - `"function_call"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `call_id: optional string`
 
@@ -2364,7 +2364,7 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2380,29 +2380,29 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
   - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
 
-    Realtime 对话中的一项函数调用输出项。
+    Realtime 对话中的一条函数调用输出条目。
 
     - `call_id: string`
 
-      该输出所对应的函数调用的 ID。
+      此输出所对应的函数调用的 ID。
 
     - `output: string`
 
-      函数调用的输出，这是自由文本，可以包含任何信息，也可以为空。
+      函数调用的输出，可以是任意自由文本，也可以包含任何信息或为空。
 
     - `type: "function_call_output"`
 
-      条目的类型。始终为 `function_call_output`.
+      条目的类型。始终 `function_call_output`.
 
       - `"function_call_output"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2418,7 +2418,7 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
   - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-    用于响应 MCP 审批请求的 Realtime 项。
+    用于响应 MCP 审批请求的 Realtime 条目。
 
     - `id: string`
 
@@ -2426,7 +2426,7 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
     - `approval_request_id: string`
 
-      正在响应的审批请求的 ID。
+      所应答的审批请求的 ID。
 
     - `approve: boolean`
 
@@ -2434,13 +2434,13 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
     - `type: "mcp_approval_response"`
 
-      条目的类型。始终为 `mcp_approval_response`.
+      条目的类型。始终 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
     - `reason: optional string or null`
 
-      可选的决定原因。
+      可选的决策原因。
 
   - `RealtimeMcpListTools object { server_label, tools, type, id }`
 
@@ -2464,7 +2464,7 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
       - `annotations: optional unknown or null`
 
-        关于该工具的附加注释。
+        关于该工具的附加注解。
 
       - `description: optional string or null`
 
@@ -2472,29 +2472,29 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
     - `type: "mcp_list_tools"`
 
-      条目的类型。始终为 `mcp_list_tools`.
+      条目的类型。始终 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
     - `id: optional string`
 
-      该列表的唯一 ID。
+      列表的唯一 ID。
 
   - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
 
-    一个 Realtime 条目，表示对 MCP 服务器上某个工具的调用。
+    一个 Realtime 条目，表示对 MCP 服务器上工具的调用。
 
     - `id: string`
 
-      该工具调用的唯一 ID。
+      工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给该工具的参数对应的 JSON 字符串。
+      传递给工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      已运行工具的名称。
+      所运行工具的名称。
 
     - `server_label: string`
 
@@ -2502,13 +2502,13 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
     - `type: "mcp_call"`
 
-      条目的类型。始终为 `mcp_call`.
+      条目的类型。始终 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
-      关联的批准请求的 ID（如果有）。
+      关联审批请求的 ID（如果有）。
 
     - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
 
@@ -2548,19 +2548,19 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
   - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
 
-    一个 Realtime 条目，用于请求人工批准一次工具调用。
+    一个 Realtime 条目，用于请求人工批准工具调用。
 
     - `id: string`
 
-      该批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
-      工具参数的 JSON 字符串。
+      该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      要运行的工具名称。
+      要运行的工具的名称。
 
     - `server_label: string`
 
@@ -2568,7 +2568,7 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
     - `type: "mcp_approval_request"`
 
-      条目的类型。始终为 `mcp_approval_request`.
+      条目的类型。始终 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
@@ -2580,8 +2580,8 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
 - `previous_item_id: optional string or null`
 
-  位于此项之前项的 ID（如果有）。此项用于
-  在插入项时保持顺序。
+  位于此项之前的那一项的 ID（如果有）。该字段用于
+  在插入新项时保持顺序。
 
 ### 示例
 
@@ -2609,17 +2609,17 @@ Schema name: `RealtimeServerEventConversationItemAdded`
 
 ## conversation.item.done
 
-当某个对话项被定稿时返回。
+对话项最终确定时返回。
 
-该事件将包含该项的完整内容，音频数据除外，音频数据可以通过单独的 `conversation.item.retrieve` 事件按需获取。
+该事件将包含该项的完整内容，但不包括音频数据；如需音频数据，可单独通过 `conversation.item.retrieve` 事件获取。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemDone`
+架构名称： `RealtimeServerEventConversationItemDone`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item: ConversationItem`
 
@@ -2627,7 +2627,7 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
   - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与会话开始时提供的指令提示类似但又不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；但对于较小的更新（例如“用户现在正在询问另一个主题”），请使用系统消息。
+    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与对话开始时提供的指令提示类似但有所不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；对于较小的更新（例如“用户现在正在询问不同的话题”），请使用系统消息。
 
     - `content: array of object { text, type }`
 
@@ -2639,29 +2639,29 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
       - `type: optional "input_text"`
 
-        内容类型。始终为 `input_text` （适用于系统消息）。
+        内容类型。始终 `input_text` 表示系统消息。
 
         - `"input_text"`
 
     - `role: "system"`
 
-      消息发送者的角色。始终为 `system`.
+      消息发送者的角色。始终 `system`.
 
       - `"system"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2699,15 +2699,15 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
       - `image_url: optional string`
 
-        Base64 编码的图像字节（对于 `input_image`）作为数据 URI。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式为 PNG 和 JPEG。
+        Base64 编码的图像字节（对于 `input_image`）以 data URI 的形式。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式包括 PNG 和 JPEG。
 
       - `text: optional string`
 
-        文本内容（用于 `input_text`).
+        文本内容（适用于 `input_text`).
 
       - `transcript: optional string`
 
-        音频的转写文本（用于 `input_audio`）。该内容不会发送给模型，但会附加到消息项中以供参考。
+        音频的转录文本（适用于 `input_audio`）。这部分内容不会发送给模型，但会附加到消息条目中以供参考。
 
       - `type: optional "input_text" or "input_audio" or "input_image"`
 
@@ -2721,23 +2721,23 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
     - `role: "user"`
 
-      消息发送者的角色。始终为 `user`.
+      消息发送者的角色。始终 `user`.
 
       - `"user"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2753,7 +2753,7 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
   - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的一条助手消息项。
+    Realtime 对话中的一条助手消息条目。
 
     - `content: array of object { audio, text, transcript, type }`
 
@@ -2761,7 +2761,7 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
       - `audio: optional string`
 
-        Base64 编码的音频字节，将按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认使用 PCM 16-bit 24kHz mono。
+        Base64 编码的音频字节，会按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认采用 PCM 16 位 24kHz 单声道。
 
       - `text: optional string`
 
@@ -2769,11 +2769,11 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
       - `transcript: optional string`
 
-        音频内容的转写文本，如果输出类型为 `audio`.
+        音频内容的转录文本，当输出类型为 `audio`.
 
       - `type: optional "output_text" or "output_audio"`
 
-        内容类型， `output_text` 或 `output_audio` 取决于会话的 `output_modalities` 配置。
+        内容类型， `output_text` 或 `output_audio` 取决于会话 `output_modalities` 配置。
 
         - `"output_text"`
 
@@ -2781,23 +2781,23 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
     - `role: "assistant"`
 
-      消息发送者的角色。始终为 `assistant`.
+      消息发送者的角色。始终 `assistant`.
 
       - `"assistant"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2813,25 +2813,25 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
   - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
 
-    Realtime 对话中的一项函数调用项。
+    Realtime 对话中的一条函数调用条目。
 
     - `arguments: string`
 
-      函数调用的参数。这是一个 JSON 编码的字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
+      该函数调用的参数。这是一个 JSON 编码字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
 
     - `name: string`
 
-      被调用函数的名称。
+      被调用的函数名称。
 
     - `type: "function_call"`
 
-      条目的类型。始终为 `function_call`.
+      条目的类型。始终 `function_call`.
 
       - `"function_call"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `call_id: optional string`
 
@@ -2839,7 +2839,7 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2855,29 +2855,29 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
   - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
 
-    Realtime 对话中的一项函数调用输出项。
+    Realtime 对话中的一条函数调用输出条目。
 
     - `call_id: string`
 
-      该输出所对应的函数调用的 ID。
+      此输出所对应的函数调用的 ID。
 
     - `output: string`
 
-      函数调用的输出，这是自由文本，可以包含任何信息，也可以为空。
+      函数调用的输出，可以是任意自由文本，也可以包含任何信息或为空。
 
     - `type: "function_call_output"`
 
-      条目的类型。始终为 `function_call_output`.
+      条目的类型。始终 `function_call_output`.
 
       - `"function_call_output"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -2893,7 +2893,7 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
   - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-    用于响应 MCP 审批请求的 Realtime 项。
+    用于响应 MCP 审批请求的 Realtime 条目。
 
     - `id: string`
 
@@ -2901,7 +2901,7 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
     - `approval_request_id: string`
 
-      正在响应的审批请求的 ID。
+      所应答的审批请求的 ID。
 
     - `approve: boolean`
 
@@ -2909,13 +2909,13 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
     - `type: "mcp_approval_response"`
 
-      条目的类型。始终为 `mcp_approval_response`.
+      条目的类型。始终 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
     - `reason: optional string or null`
 
-      可选的决定原因。
+      可选的决策原因。
 
   - `RealtimeMcpListTools object { server_label, tools, type, id }`
 
@@ -2939,7 +2939,7 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
       - `annotations: optional unknown or null`
 
-        关于该工具的附加注释。
+        关于该工具的附加注解。
 
       - `description: optional string or null`
 
@@ -2947,29 +2947,29 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
     - `type: "mcp_list_tools"`
 
-      条目的类型。始终为 `mcp_list_tools`.
+      条目的类型。始终 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
     - `id: optional string`
 
-      该列表的唯一 ID。
+      列表的唯一 ID。
 
   - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
 
-    一个 Realtime 条目，表示对 MCP 服务器上某个工具的调用。
+    一个 Realtime 条目，表示对 MCP 服务器上工具的调用。
 
     - `id: string`
 
-      该工具调用的唯一 ID。
+      工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给该工具的参数对应的 JSON 字符串。
+      传递给工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      已运行工具的名称。
+      所运行工具的名称。
 
     - `server_label: string`
 
@@ -2977,13 +2977,13 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
     - `type: "mcp_call"`
 
-      条目的类型。始终为 `mcp_call`.
+      条目的类型。始终 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
-      关联的批准请求的 ID（如果有）。
+      关联审批请求的 ID（如果有）。
 
     - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
 
@@ -3023,19 +3023,19 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
   - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
 
-    一个 Realtime 条目，用于请求人工批准一次工具调用。
+    一个 Realtime 条目，用于请求人工批准工具调用。
 
     - `id: string`
 
-      该批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
-      工具参数的 JSON 字符串。
+      该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      要运行的工具名称。
+      要运行的工具的名称。
 
     - `server_label: string`
 
@@ -3043,7 +3043,7 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
     - `type: "mcp_approval_request"`
 
-      条目的类型。始终为 `mcp_approval_request`.
+      条目的类型。始终 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
@@ -3055,8 +3055,8 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
 - `previous_item_id: optional string or null`
 
-  位于此项之前项的 ID（如果有）。此项用于
-  在插入项时保持顺序。
+  位于此项之前的那一项的 ID（如果有）。该字段用于
+  在插入新项时保持顺序。
 
 ### 示例
 
@@ -3084,15 +3084,15 @@ Schema name: `RealtimeServerEventConversationItemDone`
 
 ## conversation.item.retrieved
 
-当使用以下方式检索对话项时返回： `conversation.item.retrieve`。这是一种获取服务端对某项表示的方式，例如用于在降噪和 VAD 之后访问经过后期处理的音频数据。它包含该项的完整内容，包括音频数据。
+使用以下参数检索对话项时返回： `conversation.item.retrieve`。此字段用于获取服务器对某个项的表示形式，例如获取降噪和 VAD 后处理音频数据的访问权限。它包含该项的完整内容，包括音频数据。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemRetrieved`
+架构名称： `RealtimeServerEventConversationItemRetrieved`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item: ConversationItem`
 
@@ -3100,7 +3100,7 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
   - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与会话开始时提供的指令提示类似但又不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；但对于较小的更新（例如“用户现在正在询问另一个主题”），请使用系统消息。
+    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与对话开始时提供的指令提示类似但有所不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；对于较小的更新（例如“用户现在正在询问不同的话题”），请使用系统消息。
 
     - `content: array of object { text, type }`
 
@@ -3112,29 +3112,29 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
       - `type: optional "input_text"`
 
-        内容类型。始终为 `input_text` （适用于系统消息）。
+        内容类型。始终 `input_text` 表示系统消息。
 
         - `"input_text"`
 
     - `role: "system"`
 
-      消息发送者的角色。始终为 `system`.
+      消息发送者的角色。始终 `system`.
 
       - `"system"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -3172,15 +3172,15 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
       - `image_url: optional string`
 
-        Base64 编码的图像字节（对于 `input_image`）作为数据 URI。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式为 PNG 和 JPEG。
+        Base64 编码的图像字节（对于 `input_image`）以 data URI 的形式。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式包括 PNG 和 JPEG。
 
       - `text: optional string`
 
-        文本内容（用于 `input_text`).
+        文本内容（适用于 `input_text`).
 
       - `transcript: optional string`
 
-        音频的转写文本（用于 `input_audio`）。该内容不会发送给模型，但会附加到消息项中以供参考。
+        音频的转录文本（适用于 `input_audio`）。这部分内容不会发送给模型，但会附加到消息条目中以供参考。
 
       - `type: optional "input_text" or "input_audio" or "input_image"`
 
@@ -3194,23 +3194,23 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
     - `role: "user"`
 
-      消息发送者的角色。始终为 `user`.
+      消息发送者的角色。始终 `user`.
 
       - `"user"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -3226,7 +3226,7 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
   - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的一条助手消息项。
+    Realtime 对话中的一条助手消息条目。
 
     - `content: array of object { audio, text, transcript, type }`
 
@@ -3234,7 +3234,7 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
       - `audio: optional string`
 
-        Base64 编码的音频字节，将按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认使用 PCM 16-bit 24kHz mono。
+        Base64 编码的音频字节，会按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认采用 PCM 16 位 24kHz 单声道。
 
       - `text: optional string`
 
@@ -3242,11 +3242,11 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
       - `transcript: optional string`
 
-        音频内容的转写文本，如果输出类型为 `audio`.
+        音频内容的转录文本，当输出类型为 `audio`.
 
       - `type: optional "output_text" or "output_audio"`
 
-        内容类型， `output_text` 或 `output_audio` 取决于会话的 `output_modalities` 配置。
+        内容类型， `output_text` 或 `output_audio` 取决于会话 `output_modalities` 配置。
 
         - `"output_text"`
 
@@ -3254,23 +3254,23 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
     - `role: "assistant"`
 
-      消息发送者的角色。始终为 `assistant`.
+      消息发送者的角色。始终 `assistant`.
 
       - `"assistant"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -3286,25 +3286,25 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
   - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
 
-    Realtime 对话中的一项函数调用项。
+    Realtime 对话中的一条函数调用条目。
 
     - `arguments: string`
 
-      函数调用的参数。这是一个 JSON 编码的字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
+      该函数调用的参数。这是一个 JSON 编码字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
 
     - `name: string`
 
-      被调用函数的名称。
+      被调用的函数名称。
 
     - `type: "function_call"`
 
-      条目的类型。始终为 `function_call`.
+      条目的类型。始终 `function_call`.
 
       - `"function_call"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `call_id: optional string`
 
@@ -3312,7 +3312,7 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -3328,29 +3328,29 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
   - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
 
-    Realtime 对话中的一项函数调用输出项。
+    Realtime 对话中的一条函数调用输出条目。
 
     - `call_id: string`
 
-      该输出所对应的函数调用的 ID。
+      此输出所对应的函数调用的 ID。
 
     - `output: string`
 
-      函数调用的输出，这是自由文本，可以包含任何信息，也可以为空。
+      函数调用的输出，可以是任意自由文本，也可以包含任何信息或为空。
 
     - `type: "function_call_output"`
 
-      条目的类型。始终为 `function_call_output`.
+      条目的类型。始终 `function_call_output`.
 
       - `"function_call_output"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -3366,7 +3366,7 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
   - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-    用于响应 MCP 审批请求的 Realtime 项。
+    用于响应 MCP 审批请求的 Realtime 条目。
 
     - `id: string`
 
@@ -3374,7 +3374,7 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
     - `approval_request_id: string`
 
-      正在响应的审批请求的 ID。
+      所应答的审批请求的 ID。
 
     - `approve: boolean`
 
@@ -3382,13 +3382,13 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
     - `type: "mcp_approval_response"`
 
-      条目的类型。始终为 `mcp_approval_response`.
+      条目的类型。始终 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
     - `reason: optional string or null`
 
-      可选的决定原因。
+      可选的决策原因。
 
   - `RealtimeMcpListTools object { server_label, tools, type, id }`
 
@@ -3412,7 +3412,7 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
       - `annotations: optional unknown or null`
 
-        关于该工具的附加注释。
+        关于该工具的附加注解。
 
       - `description: optional string or null`
 
@@ -3420,29 +3420,29 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
     - `type: "mcp_list_tools"`
 
-      条目的类型。始终为 `mcp_list_tools`.
+      条目的类型。始终 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
     - `id: optional string`
 
-      该列表的唯一 ID。
+      列表的唯一 ID。
 
   - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
 
-    一个 Realtime 条目，表示对 MCP 服务器上某个工具的调用。
+    一个 Realtime 条目，表示对 MCP 服务器上工具的调用。
 
     - `id: string`
 
-      该工具调用的唯一 ID。
+      工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给该工具的参数对应的 JSON 字符串。
+      传递给工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      已运行工具的名称。
+      所运行工具的名称。
 
     - `server_label: string`
 
@@ -3450,13 +3450,13 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
     - `type: "mcp_call"`
 
-      条目的类型。始终为 `mcp_call`.
+      条目的类型。始终 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
-      关联的批准请求的 ID（如果有）。
+      关联审批请求的 ID（如果有）。
 
     - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
 
@@ -3496,19 +3496,19 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
   - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
 
-    一个 Realtime 条目，用于请求人工批准一次工具调用。
+    一个 Realtime 条目，用于请求人工批准工具调用。
 
     - `id: string`
 
-      该批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
-      工具参数的 JSON 字符串。
+      该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      要运行的工具名称。
+      要运行的工具的名称。
 
     - `server_label: string`
 
@@ -3516,7 +3516,7 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
     - `type: "mcp_approval_request"`
 
-      条目的类型。始终为 `mcp_approval_request`.
+      条目的类型。始终 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
@@ -3554,20 +3554,20 @@ Schema name: `RealtimeServerEventConversationItemRetrieved`
 
 ## conversation.item.input_audio_transcription.completed
 
-该事件是写入用户音频缓冲区的音频转录输出
-用户音频缓冲区的输出。当输入音频缓冲区被
-客户端或服务端（在启用 VAD 时）提交时，转录开始。转录与
-Response 创建异步进行，因此该事件可能早于或晚于
+此事件是对写入到
+用户音频缓冲区中的用户音频进行转录的输出。转录在输入音频缓冲区被
+客户端或服务端（启用 VAD 时）提交时开始。转录与 Response 创建
+异步运行，因此此事件可能早于或晚于
 Response 事件到达。
 
-Realtime API 模型原生支持音频，因此输入转录是
-一个由独立的 ASR（自动语音识别）模型运行的单独流程。
-转录文本可能与模型的解读略有出入，并且
-应被视为大致参考。
+Realtime API 模型原生支持音频，因此输入转录是在单独的 ASR
+（自动语音识别）模型上运行的独立过程。
+转录文本可能与模型的解读略有差异，
+应仅作为大致参考。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionCompleted`
+架构名称： `RealtimeServerEventConversationItemInputAudioTranscriptionCompleted`
 
 - `content_index: number`
 
@@ -3575,11 +3575,11 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionComplete
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
-  正在被转录的、包含音频的条目的 ID。
+  包含正在转录的音频的条目 ID。
 
 - `transcript: string`
 
@@ -3592,21 +3592,21 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionComplete
 
   - `"conversation.item.input_audio_transcription.completed"`
 
-- `usage: object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+- `usage: Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
-  转录的使用统计，按 ASR 模型的定价计费，而非 realtime 模型的定价。
+  转录的使用统计信息，计费依据是 ASR 模型的定价，而非实时模型的定价。
 
   - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-    按 token 使用量计费的模型的使用统计。
+    按 token 用量计费的模型的使用统计信息。
 
     - `input_tokens: number`
 
-      本次请求计费的输入 token 数。
+      此请求计费的输入 token 数量。
 
     - `output_tokens: number`
 
-      生成的输出 token 数。
+      生成的输出 token 数量。
 
     - `total_tokens: number`
 
@@ -3614,59 +3614,59 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionComplete
 
     - `type: "tokens"`
 
-      使用对象的类型。对于此变体始终为 `tokens` 。
+      usage 对象的类型。始终 `tokens` 为此变体。
 
       - `"tokens"`
 
     - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-      本次请求计费的输入 token 的详细信息。
+      此请求计费的输入 token 的详细信息。
 
       - `audio_tokens: optional number`
 
-        本次请求计费的音频 token 数。
+        此请求计费的音频 token 数量。
 
       - `text_tokens: optional number`
 
-        本次请求计费的文本 token 数。
+        此请求计费的文本 token 数量。
 
   - `Duration object { seconds, type }`
 
-    按音频输入时长计费的模型的使用统计。
+    按音频输入时长计费的模型的使用统计信息。
 
     - `seconds: number`
 
-      输入音频的时长，以秒为单位。
+      输入音频的时长（秒）。
 
     - `type: "duration"`
 
-      使用对象的类型。对于此变体始终为 `duration` 。
+      usage 对象的类型。始终 `duration` 为此变体。
 
       - `"duration"`
 
 - `languages: optional array of TranscriptionLanguage`
 
-  在音频中检测到的语言。由 `gpt-transcribe`。返回。空数组表示未能可靠地检测到任何语言。
+  在音频中检测到的语言。由以下对象返回： `gpt-transcribe`。空数组表示无法可靠检测到任何语言。
 
   - `code: string`
 
-    在音频中检测到的某种语言的代码。
+    在音频中检测到的语言代码。
 
 - `logprobs: optional array of LogProbProperties or null`
 
-  转录的对数概率。
+  转录内容的对数概率。
 
   - `token: string`
 
-    用于生成对数概率的 token。
+    用于生成该对数概率的 token。
 
   - `bytes: array of number`
 
-    用于生成该对数概率的字节。
+    用于生成对数概率的字节。
 
   - `logprob: number`
 
-    该 token 的对数概率。
+    该词元的对数概率。
 
 ### 示例
 
@@ -3694,19 +3694,19 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionComplete
 
 ## conversation.item.input_audio_transcription.delta
 
-当输入音频转录内容部分的文本值通过增量转录结果被更新时返回。
+当输入音频转录内容部分的文本值使用增量转录结果更新时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionDelta`
+架构名称： `RealtimeServerEventConversationItemInputAudioTranscriptionDelta`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
-  正在被转录的、包含音频的条目的 ID。
+  包含正在转录的音频的条目 ID。
 
 - `type: "conversation.item.input_audio_transcription.delta"`
 
@@ -3716,7 +3716,7 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionDelta`
 
 - `content_index: optional number`
 
-  该项的 content 数组中内容部分的索引。
+  内容部分在该条目内容数组中的索引。
 
 - `delta: optional string`
 
@@ -3724,19 +3724,19 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionDelta`
 
 - `logprobs: optional array of LogProbProperties or null`
 
-  转录的对数概率。可通过使用以下配置会话启用 `"include": ["item.input_audio_transcription.logprobs"]`。数组中的每个条目对应转录这一片段所选 token 的对数概率。这有助于识别在转录的给定片段中是否可能存在多个有效选项。
+  转录的对数概率。可通过配置会话启用 `"include": ["item.input_audio_transcription.logprobs"]`。数组中的每个条目对应转录中该片段可能被选中的某个 token 的对数概率。这有助于判断在转录的某一片段中是否存在多个有效选项。
 
   - `token: string`
 
-    用于生成对数概率的 token。
+    用于生成该对数概率的 token。
 
   - `bytes: array of number`
 
-    用于生成该对数概率的字节。
+    用于生成对数概率的字节。
 
   - `logprob: number`
 
-    该 token 的对数概率。
+    该词元的对数概率。
 
 ### 示例
 
@@ -3755,43 +3755,43 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionDelta`
 
 ## conversation.item.input_audio_transcription.segment
 
-当为某个 item 识别出输入音频转写片段时返回。
+当某个条目识别到一段输入音频转写片段时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionSegment`
+架构名称： `RealtimeServerEventConversationItemInputAudioTranscriptionSegment`
 
 - `id: string`
 
-  分段标识符。
+  片段标识符。
 
 - `content_index: number`
 
-  输入音频内容部分在该条目中的索引。
+  该 item 中输入音频内容部分的索引。
 
 - `end: number`
 
-  分段的结束时间，单位为秒。
+  片段的结束时间，单位为秒。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
-  包含该输入音频内容的条目 ID。
+  包含输入音频内容的 item 的 ID。
 
 - `speaker: string`
 
-  该分段检测到的说话人标签。
+  该片段检测到的说话人标签。
 
 - `start: number`
 
-  分段的开始时间，单位为秒。
+  该片段的开始时间，单位为秒。
 
 - `text: string`
 
-  该分段的文本。
+  该片段的文本。
 
 - `type: "conversation.item.input_audio_transcription.segment"`
 
@@ -3819,13 +3819,13 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionSegment`
 
 ## conversation.item.input_audio_transcription.failed
 
-当配置了输入音频转录，且某个用户消息的转录
-请求失败时返回。这些事件与其他事件分开，
-`error` 以便客户端可以识别相关的 Item。
+在配置了输入音频转写时返回，且用户消息的转写
+请求失败。这些事件与其他事件分开，以便客户端能够识别相关 Item。
+`error` 事件，以便客户端能够识别相关的 Item。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionFailed`
+架构名称： `RealtimeServerEventConversationItemInputAudioTranscriptionFailed`
 
 - `content_index: number`
 
@@ -3833,7 +3833,7 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionFailed`
 
 - `error: object { code, message, param, type }`
 
-  转录错误的详细信息。
+  转写错误的详细信息。
 
   - `code: optional string`
 
@@ -3841,7 +3841,7 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionFailed`
 
   - `message: optional string`
 
-    人类可读的错误消息。
+    易于阅读的错误消息。
 
   - `param: optional string`
 
@@ -3849,11 +3849,11 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionFailed`
 
   - `type: optional string`
 
-    错误类型。
+    错误的类型。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -3887,20 +3887,20 @@ Schema name: `RealtimeServerEventConversationItemInputAudioTranscriptionFailed`
 
 ## conversation.item.truncated
 
-当较早的助手音频消息项被以下事件截断时返回：
-客户端使用 `conversation.item.truncate` 事件。此事件用于
-同步服务端对音频的理解与客户端的播放进度。
+当客户端通过
+以下事件截断之前的助手音频消息项时返回： `conversation.item.truncate` 。该事件用于
+使服务端对音频的理解与客户端的播放保持同步。
 
 此操作将截断音频并移除服务端文本转录，
-以确保上下文中不存在用户尚未听到的文本。
+确保上下文中不包含用户尚未听到的文本。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemTruncated`
+架构名称： `RealtimeServerEventConversationItemTruncated`
 
 - `audio_end_ms: number`
 
-  音频被截断的时长，以毫秒为单位。
+  音频被截断的持续时长，单位为毫秒。
 
 - `content_index: number`
 
@@ -3908,7 +3908,7 @@ Schema name: `RealtimeServerEventConversationItemTruncated`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -3936,21 +3936,21 @@ Schema name: `RealtimeServerEventConversationItemTruncated`
 
 ## conversation.item.deleted
 
-当会话中的某一项被客户端使用一个
-`conversation.item.delete` event 事件删除时返回。该事件用于将
-服务端对会话历史的理解与客户端的视图进行同步。
+当会话中的某个项目被客户端通过
+`conversation.item.delete` 事件删除时返回。此事件用于将服务端
+对会话历史的理解与客户端的视图保持同步。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemDeleted`
+架构名称： `RealtimeServerEventConversationItemDeleted`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
-  已删除项的 ID。
+  已删除条目的 ID。
 
 - `type: "conversation.item.deleted"`
 
@@ -3972,22 +3972,22 @@ Schema name: `RealtimeServerEventConversationItemDeleted`
 
 ## input_audio_buffer.committed
 
-在输入音频缓冲区被提交时返回，可由客户端或
-在服务端 VAD 模式下自动提交。该 `item_id` 属性为用户的 ID
-将创建消息项，因此会生成一个 `conversation.item.created` 事件
-也会发送给客户端。
+当输入音频缓冲区由客户端提交，或在服务端 VAD 模式下自动提交时返回。
+该 `item_id` 属性是将被创建的用户
+消息项的 ID，因此该 `conversation.item.created` 事件
+也会发送到客户端。
 
 ### Schema
 
-Schema name: `RealtimeServerEventInputAudioBufferCommitted`
+架构名称： `RealtimeServerEventInputAudioBufferCommitted`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
-  将要创建的用户消息条目的 ID。
+  将要创建的用户消息项的 ID。
 
 - `type: "input_audio_buffer.committed"`
 
@@ -3997,8 +3997,8 @@ Schema name: `RealtimeServerEventInputAudioBufferCommitted`
 
 - `previous_item_id: optional string or null`
 
-  新条目将插入其后的前序条目的 ID。
-  可以是 `null` 如果该条目没有前序条目。
+  新项将插入到其之后的上一项的 ID。
+  可为 `null` ，如果该项没有前导项。
 
 ### 示例
 
@@ -4015,14 +4015,14 @@ Schema name: `RealtimeServerEventInputAudioBufferCommitted`
 
 ## input_audio_buffer.dtmf_event_received
 
-**仅 SIP：** 在收到 DTMF 事件时返回。DTMF 事件是一表示电话键盘按键的消息（0–9、*、#、A–D）。
-property `event` property
-是用户按下的按键。 `received_at` 是 UTC Unix Timestamp
-，表示服务端收到该事件的时间。
+**仅限 SIP：** 当收到 DTMF 事件时返回。DTMF 事件是一条表示电话键盘按键（0–9、*、#、A–D）的消息。
+属性是用户按下的按键。 `event` 属性
+是用户按下的键盘按键。 `received_at` 是服务端收到事件的 UTC Unix 时间戳
+。
 
 ### Schema
 
-Schema name: `RealtimeServerEventInputAudioBufferDtmfEventReceived`
+架构名称： `RealtimeServerEventInputAudioBufferDtmfEventReceived`
 
 - `event: string`
 
@@ -4052,16 +4052,16 @@ Schema name: `RealtimeServerEventInputAudioBufferDtmfEventReceived`
 
 ## input_audio_buffer.cleared
 
-当输入音频缓冲区由客户端通过 input_audio_buffer.cleared 事件清除时返回。
+当客户端使用以下内容清除输入音频缓冲区时返回：
 `input_audio_buffer.clear` 事件。
 
 ### Schema
 
-Schema name: `RealtimeServerEventInputAudioBufferCleared`
+架构名称： `RealtimeServerEventInputAudioBufferCleared`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `type: "input_audio_buffer.cleared"`
 
@@ -4082,31 +4082,31 @@ Schema name: `RealtimeServerEventInputAudioBufferCleared`
 
 ## input_audio_buffer.speech_started
 
-由服务端在 `server_vad` 模式下发送，用于指示已在
-音频缓冲区中检测到语音。只要有音频被加入缓冲区，就可能发生这种情况
-（除非已经检测到语音）。客户端可能希望使用此
-事件来中断音频播放或向用户提供可视化反馈。
+处于 `server_vad` 模式时由服务器发送，表示已
+在音频缓冲区中检测到语音。每当音频被添加到
+缓冲区时，都可能发生这种情况（除非已检测到语音）。客户端可能希望使用此
+事件来中断音频播放或向用户提供视觉反馈。
 
-客户端应预期会收到一个 `input_audio_buffer.speech_stopped` 事件
-当语音停止时。 `item_id` 属性是用户消息项的 ID，该项将在语音停止时创建，
-也会包含在随后的
-`input_audio_buffer.speech_stopped` 事件中（除非客户端在 VAD 激活期间
-手动提交音频缓冲区）。
+客户端应预期在语音停止时收到 `input_audio_buffer.speech_stopped` 事件
+。此 `item_id` 属性是用户消息项的 ID，
+该用户消息项将在语音停止时创建，并且也会包含在
+`input_audio_buffer.speech_stopped` 事件中（除非客户端在 VAD 激活期间手动提交
+音频缓冲区）。
 
 ### Schema
 
-Schema name: `RealtimeServerEventInputAudioBufferSpeechStarted`
+架构名称： `RealtimeServerEventInputAudioBufferSpeechStarted`
 
 - `audio_start_ms: number`
 
-  从本次会话中首次检测到语音时起，写入缓冲区的所有音频的毫秒数。该值对应于发送给模型的音频起始处，因此包含
-  首次检测到语音时所写音频的起点。这将对应于发送给模型的音频起点，因此包括
-  发送给模型的音频起始处，因此包含
-  `prefix_padding_ms` 在 Session 中配置的。
+  从会话开始首次检测到语音时起，到写入缓冲区
+  的所有音频所经过的毫秒数。该值对应于发送给模型的最早音
+  频起始处，因此会包含此前已发送的内容。
+  `prefix_padding_ms` 在 Session 中配置。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -4133,27 +4133,27 @@ Schema name: `RealtimeServerEventInputAudioBufferSpeechStarted`
 
 ## input_audio_buffer.speech_stopped
 
-在以下字段中返回 `server_vad` 服务端检测到语音结束时使用的模式
-的音频缓冲区。服务端还会发送一个 `conversation.item.created`
+在以下情况下返回 `server_vad` 模式中，当服务端检测到音频缓冲区中的语音结束时
+音频缓冲区结束时，服务端还会发送一个 `conversation.item.created`
 事件，其中包含由音频缓冲区生成的用户消息条目。
 
 ### Schema
 
-Schema name: `RealtimeServerEventInputAudioBufferSpeechStopped`
+架构名称： `RealtimeServerEventInputAudioBufferSpeechStopped`
 
 - `audio_end_ms: number`
 
-  从会话开始到语音停止时的毫秒数。该时间将
-  对应于发送到模型的音频末尾，因此会包含
-  `min_silence_duration_ms` 在 Session 中配置的。
+  从会话开始到语音停止所经过的毫秒数。这将
+  对应于发送给模型的音频结束时间，因此包含
+  `min_silence_duration_ms` 在 Session 中配置。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
-  将要创建的用户消息条目的 ID。
+  将要创建的用户消息项的 ID。
 
 - `type: "input_audio_buffer.speech_stopped"`
 
@@ -4176,39 +4176,39 @@ Schema name: `RealtimeServerEventInputAudioBufferSpeechStopped`
 
 ## input_audio_buffer.timeout_triggered
 
-在输入音频缓冲区触发 Server VAD 超时时返回。该超时在会话的设置中配置，
-并在 `idle_timeout_ms` 的会话设置中配置，它表示 `turn_detection` ，表明
+在输入音频缓冲区触发 Server VAD 超时时返回。此项可通过以下方式配置
+通过 `idle_timeout_ms` 在 `turn_detection` 会话的设置中，它表示
 在配置的时长内未检测到任何语音。
 
-该 `audio_start_ms` 且 `audio_end_ms` 字段表示从音频开头偏移的、最后一个
-模型响应之后到触发时刻之间的音频片段，以距音频开头的偏移量形式写入
-到输入音频缓冲区。这意味着它划定了那段静默音频，
+该 `audio_start_ms` 和 `audio_end_ms` 字段表示从音频开头偏移的、最后一个
+模型响应之后到触发时刻为止的音频片段，已写入
+输入音频缓冲区。它表示音频中的静音片段，并且
 起始值与结束值之间的差值大致与配置的超时时间一致。
 
-空音频将作为一项 `input_audio` 条目提交到对话中（将会出现一个
-`input_audio_buffer.committed` event) 并生成模型响应。可能会出现
-未触发 VAD 但仍被模型检测到的语音，因此模型可能会以与对话相关的内容
-或继续说话的提示进行响应。
+这段空音频会作为一个 `input_audio` item 提交到对话中（会产生一个
+`input_audio_buffer.committed` 事件），并生成模型响应。可能会存在一些
+未触发 VAD 但仍被模型检测到的语音，因此模型可能会用与对话
+相关的内容，或提示用户继续说话来回应。
 
 ### Schema
 
-Schema name: `RealtimeServerEventInputAudioBufferTimeoutTriggered`
+架构名称： `RealtimeServerEventInputAudioBufferTimeoutTriggered`
 
 - `audio_end_ms: number`
 
-  触发超时时刻已写入输入音频缓冲区的音频的毫秒偏移量。
+  超时触发时，已写入输入音频缓冲区的音频的毫秒偏移量。
 
 - `audio_start_ms: number`
 
-  写入输入音频缓冲区的、位于上一次模型响应播放时间之后的音频的毫秒偏移量。
+  输入音频缓冲区中位于上一次模型响应播放时间之后、已写入音频的毫秒偏移量。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
-  与此片段关联的项的 ID。
+  与此片段关联的条目的 ID。
 
 - `type: "input_audio_buffer.timeout_triggered"`
 
@@ -4232,18 +4232,18 @@ Schema name: `RealtimeServerEventInputAudioBufferTimeoutTriggered`
 
 ## output_audio_buffer.started
 
-**仅限 WebRTC/SIP：** 当服务器开始向客户端流式传输音频时发出。该事件在音频内容部分已添加（
-emitted after an audio content part has been added (`response.content_part.added`)
-to the response.
-[Learn more](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+**WebRTC/SIP Only：** 当服务器开始向客户端流式传输音频时发出。该事件在音频内容部分已添加到
+响应之后发出（`response.content_part.added`)
+到响应中。
+[了解更多](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
-Schema name: `RealtimeServerEventOutputAudioBufferStarted`
+架构名称： `RealtimeServerEventOutputAudioBufferStarted`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `response_id: string`
 
@@ -4269,18 +4269,18 @@ Schema name: `RealtimeServerEventOutputAudioBufferStarted`
 
 ## output_audio_buffer.stopped
 
-**仅限 WebRTC/SIP：** 当服务端上的输出音频缓冲区已被完全排空时发出，
-且不会再有音频发出。此事件在完整的响应
+**WebRTC/SIP Only：** 当服务端上的输出音频缓冲区已完全清空时触发，
+且不会再有音频产生。此事件在完整响应
 数据已发送到客户端后触发（`response.done`).
-[Learn more](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+[了解更多](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
-Schema name: `RealtimeServerEventOutputAudioBufferStopped`
+架构名称： `RealtimeServerEventOutputAudioBufferStopped`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `response_id: string`
 
@@ -4306,19 +4306,19 @@ Schema name: `RealtimeServerEventOutputAudioBufferStopped`
 
 ## output_audio_buffer.cleared
 
-**仅限 WebRTC/SIP：** 在输出音频缓冲区被清空时触发。在 VAD
-模式下，当用户发生打断（`input_audio_buffer.speech_started`),
-或当客户端发送了 `output_audio_buffer.clear` 事件以手动
-截断当前音频响应时，都会发生此情况。
-[Learn more](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
+**WebRTC/SIP Only：** 在输出音频缓冲区被清空时触发。这种情况发生在 VAD
+模式下用户发生打断时（`input_audio_buffer.speech_started`),
+）或当客户端发送了 `output_audio_buffer.clear` 事件以手动
+截断当前音频响应时。
+[了解更多](https://developers.openai.com/api/docs/guides/realtime-conversations#client-and-server-events-for-audio-in-webrtc).
 
 ### Schema
 
-Schema name: `RealtimeServerEventOutputAudioBufferCleared`
+架构名称： `RealtimeServerEventOutputAudioBufferCleared`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `response_id: string`
 
@@ -4344,16 +4344,16 @@ Schema name: `RealtimeServerEventOutputAudioBufferCleared`
 
 ## response.created
 
-在新 Response 创建时返回。这是 Response 创建的第一个事件，
-表示 Response 处于初始状态，即 `in_progress`.
+在创建新的 Response 时返回。响应创建的第一个事件，
+此时响应处于初始状态。 `in_progress`.
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseCreated`
+架构名称： `RealtimeServerEventResponseCreated`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `response: RealtimeResponse`
 
@@ -4361,7 +4361,7 @@ Schema name: `RealtimeServerEventResponseCreated`
 
   - `id: optional string`
 
-    响应的唯一 ID，格式类似于 `resp_1234`.
+    响应的唯一 ID，形式如下 `resp_1234`.
 
   - `audio: optional object { output }`
 
@@ -4379,13 +4379,13 @@ Schema name: `RealtimeServerEventResponseCreated`
 
           - `rate: optional 24000`
 
-            音频的采样率。始终为 `24000`.
+            音频的采样率。始终 `24000`.
 
             - `24000`
 
           - `type: optional "audio/pcm"`
 
-            音频格式。始终为 `audio/pcm`.
+            音频格式。始终 `audio/pcm`.
 
             - `"audio/pcm"`
 
@@ -4395,7 +4395,7 @@ Schema name: `RealtimeServerEventResponseCreated`
 
           - `type: optional "audio/pcmu"`
 
-            音频格式。始终为 `audio/pcmu`.
+            音频格式。始终 `audio/pcmu`.
 
             - `"audio/pcmu"`
 
@@ -4405,27 +4405,27 @@ Schema name: `RealtimeServerEventResponseCreated`
 
           - `type: optional "audio/pcma"`
 
-            音频格式。始终为 `audio/pcma`.
+            音频格式。始终 `audio/pcma`.
 
             - `"audio/pcma"`
 
       - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
 
-        模型用于响应的声音。一旦模型至少响应过一次音频后，
-        会话中就无法再更改声音。当前
-        可用的声音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-        `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
-        最佳质量。
+        模型用于响应的语音。一旦模型至少响应过一次音频，语音就无法在
+        会话期间再次更改。当前
+        可选的语音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+        `shimmer`, `verse`, `marin`，以及 `cedar`。我们推荐 `marin` 和 `cedar` 用于
+        获得最佳质量。
 
         - `string`
 
         - `"alloy" or "ash" or "ballad" or 7 more`
 
-          模型用于响应的声音。一旦模型至少响应过一次音频后，
-          会话中就无法再更改声音。当前
-          可用的声音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-          `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
-          最佳质量。
+          模型用于响应的语音。一旦模型至少响应过一次音频，语音就无法在
+          会话期间再次更改。当前
+          可选的语音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+          `shimmer`, `verse`, `marin`，以及 `cedar`。我们推荐 `marin` 和 `cedar` 用于
+          获得最佳质量。
 
           - `"alloy"`
 
@@ -4449,17 +4449,17 @@ Schema name: `RealtimeServerEventResponseCreated`
 
   - `conversation_id: optional string`
 
-    响应所添加到的对话，由 `conversation`
-    事件中的 `response.create` 字段决定。若 `auto`，响应将被添加到
-    默认对话中，且对应的值 `conversation_id` 为类似
-    `conv_1234`。的 ID。若 `none`，响应将不会被添加到任何对话，且
-    对应的值 `conversation_id` 将是 `null`。如果响应是由 VAD
-    自动触发的，则响应会被添加到默认对话中
+    响应添加到的对话，由 `conversation`
+    字段在 `response.create` 事件中指定。如果 `auto`，响应将添加到
+    默认对话，且 `conversation_id` 的值将类似于以下 ID：
+    `conv_1234`。如果 `none`，响应将不会添加到任何对话，并且
+    的值 `conversation_id` 将会是 `null`。如果响应由
+    VAD 自动触发，响应将添加到默认对话
 
   - `max_output_tokens: optional number or "inf"`
 
     单次助手响应的最大输出 token 数，
-    ，包含本次响应中使用的工具调用。
+    （包括工具调用）在此响应中使用。
 
     - `number`
 
@@ -4469,12 +4469,12 @@ Schema name: `RealtimeServerEventResponseCreated`
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 组键值对。可以用于
-    以结构化格式存储对象的附加信息，并通过 API
-    或控制台查询对象。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化形式存储对象的额外信息，
+    并通过 API 或仪表板查询对象。
 
-    键为字符串，最长 64 个字符。值为字符串，
-    最长 512 个字符。
+    键是字符串，最大长度为 64 个字符。值是字符串，
+    最大长度为 512 个字符。
 
   - `object: optional "realtime.response"`
 
@@ -4488,7 +4488,7 @@ Schema name: `RealtimeServerEventResponseCreated`
 
     - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
 
-      Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与会话开始时提供的指令提示类似但又不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；但对于较小的更新（例如“用户现在正在询问另一个主题”），请使用系统消息。
+      Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与对话开始时提供的指令提示类似但有所不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；对于较小的更新（例如“用户现在正在询问不同的话题”），请使用系统消息。
 
       - `content: array of object { text, type }`
 
@@ -4500,29 +4500,29 @@ Schema name: `RealtimeServerEventResponseCreated`
 
         - `type: optional "input_text"`
 
-          内容类型。始终为 `input_text` （适用于系统消息）。
+          内容类型。始终 `input_text` 表示系统消息。
 
           - `"input_text"`
 
       - `role: "system"`
 
-        消息发送者的角色。始终为 `system`.
+        消息发送者的角色。始终 `system`.
 
         - `"system"`
 
       - `type: "message"`
 
-        条目的类型。始终为 `message`.
+        条目的类型。始终 `message`.
 
         - `"message"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -4560,15 +4560,15 @@ Schema name: `RealtimeServerEventResponseCreated`
 
         - `image_url: optional string`
 
-          Base64 编码的图像字节（对于 `input_image`）作为数据 URI。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式为 PNG 和 JPEG。
+          Base64 编码的图像字节（对于 `input_image`）以 data URI 的形式。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式包括 PNG 和 JPEG。
 
         - `text: optional string`
 
-          文本内容（用于 `input_text`).
+          文本内容（适用于 `input_text`).
 
         - `transcript: optional string`
 
-          音频的转写文本（用于 `input_audio`）。该内容不会发送给模型，但会附加到消息项中以供参考。
+          音频的转录文本（适用于 `input_audio`）。这部分内容不会发送给模型，但会附加到消息条目中以供参考。
 
         - `type: optional "input_text" or "input_audio" or "input_image"`
 
@@ -4582,23 +4582,23 @@ Schema name: `RealtimeServerEventResponseCreated`
 
       - `role: "user"`
 
-        消息发送者的角色。始终为 `user`.
+        消息发送者的角色。始终 `user`.
 
         - `"user"`
 
       - `type: "message"`
 
-        条目的类型。始终为 `message`.
+        条目的类型。始终 `message`.
 
         - `"message"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -4614,7 +4614,7 @@ Schema name: `RealtimeServerEventResponseCreated`
 
     - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
 
-      Realtime 对话中的一条助手消息项。
+      Realtime 对话中的一条助手消息条目。
 
       - `content: array of object { audio, text, transcript, type }`
 
@@ -4622,7 +4622,7 @@ Schema name: `RealtimeServerEventResponseCreated`
 
         - `audio: optional string`
 
-          Base64 编码的音频字节，将按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认使用 PCM 16-bit 24kHz mono。
+          Base64 编码的音频字节，会按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认采用 PCM 16 位 24kHz 单声道。
 
         - `text: optional string`
 
@@ -4630,11 +4630,11 @@ Schema name: `RealtimeServerEventResponseCreated`
 
         - `transcript: optional string`
 
-          音频内容的转写文本，如果输出类型为 `audio`.
+          音频内容的转录文本，当输出类型为 `audio`.
 
         - `type: optional "output_text" or "output_audio"`
 
-          内容类型， `output_text` 或 `output_audio` 取决于会话的 `output_modalities` 配置。
+          内容类型， `output_text` 或 `output_audio` 取决于会话 `output_modalities` 配置。
 
           - `"output_text"`
 
@@ -4642,23 +4642,23 @@ Schema name: `RealtimeServerEventResponseCreated`
 
       - `role: "assistant"`
 
-        消息发送者的角色。始终为 `assistant`.
+        消息发送者的角色。始终 `assistant`.
 
         - `"assistant"`
 
       - `type: "message"`
 
-        条目的类型。始终为 `message`.
+        条目的类型。始终 `message`.
 
         - `"message"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -4674,25 +4674,25 @@ Schema name: `RealtimeServerEventResponseCreated`
 
     - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
 
-      Realtime 对话中的一项函数调用项。
+      Realtime 对话中的一条函数调用条目。
 
       - `arguments: string`
 
-        函数调用的参数。这是一个 JSON 编码的字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
+        该函数调用的参数。这是一个 JSON 编码字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
 
       - `name: string`
 
-        被调用函数的名称。
+        被调用的函数名称。
 
       - `type: "function_call"`
 
-        条目的类型。始终为 `function_call`.
+        条目的类型。始终 `function_call`.
 
         - `"function_call"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `call_id: optional string`
 
@@ -4700,7 +4700,7 @@ Schema name: `RealtimeServerEventResponseCreated`
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -4716,29 +4716,29 @@ Schema name: `RealtimeServerEventResponseCreated`
 
     - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
 
-      Realtime 对话中的一项函数调用输出项。
+      Realtime 对话中的一条函数调用输出条目。
 
       - `call_id: string`
 
-        该输出所对应的函数调用的 ID。
+        此输出所对应的函数调用的 ID。
 
       - `output: string`
 
-        函数调用的输出，这是自由文本，可以包含任何信息，也可以为空。
+        函数调用的输出，可以是任意自由文本，也可以包含任何信息或为空。
 
       - `type: "function_call_output"`
 
-        条目的类型。始终为 `function_call_output`.
+        条目的类型。始终 `function_call_output`.
 
         - `"function_call_output"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -4754,7 +4754,7 @@ Schema name: `RealtimeServerEventResponseCreated`
 
     - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-      用于响应 MCP 审批请求的 Realtime 项。
+      用于响应 MCP 审批请求的 Realtime 条目。
 
       - `id: string`
 
@@ -4762,7 +4762,7 @@ Schema name: `RealtimeServerEventResponseCreated`
 
       - `approval_request_id: string`
 
-        正在响应的审批请求的 ID。
+        所应答的审批请求的 ID。
 
       - `approve: boolean`
 
@@ -4770,13 +4770,13 @@ Schema name: `RealtimeServerEventResponseCreated`
 
       - `type: "mcp_approval_response"`
 
-        条目的类型。始终为 `mcp_approval_response`.
+        条目的类型。始终 `mcp_approval_response`.
 
         - `"mcp_approval_response"`
 
       - `reason: optional string or null`
 
-        可选的决定原因。
+        可选的决策原因。
 
     - `RealtimeMcpListTools object { server_label, tools, type, id }`
 
@@ -4800,7 +4800,7 @@ Schema name: `RealtimeServerEventResponseCreated`
 
         - `annotations: optional unknown or null`
 
-          关于该工具的附加注释。
+          关于该工具的附加注解。
 
         - `description: optional string or null`
 
@@ -4808,29 +4808,29 @@ Schema name: `RealtimeServerEventResponseCreated`
 
       - `type: "mcp_list_tools"`
 
-        条目的类型。始终为 `mcp_list_tools`.
+        条目的类型。始终 `mcp_list_tools`.
 
         - `"mcp_list_tools"`
 
       - `id: optional string`
 
-        该列表的唯一 ID。
+        列表的唯一 ID。
 
     - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
 
-      一个 Realtime 条目，表示对 MCP 服务器上某个工具的调用。
+      一个 Realtime 条目，表示对 MCP 服务器上工具的调用。
 
       - `id: string`
 
-        该工具调用的唯一 ID。
+        工具调用的唯一 ID。
 
       - `arguments: string`
 
-        传递给该工具的参数对应的 JSON 字符串。
+        传递给工具的参数的 JSON 字符串。
 
       - `name: string`
 
-        已运行工具的名称。
+        所运行工具的名称。
 
       - `server_label: string`
 
@@ -4838,13 +4838,13 @@ Schema name: `RealtimeServerEventResponseCreated`
 
       - `type: "mcp_call"`
 
-        条目的类型。始终为 `mcp_call`.
+        条目的类型。始终 `mcp_call`.
 
         - `"mcp_call"`
 
       - `approval_request_id: optional string or null`
 
-        关联的批准请求的 ID（如果有）。
+        关联审批请求的 ID（如果有）。
 
       - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
 
@@ -4884,19 +4884,19 @@ Schema name: `RealtimeServerEventResponseCreated`
 
     - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
 
-      一个 Realtime 条目，用于请求人工批准一次工具调用。
+      一个 Realtime 条目，用于请求人工批准工具调用。
 
       - `id: string`
 
-        该批准请求的唯一 ID。
+        审批请求的唯一 ID。
 
       - `arguments: string`
 
-        工具参数的 JSON 字符串。
+        该工具的参数的 JSON 字符串。
 
       - `name: string`
 
-        要运行的工具名称。
+        要运行的工具的名称。
 
       - `server_label: string`
 
@@ -4904,15 +4904,15 @@ Schema name: `RealtimeServerEventResponseCreated`
 
       - `type: "mcp_approval_request"`
 
-        条目的类型。始终为 `mcp_approval_request`.
+        条目的类型。始终 `mcp_approval_request`.
 
         - `"mcp_approval_request"`
 
   - `output_modalities: optional array of "text" or "audio"`
 
-    模型用于回复的模态集合，目前可能的取值仅为
+    模型用于响应的模态集合，目前可能的取值仅为
     `[\"audio\"]`, `[\"text\"]`。音频输出始终包含文本转录。将
-    输出设置为 `text` 模式将禁用模型的音频输出。
+    输出设为该模式 `text` 将禁用模型的音频输出。
 
     - `"text"`
 
@@ -4939,8 +4939,8 @@ Schema name: `RealtimeServerEventResponseCreated`
 
     - `error: optional object { code, type }`
 
-      导致响应失败的错误描述，在，
-      时填充 `status` is `failed`.
+      导致响应失败的错误描述，
+      在出现 `status` 是 `failed`.
 
       - `code: optional string`
 
@@ -4948,11 +4948,11 @@ Schema name: `RealtimeServerEventResponseCreated`
 
       - `type: optional string`
 
-        错误类型。
+        错误的类型。
 
     - `reason: optional "turn_detected" or "client_cancelled" or "max_output_tokens" or "content_filter"`
 
-      Response 未完成的原因。对于一次 `cancelled` Response，可为 `turn_detected` （服务端 VAD 检测到新的语音开始）或 `client_cancelled` （客户端发送了 cancel 事件）。对于一次  `incomplete` 响应，之一 `max_output_tokens` 或 `content_filter`  （服务端安全过滤器已触发并截断了响应）。
+      Response 未完成的原因。对于 `cancelled` Response，为以下之一 `turn_detected` （服务端 VAD 检测到新的语音起始）或 `client_cancelled` （客户端发送了取消事件）。对于  `incomplete` Response，为以下之一 `max_output_tokens` 或 `content_filter`  （服务端安全过滤器触发并截断了响应）。
 
       - `"turn_detected"`
 
@@ -4964,8 +4964,8 @@ Schema name: `RealtimeServerEventResponseCreated`
 
     - `type: optional "completed" or "cancelled" or "failed" or "incomplete"`
 
-      导致响应失败的错误类型，对应
-      与 `status` 字段（`completed`, `cancelled`, `incomplete`,
+      导致响应失败的错误类型，对应于
+      字段（ `status` 字段（`completed`, `cancelled`, `incomplete`,
       `failed`).
 
       - `"completed"`
@@ -4978,73 +4978,73 @@ Schema name: `RealtimeServerEventResponseCreated`
 
   - `usage: optional RealtimeResponseUsage`
 
-    Response 的使用统计信息，这些信息将对应计费。A
-    Realtime API 会话将维持对话上下文，并将新的
-    条目追加到对话中，因此前序轮次输出的内容（文本与
-    音频 tokens）将作为后续轮次的输入。
+    Response 的使用统计信息，对应计费。A
+    Realtime API 会话将保持对话上下文，并将新的
+    Items 追加到对话中，因此前序轮次的输出（文本和
+    音频 token）将成为后续轮次的输入。
 
     - `input_token_details: optional RealtimeResponseUsageInputTokenDetails`
 
-      Response 中输入 tokens 的详细信息。缓存 tokens 是对话中先前轮次产生的 tokens，它们会作为当前 Response 的上下文。Response 中的缓存 tokens 计入输入 tokens 的子集，也就是说输入 tokens 包含缓存和未缓存的 tokens。
+      Response 中输入 token 的详细信息。缓存 token 是来自对话中前序轮次、被作为当前 Response 上下文包含的 token。此处的缓存 token 计为输入 token 的子集，也就是说输入 token 包含缓存 token 和未缓存 token。
 
       - `audio_tokens: optional number`
 
-        作为 Response 输入使用的音频 tokens 数量。
+        用作 Response 输入的音频 token 数量。
 
       - `cached_tokens: optional number`
 
-        作为 Response 输入使用的缓存 tokens 数量。
+        用作 Response 输入的缓存 token 数量。
 
       - `cached_tokens_details: optional object { audio_tokens, image_tokens, text_tokens }`
 
-        作为 Response 输入使用的缓存 tokens 的详细信息。
+        用作 Response 输入的缓存 token 的详细信息。
 
         - `audio_tokens: optional number`
 
-          作为 Response 输入使用的缓存音频 tokens 数量。
+          用作 Response 输入的缓存音频 token 数量。
 
         - `image_tokens: optional number`
 
-          作为 Response 输入使用的缓存图片 tokens 数量。
+          用作 Response 输入的缓存图像 token 数量。
 
         - `text_tokens: optional number`
 
-          作为 Response 输入使用的缓存文本 tokens 数量。
+          用作 Response 输入的缓存文本 token 数量。
 
       - `image_tokens: optional number`
 
-        作为 Response 输入使用的图片 tokens 数量。
+        用作 Response 输入的图像 token 数量。
 
       - `text_tokens: optional number`
 
-        作为 Response 输入使用的文本 tokens 数量。
+        用作 Response 输入的文本 token 数量。
 
     - `input_tokens: optional number`
 
-      Response 中使用的输入 tokens 数量，包括文本与
-      音频 tokens。
+      Response 中使用的输入 token 数量，包括文本和
+      音频 token。
 
     - `output_token_details: optional RealtimeResponseUsageOutputTokenDetails`
 
-      Response 中输出 tokens 的详细信息。
+      Response 中输出 token 的详细信息。
 
       - `audio_tokens: optional number`
 
-        Response 中使用的音频 tokens 数量。
+        Response 中使用的音频 token 数量。
 
       - `text_tokens: optional number`
 
-        Response 中使用的文本 tokens 数量。
+        Response 中使用的文本 token 数量。
 
     - `output_tokens: optional number`
 
-      Response 中发送的输出 tokens 数量，包括文本与
-      音频 tokens。
+      Response 中发送的输出 token 数量，包括文本和
+      音频 token。
 
     - `total_tokens: optional number`
 
-      Response 中包含输入与输出的 tokens 总数
-      文本与音频 token。
+      Response 中包含输入和输出的 token 总数
+      文本和音频 token。
 
 - `type: "response.created"`
 
@@ -5088,23 +5088,23 @@ Schema name: `RealtimeServerEventResponseCreated`
 
 ## response.done
 
-在 Response 完成流式传输时返回。无论最终状态如何，始终会发出，
-事件中包含的 Response 对象将 `response.done` 包含 Response 中所有的输出 Items，但会省略原始音频数据。
-事件中包含的 Response 对象将。
+当 Response 完成流式传输时返回。无论何种情况都会发出，
+均为最终状态。包含在该事件中的 Response 对象 `response.done` 将会
+包含 Response 中的所有输出项，但会省略原始音频数据。
 
-客户端应当检查 `status` Response 的字段，以确定它是否成功
-(`completed`) 或者是否出现了其他结果： `cancelled`, `failed`，或者 `incomplete`.
+客户端应检查 Response 的 `status` 字段，以确定是否成功
+(`completed`）或是否出现了其他结果： `cancelled`, `failed`，或 `incomplete`.
 
-响应将包含在响应过程中生成的所有输出项，但不包括
+响应将包含生成响应期间生成的所有输出项，但不包括
 任何音频内容。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseDone`
+架构名称： `RealtimeServerEventResponseDone`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `response: RealtimeResponse`
 
@@ -5112,7 +5112,7 @@ Schema name: `RealtimeServerEventResponseDone`
 
   - `id: optional string`
 
-    响应的唯一 ID，格式类似于 `resp_1234`.
+    响应的唯一 ID，形式如下 `resp_1234`.
 
   - `audio: optional object { output }`
 
@@ -5130,13 +5130,13 @@ Schema name: `RealtimeServerEventResponseDone`
 
           - `rate: optional 24000`
 
-            音频的采样率。始终为 `24000`.
+            音频的采样率。始终 `24000`.
 
             - `24000`
 
           - `type: optional "audio/pcm"`
 
-            音频格式。始终为 `audio/pcm`.
+            音频格式。始终 `audio/pcm`.
 
             - `"audio/pcm"`
 
@@ -5146,7 +5146,7 @@ Schema name: `RealtimeServerEventResponseDone`
 
           - `type: optional "audio/pcmu"`
 
-            音频格式。始终为 `audio/pcmu`.
+            音频格式。始终 `audio/pcmu`.
 
             - `"audio/pcmu"`
 
@@ -5156,27 +5156,27 @@ Schema name: `RealtimeServerEventResponseDone`
 
           - `type: optional "audio/pcma"`
 
-            音频格式。始终为 `audio/pcma`.
+            音频格式。始终 `audio/pcma`.
 
             - `"audio/pcma"`
 
       - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more`
 
-        模型用于响应的声音。一旦模型至少响应过一次音频后，
-        会话中就无法再更改声音。当前
-        可用的声音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-        `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
-        最佳质量。
+        模型用于响应的语音。一旦模型至少响应过一次音频，语音就无法在
+        会话期间再次更改。当前
+        可选的语音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+        `shimmer`, `verse`, `marin`，以及 `cedar`。我们推荐 `marin` 和 `cedar` 用于
+        获得最佳质量。
 
         - `string`
 
         - `"alloy" or "ash" or "ballad" or 7 more`
 
-          模型用于响应的声音。一旦模型至少响应过一次音频后，
-          会话中就无法再更改声音。当前
-          可用的声音选项为 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
-          `shimmer`, `verse`, `marin`，和 `cedar`。我们推荐 `marin` 和 `cedar` 以获得
-          最佳质量。
+          模型用于响应的语音。一旦模型至少响应过一次音频，语音就无法在
+          会话期间再次更改。当前
+          可选的语音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`,
+          `shimmer`, `verse`, `marin`，以及 `cedar`。我们推荐 `marin` 和 `cedar` 用于
+          获得最佳质量。
 
           - `"alloy"`
 
@@ -5200,17 +5200,17 @@ Schema name: `RealtimeServerEventResponseDone`
 
   - `conversation_id: optional string`
 
-    响应所添加到的对话，由 `conversation`
-    事件中的 `response.create` 字段决定。若 `auto`，响应将被添加到
-    默认对话中，且对应的值 `conversation_id` 为类似
-    `conv_1234`。的 ID。若 `none`，响应将不会被添加到任何对话，且
-    对应的值 `conversation_id` 将是 `null`。如果响应是由 VAD
-    自动触发的，则响应会被添加到默认对话中
+    响应添加到的对话，由 `conversation`
+    字段在 `response.create` 事件中指定。如果 `auto`，响应将添加到
+    默认对话，且 `conversation_id` 的值将类似于以下 ID：
+    `conv_1234`。如果 `none`，响应将不会添加到任何对话，并且
+    的值 `conversation_id` 将会是 `null`。如果响应由
+    VAD 自动触发，响应将添加到默认对话
 
   - `max_output_tokens: optional number or "inf"`
 
     单次助手响应的最大输出 token 数，
-    ，包含本次响应中使用的工具调用。
+    （包括工具调用）在此响应中使用。
 
     - `number`
 
@@ -5220,12 +5220,12 @@ Schema name: `RealtimeServerEventResponseDone`
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 组键值对。可以用于
-    以结构化格式存储对象的附加信息，并通过 API
-    或控制台查询对象。
+    可附加到对象的 16 组键值对。这可以
+    用于以结构化形式存储对象的额外信息，
+    并通过 API 或仪表板查询对象。
 
-    键为字符串，最长 64 个字符。值为字符串，
-    最长 512 个字符。
+    键是字符串，最大长度为 64 个字符。值是字符串，
+    最大长度为 512 个字符。
 
   - `object: optional "realtime.response"`
 
@@ -5239,7 +5239,7 @@ Schema name: `RealtimeServerEventResponseDone`
 
     - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
 
-      Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与会话开始时提供的指令提示类似但又不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；但对于较小的更新（例如“用户现在正在询问另一个主题”），请使用系统消息。
+      Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与对话开始时提供的指令提示类似但有所不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；对于较小的更新（例如“用户现在正在询问不同的话题”），请使用系统消息。
 
       - `content: array of object { text, type }`
 
@@ -5251,29 +5251,29 @@ Schema name: `RealtimeServerEventResponseDone`
 
         - `type: optional "input_text"`
 
-          内容类型。始终为 `input_text` （适用于系统消息）。
+          内容类型。始终 `input_text` 表示系统消息。
 
           - `"input_text"`
 
       - `role: "system"`
 
-        消息发送者的角色。始终为 `system`.
+        消息发送者的角色。始终 `system`.
 
         - `"system"`
 
       - `type: "message"`
 
-        条目的类型。始终为 `message`.
+        条目的类型。始终 `message`.
 
         - `"message"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -5311,15 +5311,15 @@ Schema name: `RealtimeServerEventResponseDone`
 
         - `image_url: optional string`
 
-          Base64 编码的图像字节（对于 `input_image`）作为数据 URI。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式为 PNG 和 JPEG。
+          Base64 编码的图像字节（对于 `input_image`）以 data URI 的形式。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式包括 PNG 和 JPEG。
 
         - `text: optional string`
 
-          文本内容（用于 `input_text`).
+          文本内容（适用于 `input_text`).
 
         - `transcript: optional string`
 
-          音频的转写文本（用于 `input_audio`）。该内容不会发送给模型，但会附加到消息项中以供参考。
+          音频的转录文本（适用于 `input_audio`）。这部分内容不会发送给模型，但会附加到消息条目中以供参考。
 
         - `type: optional "input_text" or "input_audio" or "input_image"`
 
@@ -5333,23 +5333,23 @@ Schema name: `RealtimeServerEventResponseDone`
 
       - `role: "user"`
 
-        消息发送者的角色。始终为 `user`.
+        消息发送者的角色。始终 `user`.
 
         - `"user"`
 
       - `type: "message"`
 
-        条目的类型。始终为 `message`.
+        条目的类型。始终 `message`.
 
         - `"message"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -5365,7 +5365,7 @@ Schema name: `RealtimeServerEventResponseDone`
 
     - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
 
-      Realtime 对话中的一条助手消息项。
+      Realtime 对话中的一条助手消息条目。
 
       - `content: array of object { audio, text, transcript, type }`
 
@@ -5373,7 +5373,7 @@ Schema name: `RealtimeServerEventResponseDone`
 
         - `audio: optional string`
 
-          Base64 编码的音频字节，将按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认使用 PCM 16-bit 24kHz mono。
+          Base64 编码的音频字节，会按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认采用 PCM 16 位 24kHz 单声道。
 
         - `text: optional string`
 
@@ -5381,11 +5381,11 @@ Schema name: `RealtimeServerEventResponseDone`
 
         - `transcript: optional string`
 
-          音频内容的转写文本，如果输出类型为 `audio`.
+          音频内容的转录文本，当输出类型为 `audio`.
 
         - `type: optional "output_text" or "output_audio"`
 
-          内容类型， `output_text` 或 `output_audio` 取决于会话的 `output_modalities` 配置。
+          内容类型， `output_text` 或 `output_audio` 取决于会话 `output_modalities` 配置。
 
           - `"output_text"`
 
@@ -5393,23 +5393,23 @@ Schema name: `RealtimeServerEventResponseDone`
 
       - `role: "assistant"`
 
-        消息发送者的角色。始终为 `assistant`.
+        消息发送者的角色。始终 `assistant`.
 
         - `"assistant"`
 
       - `type: "message"`
 
-        条目的类型。始终为 `message`.
+        条目的类型。始终 `message`.
 
         - `"message"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -5425,25 +5425,25 @@ Schema name: `RealtimeServerEventResponseDone`
 
     - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
 
-      Realtime 对话中的一项函数调用项。
+      Realtime 对话中的一条函数调用条目。
 
       - `arguments: string`
 
-        函数调用的参数。这是一个 JSON 编码的字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
+        该函数调用的参数。这是一个 JSON 编码字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
 
       - `name: string`
 
-        被调用函数的名称。
+        被调用的函数名称。
 
       - `type: "function_call"`
 
-        条目的类型。始终为 `function_call`.
+        条目的类型。始终 `function_call`.
 
         - `"function_call"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `call_id: optional string`
 
@@ -5451,7 +5451,7 @@ Schema name: `RealtimeServerEventResponseDone`
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -5467,29 +5467,29 @@ Schema name: `RealtimeServerEventResponseDone`
 
     - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
 
-      Realtime 对话中的一项函数调用输出项。
+      Realtime 对话中的一条函数调用输出条目。
 
       - `call_id: string`
 
-        该输出所对应的函数调用的 ID。
+        此输出所对应的函数调用的 ID。
 
       - `output: string`
 
-        函数调用的输出，这是自由文本，可以包含任何信息，也可以为空。
+        函数调用的输出，可以是任意自由文本，也可以包含任何信息或为空。
 
       - `type: "function_call_output"`
 
-        条目的类型。始终为 `function_call_output`.
+        条目的类型。始终 `function_call_output`.
 
         - `"function_call_output"`
 
       - `id: optional string`
 
-        条目的唯一 ID。可由客户端提供，也可由服务端生成。
+        条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
       - `object: optional "realtime.item"`
 
-        返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+        所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
         - `"realtime.item"`
 
@@ -5505,7 +5505,7 @@ Schema name: `RealtimeServerEventResponseDone`
 
     - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-      用于响应 MCP 审批请求的 Realtime 项。
+      用于响应 MCP 审批请求的 Realtime 条目。
 
       - `id: string`
 
@@ -5513,7 +5513,7 @@ Schema name: `RealtimeServerEventResponseDone`
 
       - `approval_request_id: string`
 
-        正在响应的审批请求的 ID。
+        所应答的审批请求的 ID。
 
       - `approve: boolean`
 
@@ -5521,13 +5521,13 @@ Schema name: `RealtimeServerEventResponseDone`
 
       - `type: "mcp_approval_response"`
 
-        条目的类型。始终为 `mcp_approval_response`.
+        条目的类型。始终 `mcp_approval_response`.
 
         - `"mcp_approval_response"`
 
       - `reason: optional string or null`
 
-        可选的决定原因。
+        可选的决策原因。
 
     - `RealtimeMcpListTools object { server_label, tools, type, id }`
 
@@ -5551,7 +5551,7 @@ Schema name: `RealtimeServerEventResponseDone`
 
         - `annotations: optional unknown or null`
 
-          关于该工具的附加注释。
+          关于该工具的附加注解。
 
         - `description: optional string or null`
 
@@ -5559,29 +5559,29 @@ Schema name: `RealtimeServerEventResponseDone`
 
       - `type: "mcp_list_tools"`
 
-        条目的类型。始终为 `mcp_list_tools`.
+        条目的类型。始终 `mcp_list_tools`.
 
         - `"mcp_list_tools"`
 
       - `id: optional string`
 
-        该列表的唯一 ID。
+        列表的唯一 ID。
 
     - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
 
-      一个 Realtime 条目，表示对 MCP 服务器上某个工具的调用。
+      一个 Realtime 条目，表示对 MCP 服务器上工具的调用。
 
       - `id: string`
 
-        该工具调用的唯一 ID。
+        工具调用的唯一 ID。
 
       - `arguments: string`
 
-        传递给该工具的参数对应的 JSON 字符串。
+        传递给工具的参数的 JSON 字符串。
 
       - `name: string`
 
-        已运行工具的名称。
+        所运行工具的名称。
 
       - `server_label: string`
 
@@ -5589,13 +5589,13 @@ Schema name: `RealtimeServerEventResponseDone`
 
       - `type: "mcp_call"`
 
-        条目的类型。始终为 `mcp_call`.
+        条目的类型。始终 `mcp_call`.
 
         - `"mcp_call"`
 
       - `approval_request_id: optional string or null`
 
-        关联的批准请求的 ID（如果有）。
+        关联审批请求的 ID（如果有）。
 
       - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
 
@@ -5635,19 +5635,19 @@ Schema name: `RealtimeServerEventResponseDone`
 
     - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
 
-      一个 Realtime 条目，用于请求人工批准一次工具调用。
+      一个 Realtime 条目，用于请求人工批准工具调用。
 
       - `id: string`
 
-        该批准请求的唯一 ID。
+        审批请求的唯一 ID。
 
       - `arguments: string`
 
-        工具参数的 JSON 字符串。
+        该工具的参数的 JSON 字符串。
 
       - `name: string`
 
-        要运行的工具名称。
+        要运行的工具的名称。
 
       - `server_label: string`
 
@@ -5655,15 +5655,15 @@ Schema name: `RealtimeServerEventResponseDone`
 
       - `type: "mcp_approval_request"`
 
-        条目的类型。始终为 `mcp_approval_request`.
+        条目的类型。始终 `mcp_approval_request`.
 
         - `"mcp_approval_request"`
 
   - `output_modalities: optional array of "text" or "audio"`
 
-    模型用于回复的模态集合，目前可能的取值仅为
+    模型用于响应的模态集合，目前可能的取值仅为
     `[\"audio\"]`, `[\"text\"]`。音频输出始终包含文本转录。将
-    输出设置为 `text` 模式将禁用模型的音频输出。
+    输出设为该模式 `text` 将禁用模型的音频输出。
 
     - `"text"`
 
@@ -5690,8 +5690,8 @@ Schema name: `RealtimeServerEventResponseDone`
 
     - `error: optional object { code, type }`
 
-      导致响应失败的错误描述，在，
-      时填充 `status` is `failed`.
+      导致响应失败的错误描述，
+      在出现 `status` 是 `failed`.
 
       - `code: optional string`
 
@@ -5699,11 +5699,11 @@ Schema name: `RealtimeServerEventResponseDone`
 
       - `type: optional string`
 
-        错误类型。
+        错误的类型。
 
     - `reason: optional "turn_detected" or "client_cancelled" or "max_output_tokens" or "content_filter"`
 
-      Response 未完成的原因。对于一次 `cancelled` Response，可为 `turn_detected` （服务端 VAD 检测到新的语音开始）或 `client_cancelled` （客户端发送了 cancel 事件）。对于一次  `incomplete` 响应，之一 `max_output_tokens` 或 `content_filter`  （服务端安全过滤器已触发并截断了响应）。
+      Response 未完成的原因。对于 `cancelled` Response，为以下之一 `turn_detected` （服务端 VAD 检测到新的语音起始）或 `client_cancelled` （客户端发送了取消事件）。对于  `incomplete` Response，为以下之一 `max_output_tokens` 或 `content_filter`  （服务端安全过滤器触发并截断了响应）。
 
       - `"turn_detected"`
 
@@ -5715,8 +5715,8 @@ Schema name: `RealtimeServerEventResponseDone`
 
     - `type: optional "completed" or "cancelled" or "failed" or "incomplete"`
 
-      导致响应失败的错误类型，对应
-      与 `status` 字段（`completed`, `cancelled`, `incomplete`,
+      导致响应失败的错误类型，对应于
+      字段（ `status` 字段（`completed`, `cancelled`, `incomplete`,
       `failed`).
 
       - `"completed"`
@@ -5729,73 +5729,73 @@ Schema name: `RealtimeServerEventResponseDone`
 
   - `usage: optional RealtimeResponseUsage`
 
-    Response 的使用统计信息，这些信息将对应计费。A
-    Realtime API 会话将维持对话上下文，并将新的
-    条目追加到对话中，因此前序轮次输出的内容（文本与
-    音频 tokens）将作为后续轮次的输入。
+    Response 的使用统计信息，对应计费。A
+    Realtime API 会话将保持对话上下文，并将新的
+    Items 追加到对话中，因此前序轮次的输出（文本和
+    音频 token）将成为后续轮次的输入。
 
     - `input_token_details: optional RealtimeResponseUsageInputTokenDetails`
 
-      Response 中输入 tokens 的详细信息。缓存 tokens 是对话中先前轮次产生的 tokens，它们会作为当前 Response 的上下文。Response 中的缓存 tokens 计入输入 tokens 的子集，也就是说输入 tokens 包含缓存和未缓存的 tokens。
+      Response 中输入 token 的详细信息。缓存 token 是来自对话中前序轮次、被作为当前 Response 上下文包含的 token。此处的缓存 token 计为输入 token 的子集，也就是说输入 token 包含缓存 token 和未缓存 token。
 
       - `audio_tokens: optional number`
 
-        作为 Response 输入使用的音频 tokens 数量。
+        用作 Response 输入的音频 token 数量。
 
       - `cached_tokens: optional number`
 
-        作为 Response 输入使用的缓存 tokens 数量。
+        用作 Response 输入的缓存 token 数量。
 
       - `cached_tokens_details: optional object { audio_tokens, image_tokens, text_tokens }`
 
-        作为 Response 输入使用的缓存 tokens 的详细信息。
+        用作 Response 输入的缓存 token 的详细信息。
 
         - `audio_tokens: optional number`
 
-          作为 Response 输入使用的缓存音频 tokens 数量。
+          用作 Response 输入的缓存音频 token 数量。
 
         - `image_tokens: optional number`
 
-          作为 Response 输入使用的缓存图片 tokens 数量。
+          用作 Response 输入的缓存图像 token 数量。
 
         - `text_tokens: optional number`
 
-          作为 Response 输入使用的缓存文本 tokens 数量。
+          用作 Response 输入的缓存文本 token 数量。
 
       - `image_tokens: optional number`
 
-        作为 Response 输入使用的图片 tokens 数量。
+        用作 Response 输入的图像 token 数量。
 
       - `text_tokens: optional number`
 
-        作为 Response 输入使用的文本 tokens 数量。
+        用作 Response 输入的文本 token 数量。
 
     - `input_tokens: optional number`
 
-      Response 中使用的输入 tokens 数量，包括文本与
-      音频 tokens。
+      Response 中使用的输入 token 数量，包括文本和
+      音频 token。
 
     - `output_token_details: optional RealtimeResponseUsageOutputTokenDetails`
 
-      Response 中输出 tokens 的详细信息。
+      Response 中输出 token 的详细信息。
 
       - `audio_tokens: optional number`
 
-        Response 中使用的音频 tokens 数量。
+        Response 中使用的音频 token 数量。
 
       - `text_tokens: optional number`
 
-        Response 中使用的文本 tokens 数量。
+        Response 中使用的文本 token 数量。
 
     - `output_tokens: optional number`
 
-      Response 中发送的输出 tokens 数量，包括文本与
-      音频 tokens。
+      Response 中发送的输出 token 数量，包括文本和
+      音频 token。
 
     - `total_tokens: optional number`
 
-      Response 中包含输入与输出的 tokens 总数
-      文本与音频 token。
+      Response 中包含输入和输出的 token 总数
+      文本和音频 token。
 
 - `type: "response.done"`
 
@@ -5871,15 +5871,15 @@ Schema name: `RealtimeServerEventResponseDone`
 
 ## response.output_item.added
 
-在 Response 生成过程中创建新的 Item 时返回。
+在 Response 生成过程中创建新 Item 时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseOutputItemAdded`
+架构名称： `RealtimeServerEventResponseOutputItemAdded`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item: ConversationItem`
 
@@ -5887,7 +5887,7 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
   - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与会话开始时提供的指令提示类似但又不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；但对于较小的更新（例如“用户现在正在询问另一个主题”），请使用系统消息。
+    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与对话开始时提供的指令提示类似但有所不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；对于较小的更新（例如“用户现在正在询问不同的话题”），请使用系统消息。
 
     - `content: array of object { text, type }`
 
@@ -5899,29 +5899,29 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
       - `type: optional "input_text"`
 
-        内容类型。始终为 `input_text` （适用于系统消息）。
+        内容类型。始终 `input_text` 表示系统消息。
 
         - `"input_text"`
 
     - `role: "system"`
 
-      消息发送者的角色。始终为 `system`.
+      消息发送者的角色。始终 `system`.
 
       - `"system"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -5959,15 +5959,15 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
       - `image_url: optional string`
 
-        Base64 编码的图像字节（对于 `input_image`）作为数据 URI。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式为 PNG 和 JPEG。
+        Base64 编码的图像字节（对于 `input_image`）以 data URI 的形式。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式包括 PNG 和 JPEG。
 
       - `text: optional string`
 
-        文本内容（用于 `input_text`).
+        文本内容（适用于 `input_text`).
 
       - `transcript: optional string`
 
-        音频的转写文本（用于 `input_audio`）。该内容不会发送给模型，但会附加到消息项中以供参考。
+        音频的转录文本（适用于 `input_audio`）。这部分内容不会发送给模型，但会附加到消息条目中以供参考。
 
       - `type: optional "input_text" or "input_audio" or "input_image"`
 
@@ -5981,23 +5981,23 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
     - `role: "user"`
 
-      消息发送者的角色。始终为 `user`.
+      消息发送者的角色。始终 `user`.
 
       - `"user"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -6013,7 +6013,7 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
   - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的一条助手消息项。
+    Realtime 对话中的一条助手消息条目。
 
     - `content: array of object { audio, text, transcript, type }`
 
@@ -6021,7 +6021,7 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
       - `audio: optional string`
 
-        Base64 编码的音频字节，将按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认使用 PCM 16-bit 24kHz mono。
+        Base64 编码的音频字节，会按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认采用 PCM 16 位 24kHz 单声道。
 
       - `text: optional string`
 
@@ -6029,11 +6029,11 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
       - `transcript: optional string`
 
-        音频内容的转写文本，如果输出类型为 `audio`.
+        音频内容的转录文本，当输出类型为 `audio`.
 
       - `type: optional "output_text" or "output_audio"`
 
-        内容类型， `output_text` 或 `output_audio` 取决于会话的 `output_modalities` 配置。
+        内容类型， `output_text` 或 `output_audio` 取决于会话 `output_modalities` 配置。
 
         - `"output_text"`
 
@@ -6041,23 +6041,23 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
     - `role: "assistant"`
 
-      消息发送者的角色。始终为 `assistant`.
+      消息发送者的角色。始终 `assistant`.
 
       - `"assistant"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -6073,25 +6073,25 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
   - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
 
-    Realtime 对话中的一项函数调用项。
+    Realtime 对话中的一条函数调用条目。
 
     - `arguments: string`
 
-      函数调用的参数。这是一个 JSON 编码的字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
+      该函数调用的参数。这是一个 JSON 编码字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
 
     - `name: string`
 
-      被调用函数的名称。
+      被调用的函数名称。
 
     - `type: "function_call"`
 
-      条目的类型。始终为 `function_call`.
+      条目的类型。始终 `function_call`.
 
       - `"function_call"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `call_id: optional string`
 
@@ -6099,7 +6099,7 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -6115,29 +6115,29 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
   - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
 
-    Realtime 对话中的一项函数调用输出项。
+    Realtime 对话中的一条函数调用输出条目。
 
     - `call_id: string`
 
-      该输出所对应的函数调用的 ID。
+      此输出所对应的函数调用的 ID。
 
     - `output: string`
 
-      函数调用的输出，这是自由文本，可以包含任何信息，也可以为空。
+      函数调用的输出，可以是任意自由文本，也可以包含任何信息或为空。
 
     - `type: "function_call_output"`
 
-      条目的类型。始终为 `function_call_output`.
+      条目的类型。始终 `function_call_output`.
 
       - `"function_call_output"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -6153,7 +6153,7 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
   - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-    用于响应 MCP 审批请求的 Realtime 项。
+    用于响应 MCP 审批请求的 Realtime 条目。
 
     - `id: string`
 
@@ -6161,7 +6161,7 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
     - `approval_request_id: string`
 
-      正在响应的审批请求的 ID。
+      所应答的审批请求的 ID。
 
     - `approve: boolean`
 
@@ -6169,13 +6169,13 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
     - `type: "mcp_approval_response"`
 
-      条目的类型。始终为 `mcp_approval_response`.
+      条目的类型。始终 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
     - `reason: optional string or null`
 
-      可选的决定原因。
+      可选的决策原因。
 
   - `RealtimeMcpListTools object { server_label, tools, type, id }`
 
@@ -6199,7 +6199,7 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
       - `annotations: optional unknown or null`
 
-        关于该工具的附加注释。
+        关于该工具的附加注解。
 
       - `description: optional string or null`
 
@@ -6207,29 +6207,29 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
     - `type: "mcp_list_tools"`
 
-      条目的类型。始终为 `mcp_list_tools`.
+      条目的类型。始终 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
     - `id: optional string`
 
-      该列表的唯一 ID。
+      列表的唯一 ID。
 
   - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
 
-    一个 Realtime 条目，表示对 MCP 服务器上某个工具的调用。
+    一个 Realtime 条目，表示对 MCP 服务器上工具的调用。
 
     - `id: string`
 
-      该工具调用的唯一 ID。
+      工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给该工具的参数对应的 JSON 字符串。
+      传递给工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      已运行工具的名称。
+      所运行工具的名称。
 
     - `server_label: string`
 
@@ -6237,13 +6237,13 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
     - `type: "mcp_call"`
 
-      条目的类型。始终为 `mcp_call`.
+      条目的类型。始终 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
-      关联的批准请求的 ID（如果有）。
+      关联审批请求的 ID（如果有）。
 
     - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
 
@@ -6283,19 +6283,19 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
   - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
 
-    一个 Realtime 条目，用于请求人工批准一次工具调用。
+    一个 Realtime 条目，用于请求人工批准工具调用。
 
     - `id: string`
 
-      该批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
-      工具参数的 JSON 字符串。
+      该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      要运行的工具名称。
+      要运行的工具的名称。
 
     - `server_label: string`
 
@@ -6303,17 +6303,17 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
     - `type: "mcp_approval_request"`
 
-      条目的类型。始终为 `mcp_approval_request`.
+      条目的类型。始终 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
 - `output_index: number`
 
-  该输出项在 Response 中的索引。
+  输出项在 Response 中的索引。
 
 - `response_id: string`
 
-  该项所属 Response 的 ID。
+  该输出项所属 Response 的 ID。
 
 - `type: "response.output_item.added"`
 
@@ -6344,16 +6344,16 @@ Schema name: `RealtimeServerEventResponseOutputItemAdded`
 
 ## response.output_item.done
 
-在 Item 完成流式传输时返回。在 Response 被
-中断、未完成或取消时也会发出。
+在 Item 完成流式传输时返回。也会在 Response 处于
+interrupted, incomplete, or cancelled.
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseOutputItemDone`
+架构名称： `RealtimeServerEventResponseOutputItemDone`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item: ConversationItem`
 
@@ -6361,7 +6361,7 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
   - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与会话开始时提供的指令提示类似但又不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；但对于较小的更新（例如“用户现在正在询问另一个主题”），请使用系统消息。
+    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与对话开始时提供的指令提示类似但有所不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；对于较小的更新（例如“用户现在正在询问不同的话题”），请使用系统消息。
 
     - `content: array of object { text, type }`
 
@@ -6373,29 +6373,29 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
       - `type: optional "input_text"`
 
-        内容类型。始终为 `input_text` （适用于系统消息）。
+        内容类型。始终 `input_text` 表示系统消息。
 
         - `"input_text"`
 
     - `role: "system"`
 
-      消息发送者的角色。始终为 `system`.
+      消息发送者的角色。始终 `system`.
 
       - `"system"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -6433,15 +6433,15 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
       - `image_url: optional string`
 
-        Base64 编码的图像字节（对于 `input_image`）作为数据 URI。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式为 PNG 和 JPEG。
+        Base64 编码的图像字节（对于 `input_image`）以 data URI 的形式。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式包括 PNG 和 JPEG。
 
       - `text: optional string`
 
-        文本内容（用于 `input_text`).
+        文本内容（适用于 `input_text`).
 
       - `transcript: optional string`
 
-        音频的转写文本（用于 `input_audio`）。该内容不会发送给模型，但会附加到消息项中以供参考。
+        音频的转录文本（适用于 `input_audio`）。这部分内容不会发送给模型，但会附加到消息条目中以供参考。
 
       - `type: optional "input_text" or "input_audio" or "input_image"`
 
@@ -6455,23 +6455,23 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
     - `role: "user"`
 
-      消息发送者的角色。始终为 `user`.
+      消息发送者的角色。始终 `user`.
 
       - `"user"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -6487,7 +6487,7 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
   - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的一条助手消息项。
+    Realtime 对话中的一条助手消息条目。
 
     - `content: array of object { audio, text, transcript, type }`
 
@@ -6495,7 +6495,7 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
       - `audio: optional string`
 
-        Base64 编码的音频字节，将按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认使用 PCM 16-bit 24kHz mono。
+        Base64 编码的音频字节，会按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认采用 PCM 16 位 24kHz 单声道。
 
       - `text: optional string`
 
@@ -6503,11 +6503,11 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
       - `transcript: optional string`
 
-        音频内容的转写文本，如果输出类型为 `audio`.
+        音频内容的转录文本，当输出类型为 `audio`.
 
       - `type: optional "output_text" or "output_audio"`
 
-        内容类型， `output_text` 或 `output_audio` 取决于会话的 `output_modalities` 配置。
+        内容类型， `output_text` 或 `output_audio` 取决于会话 `output_modalities` 配置。
 
         - `"output_text"`
 
@@ -6515,23 +6515,23 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
     - `role: "assistant"`
 
-      消息发送者的角色。始终为 `assistant`.
+      消息发送者的角色。始终 `assistant`.
 
       - `"assistant"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -6547,25 +6547,25 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
   - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
 
-    Realtime 对话中的一项函数调用项。
+    Realtime 对话中的一条函数调用条目。
 
     - `arguments: string`
 
-      函数调用的参数。这是一个 JSON 编码的字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
+      该函数调用的参数。这是一个 JSON 编码字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
 
     - `name: string`
 
-      被调用函数的名称。
+      被调用的函数名称。
 
     - `type: "function_call"`
 
-      条目的类型。始终为 `function_call`.
+      条目的类型。始终 `function_call`.
 
       - `"function_call"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `call_id: optional string`
 
@@ -6573,7 +6573,7 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -6589,29 +6589,29 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
   - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
 
-    Realtime 对话中的一项函数调用输出项。
+    Realtime 对话中的一条函数调用输出条目。
 
     - `call_id: string`
 
-      该输出所对应的函数调用的 ID。
+      此输出所对应的函数调用的 ID。
 
     - `output: string`
 
-      函数调用的输出，这是自由文本，可以包含任何信息，也可以为空。
+      函数调用的输出，可以是任意自由文本，也可以包含任何信息或为空。
 
     - `type: "function_call_output"`
 
-      条目的类型。始终为 `function_call_output`.
+      条目的类型。始终 `function_call_output`.
 
       - `"function_call_output"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -6627,7 +6627,7 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
   - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-    用于响应 MCP 审批请求的 Realtime 项。
+    用于响应 MCP 审批请求的 Realtime 条目。
 
     - `id: string`
 
@@ -6635,7 +6635,7 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
     - `approval_request_id: string`
 
-      正在响应的审批请求的 ID。
+      所应答的审批请求的 ID。
 
     - `approve: boolean`
 
@@ -6643,13 +6643,13 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
     - `type: "mcp_approval_response"`
 
-      条目的类型。始终为 `mcp_approval_response`.
+      条目的类型。始终 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
     - `reason: optional string or null`
 
-      可选的决定原因。
+      可选的决策原因。
 
   - `RealtimeMcpListTools object { server_label, tools, type, id }`
 
@@ -6673,7 +6673,7 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
       - `annotations: optional unknown or null`
 
-        关于该工具的附加注释。
+        关于该工具的附加注解。
 
       - `description: optional string or null`
 
@@ -6681,29 +6681,29 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
     - `type: "mcp_list_tools"`
 
-      条目的类型。始终为 `mcp_list_tools`.
+      条目的类型。始终 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
     - `id: optional string`
 
-      该列表的唯一 ID。
+      列表的唯一 ID。
 
   - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
 
-    一个 Realtime 条目，表示对 MCP 服务器上某个工具的调用。
+    一个 Realtime 条目，表示对 MCP 服务器上工具的调用。
 
     - `id: string`
 
-      该工具调用的唯一 ID。
+      工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给该工具的参数对应的 JSON 字符串。
+      传递给工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      已运行工具的名称。
+      所运行工具的名称。
 
     - `server_label: string`
 
@@ -6711,13 +6711,13 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
     - `type: "mcp_call"`
 
-      条目的类型。始终为 `mcp_call`.
+      条目的类型。始终 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
-      关联的批准请求的 ID（如果有）。
+      关联审批请求的 ID（如果有）。
 
     - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
 
@@ -6757,19 +6757,19 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
   - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
 
-    一个 Realtime 条目，用于请求人工批准一次工具调用。
+    一个 Realtime 条目，用于请求人工批准工具调用。
 
     - `id: string`
 
-      该批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
-      工具参数的 JSON 字符串。
+      该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      要运行的工具名称。
+      要运行的工具的名称。
 
     - `server_label: string`
 
@@ -6777,17 +6777,17 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
     - `type: "mcp_approval_request"`
 
-      条目的类型。始终为 `mcp_approval_request`.
+      条目的类型。始终 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
 - `output_index: number`
 
-  该输出项在 Response 中的索引。
+  输出项在 Response 中的索引。
 
 - `response_id: string`
 
-  该项所属 Response 的 ID。
+  该输出项所属 Response 的 ID。
 
 - `type: "response.output_item.done"`
 
@@ -6823,24 +6823,24 @@ Schema name: `RealtimeServerEventResponseOutputItemDone`
 
 ## response.content_part.added
 
-当在助手消息条目中添加新的内容片段时返回
+在响应生成过程中，当新的内容片段被添加到助手消息条目时返回。
 响应生成。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseContentPartAdded`
+架构名称： `RealtimeServerEventResponseContentPartAdded`
 
 - `content_index: number`
 
-  该项的 content 数组中内容部分的索引。
+  内容部分在该条目内容数组中的索引。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
-  添加该内容片段所在条目的 ID。
+  被添加内容部分的条目 ID。
 
 - `output_index: number`
 
@@ -6848,19 +6848,19 @@ Schema name: `RealtimeServerEventResponseContentPartAdded`
 
 - `part: object { audio, text, transcript, type }`
 
-  已添加的内容片段。
+  被添加的内容部分。
 
   - `audio: optional string`
 
-    Base64 编码的音频数据（如果 type 为 "audio"）。
+    Base64 编码的音频数据（若类型为 "audio"）。
 
   - `text: optional string`
 
-    文本内容（如果 type 为 "text"）。
+    文本内容（若类型为 "text"）。
 
   - `transcript: optional string`
 
-    音频的转录文本（如果 type 为 "audio"）。
+    音频的文字记录（若类型为 "audio"）。
 
   - `type: optional "audio" or "text"`
 
@@ -6901,20 +6901,20 @@ Schema name: `RealtimeServerEventResponseContentPartAdded`
 
 ## response.content_part.done
 
-当 assistant 消息项中的某个内容部分流式传输完成时返回。
-当 Response 被中断、未完成或取消时也会发送。
+当智能体消息项中的内容部分完成流式传输时返回。
+在 Response 被中断、未完成或取消时也会发出。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseContentPartDone`
+架构名称： `RealtimeServerEventResponseContentPartDone`
 
 - `content_index: number`
 
-  该项的 content 数组中内容部分的索引。
+  内容部分在该条目内容数组中的索引。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -6930,15 +6930,15 @@ Schema name: `RealtimeServerEventResponseContentPartDone`
 
   - `audio: optional string`
 
-    Base64 编码的音频数据（如果 type 为 "audio"）。
+    Base64 编码的音频数据（若类型为 "audio"）。
 
   - `text: optional string`
 
-    文本内容（如果 type 为 "text"）。
+    文本内容（若类型为 "text"）。
 
   - `transcript: optional string`
 
-    音频的转录文本（如果 type 为 "audio"）。
+    音频的文字记录（若类型为 "audio"）。
 
   - `type: optional "audio" or "text"`
 
@@ -6979,15 +6979,15 @@ Schema name: `RealtimeServerEventResponseContentPartDone`
 
 ## response.output_text.delta
 
-当 "output_text" 内容部分的文本值被更新时返回。
+当某个 "output_text" 内容部分的文本值被更新时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseTextDelta`
+架构名称： `RealtimeServerEventResponseTextDelta`
 
 - `content_index: number`
 
-  该项的 content 数组中内容部分的索引。
+  内容部分在该条目内容数组中的索引。
 
 - `delta: string`
 
@@ -6995,7 +6995,7 @@ Schema name: `RealtimeServerEventResponseTextDelta`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7033,20 +7033,20 @@ Schema name: `RealtimeServerEventResponseTextDelta`
 
 ## response.output_text.done
 
-当 "output_text" 内容部分的文本值流式传输完成时返回。同样会在
-Response 被中断、未完成或取消时发出。
+在 "output_text" 内容部分的文本值流式传输完成时返回。同样会在
+Response 被中断、未完成或被取消时发出。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseTextDone`
+架构名称： `RealtimeServerEventResponseTextDone`
 
 - `content_index: number`
 
-  该项的 content 数组中内容部分的索引。
+  内容部分在该条目内容数组中的索引。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7088,15 +7088,15 @@ Schema name: `RealtimeServerEventResponseTextDone`
 
 ## response.output_audio_transcript.delta
 
-当音频输出的模型生成转录文本被更新时返回。
+当模型生成的音频输出转录内容更新时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseAudioTranscriptDelta`
+架构名称： `RealtimeServerEventResponseAudioTranscriptDelta`
 
 - `content_index: number`
 
-  该项的 content 数组中内容部分的索引。
+  内容部分在该条目内容数组中的索引。
 
 - `delta: string`
 
@@ -7104,7 +7104,7 @@ Schema name: `RealtimeServerEventResponseAudioTranscriptDelta`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7142,21 +7142,21 @@ Schema name: `RealtimeServerEventResponseAudioTranscriptDelta`
 
 ## response.output_audio_transcript.done
 
-当模型对音频输出生成的转录完成时返回
-流式传输。也会在 Response 被中断、未完成或
-被取消时触发。
+当模型生成的音频输出转录完成时返回
+流式传输。当 Response 被中断、不完整或
+取消时，也会发出。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseAudioTranscriptDone`
+架构名称： `RealtimeServerEventResponseAudioTranscriptDone`
 
 - `content_index: number`
 
-  该项的 content 数组中内容部分的索引。
+  内容部分在该条目内容数组中的索引。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7198,15 +7198,15 @@ Schema name: `RealtimeServerEventResponseAudioTranscriptDone`
 
 ## response.output_audio.delta
 
-当模型生成的音频被更新时返回。
+在模型生成的音频更新时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseAudioDelta`
+架构名称： `RealtimeServerEventResponseAudioDelta`
 
 - `content_index: number`
 
-  该项的 content 数组中内容部分的索引。
+  内容部分在该条目内容数组中的索引。
 
 - `delta: string`
 
@@ -7214,7 +7214,7 @@ Schema name: `RealtimeServerEventResponseAudioDelta`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7252,20 +7252,20 @@ Schema name: `RealtimeServerEventResponseAudioDelta`
 
 ## response.output_audio.done
 
-在模型生成的音频完成时返回。也会在 Response
-被中断、未完成或被取消时触发。
+当模型生成的音频完成时返回。也会在 Response 时触发
+被中断、未完成或已取消。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseAudioDone`
+架构名称： `RealtimeServerEventResponseAudioDone`
 
 - `content_index: number`
 
-  该项的 content 数组中内容部分的索引。
+  内容部分在该条目内容数组中的索引。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7306,7 +7306,7 @@ Schema name: `RealtimeServerEventResponseAudioDone`
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseFunctionCallArgumentsDelta`
+架构名称： `RealtimeServerEventResponseFunctionCallArgumentsDelta`
 
 - `call_id: string`
 
@@ -7314,11 +7314,11 @@ Schema name: `RealtimeServerEventResponseFunctionCallArgumentsDelta`
 
 - `delta: string`
 
-  以 JSON 字符串表示的参数增量。
+  作为 JSON 字符串的参数增量。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7356,16 +7356,16 @@ Schema name: `RealtimeServerEventResponseFunctionCallArgumentsDelta`
 
 ## response.function_call_arguments.done
 
-当模型生成的函数调用参数流式传输完毕时返回。
-当 Response 被中断、未完成或取消时也会发送。
+当模型生成的函数调用参数完成流式传输时返回。
+在 Response 被中断、未完成或取消时也会发出。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseFunctionCallArgumentsDone`
+架构名称： `RealtimeServerEventResponseFunctionCallArgumentsDone`
 
 - `arguments: string`
 
-  最终参数，以 JSON 字符串形式提供。
+  作为 JSON 字符串的最终参数。
 
 - `call_id: string`
 
@@ -7373,7 +7373,7 @@ Schema name: `RealtimeServerEventResponseFunctionCallArgumentsDone`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7381,7 +7381,7 @@ Schema name: `RealtimeServerEventResponseFunctionCallArgumentsDone`
 
 - `name: string`
 
-  被调用的函数名称。
+  被调用的函数的名称。
 
 - `output_index: number`
 
@@ -7416,11 +7416,11 @@ Schema name: `RealtimeServerEventResponseFunctionCallArgumentsDone`
 
 ## response.mcp_call_arguments.delta
 
-当 MCP 工具调用参数在响应生成过程中被更新时返回。
+在生成响应期间更新 MCP 工具调用参数时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseMCPCallArgumentsDelta`
+架构名称： `RealtimeServerEventResponseMCPCallArgumentsDelta`
 
 - `delta: string`
 
@@ -7428,7 +7428,7 @@ Schema name: `RealtimeServerEventResponseMCPCallArgumentsDelta`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7450,7 +7450,7 @@ Schema name: `RealtimeServerEventResponseMCPCallArgumentsDelta`
 
 - `obfuscation: optional string or null`
 
-  如果存在，表示该增量文本经过混淆处理。
+  如果存在，表示增量文本经过混淆处理。
 
 ### 示例
 
@@ -7469,19 +7469,19 @@ Schema name: `RealtimeServerEventResponseMCPCallArgumentsDelta`
 
 ## response.mcp_call_arguments.done
 
-在响应生成期间，当 MCP 工具调用的参数被最终确定时返回。
+在响应生成期间，当 MCP 工具调用参数被最终确定时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseMCPCallArgumentsDone`
+架构名称： `RealtimeServerEventResponseMCPCallArgumentsDone`
 
 - `arguments: string`
 
-  最终的 JSON 编码后的参数字符串。
+  最终的 JSON 编码参数字符串。
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7518,15 +7518,15 @@ Schema name: `RealtimeServerEventResponseMCPCallArgumentsDone`
 
 ## response.mcp_call.in_progress
 
-当 MCP 工具调用已开始并正在进行时返回。
+当 MCP 工具调用已开始且正在进行时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseMCPCallInProgress`
+架构名称： `RealtimeServerEventResponseMCPCallInProgress`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7557,15 +7557,15 @@ Schema name: `RealtimeServerEventResponseMCPCallInProgress`
 
 ## response.mcp_call.completed
 
-当 MCP 工具调用成功完成时返回。
+Returned when an MCP tool call has completed successfully.
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseMCPCallCompleted`
+架构名称： `RealtimeServerEventResponseMCPCallCompleted`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7596,15 +7596,15 @@ Schema name: `RealtimeServerEventResponseMCPCallCompleted`
 
 ## response.mcp_call.failed
 
-当 MCP 工具调用失败时返回。
+MCP 工具调用失败时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventResponseMCPCallFailed`
+架构名称： `RealtimeServerEventResponseMCPCallFailed`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7635,15 +7635,15 @@ Schema name: `RealtimeServerEventResponseMCPCallFailed`
 
 ## mcp_list_tools.in_progress
 
-当某个项目的 MCP 工具列表正在获取时返回。
+当某个条目正在列出 MCP 工具时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventMCPListToolsInProgress`
+架构名称： `RealtimeServerEventMCPListToolsInProgress`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7669,15 +7669,15 @@ Schema name: `RealtimeServerEventMCPListToolsInProgress`
 
 ## mcp_list_tools.completed
 
-在某个条目已完成 MCP 工具列表的列出时返回。
+Returned when listing MCP tools has completed for an item.
 
 ### Schema
 
-Schema name: `RealtimeServerEventMCPListToolsCompleted`
+架构名称： `RealtimeServerEventMCPListToolsCompleted`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7703,15 +7703,15 @@ Schema name: `RealtimeServerEventMCPListToolsCompleted`
 
 ## mcp_list_tools.failed
 
-在为某个条目列出 MCP 工具失败时返回。
+在列出某个项目的 MCP 工具失败时返回。
 
 ### Schema
 
-Schema name: `RealtimeServerEventMCPListToolsFailed`
+架构名称： `RealtimeServerEventMCPListToolsFailed`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item_id: string`
 
@@ -7738,25 +7738,25 @@ Schema name: `RealtimeServerEventMCPListToolsFailed`
 ## rate_limits.updated
 
 在 Response 开始时发出，用于指示已更新的速率限制。
-在创建 Response 时，会为输出"预留"一部分 tokens
-tokens，此处显示的速率限制反映了该预留，并在
-Response 完成后相应地进行调整。
+当创建一个 Response 时，会为输出预留一些 tokens
+此处显示的速率限制反映了该预留情况，并在
+Response 完成后进行相应调整。
 
 ### Schema
 
-Schema name: `RealtimeServerEventRateLimitsUpdated`
+架构名称： `RealtimeServerEventRateLimitsUpdated`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `rate_limits: array of object { limit, name, remaining, reset_seconds }`
 
-  速率限制信息列表。
+  速率限制信息的列表。
 
   - `limit: optional number`
 
-    该速率限制所允许的最大值。
+    速率限制所允许的最大值。
 
   - `name: optional "requests" or "tokens"`
 
@@ -7807,11 +7807,11 @@ Schema name: `RealtimeServerEventRateLimitsUpdated`
 
 ## conversation.created
 
-在创建对话时返回。在会话创建后立即发出。
+在创建会话时返回。在会话创建后立即发出。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationCreated`
+架构名称： `RealtimeServerEventConversationCreated`
 
 - `conversation: object { id, object }`
 
@@ -7827,7 +7827,7 @@ Schema name: `RealtimeServerEventConversationCreated`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `type: "conversation.created"`
 
@@ -7852,23 +7852,23 @@ Schema name: `RealtimeServerEventConversationCreated`
 
 ## conversation.item.created
 
-在创建对话项时返回。存在多种会生成此事件的场景：
-  - 服务器正在生成 Response，如果成功将产生
+在创建对话项时返回。存在多种会生成此事件的情形：
+  - 服务器正在生成一个 Response，如果成功将产出
     一个或两个 Item，其类型为 `message`
-    （role `assistant`）或类型 `function_call`.
+    (role `assistant`) 或类型 `function_call`.
   - 输入音频缓冲区已被提交，提交方可以是客户端，也可以是
-    服务器（处于 `server_vad` 模式）。服务器将获取输入音频缓冲区的内容，
-    并将其添加到一个新的用户消息 Item 中。
-  - 客户端已发送 `conversation.item.create` 事件以向 Conversation 添加一个新的 Item
-    。
+    服务器（处于 `server_vad` 模式）。服务器将取
+    输入音频缓冲区的内容，并将其添加到一个新的用户消息 Item 中。
+  - 客户端已发送一个 `conversation.item.create` 事件来向对话中添加一个新的 Item
+    到该 Conversation 中。
 
 ### Schema
 
-Schema name: `RealtimeServerEventConversationItemCreated`
+架构名称： `RealtimeServerEventConversationItemCreated`
 
 - `event_id: string`
 
-  服务端事件的唯一 ID。
+  服务器事件的唯一 ID。
 
 - `item: ConversationItem`
 
@@ -7876,7 +7876,7 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
   - `RealtimeConversationItemSystemMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与会话开始时提供的指令提示类似但又不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；但对于较小的更新（例如“用户现在正在询问另一个主题”），请使用系统消息。
+    Realtime 对话中的系统消息可用于向模型提供额外的上下文或指令。这与对话开始时提供的指令提示类似但有所不同，因为系统消息可以在对话中的任意时刻添加。对于对话行为的重大更改，请使用 instructions；对于较小的更新（例如“用户现在正在询问不同的话题”），请使用系统消息。
 
     - `content: array of object { text, type }`
 
@@ -7888,29 +7888,29 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
       - `type: optional "input_text"`
 
-        内容类型。始终为 `input_text` （适用于系统消息）。
+        内容类型。始终 `input_text` 表示系统消息。
 
         - `"input_text"`
 
     - `role: "system"`
 
-      消息发送者的角色。始终为 `system`.
+      消息发送者的角色。始终 `system`.
 
       - `"system"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -7948,15 +7948,15 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
       - `image_url: optional string`
 
-        Base64 编码的图像字节（对于 `input_image`）作为数据 URI。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式为 PNG 和 JPEG。
+        Base64 编码的图像字节（对于 `input_image`）以 data URI 的形式。例如 `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...`。支持的格式包括 PNG 和 JPEG。
 
       - `text: optional string`
 
-        文本内容（用于 `input_text`).
+        文本内容（适用于 `input_text`).
 
       - `transcript: optional string`
 
-        音频的转写文本（用于 `input_audio`）。该内容不会发送给模型，但会附加到消息项中以供参考。
+        音频的转录文本（适用于 `input_audio`）。这部分内容不会发送给模型，但会附加到消息条目中以供参考。
 
       - `type: optional "input_text" or "input_audio" or "input_image"`
 
@@ -7970,23 +7970,23 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
     - `role: "user"`
 
-      消息发送者的角色。始终为 `user`.
+      消息发送者的角色。始终 `user`.
 
       - `"user"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -8002,7 +8002,7 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
   - `RealtimeConversationItemAssistantMessage object { content, role, type, 3 more }`
 
-    Realtime 对话中的一条助手消息项。
+    Realtime 对话中的一条助手消息条目。
 
     - `content: array of object { audio, text, transcript, type }`
 
@@ -8010,7 +8010,7 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
       - `audio: optional string`
 
-        Base64 编码的音频字节，将按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认使用 PCM 16-bit 24kHz mono。
+        Base64 编码的音频字节，会按照会话输出音频类型配置中指定的格式进行解析。如果未指定，默认采用 PCM 16 位 24kHz 单声道。
 
       - `text: optional string`
 
@@ -8018,11 +8018,11 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
       - `transcript: optional string`
 
-        音频内容的转写文本，如果输出类型为 `audio`.
+        音频内容的转录文本，当输出类型为 `audio`.
 
       - `type: optional "output_text" or "output_audio"`
 
-        内容类型， `output_text` 或 `output_audio` 取决于会话的 `output_modalities` 配置。
+        内容类型， `output_text` 或 `output_audio` 取决于会话 `output_modalities` 配置。
 
         - `"output_text"`
 
@@ -8030,23 +8030,23 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
     - `role: "assistant"`
 
-      消息发送者的角色。始终为 `assistant`.
+      消息发送者的角色。始终 `assistant`.
 
       - `"assistant"`
 
     - `type: "message"`
 
-      条目的类型。始终为 `message`.
+      条目的类型。始终 `message`.
 
       - `"message"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -8062,25 +8062,25 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
   - `RealtimeConversationItemFunctionCall object { arguments, name, type, 4 more }`
 
-    Realtime 对话中的一项函数调用项。
+    Realtime 对话中的一条函数调用条目。
 
     - `arguments: string`
 
-      函数调用的参数。这是一个 JSON 编码的字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
+      该函数调用的参数。这是一个 JSON 编码字符串，表示传递给该函数的参数，例如 `{"arg1": "value1", "arg2": 42}`.
 
     - `name: string`
 
-      被调用函数的名称。
+      被调用的函数名称。
 
     - `type: "function_call"`
 
-      条目的类型。始终为 `function_call`.
+      条目的类型。始终 `function_call`.
 
       - `"function_call"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `call_id: optional string`
 
@@ -8088,7 +8088,7 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -8104,29 +8104,29 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
   - `RealtimeConversationItemFunctionCallOutput object { call_id, output, type, 3 more }`
 
-    Realtime 对话中的一项函数调用输出项。
+    Realtime 对话中的一条函数调用输出条目。
 
     - `call_id: string`
 
-      该输出所对应的函数调用的 ID。
+      此输出所对应的函数调用的 ID。
 
     - `output: string`
 
-      函数调用的输出，这是自由文本，可以包含任何信息，也可以为空。
+      函数调用的输出，可以是任意自由文本，也可以包含任何信息或为空。
 
     - `type: "function_call_output"`
 
-      条目的类型。始终为 `function_call_output`.
+      条目的类型。始终 `function_call_output`.
 
       - `"function_call_output"`
 
     - `id: optional string`
 
-      条目的唯一 ID。可由客户端提供，也可由服务端生成。
+      条目的唯一 ID。这可以由客户端提供，也可以由服务端生成。
 
     - `object: optional "realtime.item"`
 
-      返回的 API 对象的标识符——始终为 `realtime.item`。创建新条目时可选。
+      所返回 API 对象的标识符 —— 始终 `realtime.item`。创建新条目时为可选项。
 
       - `"realtime.item"`
 
@@ -8142,7 +8142,7 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
   - `RealtimeMcpApprovalResponse object { id, approval_request_id, approve, 2 more }`
 
-    用于响应 MCP 审批请求的 Realtime 项。
+    用于响应 MCP 审批请求的 Realtime 条目。
 
     - `id: string`
 
@@ -8150,7 +8150,7 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
     - `approval_request_id: string`
 
-      正在响应的审批请求的 ID。
+      所应答的审批请求的 ID。
 
     - `approve: boolean`
 
@@ -8158,13 +8158,13 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
     - `type: "mcp_approval_response"`
 
-      条目的类型。始终为 `mcp_approval_response`.
+      条目的类型。始终 `mcp_approval_response`.
 
       - `"mcp_approval_response"`
 
     - `reason: optional string or null`
 
-      可选的决定原因。
+      可选的决策原因。
 
   - `RealtimeMcpListTools object { server_label, tools, type, id }`
 
@@ -8188,7 +8188,7 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
       - `annotations: optional unknown or null`
 
-        关于该工具的附加注释。
+        关于该工具的附加注解。
 
       - `description: optional string or null`
 
@@ -8196,29 +8196,29 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
     - `type: "mcp_list_tools"`
 
-      条目的类型。始终为 `mcp_list_tools`.
+      条目的类型。始终 `mcp_list_tools`.
 
       - `"mcp_list_tools"`
 
     - `id: optional string`
 
-      该列表的唯一 ID。
+      列表的唯一 ID。
 
   - `RealtimeMcpToolCall object { id, arguments, name, 5 more }`
 
-    一个 Realtime 条目，表示对 MCP 服务器上某个工具的调用。
+    一个 Realtime 条目，表示对 MCP 服务器上工具的调用。
 
     - `id: string`
 
-      该工具调用的唯一 ID。
+      工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给该工具的参数对应的 JSON 字符串。
+      传递给工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      已运行工具的名称。
+      所运行工具的名称。
 
     - `server_label: string`
 
@@ -8226,13 +8226,13 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
     - `type: "mcp_call"`
 
-      条目的类型。始终为 `mcp_call`.
+      条目的类型。始终 `mcp_call`.
 
       - `"mcp_call"`
 
     - `approval_request_id: optional string or null`
 
-      关联的批准请求的 ID（如果有）。
+      关联审批请求的 ID（如果有）。
 
     - `error: optional RealtimeMcpProtocolError or RealtimeMcpToolExecutionError or RealtimeMcphttpError or null`
 
@@ -8272,19 +8272,19 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
   - `RealtimeMcpApprovalRequest object { id, arguments, name, 2 more }`
 
-    一个 Realtime 条目，用于请求人工批准一次工具调用。
+    一个 Realtime 条目，用于请求人工批准工具调用。
 
     - `id: string`
 
-      该批准请求的唯一 ID。
+      审批请求的唯一 ID。
 
     - `arguments: string`
 
-      工具参数的 JSON 字符串。
+      该工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      要运行的工具名称。
+      要运行的工具的名称。
 
     - `server_label: string`
 
@@ -8292,7 +8292,7 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
     - `type: "mcp_approval_request"`
 
-      条目的类型。始终为 `mcp_approval_request`.
+      条目的类型。始终 `mcp_approval_request`.
 
       - `"mcp_approval_request"`
 
@@ -8304,9 +8304,9 @@ Schema name: `RealtimeServerEventConversationItemCreated`
 
 - `previous_item_id: optional string or null`
 
-  Conversation 上下文中前一个 Item 的 ID，便于客户端
-  理解对话的顺序。可以为 `null` ，如果该
-  Item 没有前驱项。
+  Conversation 上下文中前一个 item 的 ID，便于
+  客户端理解对话的顺序。可以是 `null` ，如果该
+  item 没有前驱。
 
 ### 示例
 

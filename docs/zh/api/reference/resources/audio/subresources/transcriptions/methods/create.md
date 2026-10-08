@@ -1,4 +1,4 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。每个文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 创建转录
 
@@ -6,35 +6,35 @@
 
 将音频转写为输入语言。
 
-以 `json`, `diarized_json`，或 `verbose_json`
-格式返回纯文本，以 `text`, `srt`，或 `vtt` 格式返回转写事件流。支持的格式取决于所使用的模型。
-transcript events. Supported formats depend on the model.
+返回转写对象，格式为 `json`, `diarized_json`，或 `verbose_json`
+格式、纯文本格式，或 `text`, `srt`，或 `vtt` 格式，或
+转写事件流。支持哪些格式取决于所使用的模型。
 
 ### Returns
 
 - `Transcription object { text, languages, logprobs, usage }`
 
-  表示模型根据提供的输入返回的转录响应。
+  表示模型基于所提供输入返回的转写响应。
 
   - `text: string`
 
-    转录后的文本。
+    转写后的文本。
 
   - `languages: optional array of TranscriptionLanguage`
 
-    在音频中检测到的语言。由 `gpt-transcribe`。返回。空数组表示无法可靠地检测到任何语言。
+    音频中检测到的语言。由 `gpt-transcribe`。返回。空数组表示未能可靠地检测到任何语言。
 
     - `code: string`
 
-      在音频中检测到的语言代码。
+      音频中检测到的语言代码。
 
   - `logprobs: optional array of object { token, bytes, logprob }`
 
-    转录中各个 token 的对数概率。仅在使用以下模型时返回： `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 如果 `logprobs` 被添加到 `include` 数组中。
+    转写中各 token 的对数概率。仅在使用以下模型时返回： `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 若 `logprobs` 添加到 `include` 数组。
 
     - `token: optional string`
 
-      转录中的 token。
+      转写中的 token。
 
     - `bytes: optional array of number`
 
@@ -44,13 +44,13 @@ transcript events. Supported formats depend on the model.
 
       该 token 的对数概率。
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     本次请求的 token 使用统计信息。
 
     - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-      按 token 用量计费的模型的使用统计信息。
+      按 token 使用量计费的模型的使用统计信息。
 
       - `input_tokens: number`
 
@@ -66,7 +66,7 @@ transcript events. Supported formats depend on the model.
 
       - `type: "tokens"`
 
-        使用对象的类型。对于此变体，始终为 `tokens` 。
+        使用对象的类型。对于此变体始终为 `tokens` 。
 
         - `"tokens"`
 
@@ -84,7 +84,7 @@ transcript events. Supported formats depend on the model.
 
     - `Duration object { seconds, type }`
 
-      按音频输入时长计费的模型的用量统计信息。
+      按音频输入时长计费的模型的使用统计。
 
       - `seconds: number`
 
@@ -92,13 +92,13 @@ transcript events. Supported formats depend on the model.
 
       - `type: "duration"`
 
-        使用对象的类型。对于此变体，始终为 `duration` 。
+        使用对象的类型。对于此变体始终为 `duration` 。
 
         - `"duration"`
 
 - `TranscriptionDiarized object { duration, segments, task, 2 more }`
 
-  表示模型返回的说话人分离转写响应，包括合并后的转写文本和说话人分段标注。
+  表示模型返回的说话人分离转录响应，包含合并后的转录文本以及说话人分段标注。
 
   - `duration: number`
 
@@ -106,51 +106,51 @@ transcript events. Supported formats depend on the model.
 
   - `segments: array of TranscriptionDiarizedSegment`
 
-    带有时间戳和说话人标签的转写分段。
+    带有时间戳和说话人标签的转录分段。
 
     - `id: string`
 
-      该分段的唯一标识符。
+      该分段 的唯一标识符。
 
     - `end: number`
 
-      该分段的结束时间戳（以秒为单位）。
+      该分段 的结束时间戳（以秒为单位）。
 
     - `speaker: string`
 
-      该分段的说话人标签。当提供已知说话人时，标签与 `known_speaker_names[]`。一致。否则将按顺序使用大写字母（`A`, `B`, ...).
+      该分段 的说话人标签。当已知说话人时，标签与 `known_speaker_names[]`。匹配。否则会按顺序使用大写字母（`A`, `B`, ...).
 
     - `start: number`
 
-      该分段的开始时间戳（以秒为单位）。
+      该分段 的开始时间戳（以秒为单位）。
 
     - `text: string`
 
-      该分段的转写文本。
+      该分段 的转录文本。
 
     - `type: "transcript.text.segment"`
 
-      分段的类型，始终为 `transcript.text.segment`.
+      分段的类型，固定为 `transcript.text.segment`.
 
       - `"transcript.text.segment"`
 
   - `task: "transcribe"`
 
-    所运行任务的类型，始终为 `transcribe`.
+    所运行任务的类型，固定为 `transcribe`.
 
     - `"transcribe"`
 
   - `text: string`
 
-    整个音频输入的拼接后的转写文本。
+    整个音频输入的拼接转录文本。
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
-    本次请求的 token 或时长用量统计信息。
+    本次请求的 token 或时长使用统计。
 
     - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-      按 token 用量计费的模型的使用统计信息。
+      按 token 使用量计费的模型的使用统计信息。
 
       - `input_tokens: number`
 
@@ -166,7 +166,7 @@ transcript events. Supported formats depend on the model.
 
       - `type: "tokens"`
 
-        使用对象的类型。对于此变体，始终为 `tokens` 。
+        使用对象的类型。对于此变体始终为 `tokens` 。
 
         - `"tokens"`
 
@@ -184,7 +184,7 @@ transcript events. Supported formats depend on the model.
 
     - `Duration object { seconds, type }`
 
-      按音频输入时长计费的模型的用量统计信息。
+      按音频输入时长计费的模型的使用统计。
 
       - `seconds: number`
 
@@ -192,13 +192,13 @@ transcript events. Supported formats depend on the model.
 
       - `type: "duration"`
 
-        使用对象的类型。对于此变体，始终为 `duration` 。
+        使用对象的类型。对于此变体始终为 `duration` 。
 
         - `"duration"`
 
 - `TranscriptionVerbose object { duration, language, text, 3 more }`
 
-  表示根据提供的输入，由模型返回的详细 JSON 转写响应。
+  表示根据所提供的输入，由模型返回的详细 JSON 转录响应。
 
   - `duration: number`
 
@@ -210,55 +210,55 @@ transcript events. Supported formats depend on the model.
 
   - `text: string`
 
-    转录后的文本。
+    转写后的文本。
 
   - `segments: optional array of TranscriptionSegment`
 
-    转写文本的分段及其对应详情。
+    转写文本的片段及其对应的详细信息。
 
     - `id: number`
 
-      该段的唯一标识符。
+      片段的唯一标识符。
 
     - `avg_logprob: number`
 
-      该段的平均 logprob。如果该值低于 -1，则视为 logprob 失败。
+      片段的平均 logprob。如果该值低于 -1，则认为 logprobs 失败。
 
     - `compression_ratio: number`
 
-      该段的压缩率。如果该值大于 2.4，则视为压缩失败。
+      片段的压缩比。如果该值大于 2.4，则认为压缩失败。
 
     - `end: number`
 
-      该段的结束时间（以秒为单位）。
+      片段的结束时间（以秒为单位）。
 
     - `no_speech_prob: number`
 
-      该段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则视为该段为静音。
+      片段中无语音的概率。如果该值高于 1.0 并且 `avg_logprob` 低于 -1，则认为此片段为静音。
 
     - `seek: number`
 
-      该段的 seek 偏移量。
+      片段的 seek 偏移量。
 
     - `start: number`
 
-      该段的开始时间（以秒为单位）。
+      片段的开始时间（以秒为单位）。
 
     - `temperature: number`
 
-      用于生成该段的 temperature 参数。
+      用于生成该片段的温度参数。
 
     - `text: string`
 
-      该段的文本内容。
+      片段的文本内容。
 
     - `tokens: array of number`
 
-      该文本内容的 token ID 数组。
+      文本内容的 token ID 数组。
 
   - `usage: optional object { seconds, type }`
 
-    按音频输入时长计费的模型的用量统计信息。
+    按音频输入时长计费的模型的使用统计。
 
     - `seconds: number`
 
@@ -266,25 +266,25 @@ transcript events. Supported formats depend on the model.
 
     - `type: "duration"`
 
-      使用对象的类型。对于此变体，始终为 `duration` 。
+      使用对象的类型。对于此变体始终为 `duration` 。
 
       - `"duration"`
 
   - `words: optional array of TranscriptionWord`
 
-    提取出的单词及其对应的时间戳。
+    提取出的词语及其对应的时间戳。
 
     - `end: number`
 
-      该单词的结束时间（以秒为单位）。
+      词语的结束时间（以秒为单位）。
 
     - `start: number`
 
-      该单词的开始时间（以秒为单位）。
+      词语的开始时间（以秒为单位）。
 
     - `word: string`
 
-      该单词的文本内容。
+      词语的文本内容。
 
 ### 示例
 
@@ -410,7 +410,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 }
 ```
 
-### Logprobs
+### 对数概率
 
 ```http
 curl https://api.openai.com/v1/audio/transcriptions \

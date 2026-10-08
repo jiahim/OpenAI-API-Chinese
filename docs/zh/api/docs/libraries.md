@@ -1,12 +1,12 @@
 # SDK 和 CLI
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 后追加 `.md` 来访问。
 
-本页介绍使用 [OpenAI API](https://developers.openai.com/api/reference/overview)：面向应用代码的官方 SDK、面向 shell 原生工作流的 OpenAI CLI、用于编排的 Agents SDK，或你常用的 HTTP 客户端。
+本页介绍使用 [OpenAI API](https://developers.openai.com/api/reference/overview):面向应用代码的官方 SDK、面向 shell 原生工作流的 OpenAI CLI、用于编排的 Agents SDK，或你自己首选的 HTTP 客户端。
 
 ## 创建并导出 API 密钥
 
-开始之前， [在仪表板中创建一个 API 密钥](https://platform.openai.com/api-keys)，你将使用它来安全地 [访问 API](https://developers.openai.com/api/reference/overview)。将该密钥保存在安全的位置，例如计算机上的 [`.zshrc` 文件](https://www.freecodecamp.org/news/how-do-zsh-configuration-files-work/) 或其他文本文件。生成 API 密钥后，将其导出为 [环境变量](https://en.wikipedia.org/wiki/Environment_variable) 。
+开始之前， [在仪表板中创建一个 API 密钥](https://platform.openai.com/api-keys)，你将用它来安全地 [访问 API](https://developers.openai.com/api/reference/overview)。将该密钥保存在安全的位置，例如电脑上的一个 [`.zshrc` 文件](https://www.freecodecamp.org/news/how-do-zsh-configuration-files-work/) 或其他文本文件。生成 API 密钥后，将其导出为 [环境变量](https://en.wikipedia.org/wiki/Environment_variable) 在终端中。
 
 
 
@@ -33,7 +33,7 @@ setx OPENAI_API_KEY "your_api_key_here"
 
 
 
-OpenAI SDK 配置为自动从系统环境中读取你的 API 密钥。
+OpenAI SDK 默认配置为自动从系统环境中读取你的 API 密钥。
 
 ## 安装官方 SDK
 
@@ -43,7 +43,7 @@ JavaScript
 
     
 
-要在 Node.js、Deno 或 Bun 等服务端 JavaScript 环境中使用 OpenAI API，你可以使用官方的 [OpenAI SDK for TypeScript and JavaScript](https://github.com/openai/openai-node)。先使用 [npm](https://www.npmjs.com/) 或你常用的包管理器安装 SDK：
+要在 Node.js、Deno 或 Bun 等服务端 JavaScript 环境中使用 OpenAI API，你可以使用官方的 [OpenAI TypeScript 和 JavaScript SDK](https://github.com/openai/openai-node)。先使用 [npm](https://www.npmjs.com/) 或你常用的包管理器安装 SDK：
 
 使用 npm 安装 OpenAI SDK
 
@@ -52,9 +52,9 @@ npm install openai
 ```
 
 
-安装好 OpenAI SDK 后，新建一个文件并 `example.mjs` 将示例代码复制进去：
+安装好 OpenAI SDK 后，创建一个文件，文件名 `example.mjs` 为，并将下面的示例代码复制到其中：
 
-测试一个基础的 API 请求
+测试一个基本的 API 请求
 
 ```javascript
 import OpenAI from "openai";
@@ -69,9 +69,9 @@ console.log(response.output_text);
 ```
 
 
-使用 `node example.mjs` （或 Deno、Bun 中对应的命令）执行代码。稍等片刻，你就能看到 API 请求的输出。
+使用 `node example.mjs` （或 Deno、Bun 中对应的命令）执行代码。稍等片刻，你应当能看到 API 请求的输出。
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -87,7 +87,7 @@ Python
 
     
 
-要在 Python 中使用 OpenAI API，你可以使用官方的 [OpenAI SDK for Python](https://github.com/openai/openai-python)。先使用 [pip](https://pypi.org/project/pip/):
+要在 Python 中使用 OpenAI API，你可以使用官方的 [OpenAI Python SDK](https://github.com/openai/openai-python)。先使用 [pip](https://pypi.org/project/pip/):
 
 使用 pip 安装 OpenAI SDK
 
@@ -96,9 +96,9 @@ pip install openai
 ```
 
 
-安装好 OpenAI SDK 后，新建一个文件并 `example.py` 将示例代码复制进去：
+安装好 OpenAI SDK 后，创建一个文件，文件名 `example.py` 为，并将下面的示例代码复制到其中：
 
-测试一个基础的 API 请求
+测试一个基本的 API 请求
 
 ```python
 from openai import OpenAI
@@ -114,9 +114,9 @@ print(response.output_text)
 ```
 
 
-使用 `python example.py`。稍等片刻，你就能看到 API 请求的输出。
+使用 `python example.py`。稍等片刻，你应当能看到 API 请求的输出。
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -132,15 +132,15 @@ print(response.output_text)
 
     
 
-与 Microsoft 合作，OpenAI 为 C# 提供官方支持的 API 客户端。你可以通过 .NET CLI 从 [NuGet](https://www.nuget.org/).
+与 Microsoft 合作，OpenAI 为 C# 提供官方支持的 API 客户端。你可以使用 .NET CLI 从 [NuGet](https://www.nuget.org/).
 
 ```
 dotnet add package OpenAI
 ```
 
-向API 发起的简单请求 [Responses API](https://developers.openai.com/api/reference/resources/responses) 示例如下：
+一个针对 API 的简单请求（目标为 [Responses API](https://developers.openai.com/api/reference/resources/responses) ）如下所示：
 
-测试一个基础的 API 请求
+测试一个基本的 API 请求
 
 ```csharp
 using OpenAI.Responses;
@@ -167,20 +167,20 @@ Java
 
     
 
-OpenAI 为 Java 编程语言提供 API 帮助库，目前处于 beta 阶段。你可以通过以下配置加入 Maven 依赖：
+OpenAI 为 Java 语言提供 API 辅助库，目前处于 beta 阶段。你可以使用以下配置引入 Maven 依赖：
 
 ```xml
 <dependency>
   <groupId>com.openai</groupId>
   <artifactId>openai-java</artifactId>
-  <version>4.78.0</version>
+  <version>4.78.1</version>
 </dependency>
 ```
 
 
-向API 发起的简单请求 [Responses API](https://developers.openai.com/api/reference/resources/responses) 示例如下：
+一个针对 API 的简单请求，发送至 [Responses API](https://developers.openai.com/api/reference/resources/responses) ）如下所示：
 
-测试一个基础的 API 请求
+测试一个基本的 API 请求
 
 ```java
 import com.openai.client.OpenAIClient;
@@ -206,9 +206,9 @@ public class Main {
 ```
 
 
-要详细了解如何在 Java 中使用 OpenAI API，请查看下方链接的 GitHub 仓库！
+要了解有关在 Java 中使用 OpenAI API 的更多信息，请查看下方链接的 GitHub 仓库！
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -224,7 +224,7 @@ Go
 
     
 
-OpenAI 为 Go 编程语言提供 API 帮助库，目前处于 beta 阶段。你可以使用以下代码导入该库：
+OpenAI 为 Go 语言提供 API 辅助库，目前处于 beta 阶段。你可以使用以下代码引入该库：
 
 ```go
 import (
@@ -233,9 +233,9 @@ import (
 ```
 
 
-向API 发起的首次请求 [Responses API](https://developers.openai.com/api/reference/resources/responses) 示例如下：
+一个针对 API 的首次请求（目标为 [Responses API](https://developers.openai.com/api/reference/resources/responses) ）如下所示：
 
-测试一个基础的 API 请求
+测试一个基本的 API 请求
 
 ```go
 package main
@@ -264,9 +264,9 @@ func main() {
 ```
 
 
-要详细了解如何在 Go 中使用 OpenAI API，请查看下方链接的 GitHub 仓库！
+要了解有关在 Go 中使用 OpenAI API 的更多信息，请查看下方链接的 GitHub 仓库！
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -282,7 +282,7 @@ Ruby
 
     
 
-要在 Ruby 中使用 OpenAI API，你可以使用官方的 [OpenAI SDK for Ruby](https://github.com/openai/openai-ruby)。首先将 gem 添加到你的应用程序中：
+要在 Ruby 中使用 OpenAI API，你可以使用官方的 [OpenAI SDK for Ruby](https://github.com/openai/openai-ruby)。将 gem 添加到你的应用即可开始使用：
 
 使用 Bundler 安装 OpenAI SDK
 
@@ -291,9 +291,9 @@ gem "openai"
 ```
 
 
-安装好 OpenAI SDK 后，新建一个文件并 `example.rb` 将示例代码复制进去：
+安装好 OpenAI SDK 后，创建一个文件，文件名 `example.rb` 为，并将下面的示例代码复制到其中：
 
-测试一个基础的 API 请求
+测试一个基本的 API 请求
 
 ```ruby
 require "openai"
@@ -309,9 +309,9 @@ puts(response.output_text)
 ```
 
 
-使用 `ruby example.rb`。稍等片刻，你就能看到 API 请求的输出。
+使用 `ruby example.rb`。稍等片刻，你应当能看到 API 请求的输出。
 
-[在 GitHub 上了解更多
+[在 GitHub 上了解更多信息
 
 
 
@@ -327,7 +327,7 @@ CLI
 
     
 
-若要从终端直接调用 OpenAI API，请安装自动生成的 `openai` 命令行工具：
+若要直接从你的终端调用 OpenAI API，请安装生成的 `openai` 命令行工具：
 
 使用 Homebrew 安装 OpenAI CLI
 
@@ -336,9 +336,9 @@ brew install openai/tools/openai
 ```
 
 
-然后在 shell 中运行一个基本的 API 请求：
+然后从你的 shell 运行一个基础的 API 请求：
 
-测试一个基础的 API 请求
+测试一个基本的 API 请求
 
 ```bash
 openai responses create \
@@ -349,7 +349,7 @@ openai responses create \
 ```
 
 
-使用 CLI 处理可重复的终端工作流，例如从文件中提取结构化数据、生成图像、合成语音，以及使用 shell 工具编写 API 调用，例如 `jq`.
+使用 CLI 执行可重复的终端工作流，例如从文件中提取结构化数据、生成图像、创建语音，以及使用 shell 工具组合 API 调用，例如 `jq`.
 
 [OpenAI CLI 指南
 
@@ -361,12 +361,12 @@ openai responses create \
 
 ## 使用 Agents SDK
 
-直接 API 请求请使用上述官方 OpenAI SDK。使用 Agents SDK
-进行代码优先编排时，请在处理 智能体、工具、
-交接、护栏、追踪 或沙盒执行时使用。
+使用上述官方 OpenAI SDK 直接发起 API 请求。当你的应用需要对 智能体、工具、
+当你的应用需要对 智能体、工具、
+交接、护栏、追踪或沙箱执行进行代码优先编排时，使用 Agents SDK。
 
-如果你要在直接发起 API 请求与代码优先编排之间进行选择，
-了解 [Responses API 与 Agents SDK 的对比](https://developers.openai.com/api/docs/guides/agents#agents-sdk-vs-responses-api).
+如果你正在直接 API 请求与代码优先编排之间做出选择，
+请参阅 [Responses API 与 Agents SDK 的对比](https://developers.openai.com/api/docs/guides/agents#agents-sdk-vs-responses-api).
 
 [Agents SDK 快速入门
 
@@ -374,77 +374,77 @@ openai responses create \
 
       Build your first agent with the Agents SDK.](https://developers.openai.com/api/docs/guides/agents/quickstart)
 
-- [OpenAI Agents SDK for TypeScript](https://github.com/openai/openai-agents-js)
-- [OpenAI Agents SDK for Python](https://github.com/openai/openai-agents-python)
+- [OpenAI Agents SDK TypeScript 版](https://github.com/openai/openai-agents-js)
+- [OpenAI Agents SDK Python 版](https://github.com/openai/openai-agents-python)
 
 ## Azure OpenAI 库
 
-Microsoft 的 Azure 团队维护着与 OpenAI API 以及 Azure OpenAI 服务兼容的库。请阅读下面的库文档，了解如何将它们与 OpenAI API 一起使用。
+Microsoft 的 Azure 团队维护着与 OpenAI API 以及 Azure OpenAI 服务兼容的库。请阅读下面的库文档，了解如何将它们与 OpenAI API 配合使用。
 
-- [Azure OpenAI .NET 客户端库](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI)
-- [Azure OpenAI JavaScript 客户端库](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai)
-- [Azure OpenAI Java 客户端库](https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/openai/azure-ai-openai)
-- [Azure OpenAI Go 客户端库](https://github.com/Azure/azure-sdk-for-go/tree/main/sdk/ai/azopenai)
+- [适用于 .NET 的 Azure OpenAI 客户端库](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/openai/Azure.AI.OpenAI)
+- [适用于 JavaScript 的 Azure OpenAI 客户端库](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai)
+- [适用于 Java 的 Azure OpenAI 客户端库](https://github.com/Azure/azure-sdk-for-java/tree/main/sdk/openai/azure-ai-openai)
+- [适用于 Go 的 Azure OpenAI 客户端库](https://github.com/Azure/azure-sdk-for-go/tree/main/sdk/ai/azopenai)
 
 ---
 
 ## 社区库
 
-下方列出的库由更广泛的开发者社区构建并维护。你也可以 [关注 GitHub 上的 OpenAPI 规范仓库](https://github.com/openai/openai-openapi) 以第一时间获取我们对 API 所做更改的更新。
+以下库由更广泛的开发者社区构建和维护。你也可以 [关注我们在 GitHub 上的 OpenAPI 规范](https://github.com/openai/openai-openapi) 仓库，及时了解我们对 API 做出更改的时间。
 
-请注意，OpenAI 不会验证这些项目的正确性或安全性。 **使用风险请自行承担！**
+请注意，OpenAI 不会验证这些项目的正确性或安全性。 **使用这些项目需自行承担风险！**
 
 ### Clojure
 
-- [openai-clojure](https://github.com/wkok/openai-clojure) 作者 [wkok](https://github.com/wkok)
+- [openai-clojure](https://github.com/wkok/openai-clojure) 由 [wkok](https://github.com/wkok)
 
 ### Dart/Flutter
 
-- [openai](https://github.com/anasfik/openai) 作者 [anasfik](https://github.com/anasfik)
+- [openai](https://github.com/anasfik/openai) 由 [anasfik](https://github.com/anasfik)
 
 ### Delphi
 
-- [DelphiOpenAI](https://github.com/HemulGM/DelphiOpenAI) 作者 [HemulGM](https://github.com/HemulGM)
+- [DelphiOpenAI](https://github.com/HemulGM/DelphiOpenAI) 由 [HemulGM](https://github.com/HemulGM)
 
 ### Elixir
 
-- [openai.ex](https://github.com/mgallo/openai.ex) 作者 [mgallo](https://github.com/mgallo)
+- [openai.ex](https://github.com/mgallo/openai.ex) 由 [mgallo](https://github.com/mgallo)
 
 ### Kotlin
 
-- [openai-kotlin](https://github.com/Aallam/openai-kotlin) 作者 [Mouaad Aallam](https://github.com/Aallam)
+- [openai-kotlin](https://github.com/Aallam/openai-kotlin) 由 [Mouaad Aallam](https://github.com/Aallam)
 
 ### PHP
 
-- [orhanerday/open-ai](https://packagist.org/packages/orhanerday/open-ai) 作者 [orhanerday](https://github.com/orhanerday)
-- [openai-php client](https://github.com/openai-php/client) 作者 [openai-php](https://github.com/openai-php)
+- [orhanerday/open-ai](https://packagist.org/packages/orhanerday/open-ai) 由 [orhanerday](https://github.com/orhanerday)
+- [openai-php client](https://github.com/openai-php/client) 由 [openai-php](https://github.com/openai-php)
 
 ### Rust
 
-- [async-openai](https://github.com/64bit/async-openai) 作者 [64bit](https://github.com/64bit)
+- [async-openai](https://github.com/64bit/async-openai) 由 [64bit](https://github.com/64bit)
 
 ### Scala
 
-- [openai-scala-client](https://github.com/cequence-io/openai-scala-client) 作者 [cequence-io](https://github.com/cequence-io)
+- [openai-scala-client](https://github.com/cequence-io/openai-scala-client) 由 [cequence-io](https://github.com/cequence-io)
 
 ### Swift
 
-- [AIProxySwift](https://github.com/lzell/AIProxySwift) 作者 [Lou Zell](https://github.com/lzell)
-- [OpenAIKit](https://github.com/dylanshine/openai-kit) 作者 [dylanshine](https://github.com/dylanshine)
-- [OpenAI](https://github.com/MacPaw/OpenAI/) 作者 [MacPaw](https://github.com/MacPaw)
+- [AIProxySwift](https://github.com/lzell/AIProxySwift) 由 [Lou Zell](https://github.com/lzell)
+- [OpenAIKit](https://github.com/dylanshine/openai-kit) 由 [dylanshine](https://github.com/dylanshine)
+- [OpenAI](https://github.com/MacPaw/OpenAI/) 由 [MacPaw](https://github.com/MacPaw)
 
 ### Unity
 
-- [com.openai.unity](https://github.com/RageAgainstThePixel/com.openai.unity) 作者 [RageAgainstThePixel](https://github.com/RageAgainstThePixel)
+- [com.openai.unity](https://github.com/RageAgainstThePixel/com.openai.unity) 由 [RageAgainstThePixel](https://github.com/RageAgainstThePixel)
 
 ### Unreal Engine
 
-- [OpenAI-Api-Unreal](https://github.com/KellanM/OpenAI-Api-Unreal) 作者 [KellanM](https://github.com/KellanM)
+- [OpenAI-Api-Unreal](https://github.com/KellanM/OpenAI-Api-Unreal) 由 [KellanM](https://github.com/KellanM)
 
 ## 其他 OpenAI 仓库
 
 - [tiktoken](https://github.com/openai/tiktoken) - 计算 token 数
 - [simple-evals](https://github.com/openai/simple-evals) - 简单评估库
-- [mle-bench](https://github.com/openai/mle-bench) - 评估机器学习工程师 智能体 的库
+- [mle-bench](https://github.com/openai/mle-bench) - 用于评估机器学习工程师的库智能体
 - [gym](https://github.com/openai/gym) - 强化学习库
-- [swarm](https://github.com/openai/swarm) - 教学编排代码仓库
+- [swarm](https://github.com/openai/swarm) - 教学用编排代码仓库

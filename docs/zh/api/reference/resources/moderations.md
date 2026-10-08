@@ -1,44 +1,44 @@
 # Moderations
 
-> 完整的文档索引请参见 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 获取文档页面的 Markdown 版本。
 
-## Create moderation
+## 创建审查
 
-**post** `/moderations`
+**帖子** `/moderations`
 
-Classifies if text and/or image inputs are potentially harmful. Learn
-更多内容请参阅 [审核指南](/api/docs/guides/moderation).
+判断文本和/或图像输入是否可能有害。了解更多
+请参阅 [审核指南](/api/docs/guides/moderation).
 
 ### 请求体参数
 
-- `input: string or array of string or array of object { image_url, type }  or object { text, type }`
+- `input: string or array of string or array of ImageURL { image_url, type }  or Text { text, type }`
 
-  用于分类的输入（可以是单个或多个）。可以是单个字符串、字符串数组，或
-  与其他模型类似的多模态输入对象数组。
+  用于分类的输入（或多个输入）。可以是单个字符串、字符串数组，或
+  与其他模型类似的、多模态输入对象的数组。
 
   - `string`
 
-    需要分类（用于内容审核）的字符串文本。
+    需要进行内容审核分类的文本字符串。
 
   - `array of string`
 
-    需要分类（用于内容审核）的字符串数组。
+    需要进行内容审核分类的字符串数组。
 
-  - `array of object { image_url, type }  or object { text, type }`
+  - `array of ImageURL { image_url, type }  or Text { text, type }`
 
-    传给内容审核模型的多模态输入数组。
+    提供给内容审核模型的多模态输入数组。
 
     - `ImageURL object { image_url, type }`
 
-      描述待分类图片的对象。
+      描述待分类图像的对象。
 
       - `image_url: object { url }`
 
-        包含图片的 URL 或 base64 编码图片的 data URL。
+        包含图像 URL 或 base64 编码图像的 data URL。
 
         - `url: string`
 
-          图片的 URL 或 base64 编码的图片数据。
+          图像的 URL 或 base64 编码的图像数据。
 
       - `type: "image_url"`
 
@@ -52,7 +52,7 @@ Classifies if text and/or image inputs are potentially harmful. Learn
 
       - `text: string`
 
-        需要分类的字符串文本。
+        需要进行分类的文本字符串。
 
       - `type: "text"`
 
@@ -62,9 +62,9 @@ Classifies if text and/or image inputs are potentially harmful. Learn
 
 - `model: optional string or ModerationModel`
 
-  希望使用的内容审核模型。更多信息请参阅
-  [内容审核指南](/api/docs/guides/moderation)，以及可用
-  模型列表 [。](/api/docs/guides/moderation).
+  你希望使用的内容审核模型。详细了解请参阅
+  [内容审核指南](/api/docs/guides/moderation)，并了解
+  可用模型 [请参见此处](/api/docs/guides/moderation).
 
   - `string`
 
@@ -78,11 +78,11 @@ Classifies if text and/or image inputs are potentially harmful. Learn
 
     - `"text-moderation-stable"`
 
-### 返回值
+### Returns
 
 - `id: string`
 
-  该审核请求的唯一标识符。
+  审核请求的唯一标识符。
 
 - `model: string`
 
@@ -90,51 +90,51 @@ Classifies if text and/or image inputs are potentially harmful. Learn
 
 - `results: array of Moderation`
 
-  审核对象的列表。
+  审核对象列表。
 
   - `categories: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    类别列表，以及它们是否被标记。
+    类别列表，以及各类别是否被标记。
 
     - `harassment: boolean`
 
-      针对任何目标表达、煽动或宣扬骚扰性语言的内容。
+      表达、煽动或促进针对任何目标的骚扰性语言的内容。
 
     - `"harassment/threatening": boolean`
 
-      骚扰内容，同时也包含针对任何目标的暴力或严重伤害。
+      骚扰性内容，且包含针对任何目标的暴力或严重伤害。
 
     - `hate: boolean`
 
-      基于种族、性别、民族、宗教、国籍、性取向、残障状况或种姓表达、煽动或宣扬仇恨的内容。面向非受保护群体（例如国际象棋棋手）的仇恨内容属于骚扰。
+      基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓，表达、煽动或促进仇恨的内容。针对非受保护群体（例如国际象棋棋手）的仇恨内容属于骚扰。
 
     - `"hate/threatening": boolean`
 
-      基于种族、性别、民族、宗教、国籍、性取向、残障状况或种姓，针对目标群体同时包含暴力或严重伤害的仇恨内容。
+      仇恨内容，且包含基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓，针对目标群体的暴力或严重伤害。
 
     - `illicit: boolean or null`
 
-      包含便利规划或实施违法行为的指导或建议的内容，或提供关于如何实施非法行为的建议或指导。例如，“如何入店行窃”就属于此类。
+      包含有助于策划或实施违法行为的指示或建议，或提供如何实施违法行为的建议或指示的内容。例如，“如何商店行窃”属于此类别。
 
     - `"illicit/violent": boolean or null`
 
-      包含便利规划或实施同时包含暴力的违法行为的指导或建议的内容，或提供关于获取任何武器的建议或指导。
+      包含有助于策划或实施伴随暴力的违法行为的指示或建议，或提供如何获取任何武器的建议或指示的内容。
 
     - `"self-harm": boolean`
 
-      宣扬、鼓励或描绘自残行为的内容，例如自杀、自残和饮食失调。
+      促进、鼓励或描绘自残行为（如自杀、自残切割和进食障碍）的内容。
 
     - `"self-harm/instructions": boolean`
 
-      鼓励实施自残行为的内容，例如自杀、自残和饮食失调，或提供关于如何实施此类行为的指导或建议。
+      鼓励实施自残行为（如自杀、自残切割和进食障碍），或提供如何实施此类行为的指示或建议的内容。
 
     - `"self-harm/intent": boolean`
 
-      说话者表达正在或打算实施自残行为的内容，例如自杀、自残和饮食失调。
+      发言者表示其正在实施或打算实施自残行为（如自杀、自残切割和进食障碍）的内容。
 
     - `sexual: boolean`
 
-      旨在唤起性兴奋的内容，例如对性行为的描述，或推广性服务的内容（不包括性教育和性健康）。
+      旨在引起性兴奋的内容，例如对性活动的描述，或促进性服务的内容（不包括性教育和性健康）。
 
     - `"sexual/minors": boolean`
 
@@ -142,15 +142,15 @@ Classifies if text and/or image inputs are potentially harmful. Learn
 
     - `violence: boolean`
 
-      描绘死亡、暴力或人身伤害的内容。
+      描绘死亡、暴力或身体伤害的内容。
 
     - `"violence/graphic": boolean`
 
-      以生动细节描绘死亡、暴力或人身伤害的内容。
+      以血腥细节描绘死亡、暴力或身体伤害的内容。
 
   - `category_applied_input_types: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    类别及其分数所适用的输入类型列表。
+    类别列表，以及分数适用的输入类型。
 
     - `harassment: array of "text"`
 
@@ -280,27 +280,27 @@ Classifies if text and/or image inputs are potentially harmful. Learn
 
     - `"self-harm/intent": number`
 
-      类别 'self-harm/intent' 的评分。
+      类别 'self-harm/intent' 的分数。
 
     - `sexual: number`
 
-      类别 'sexual' 的评分。
+      类别 'sexual' 的分数。
 
     - `"sexual/minors": number`
 
-      类别 'sexual/minors' 的评分。
+      类别 'sexual/minors' 的分数。
 
     - `violence: number`
 
-      类别 'violence' 的评分。
+      类别 'violence' 的分数。
 
     - `"violence/graphic": number`
 
-      类别 'violence/graphic' 的评分。
+      类别 'violence/graphic' 的分数。
 
   - `flagged: boolean`
 
-    以下任意类别是否被标记。
+    是否存在以下任意类别被标记的情况。
 
 ### 示例
 
@@ -511,7 +511,7 @@ curl https://api.openai.com/v1/moderations \
 }
 ```
 
-### 单字符串
+### 单个字符串
 
 ```http
 curl https://api.openai.com/v1/moderations \
@@ -608,7 +608,7 @@ curl https://api.openai.com/v1/moderations \
 }
 ```
 
-## 域类型
+## 领域类型
 
 ### 审核
 
@@ -616,47 +616,47 @@ curl https://api.openai.com/v1/moderations \
 
   - `categories: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    类别列表，以及它们是否被标记。
+    类别列表，以及各类别是否被标记。
 
     - `harassment: boolean`
 
-      针对任何目标表达、煽动或宣扬骚扰性语言的内容。
+      表达、煽动或促进针对任何目标的骚扰性语言的内容。
 
     - `"harassment/threatening": boolean`
 
-      骚扰内容，同时也包含针对任何目标的暴力或严重伤害。
+      骚扰性内容，且包含针对任何目标的暴力或严重伤害。
 
     - `hate: boolean`
 
-      基于种族、性别、民族、宗教、国籍、性取向、残障状况或种姓表达、煽动或宣扬仇恨的内容。面向非受保护群体（例如国际象棋棋手）的仇恨内容属于骚扰。
+      基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓，表达、煽动或促进仇恨的内容。针对非受保护群体（例如国际象棋棋手）的仇恨内容属于骚扰。
 
     - `"hate/threatening": boolean`
 
-      基于种族、性别、民族、宗教、国籍、性取向、残障状况或种姓，针对目标群体同时包含暴力或严重伤害的仇恨内容。
+      仇恨内容，且包含基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓，针对目标群体的暴力或严重伤害。
 
     - `illicit: boolean or null`
 
-      包含便利规划或实施违法行为的指导或建议的内容，或提供关于如何实施非法行为的建议或指导。例如，“如何入店行窃”就属于此类。
+      包含有助于策划或实施违法行为的指示或建议，或提供如何实施违法行为的建议或指示的内容。例如，“如何商店行窃”属于此类别。
 
     - `"illicit/violent": boolean or null`
 
-      包含便利规划或实施同时包含暴力的违法行为的指导或建议的内容，或提供关于获取任何武器的建议或指导。
+      包含有助于策划或实施伴随暴力的违法行为的指示或建议，或提供如何获取任何武器的建议或指示的内容。
 
     - `"self-harm": boolean`
 
-      宣扬、鼓励或描绘自残行为的内容，例如自杀、自残和饮食失调。
+      促进、鼓励或描绘自残行为（如自杀、自残切割和进食障碍）的内容。
 
     - `"self-harm/instructions": boolean`
 
-      鼓励实施自残行为的内容，例如自杀、自残和饮食失调，或提供关于如何实施此类行为的指导或建议。
+      鼓励实施自残行为（如自杀、自残切割和进食障碍），或提供如何实施此类行为的指示或建议的内容。
 
     - `"self-harm/intent": boolean`
 
-      说话者表达正在或打算实施自残行为的内容，例如自杀、自残和饮食失调。
+      发言者表示其正在实施或打算实施自残行为（如自杀、自残切割和进食障碍）的内容。
 
     - `sexual: boolean`
 
-      旨在唤起性兴奋的内容，例如对性行为的描述，或推广性服务的内容（不包括性教育和性健康）。
+      旨在引起性兴奋的内容，例如对性活动的描述，或促进性服务的内容（不包括性教育和性健康）。
 
     - `"sexual/minors": boolean`
 
@@ -664,15 +664,15 @@ curl https://api.openai.com/v1/moderations \
 
     - `violence: boolean`
 
-      描绘死亡、暴力或人身伤害的内容。
+      描绘死亡、暴力或身体伤害的内容。
 
     - `"violence/graphic": boolean`
 
-      以生动细节描绘死亡、暴力或人身伤害的内容。
+      以血腥细节描绘死亡、暴力或身体伤害的内容。
 
   - `category_applied_input_types: object { harassment, "harassment/threatening", hate, 10 more }`
 
-    类别及其分数所适用的输入类型列表。
+    类别列表，以及分数适用的输入类型。
 
     - `harassment: array of "text"`
 
@@ -802,27 +802,27 @@ curl https://api.openai.com/v1/moderations \
 
     - `"self-harm/intent": number`
 
-      类别 'self-harm/intent' 的评分。
+      类别 'self-harm/intent' 的分数。
 
     - `sexual: number`
 
-      类别 'sexual' 的评分。
+      类别 'sexual' 的分数。
 
     - `"sexual/minors": number`
 
-      类别 'sexual/minors' 的评分。
+      类别 'sexual/minors' 的分数。
 
     - `violence: number`
 
-      类别 'violence' 的评分。
+      类别 'violence' 的分数。
 
     - `"violence/graphic": number`
 
-      类别 'violence/graphic' 的评分。
+      类别 'violence/graphic' 的分数。
 
   - `flagged: boolean`
 
-    以下任意类别是否被标记。
+    是否存在以下任意类别被标记的情况。
 
 ### 审核创建响应
 
@@ -832,7 +832,7 @@ curl https://api.openai.com/v1/moderations \
 
   - `id: string`
 
-    该审核请求的唯一标识符。
+    审核请求的唯一标识符。
 
   - `model: string`
 
@@ -840,51 +840,51 @@ curl https://api.openai.com/v1/moderations \
 
   - `results: array of Moderation`
 
-    审核对象的列表。
+    审核对象列表。
 
     - `categories: object { harassment, "harassment/threatening", hate, 10 more }`
 
-      类别列表，以及它们是否被标记。
+      类别列表，以及各类别是否被标记。
 
       - `harassment: boolean`
 
-        针对任何目标表达、煽动或宣扬骚扰性语言的内容。
+        表达、煽动或促进针对任何目标的骚扰性语言的内容。
 
       - `"harassment/threatening": boolean`
 
-        骚扰内容，同时也包含针对任何目标的暴力或严重伤害。
+        骚扰性内容，且包含针对任何目标的暴力或严重伤害。
 
       - `hate: boolean`
 
-        基于种族、性别、民族、宗教、国籍、性取向、残障状况或种姓表达、煽动或宣扬仇恨的内容。面向非受保护群体（例如国际象棋棋手）的仇恨内容属于骚扰。
+        基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓，表达、煽动或促进仇恨的内容。针对非受保护群体（例如国际象棋棋手）的仇恨内容属于骚扰。
 
       - `"hate/threatening": boolean`
 
-        基于种族、性别、民族、宗教、国籍、性取向、残障状况或种姓，针对目标群体同时包含暴力或严重伤害的仇恨内容。
+        仇恨内容，且包含基于种族、性别、族裔、宗教、国籍、性取向、残障状况或种姓，针对目标群体的暴力或严重伤害。
 
       - `illicit: boolean or null`
 
-        包含便利规划或实施违法行为的指导或建议的内容，或提供关于如何实施非法行为的建议或指导。例如，“如何入店行窃”就属于此类。
+        包含有助于策划或实施违法行为的指示或建议，或提供如何实施违法行为的建议或指示的内容。例如，“如何商店行窃”属于此类别。
 
       - `"illicit/violent": boolean or null`
 
-        包含便利规划或实施同时包含暴力的违法行为的指导或建议的内容，或提供关于获取任何武器的建议或指导。
+        包含有助于策划或实施伴随暴力的违法行为的指示或建议，或提供如何获取任何武器的建议或指示的内容。
 
       - `"self-harm": boolean`
 
-        宣扬、鼓励或描绘自残行为的内容，例如自杀、自残和饮食失调。
+        促进、鼓励或描绘自残行为（如自杀、自残切割和进食障碍）的内容。
 
       - `"self-harm/instructions": boolean`
 
-        鼓励实施自残行为的内容，例如自杀、自残和饮食失调，或提供关于如何实施此类行为的指导或建议。
+        鼓励实施自残行为（如自杀、自残切割和进食障碍），或提供如何实施此类行为的指示或建议的内容。
 
       - `"self-harm/intent": boolean`
 
-        说话者表达正在或打算实施自残行为的内容，例如自杀、自残和饮食失调。
+        发言者表示其正在实施或打算实施自残行为（如自杀、自残切割和进食障碍）的内容。
 
       - `sexual: boolean`
 
-        旨在唤起性兴奋的内容，例如对性行为的描述，或推广性服务的内容（不包括性教育和性健康）。
+        旨在引起性兴奋的内容，例如对性活动的描述，或促进性服务的内容（不包括性教育和性健康）。
 
       - `"sexual/minors": boolean`
 
@@ -892,15 +892,15 @@ curl https://api.openai.com/v1/moderations \
 
       - `violence: boolean`
 
-        描绘死亡、暴力或人身伤害的内容。
+        描绘死亡、暴力或身体伤害的内容。
 
       - `"violence/graphic": boolean`
 
-        以生动细节描绘死亡、暴力或人身伤害的内容。
+        以血腥细节描绘死亡、暴力或身体伤害的内容。
 
     - `category_applied_input_types: object { harassment, "harassment/threatening", hate, 10 more }`
 
-      类别及其分数所适用的输入类型列表。
+      类别列表，以及分数适用的输入类型。
 
       - `harassment: array of "text"`
 
@@ -1030,27 +1030,27 @@ curl https://api.openai.com/v1/moderations \
 
       - `"self-harm/intent": number`
 
-        类别 'self-harm/intent' 的评分。
+        类别 'self-harm/intent' 的分数。
 
       - `sexual: number`
 
-        类别 'sexual' 的评分。
+        类别 'sexual' 的分数。
 
       - `"sexual/minors": number`
 
-        类别 'sexual/minors' 的评分。
+        类别 'sexual/minors' 的分数。
 
       - `violence: number`
 
-        类别 'violence' 的评分。
+        类别 'violence' 的分数。
 
       - `"violence/graphic": number`
 
-        类别 'violence/graphic' 的评分。
+        类别 'violence/graphic' 的分数。
 
     - `flagged: boolean`
 
-      以下任意类别是否被标记。
+      是否存在以下任意类别被标记的情况。
 
 ### 审核模型
 

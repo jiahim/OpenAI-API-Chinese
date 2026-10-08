@@ -1,37 +1,37 @@
 # Computer use
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-Computer use 让一个智能体能够浏览网站并与浏览器界面交互
-以测试网站、收集信息，或通过应用的 UI 使用该应用。
+Computer use 让智能体能够浏览网站并与浏览器界面交互，
+用于测试网站、收集信息，或通过应用的 UI 来使用它。
 
-智能体 API 在由 OpenAI 托管的环境中运行浏览器。你的应用
-启动会话并跟踪其事件；智能体 根据其在
-浏览器中观察到的内容来决定下一步该做什么。
+智能体 API 在 OpenAI 托管的环境中运行浏览器。你的应用
+启动会话并跟踪其事件；智能体会根据它在
+浏览器中观察到的情况来决定下一步该做什么。
 
-运行浏览器任务的步骤：
+要运行浏览器任务：
 
-1. [创建浏览器会话](#configure-the-browser) 并保存该会话 ID。
-2. [关注会话事件并向 智能体 发送任务](#run-a-browser-task).
+1. [创建浏览器会话](#configure-the-browser) 并保存会话 ID。
+2. [追踪会话事件并向 智能体 发送任务](#run-a-browser-task).
 3. [处理每次网站访问请求](#handle-origin-access)。如果任务需要账号， [处理登录](#handle-sign-in).
-4. 等待主 智能体 轮次结束并验证其结果。如果连接断开， [恢复同一个会话](#recover-approval-handling) 后再重试。
-5. [查看已保存的浏览器活动](#follow-browser-activity)，然后 [删除该会话](#continue-and-clean-up) （完成后）。
+4. 等待主 智能体 完成当前轮次并验证其结果。如果连接断开， [恢复同一会话](#recover-approval-handling) 后再重试。
+5. [查看已保存的浏览器活动](#follow-browser-activity)，然后 [删除会话](#continue-and-clean-up) 。
 
 ## 配置浏览器
 
-按照 [智能体 API 快速入门中的前提条件](https://developers.openai.com/api/docs/guides/agents-api/quickstart#prerequisites)
-创建 API 密钥并导出 `OPENAI_API_KEY`，然后安装
-[适用于你所使用语言的 OpenAI SDK](https://developers.openai.com/api/docs/libraries)。对于 JavaScript 示例，请，
-安装 `openai` 和 `prompt-sync`。cURL 示例需要 Bash 和 `jq`.
+按照 [智能体 API 快速入门先决条件](https://developers.openai.com/api/docs/guides/agents-api/quickstart#prerequisites)
+创建一个 API 密钥并导出 `OPENAI_API_KEY`，然后安装
+[OpenAI SDK 对应语言版本](https://developers.openai.com/api/docs/libraries)。对于 JavaScript 示例，
+请安装 `openai` 和 `prompt-sync`。cURL 示例需要使用 Bash 和 `jq`.
 
 若要启用浏览器访问：
 
-- 添加 `{ "type": "computer_use" }` 到 `agent.tools`.
-- 设置 `environment.type` 到 `openai_hosted` 和 `environment.desktop.enabled` 到 `true`.
+- Add `{ "type": "computer_use" }` to `agent.tools`.
+- Set `environment.type` to `openai_hosted` and `environment.desktop.enabled` to `true`.
 
-下面的 JavaScript 示例构成一个完整的演示流程：创建一个会话，处理
+下面的 JavaScript 示例构成一个完整的演练流程：创建一个会话，处理
 网站审批，然后发送一个任务并打印结果。首先创建一个
-启用了截屏功能的浏览器会话。这不会启动任务。
+启用了截图功能的浏览器会话。这一步不会启动任务。
 
 创建一个浏览器会话
 
@@ -129,7 +129,7 @@ session, err := client.Beta.Agents.Sessions.New(ctx, openai.BetaAgentSessionNewP
 		}},
 	},
 	Environment: openai.EnvironmentParamUnion{OfParamOpenAIHosted: &openai.EnvironmentParamOpenAIHosted{
-		Desktop: openai.EnvironmentParamOpenAIHostedDesktop{Enabled: openai.Bool(true)},
+		Desktop: openai.EnvironmentParamOpenAIHostedDesktop{Enabled: true},
 		Network: openai.EnvironmentParamOpenAIHostedNetwork{Access: "enabled"},
 	}},
 })
@@ -249,15 +249,15 @@ puts "Session ID: #{session.id}"
 
 ## 处理来源访问
 
-浏览器在访问每个新网站源之前都需要用户批准
-站，包括公共网站。启用网络访问并不会批准这些请
-求。
+浏览器需要用户批准后才能访问每个新网站
+来源，包括公共网站。启用网络访问并不会批准
+这些请求。
 
-处理源站批准的方式：
+处理来源批准：
 
-1. 在 `agent.session.requires_action`，获取会话并检查其当前的 `required_actions`.
-2. 查找待处理的 `computer_use_approval_request` 条目，这些条目的嵌套 `request.type` 是 `browser_origin_access`.
-3. 显示请求的 `origin` 和 `reason` （如果提供），然后收集一个 `approve`, `deny`，或 `cancel` 决策。通过会话事件端点使用相同的 `request_id` 以及一个嵌套的 `response` 提交，其中包含 `type: "browser_origin_access"` 和 `decision`，如下所示。
+1. 开启 `agent.session.requires_action`，获取会话并检查其当前 `required_actions`.
+2. 查找待处理 `computer_use_approval_request` 条目，其中嵌套 `request.type` 为 `browser_origin_access`.
+3. 显示请求的 `origin` and `reason` （如果已提供），然后收集一个 `approve`, `deny`，或 `cancel` 决策。使用相同的 `request_id` 和一个嵌套 `response` 包含 `type: "browser_origin_access"` and `decision`，如下所示。
 
 <details>
 <summary>**Origin approval does not enforce confirmation before individual actions**</summary>
@@ -273,10 +273,10 @@ user's instructions. See the [confirmation and consent guidance for a runtime yo
 
 </details>
 
-在任务代码前定义此辅助函数。它负责处理源站授权并取消
+在任务代码之前定义此辅助函数。它负责处理来源授权并取消
 登录请求，因为此任务仅读取公共页面。
 
-响应源站访问请求
+响应来源访问请求
 
 ```bash
 # Run in terminal 2 after the task reports agent.session.requires_action.
@@ -393,7 +393,7 @@ func respondToOriginApproval(ctx context.Context, client *openai.Client, session
 		if request.Reason != "" {
 			fmt.Println(request.Reason)
 		}
-		originResponse := openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserOriginAccess{Decision: "deny"}
+		originResponse := openai.AgentBrowserOriginAccessParam{Decision: "deny"}
 		reader := bufio.NewReader(os.Stdin)
 		for {
 			fmt.Print("Allow this origin? [approve/deny/cancel; default: deny] ")
@@ -417,7 +417,7 @@ func respondToOriginApproval(ctx context.Context, client *openai.Client, session
 		response.OfBrowserOriginAccess = &originResponse
 	case "browser_authentication":
 		fmt.Println("This public-page task does not sign in; cancelling the sign-in request.")
-		response.OfBrowserAuthentication = &openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthentication{Action: "cancel"}
+		response.OfBrowserAuthenticationCancel = &openai.AgentBrowserAuthenticationCancelParam{}
 	default:
 		return fmt.Errorf("unsupported computer-use approval: %s", approval.Request.Type)
 	}
@@ -571,24 +571,24 @@ end
 ```
 
 
-保持流处于打开状态，并处理每个待处理的授权。使用 `request_id` 来
-追踪请求，并在请求不再处于
+保持流打开并处理每个待处理的授权。使用 `request_id` 来
+跟踪请求，并在请求不再处于该
 会话 `required_actions`。中时移除授权控件。取消授权请求不会取消
-该任务。
+任务。
 
-一个 `202` 响应仅表示决策已被接受，并不表示导航已
-完成。
+一个 `202` 响应仅表示该决定已被接受，并不意味着导航已完成
+。
 
 ## 运行浏览器任务
 
-让智能体在公开的开发者网站上查找智能体 API 快速入门，并
+让智能体在公共开发者站点上查找智能体 API quickstart，并
 报告其标题和 URL。
 
-在发送任务之前打开事件流，以便你的应用能够接收到
-首批进度事件。处理 [来源审批](#handle-origin-access) ，以便浏览器
-可以继续运行。
+在发送任务之前打开事件流，以便你的应用接收到
+首批进度事件。处理 [origin 审批](#handle-origin-access) 以让浏览器在它们
+到达时继续运行。
 
-发送任务并跟踪其结果。
+发送任务并跟踪其结果
 
 ```bash
 # Terminal 1: use session_id from the creation request.
@@ -1022,41 +1022,41 @@ end
 ```
 
 
-该示例会输出智能体的回答。请检查其中是否包含快速入门的标题和 URL
+该示例会输出智能体的答复。请确认其中包含 quickstart 的标题和 URL
 。
 
-关闭事件流并不会停止任务。如需停止，请取消该轮次。
-如遇到连接失败或结果不确定的情况，请参考
-[恢复指南](#recover-approval-handling)。详细的
-[cURL 示例](#request-handling-reference) 包含传输和错误
+关闭事件流不会停止任务。若要停止任务，请取消该轮。
+如遇到连接故障或结果不确定，请参阅
+[恢复指南](#recover-approval-handling)。
+[扩展版 cURL 示例](#request-handling-reference) 包含传输和错误
 诊断信息。
 
 ## 跟踪浏览器活动
 
-浏览器操作在会话输出中以 `computer_use_call` 条目形式出现。流式活动与保存的会话历史使用相同的条目结构。
-流式活动与保存的会话历史使用相同的条目结构。
+浏览器操作在会话输出中显示为 `computer_use_call` 条目。流式
+活动和已保存的会话历史使用相同的条目格式。
 
 | 字段     | 含义                                                |
 | --------- | ------------------------------------------------------ |
-| `id`      | 该活动项的标识符。                        |
+| `id`      | 活动项的标识符。                        |
 | `turn_id` | 产生该活动的轮次。                   |
 | `title`   | 浏览器活动的描述，或 `null`.      |
 | `status`  | `in_progress`, `completed`, `failed`，或 `incomplete`. |
 | `output`  | 可用时的截图输出。                     |
 
-使用标题和状态在应用中展示进度。浏览器活动
-项描述的是一次工具操作；它并不是该智能体的最终答案，也不是
+使用 title 和 status 在你的应用中展示进度。浏览器活动
+项描述了一个工具调用过程，它并不是智能体的最终回复，也不是
 整个回合的完成状态。详见
-[事件和项](https://developers.openai.com/api/docs/guides/agents-api/sessions/events) 了解会话事件模型。
+[事件与项](https://developers.openai.com/api/docs/guides/agents-api/sessions/events) 中的会话事件模型。
 
 ### 包含屏幕截图
 
-若要在你的应用中显示浏览器的进度，请在 `include_screenshots`
-来 `true` 上设置 `computer_use` 工具。默认情况下，截图不会包含在 API 输出中
-；智能体 仍然可以观察到它们。
+若要在你的应用中显示浏览器的进度，请设置 `include_screenshots`
+来 `true` 位于 `computer_use` 工具上。截图默认会从 API 输出中排除
+，但 智能体 仍然可以观察到它们。
 
-每次浏览器操作都会在以下字段中返回其最近发出的截图 `output`，当有截图时：
-有截图时：
+每次浏览器操作都会在以下字段中返回其最近发出的截图 `output`，中（当
+可用时）：
 
 ```json
 {
@@ -1065,17 +1065,17 @@ end
 }
 ```
 
-使用 `image_url` 来渲染该截图。某些操作会返回 `output: null`,
-，即使已启用截图，因此你的应用应处理
-不包含图片的情况。
+使用 `image_url` 来渲染截图。某些操作会返回 `output: null`,
+即使已启用截图，你的应用也需要处理没有图片的 activity 条目
+。
 
-截图可能包含敏感的页面或账户数据。请仅向
-  经过授权的用户展示，并避免将其写入应用日志。
+截图可能包含敏感的页面或账户数据。仅向
+  已授权的用户展示，并避免将其写入应用日志。
 
-在回合结束后检索已保存的浏览器活动。SDK 示例会将
-最近可用的截图保存到 `browser-screenshot.jpg`.
+在回合结束后检索已保存的浏览器 activity。SDK 示例会将
+最新的可用截图保存到 `browser-screenshot.jpg`.
 
-读取浏览器活动
+读取浏览器 activity
 
 ```bash
 # Save the first page privately; image data stays out of terminal output.
@@ -1319,56 +1319,56 @@ end
 ```
 
 
-SDK 示例不会覆盖现有文件。在重新运行之前，请移动或删除
-`browser-screenshot.jpg` 文件后再重新运行。
+SDK 示例不会覆盖现有文件。请在重新运行之前移动或删除
+`browser-screenshot.jpg` 这些文件。
 
 ## 处理登录
 
-读取私有 GitHub 仓库中的问题等任务需要经过身份验证的浏览器。你的应用负责处理登录，这样用户就可以选择登录方式并在聊天以外输入凭据。
-经过身份验证的浏览器。你的应用负责处理登录，这样用户就可以选择登录方式并在聊天以外输入凭据。
-登录方式并在聊天以外输入凭据。
+读取私有 GitHub 仓库中的 issue 等任务需要经过
+身份验证的浏览器。你的应用负责处理登录过程，这样用户就可以选择登录方式并在聊天窗口之外输入凭据。
+登录方式并输入凭据。
 
-登录可能涉及多个请求。例如，网站可能要求用户选择
-使用邮箱登录、输入邮箱地址，然后输入验证码。
-根据每个请求的登录方式和字段构建你的登录界面。
+登录过程可能涉及多个请求。例如，某个网站可能会要求用户
+选择使用邮箱登录，输入邮箱地址，然后再输入验证码。
+根据每个请求返回的登录方式和字段构建你的 UI。
 
 只有主智能体可以请求浏览器身份验证；
-  [子智能体](https://developers.openai.com/api/docs/guides/agents-api/multi-agent) 不能。该流程
+  [子智能体](https://developers.openai.com/api/docs/guides/agents-api/multi-agent) 无法发起请求。该流程
   支持邮箱地址、密码和验证码，但不支持通行密钥
-  或二维码登录。需要使用不受支持方法的网站无法通过此流程
+  或二维码登录。需要使用不支持的方式登录的网站无法通过此流程
   完成登录。
 
 保持任务的事件流处于打开状态，并处理
-[来源审批](#handle-origin-access) 到达时及时处理。在
-`agent.session.requires_action`，时，检索会话并查看其当前
-`required_actions` 中 `computer_use_approval_request` 条目，这些条目嵌套的
+[origin 审批](#handle-origin-access) 到达时。在
+`agent.session.requires_action`，中，获取会话并查看其当前的
+`required_actions` 中 `computer_use_approval_request` 条目，其中嵌套的
 `request.type` 为 `browser_authentication`.
 
-使用嵌套的 `request` 来渲染你的登录界面：
+使用嵌套的 `request` 来渲染你的登录 UI：
 
 | 字段               | 如何使用                                                                                               |
 | ------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `reason`            | 说明为什么需要输入（如果提供）。可以是 `null`.                                                    |
-| `credential_origin` | 显示凭据的目标用途。可以是 `null`.                                                |
-| `fields`            | 使用每个字段的 `id`, `label`, `type`，以及 `required` 值进行渲染。可以为空。                |
-| `options`           | 显示可用的登录方式。每个选项都有一个 `id`, `label`，以及 `field_ids` 用于标识其输入。 |
+| `reason`            | 说明为何需要输入（如果提供）。可以是 `null`.                                                    |
+| `credential_origin` | 展示凭据的目标位置。可以是 `null`.                                                |
+| `fields`            | 使用每个字段的 `id`, `label`, `type`，和 `required` 值来渲染输入。可以为空。                |
+| `options`           | 展示可用的登录方式。每个选项都有一个 `id`, `label`，和 `field_ids` 来标识其输入。 |
 
-如果请求提供了登录方式，让用户选择一种并显示其
-关联字段。否则，直接显示请求的字段。
+如果请求提供登录方式，让用户选择其中一种并展示其
+关联字段。否则，直接展示请求的字段。
 
-仅当用户能够验证目标时，才要求他们输入凭证。如果凭
-  证来源缺失或不熟悉，且他们无法独立进行
-  验证，则取消该身份验证请求。
+仅要求用户为可验证的目标输入凭据。如果
+  凭据来源缺失或不熟悉且用户无法独立验证，
+  则取消该身份验证请求。
 
-[提交用户输入](#return-the-users-input) 使用外部操作的
-`request_id`，或 [取消身份验证请求](#let-the-user-cancel) 如果他们
-拒绝。继续处理收到的请求。提交响应并不
-代表登录成功；需将任务跟进至完成并
+[提交用户的输入](#return-the-users-input) 使用外层操作的
+`request_id`，或 [取消身份验证请求](#let-the-user-cancel) 如果用户
+拒绝，则取消身份验证请求。继续处理到达的请求。提交响应并不
+表示登录成功；需将任务跟进至完成，并
 检查其结果。
 
 ### 示例：选择一种方法，然后输入代码
 
-提供邮箱验证码和密码登录的站点可能会先请用户
+提供邮箱验证码和密码登录的网站可能首先让用户
 选择一种方式，而不请求任何字段：
 
 选择登录方式
@@ -1393,18 +1393,18 @@ SDK 示例不会覆盖现有文件。在重新运行之前，请移动或删除
 
 
 如果用户选择邮箱验证码登录，请提交 `selected_option: "email_code"`
-并使用 `fields: []` 使用本次请求的 `request_id`。站点随后可能会在不同的请求中要求提供
-电子邮件地址和验证码。使用各自的字段和 ID 渲染每个新请求，并且仅在该请求
-提供选项时包含 `selected_option` 仅在该请求
-提供选项时。
+，并 `fields: []` 使用此请求的 `request_id`。然后，网站可在后续请求中分别要求提供
+邮箱地址和验证码。使用各自的字段和 ID 渲染每个新请求，并仅在该请求
+提供选项时包含 `selected_option` 。
+提供选项。
 
 ### Return the user's input
 
-当用户完成登录请求时，将其响应通过
+当用户完成登录请求时，通过
 [会话事件端点](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events/methods/create).
-设置 `action` 来 `submit` 并使用待处理审批中的请求 ID 和字段 ID
-。例如，对邮箱地址请求的响应如下所示
-：
+设置 `action` 来 `submit` 并使用来自待处理请求和字段 ID 的
+审批。例如，对一个电子邮件地址请求的响应如下所示
+:
 
 ```json
 {
@@ -1424,35 +1424,35 @@ SDK 示例不会覆盖现有文件。在重新运行之前，请移动或删除
 
 如果请求提供了登录方式，请在
 `response.selected_option`。中包含所选方式的 ID。仅提交该方式的
-`field_ids`，中列出的字段，且每个必填字段都必须有非空值。如果该方式没有
+`field_ids`，中列出的字段，每个必填字段都填写非空值。如果该方式没有
 字段，则发送 `fields: []`.
 
-如果未提供登录方式，则省略 `selected_option` 并直接提交请求的
-字段。当请求列出字段时，即使全部为可选项，也至少包含一个。
-均为可选字段。
+如果未提供任何登录方式，则省略 `selected_option` 并直接提交请求的
+字段。当请求列出字段时，即使全部为可选字段，也至少包含一个。
+为可选。
 
-仅通过此专用事件发送登录值。已提交的值
-  不会进入 智能体 的模型输入，并会从会话历史记录的认证响应
-  项中省略。
+仅通过此专用事件发送登录值。提交的值会保留在
+  智能体 的模型输入之外，并从身份验证响应中省略
+  会话历史记录中的条目。
 
-请将每个值（包括邮箱地址）视为敏感信息。对输入的值进行，
-遮罩处理，避免将其写入日志、分析和保存的 UI 状态，并在提交后
-清除表单。不要在普通消息或函数工具
+将所有值（包括电子邮件地址）视为敏感信息。对输入的值进行掩码处理，
+使其不进入日志、分析和保存的 UI 状态，并在提交后清除表单。
+不要在普通消息或函数工具调用中发送凭据
 结果。
 
-省略 `turn_id` 字段以避免来自提交事件的数据。详见
-[认证提交限制](#authentication-submission-limits) 了解字段
-和负载约束。
+从提交事件中省略 `turn_id` 。请参阅
+[身份验证提交限制](#authentication-submission-limits) 字段的
+和有效负载约束。
 
-一个 `202` 响应以及空响应体仅确认提交已被接受，
-并不代表登录成功。请继续跟踪会话事件以获取后续
-请求或恢复的工作。对凭据提交禁用自动 HTTP 或SDK 重试。
-如果你不确定某次提交是否已被接受，请在继续前，
-[刷新会话](#recover-approval-handling).
+一个 `202` 响应（正文为空）确认提交已被接受，
+并不代表登录成功。请继续监听会话事件，以获取后续
+请求或恢复的任务。提交凭据时，请关闭自动的 HTTP 或 SDK 重试。
+如果你不确定提交是否已被接受，
+[刷新会话后再继续](#recover-approval-handling).
 
-### 允许用户取消
+### 让用户取消
 
-如果用户拒绝登录，请使用以下方式响应挂起的请求：
+如果用户拒绝登录，请使用以下方式响应挂起的请求
 `action: "cancel"`。使用其 `request_id` 并省略 `fields` 和 `selected_option`:
 
 ```json
@@ -1467,14 +1467,14 @@ SDK 示例不会覆盖现有文件。在重新运行之前，请移动或删除
 }
 ```
 
-这将取消身份验证请求。若要停止任务本身，请取消该轮次。
+这会取消身份验证请求。若要停止任务本身，请取消该轮次。
 
 ### 运行已认证的浏览器任务
 
-你的应用负责处理来源审批与登录请求，并遵循
-会话事件。在运行任务前，先定义下面的辅助函数。它会展示目标、
-以隐藏输入内容的方式收集输入，并提交响应。
-如果用户拒绝，它会取消该登录请求。
+你的应用负责处理来源审批和登录请求，并遵循
+会话事件。请在运行任务之前定义下面的辅助函数。它会显示
+目标位置，隐藏输入内容后收集输入，并提交响应。
+如果用户拒绝，它会取消登录请求。
 
 处理浏览器审批与登录
 
@@ -1790,7 +1790,7 @@ func respondToComputerUseApproval(ctx context.Context, client *openai.Client, se
 	}
 	cancelAuthentication := func() error {
 		return send(openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseUnion{
-			OfBrowserAuthentication: &openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthentication{Action: "cancel"},
+			OfBrowserAuthenticationCancel: &openai.AgentBrowserAuthenticationCancelParam{},
 		})
 	}
 	switch approval.Request.Type {
@@ -1800,7 +1800,7 @@ func respondToComputerUseApproval(ctx context.Context, client *openai.Client, se
 		if request.Reason != "" {
 			fmt.Println(request.Reason)
 		}
-		response := openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserOriginAccess{Decision: "deny"}
+		response := openai.AgentBrowserOriginAccessParam{Decision: "deny"}
 		for {
 			choice, err := readLine("Allow this origin? [approve/deny/cancel; default: deny] ")
 			if err != nil {
@@ -1844,9 +1844,9 @@ func respondToComputerUseApproval(ctx context.Context, client *openai.Client, se
 		return cancelAuthentication()
 	}
 
-	response := openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthentication{
+	response := openai.AgentBrowserAuthenticationSubmitParam{
 		Action: "submit",
-		Fields: []openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthenticationField{},
+		Fields: []openai.AgentBrowserAuthenticationSubmitParamField{},
 	}
 	activeFields := challenge.Fields
 	if len(challenge.Options) > 0 {
@@ -1920,7 +1920,7 @@ collectFields:
 						fmt.Println("No value entered. Choose an action for this field.")
 						continue
 					}
-					response.Fields = append(response.Fields, openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseBrowserAuthenticationField{
+					response.Fields = append(response.Fields, openai.AgentBrowserAuthenticationSubmitParamField{
 						FieldID: field.ID, Value: string(value),
 					})
 					clear(value)
@@ -1950,7 +1950,7 @@ collectFields:
 	}
 	// Admission does not establish login success; keep following the session.
 	return send(openai.AgentSessionInputParamAgentSessionInputComputerUseApprovalRequestResultResponseUnion{
-		OfBrowserAuthentication: &response,
+		OfBrowserAuthenticationSubmit: &response,
 	})
 }
 ```
@@ -2427,9 +2427,9 @@ end
 ```
 
 
-下面的示例要求智能体从一个私有 GitHub 仓库中读取 issue
-。请将 `https://github.com/acme/private-repo/issues` 替换为你能够访问的
-issue 页面。
+下面的示例要求 智能体 从一个私有的 GitHub
+仓库中读取 issue。请将 `https://github.com/acme/private-repo/issues` 替换为你能够访问的 issue
+页面。
 
 在发送任务前打开事件流，并在
 会话需要输入时调用该辅助函数。
@@ -2666,7 +2666,7 @@ session, err := client.Beta.Agents.Sessions.New(ctx, openai.BetaAgentSessionNewP
 		}},
 	},
 	Environment: openai.EnvironmentParamUnion{OfParamOpenAIHosted: &openai.EnvironmentParamOpenAIHosted{
-		Desktop: openai.EnvironmentParamOpenAIHostedDesktop{Enabled: openai.Bool(true)},
+		Desktop: openai.EnvironmentParamOpenAIHostedDesktop{Enabled: true},
 		Network: openai.EnvironmentParamOpenAIHostedNetwork{Access: "enabled"},
 	}},
 })
@@ -3050,99 +3050,99 @@ end
 
 
 登录可能需要多次请求，因此请持续处理审批直到任务
-完成。请根据请求的任务核对智能体的结果——对于本例而言，
-请核对所报告的 issue 标题和 URL。
+完成。将 智能体 的结果与所请求的任务进行核对——对于本例而言，
+请核对返回的 issue 标题和 URL。
 
-### 查看登录历史记录
+### 查看登录历史
 
-身份验证请求和已接受的响应会出现在会话历史记录和
-`agent.session.turn.item.added` 事件中。请求项包含登录表单元数据；响应项记录已接受的操作，但不包含已提交凭据
-值。响应项记录已接受的操作，但不包括已提交凭据的值。
-。
+身份验证请求和已接受的响应会出现在会话历史和
+`agent.session.turn.item.added` 事件中。请求项包含登录表单的
+元数据；响应项记录已接受的操作，但不包含已提交的凭据
+值。
 
-使用此历史记录来回顾过去的交互。若要确定某个登录表单是否仍需要输入，请获取会话当前的
-状态。已记录的 `required_actions`。响应并不能
-证明登录成功。
+使用此历史记录查看过去的交互。若要判断某个登录表单
+still needs input, retrieve the session's current `required_actions`. A recorded
+response does not establish that sign-in succeeded.
 
-来源授权没有专门的请求或响应历史记录项。请通过
-相应方式处理它们 `required_actions`.
+Origin approvals have no dedicated request or response history items. Handle
+them through `required_actions`.
 
-## 向用户提问
+## 向用户提出一个问题
 
-若要在任务执行过程中请求澄清或让用户做出选择，请在智能体中定义一个
-[函数工具](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 在 `agent.tools`.
-例如，你可以定义 `request_user_response` 用于提出问题并
-收集答案。你的应用需要提供工具的名称、参数 schema，
+若要在任务过程中请求澄清或让用户做出选择，请在 智能体开发工具包 中定义一个
+[函数工具](https://developers.openai.com/api/docs/guides/agents-api/tools/functions) 中定义 `agent.tools`.
+例如，你可以定义 `request_user_response` 来呈现一个问题并
+收集答案。你的应用提供该工具的名称、参数 schema，
 和 UI。
 
-当你收到 `agent.session.requires_action`，时，查找该工具对应的待处理
-`function_call` 并使用它的 `arguments` 来展示问题。
-通过 `agent.session.input.tool_result`，返回答案，使用该操作的
+当你收到 `agent.session.requires_action`，时，为你的工具找到待处理的
+`function_call` 并使用其 `arguments` 来显示该问题。
+通过 `agent.session.input.tool_result`，返回答案，使用该 action 的
 `turn_id` 和 `call_id`。设置 `success: true` 并将答案放入 `output`,
-以将结构化答案序列化为 JSON 字符串。如果用户拒绝，返回
+中，将结构化答案序列化为 JSON 字符串。如果用户拒绝，返回
 `success: false` 并附带一条 `error` 消息。
 
-在返回答案后继续跟踪会话事件。前面展示的浏览器
-授权辅助函数会处理来源访问和登录；扩展你的
-事件处理器也可用于处理你的提问工具。
+返回答案后，继续跟踪后续的会话事件。前面展示的浏览器
+授权辅助函数会处理来源访问和登录；请扩展你的
+用于处理问题工具的事件处理器。
 
-函数工具的结果对模型可见，并保存在会话历史中。
-  通过以下方式收集密码和验证码： [浏览器
+函数工具结果对模型可见，并保存在会话历史记录中。
+  通过 [浏览器
   身份验证](#handle-sign-in).
 
 ## 恢复审批处理
 
-如果你的应用断开连接或审批响应失败，请获取同一个
-会话并检查其当前 `required_actions` 状态后再继续。仅为仍处于
-待处理状态的请求重新构建表单，并移除针对那些
-已不存在请求的控件。
-
-对于已断开的事件流，请按照
-[流恢复](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#how-to-recover-a-disconnected-stream)
-说明重新接收事件。重连时不得自动重新发送任务
-或审批响应。
-
-根据响应状态决定下一步操作：
-
-| Result                                 | 你的应用应当执行的操作                                                                                                                                 |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `202`                                  | 清除已提交的值，并根据会话事件获取结果。                                                                                               |
-| `400`                                  | 根据待处理请求核对响应类型、所选项、字段 ID 和必填值。取消和 origin-access 响应可省略字段。 |
-| `404`                                  | 核对会话 ID、请求 ID 和响应类型。重新获取会话；该请求可能已不再可用。                                        |
-| `409`                                  | 刷新会话。该请求可能已过期、其轮次可能已结束，或者已有其他响应被接受。                             |
-| 在确认前连接中断 | 将接受状态视为未知。重新连接并获取会话，然后再决定是否重试。                                                               |
-
-认证请求会在五分钟后过期，并且其所属的轮次可能在用户输入内容时结束
-。在恢复登录表单之前，请刷新会话
+如果你的应用断开连接或审批响应失败，请检索相同的
+会话并检查其当前 `required_actions` 然后再继续。仅针对仍处于待处理状态的请求重新构建
+表单，并移除已不存在的请求的控件
 。
 
-如果你重试一次认证提交，请使用相同的 `request_id`、所选选项
-以及字段值的映射关系。完全相同的重试不会再次填充浏览器表单
-。在提交已被接受后再更改值将返回 `409`；新的
+对于已断开的事件流，请遵循
+[流恢复](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#how-to-recover-a-disconnected-stream)
+以继续接收事件。重新连接时不得自动重新发送任务
+或审批响应。
+
+使用响应状态决定下一步操作：
+
+| 结果                                 | 你的应用应该执行的操作                                                                                                                                 |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `202`                                  | 清除已提交的值，并按会话事件获取最终结果。                                                                                               |
+| `400`                                  | 将响应类型、所选选项、字段 ID 与必填值与待处理请求进行核对。取消响应和来源访问响应需省略字段。 |
+| `404`                                  | 检查会话 ID、请求 ID 和响应类型。重新获取该会话；请求可能已不可用。                                        |
+| `409`                                  | 刷新会话。请求可能已过期、其轮次可能已结束，或者已有不同的响应被接受。                             |
+| 确认前连接中断 | 将接受状态视为未知。重新连接并获取会话，再决定是否重试。                                                               |
+
+身份验证请求会在五分钟后失效，其所属回合可能会在用户输入时结束
+。请在恢复登录前刷新会话
+表单。
+
+如果要重试提交身份验证信息，请使用相同的 `request_id`，所选
+选项以及字段-值映射。相同的重试不会再次填充浏览器表单
+。提交被接受后再更改值将返回 `409`；一次新的
 登录尝试需要来自智能体的新请求。
 
-对于源站审批，如果投递失败，请重试相同的决定。在已接受的决定之后再
-进行更改将返回 `409`。源站请求在其所属轮次内保持待处理状态，
-并且不存在五分钟的认证超时。
+对于来源审批，如果投递失败，请重试相同的决策。更改已接受的决策会返回
+。 `409`。来源请求在其所属的
+轮次内保持待处理状态，并且没有五分钟的认证超时。
 
 ## 控制网络访问
 
 使用托管环境的 `network` 配置来控制出站访问
-for both the browser and code running in the environment. Allow the destination
-website and any domains needed for page resources or redirects.
+，包括浏览器和在环境中运行的代码。允许目标
+网站以及页面资源或重定向所需的任何域。
 
-Origin 审批是一项独立的用户决策，不会覆盖网络
+来源批准是一项独立的用户决定，不会覆盖网络
 策略。参见
-[network access settings](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted#control-network-access)
+[网络访问设置](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted#control-network-access)
 来配置环境。
 
-## 继续与清理
+## 继续并清理
 
-针对需要复用其浏览器状态的后续任务，复用同一个会话。登录
-cookie 可能会过期，而回收环境会清除浏览器状态。
+对于需要复用其浏览器状态的后续任务，重复使用同一个会话。登录
+Cookie 可能会过期，回收环境会清除浏览器状态。
 
-完成之后，取回你需要的所有结果并
-[删除该会话](https://developers.openai.com/api/docs/guides/agents-api/quickstart#4-clean-up) 以请求
+完成后，检索你需要的结果并
+[删除会话](https://developers.openai.com/api/docs/guides/agents-api/quickstart#4-clean-up) 以请求
 环境清理：
 
 删除浏览器会话
@@ -3194,21 +3194,21 @@ end
 ```
 
 
-请参阅 [OpenAI 托管的沙箱](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted)
-以了解环境生命周期和删除行为。
+参见 [OpenAI-hosted sandboxes](https://developers.openai.com/api/docs/guides/agents-api/environments/openai-hosted)
+了解环境生命周期和删除行为。
 
 ## 请求处理参考
 
 ### 身份验证提交限制
 
-每次提交最多可包含六个字段值，每个字段只能包含
+每次提交最多可包含六个字段值，每个字段包含
 一次。每个值最多可包含 16,384 个字符；序列化后的字段
-值和所选选项的总大小不得超过 120 KiB。
+值和选定选项必须控制在 120 KiB 以内。
 
-使用待处理审批中的请求 ID 和字段 ID，并为每个必填字段提供一个非空
-的值。请参阅
-[session events API 参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events/methods/create)
-了解请求架构。
+使用待批准项中的请求 ID 和字段 ID，并为每个必填字段提供非空
+值。有关请求模式，请参阅
+[会话事件 API 参考](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events/methods/create)
+文档。
 
 <details>
 <summary>Expanded cURL request and stream handling</summary>

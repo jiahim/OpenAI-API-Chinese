@@ -1,6 +1,6 @@
 # 微调
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 # Alpha
 
@@ -12,7 +12,7 @@
 
 运行评分器。
 
-### 正文参数
+### 请求体参数
 
 - `grader: StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more`
 
@@ -20,7 +20,7 @@
 
   - `StringCheckGrader object { input, name, operation, 2 more }`
 
-    一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+    一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
     - `input: string`
 
@@ -32,7 +32,7 @@
 
     - `operation: "eq" or "ne" or "like" or "ilike"`
 
-      要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+      要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
       - `"eq"`
 
@@ -58,7 +58,7 @@
 
     - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-      要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+      要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
       `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
       或 `rouge_l`.
 
@@ -94,7 +94,7 @@
 
     - `reference: string`
 
-      用于对比的文本。
+      用于对比的参考文本。
 
     - `type: "text_similarity"`
 
@@ -126,27 +126,27 @@
 
   - `ScoreModelGrader object { input, model, name, 3 more }`
 
-    一个 ScoreModelGrader 对象，使用模型为输入打分。
+    一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
     - `input: array of object { content, role, type }`
 
-      由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+      由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-      - `content: string or ResponseInputText or object { text, type }  or 3 more`
+      - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
         模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
         - `TextInput = string`
 
-          模型的文本输入。
+          发给模型的文本输入。
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          模型的文本输入。
+          发给模型的文本输入。
 
           - `text: string`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -156,7 +156,7 @@
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+            标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
             - `mode: "explicit"`
 
@@ -166,11 +166,11 @@
 
         - `OutputText object { text, type }`
 
-          模型的文本输出。
+          来自模型的文本输出。
 
           - `text: string`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
           - `type: "output_text"`
 
@@ -180,7 +180,7 @@
 
         - `InputImage object { image_url, type, detail }`
 
-          在 EvalItem content 数组中使用的图像输入块。
+          在 EvalItem 内容数组中使用的图像输入块。
 
           - `image_url: string`
 
@@ -194,17 +194,17 @@
 
           - `detail: optional string`
 
-            发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+            发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
         - `ResponseInputAudio object { input_audio, type }`
 
-          模型的音频输入。
+          发给模型的音频输入。
 
           - `input_audio: object { data, format }`
 
             - `data: string`
 
-              Base64 编码的音频数据。
+              经过 Base64 编码的音频数据。
 
             - `format: "mp3" or "wav"`
 
@@ -221,26 +221,26 @@
 
             - `"input_audio"`
 
-        - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+        - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
           输入列表，其中每个元素可以是输入文本、输出文本、输入
           图像或输入音频对象。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -250,7 +250,7 @@
 
           - `InputImage object { image_url, type, detail }`
 
-            在 EvalItem content 数组中使用的图像输入块。
+            在 EvalItem 内容数组中使用的图像输入块。
 
             - `image_url: string`
 
@@ -264,15 +264,15 @@
 
             - `detail: optional string`
 
-              发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
-            模型的音频输入。
+            发给模型的音频输入。
 
       - `role: "user" or "assistant" or "system" or "developer"`
 
-        消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+        消息输入的角色。取值为 `user`, `assistant`, `system`，或
         `developer`.
 
         - `"user"`
@@ -305,7 +305,7 @@
 
     - `range: optional array of number`
 
-      该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+      该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
     - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -313,17 +313,17 @@
 
       - `max_completions_tokens: optional number or null`
 
-        评分模型在响应中可生成的最大 token 数。
+        评分模型在其响应中可生成的最大 token 数。
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        在推理模型上限制推理的投入程度。当前支持
-        的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-        每一个取值。有关模型特定支持情况，请参阅
+        限制推理模型在推理上的投入程度。目前支持的值有
+        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+        降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+        值。请参阅
         推理指南
         [推理指南](/api/docs/guides/reasoning)
-        。
+        以了解特定模型的支持情况。
 
         - `"none"`
 
@@ -341,7 +341,7 @@
 
       - `seed: optional number or null`
 
-        用于在采样期间初始化随机性的种子值。
+        在采样期间用于初始化随机性的种子值。
 
       - `temperature: optional number or null`
 
@@ -349,21 +349,21 @@
 
       - `top_p: optional number or null`
 
-        用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+        temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
   - `MultiGrader object { calculate_output, graders, name, type }`
 
-    MultiGrader 对象将多个评分器的输出合并为单个分数。
+    MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
     - `calculate_output: string`
 
-      根据评分器结果计算输出的公式。
+      基于评分器结果计算输出的公式。
 
     - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
       - `StringCheckGrader object { input, name, operation, 2 more }`
 
-        一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+        一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
       - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -375,34 +375,34 @@
 
       - `ScoreModelGrader object { input, model, name, 3 more }`
 
-        一个 ScoreModelGrader 对象，使用模型为输入打分。
+        一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
       - `LabelModelGrader object { input, labels, model, 3 more }`
 
-        一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+        LabelModelGrader 对象，使用模型为每个项目分配标签
         在评估中。
 
         - `input: array of object { content, role, type }`
 
-          - `content: string or ResponseInputText or object { text, type }  or 3 more`
+          - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
             模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -412,7 +412,7 @@
 
             - `InputImage object { image_url, type, detail }`
 
-              在 EvalItem content 数组中使用的图像输入块。
+              在 EvalItem 内容数组中使用的图像输入块。
 
               - `image_url: string`
 
@@ -426,20 +426,20 @@
 
               - `detail: optional string`
 
-                发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
-              模型的音频输入。
+              发给模型的音频输入。
 
-            - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+            - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
               输入列表，其中每个元素可以是输入文本、输出文本、输入
               图像或输入音频对象。
 
           - `role: "user" or "assistant" or "system" or "developer"`
 
-            消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+            消息输入的角色。取值为 `user`, `assistant`, `system`，或
             `developer`.
 
             - `"user"`
@@ -458,11 +458,11 @@
 
         - `labels: array of string`
 
-          要为评估中每个数据项分配的标签。
+          评估中要为每个项目分配的标签。
 
         - `model: string`
 
-          用于评估的模型。必须支持结构化输出。
+          评估所用的模型。必须支持结构化输出。
 
         - `name: string`
 
@@ -470,7 +470,7 @@
 
         - `passing_labels: array of string`
 
-          表示通过的标签。必须是 labels 的子集。
+          表示通过结果的标签。必须是标签的子集。
 
         - `type: "label_model"`
 
@@ -490,17 +490,17 @@
 
 - `model_sample: string`
 
-  待评估的模型输出样本。此值将用于填充
-  该 `sample` 命名空间。参见 [指南](/api/docs/guides/graders) 了解更多信息。
-  该 `output_json` 变量将在模型输出样本为
-  有效的 JSON 字符串时填充。
+  要评估的模型样本。该值将用于填充
+  该 `sample` 命名空间。请参阅 [本指南](/api/docs/guides/graders) 了解更多详细信息。
+  该 `output_json` 如果模型样本是有效的 JSON 字符串，则会填充该
+  变量。
 
 - `item: optional unknown`
 
-  提供给评分器的数据集项。此项将用于填充
-  该 `item` 命名空间。参见 [指南](/api/docs/guides/graders) 了解更多信息。
+  提供给评分器的数据集项目。该值将用于填充
+  该 `item` 命名空间。请参阅 [本指南](/api/docs/guides/graders) 了解更多详细信息。
 
-### 返回值
+### 返回
 
 - `metadata: object { errors, execution_time, name, 4 more }`
 
@@ -623,7 +623,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 }
 ```
 
-### 对音频响应进行评分
+### 为音频响应评分
 
 ```http
 curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
@@ -666,7 +666,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
   }'
 ```
 
-### 对图片描述进行评分
+### 为图像说明评分
 
 ```http
 curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
@@ -705,7 +705,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
   }'
 ```
 
-### 对文本对齐进行评分
+### 为文本对齐评分
 
 ```http
 curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
@@ -786,13 +786,13 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 }
 ```
 
-## 校验评分器
+## 验证评分器
 
 **post** `/fine_tuning/alpha/graders/validate`
 
 验证评分器。
 
-### 正文参数
+### 请求体参数
 
 - `grader: StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more`
 
@@ -800,7 +800,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
   - `StringCheckGrader object { input, name, operation, 2 more }`
 
-    一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+    一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
     - `input: string`
 
@@ -812,7 +812,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
     - `operation: "eq" or "ne" or "like" or "ilike"`
 
-      要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+      要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
       - `"eq"`
 
@@ -838,7 +838,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
     - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-      要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+      要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
       `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
       或 `rouge_l`.
 
@@ -874,7 +874,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
     - `reference: string`
 
-      用于对比的文本。
+      用于对比的参考文本。
 
     - `type: "text_similarity"`
 
@@ -906,27 +906,27 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
   - `ScoreModelGrader object { input, model, name, 3 more }`
 
-    一个 ScoreModelGrader 对象，使用模型为输入打分。
+    一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
     - `input: array of object { content, role, type }`
 
-      由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+      由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-      - `content: string or ResponseInputText or object { text, type }  or 3 more`
+      - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
         模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
         - `TextInput = string`
 
-          模型的文本输入。
+          发给模型的文本输入。
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          模型的文本输入。
+          发给模型的文本输入。
 
           - `text: string`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -936,7 +936,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+            标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
             - `mode: "explicit"`
 
@@ -946,11 +946,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
         - `OutputText object { text, type }`
 
-          模型的文本输出。
+          来自模型的文本输出。
 
           - `text: string`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
           - `type: "output_text"`
 
@@ -960,7 +960,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
         - `InputImage object { image_url, type, detail }`
 
-          在 EvalItem content 数组中使用的图像输入块。
+          在 EvalItem 内容数组中使用的图像输入块。
 
           - `image_url: string`
 
@@ -974,17 +974,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
           - `detail: optional string`
 
-            发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+            发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
         - `ResponseInputAudio object { input_audio, type }`
 
-          模型的音频输入。
+          发给模型的音频输入。
 
           - `input_audio: object { data, format }`
 
             - `data: string`
 
-              Base64 编码的音频数据。
+              经过 Base64 编码的音频数据。
 
             - `format: "mp3" or "wav"`
 
@@ -1001,26 +1001,26 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
             - `"input_audio"`
 
-        - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+        - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
           输入列表，其中每个元素可以是输入文本、输出文本、输入
           图像或输入音频对象。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -1030,7 +1030,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
           - `InputImage object { image_url, type, detail }`
 
-            在 EvalItem content 数组中使用的图像输入块。
+            在 EvalItem 内容数组中使用的图像输入块。
 
             - `image_url: string`
 
@@ -1044,15 +1044,15 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
             - `detail: optional string`
 
-              发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
-            模型的音频输入。
+            发给模型的音频输入。
 
       - `role: "user" or "assistant" or "system" or "developer"`
 
-        消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+        消息输入的角色。取值为 `user`, `assistant`, `system`，或
         `developer`.
 
         - `"user"`
@@ -1085,7 +1085,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
     - `range: optional array of number`
 
-      该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+      该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
     - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -1093,17 +1093,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
       - `max_completions_tokens: optional number or null`
 
-        评分模型在响应中可生成的最大 token 数。
+        评分模型在其响应中可生成的最大 token 数。
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        在推理模型上限制推理的投入程度。当前支持
-        的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-        每一个取值。有关模型特定支持情况，请参阅
+        限制推理模型在推理上的投入程度。目前支持的值有
+        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+        降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+        值。请参阅
         推理指南
         [推理指南](/api/docs/guides/reasoning)
-        。
+        以了解特定模型的支持情况。
 
         - `"none"`
 
@@ -1121,7 +1121,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
       - `seed: optional number or null`
 
-        用于在采样期间初始化随机性的种子值。
+        在采样期间用于初始化随机性的种子值。
 
       - `temperature: optional number or null`
 
@@ -1129,21 +1129,21 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
       - `top_p: optional number or null`
 
-        用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+        temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
   - `MultiGrader object { calculate_output, graders, name, type }`
 
-    MultiGrader 对象将多个评分器的输出合并为单个分数。
+    MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
     - `calculate_output: string`
 
-      根据评分器结果计算输出的公式。
+      基于评分器结果计算输出的公式。
 
     - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
       - `StringCheckGrader object { input, name, operation, 2 more }`
 
-        一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+        一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
       - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -1155,34 +1155,34 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
       - `ScoreModelGrader object { input, model, name, 3 more }`
 
-        一个 ScoreModelGrader 对象，使用模型为输入打分。
+        一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
       - `LabelModelGrader object { input, labels, model, 3 more }`
 
-        一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+        LabelModelGrader 对象，使用模型为每个项目分配标签
         在评估中。
 
         - `input: array of object { content, role, type }`
 
-          - `content: string or ResponseInputText or object { text, type }  or 3 more`
+          - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
             模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -1192,7 +1192,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
             - `InputImage object { image_url, type, detail }`
 
-              在 EvalItem content 数组中使用的图像输入块。
+              在 EvalItem 内容数组中使用的图像输入块。
 
               - `image_url: string`
 
@@ -1206,20 +1206,20 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
               - `detail: optional string`
 
-                发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
-              模型的音频输入。
+              发给模型的音频输入。
 
-            - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+            - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
               输入列表，其中每个元素可以是输入文本、输出文本、输入
               图像或输入音频对象。
 
           - `role: "user" or "assistant" or "system" or "developer"`
 
-            消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+            消息输入的角色。取值为 `user`, `assistant`, `system`，或
             `developer`.
 
             - `"user"`
@@ -1238,11 +1238,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
         - `labels: array of string`
 
-          要为评估中每个数据项分配的标签。
+          评估中要为每个项目分配的标签。
 
         - `model: string`
 
-          用于评估的模型。必须支持结构化输出。
+          评估所用的模型。必须支持结构化输出。
 
         - `name: string`
 
@@ -1250,7 +1250,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
         - `passing_labels: array of string`
 
-          表示通过的标签。必须是 labels 的子集。
+          表示通过结果的标签。必须是标签的子集。
 
         - `type: "label_model"`
 
@@ -1268,7 +1268,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
       - `"multi"`
 
-### 返回值
+### 返回
 
 - `grader: optional StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more`
 
@@ -1276,7 +1276,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
   - `StringCheckGrader object { input, name, operation, 2 more }`
 
-    一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+    一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
     - `input: string`
 
@@ -1288,7 +1288,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
     - `operation: "eq" or "ne" or "like" or "ilike"`
 
-      要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+      要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
       - `"eq"`
 
@@ -1314,7 +1314,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
     - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-      要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+      要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
       `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
       或 `rouge_l`.
 
@@ -1350,7 +1350,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
     - `reference: string`
 
-      用于对比的文本。
+      用于对比的参考文本。
 
     - `type: "text_similarity"`
 
@@ -1382,27 +1382,27 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
   - `ScoreModelGrader object { input, model, name, 3 more }`
 
-    一个 ScoreModelGrader 对象，使用模型为输入打分。
+    一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
     - `input: array of object { content, role, type }`
 
-      由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+      由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-      - `content: string or ResponseInputText or object { text, type }  or 3 more`
+      - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
         模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
         - `TextInput = string`
 
-          模型的文本输入。
+          发给模型的文本输入。
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-          模型的文本输入。
+          发给模型的文本输入。
 
           - `text: string`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `type: "input_text"`
 
@@ -1412,7 +1412,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+            标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
             - `mode: "explicit"`
 
@@ -1422,11 +1422,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
         - `OutputText object { text, type }`
 
-          模型的文本输出。
+          来自模型的文本输出。
 
           - `text: string`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
           - `type: "output_text"`
 
@@ -1436,7 +1436,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
         - `InputImage object { image_url, type, detail }`
 
-          在 EvalItem content 数组中使用的图像输入块。
+          在 EvalItem 内容数组中使用的图像输入块。
 
           - `image_url: string`
 
@@ -1450,17 +1450,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
           - `detail: optional string`
 
-            发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+            发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
         - `ResponseInputAudio object { input_audio, type }`
 
-          模型的音频输入。
+          发给模型的音频输入。
 
           - `input_audio: object { data, format }`
 
             - `data: string`
 
-              Base64 编码的音频数据。
+              经过 Base64 编码的音频数据。
 
             - `format: "mp3" or "wav"`
 
@@ -1477,26 +1477,26 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
             - `"input_audio"`
 
-        - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+        - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
           输入列表，其中每个元素可以是输入文本、输出文本、输入
           图像或输入音频对象。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -1506,7 +1506,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
           - `InputImage object { image_url, type, detail }`
 
-            在 EvalItem content 数组中使用的图像输入块。
+            在 EvalItem 内容数组中使用的图像输入块。
 
             - `image_url: string`
 
@@ -1520,15 +1520,15 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
             - `detail: optional string`
 
-              发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
-            模型的音频输入。
+            发给模型的音频输入。
 
       - `role: "user" or "assistant" or "system" or "developer"`
 
-        消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+        消息输入的角色。取值为 `user`, `assistant`, `system`，或
         `developer`.
 
         - `"user"`
@@ -1561,7 +1561,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
     - `range: optional array of number`
 
-      该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+      该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
     - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -1569,17 +1569,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
       - `max_completions_tokens: optional number or null`
 
-        评分模型在响应中可生成的最大 token 数。
+        评分模型在其响应中可生成的最大 token 数。
 
       - `reasoning_effort: optional ReasoningEffort or null`
 
-        在推理模型上限制推理的投入程度。当前支持
-        的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-        降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-        每一个取值。有关模型特定支持情况，请参阅
+        限制推理模型在推理上的投入程度。目前支持的值有
+        值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+        降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+        值。请参阅
         推理指南
         [推理指南](/api/docs/guides/reasoning)
-        。
+        以了解特定模型的支持情况。
 
         - `"none"`
 
@@ -1597,7 +1597,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
       - `seed: optional number or null`
 
-        用于在采样期间初始化随机性的种子值。
+        在采样期间用于初始化随机性的种子值。
 
       - `temperature: optional number or null`
 
@@ -1605,21 +1605,21 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
       - `top_p: optional number or null`
 
-        用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+        temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
   - `MultiGrader object { calculate_output, graders, name, type }`
 
-    MultiGrader 对象将多个评分器的输出合并为单个分数。
+    MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
     - `calculate_output: string`
 
-      根据评分器结果计算输出的公式。
+      基于评分器结果计算输出的公式。
 
     - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
       - `StringCheckGrader object { input, name, operation, 2 more }`
 
-        一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+        一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
       - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -1631,34 +1631,34 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
       - `ScoreModelGrader object { input, model, name, 3 more }`
 
-        一个 ScoreModelGrader 对象，使用模型为输入打分。
+        一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
       - `LabelModelGrader object { input, labels, model, 3 more }`
 
-        一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+        LabelModelGrader 对象，使用模型为每个项目分配标签
         在评估中。
 
         - `input: array of object { content, role, type }`
 
-          - `content: string or ResponseInputText or object { text, type }  or 3 more`
+          - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
             模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -1668,7 +1668,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
             - `InputImage object { image_url, type, detail }`
 
-              在 EvalItem content 数组中使用的图像输入块。
+              在 EvalItem 内容数组中使用的图像输入块。
 
               - `image_url: string`
 
@@ -1682,20 +1682,20 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
               - `detail: optional string`
 
-                发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
-              模型的音频输入。
+              发给模型的音频输入。
 
-            - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+            - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
               输入列表，其中每个元素可以是输入文本、输出文本、输入
               图像或输入音频对象。
 
           - `role: "user" or "assistant" or "system" or "developer"`
 
-            消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+            消息输入的角色。取值为 `user`, `assistant`, `system`，或
             `developer`.
 
             - `"user"`
@@ -1714,11 +1714,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
         - `labels: array of string`
 
-          要为评估中每个数据项分配的标签。
+          评估中要为每个项目分配的标签。
 
         - `model: string`
 
-          用于评估的模型。必须支持结构化输出。
+          评估所用的模型。必须支持结构化输出。
 
         - `name: string`
 
@@ -1726,7 +1726,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/alpha/graders/run \
 
         - `passing_labels: array of string`
 
-          表示通过的标签。必须是 labels 的子集。
+          表示通过结果的标签。必须是标签的子集。
 
         - `type: "label_model"`
 
@@ -1806,9 +1806,9 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 }
 ```
 
-## Domain Types
+## 域类型
 
-### Grader Run Response
+### 评分器运行响应
 
 - `GraderRunResponse object { metadata, model_grader_token_usage_per_model, reward, sub_rewards }`
 
@@ -1870,7 +1870,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
   - `sub_rewards: map[unknown]`
 
-### Grader Validate Response
+### 评分器验证响应
 
 - `GraderValidateResponse object { grader }`
 
@@ -1880,7 +1880,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
     - `StringCheckGrader object { input, name, operation, 2 more }`
 
-      一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+      一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
       - `input: string`
 
@@ -1892,7 +1892,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
       - `operation: "eq" or "ne" or "like" or "ilike"`
 
-        要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+        要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
         - `"eq"`
 
@@ -1918,7 +1918,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
       - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-        要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+        要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
         `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
         或 `rouge_l`.
 
@@ -1954,7 +1954,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
       - `reference: string`
 
-        用于对比的文本。
+        用于对比的参考文本。
 
       - `type: "text_similarity"`
 
@@ -1986,27 +1986,27 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
     - `ScoreModelGrader object { input, model, name, 3 more }`
 
-      一个 ScoreModelGrader 对象，使用模型为输入打分。
+      一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
       - `input: array of object { content, role, type }`
 
-        由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+        由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-        - `content: string or ResponseInputText or object { text, type }  or 3 more`
+        - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
           模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
             - `text: string`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `type: "input_text"`
 
@@ -2016,7 +2016,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+              标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
               - `mode: "explicit"`
 
@@ -2026,11 +2026,11 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -2040,7 +2040,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
           - `InputImage object { image_url, type, detail }`
 
-            在 EvalItem content 数组中使用的图像输入块。
+            在 EvalItem 内容数组中使用的图像输入块。
 
             - `image_url: string`
 
@@ -2054,17 +2054,17 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
             - `detail: optional string`
 
-              发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
-            模型的音频输入。
+            发给模型的音频输入。
 
             - `input_audio: object { data, format }`
 
               - `data: string`
 
-                Base64 编码的音频数据。
+                经过 Base64 编码的音频数据。
 
               - `format: "mp3" or "wav"`
 
@@ -2081,26 +2081,26 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
               - `"input_audio"`
 
-          - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+          - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
             输入列表，其中每个元素可以是输入文本、输出文本、输入
             图像或输入音频对象。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -2110,7 +2110,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
             - `InputImage object { image_url, type, detail }`
 
-              在 EvalItem content 数组中使用的图像输入块。
+              在 EvalItem 内容数组中使用的图像输入块。
 
               - `image_url: string`
 
@@ -2124,15 +2124,15 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
               - `detail: optional string`
 
-                发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
-              模型的音频输入。
+              发给模型的音频输入。
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+          消息输入的角色。取值为 `user`, `assistant`, `system`，或
           `developer`.
 
           - `"user"`
@@ -2165,7 +2165,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
       - `range: optional array of number`
 
-        该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+        该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
       - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -2173,17 +2173,17 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
         - `max_completions_tokens: optional number or null`
 
-          评分模型在响应中可生成的最大 token 数。
+          评分模型在其响应中可生成的最大 token 数。
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          在推理模型上限制推理的投入程度。当前支持
-          的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-          每一个取值。有关模型特定支持情况，请参阅
+          限制推理模型在推理上的投入程度。目前支持的值有
+          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+          降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+          值。请参阅
           推理指南
           [推理指南](/api/docs/guides/reasoning)
-          。
+          以了解特定模型的支持情况。
 
           - `"none"`
 
@@ -2201,7 +2201,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
         - `seed: optional number or null`
 
-          用于在采样期间初始化随机性的种子值。
+          在采样期间用于初始化随机性的种子值。
 
         - `temperature: optional number or null`
 
@@ -2209,21 +2209,21 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
         - `top_p: optional number or null`
 
-          用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+          temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
     - `MultiGrader object { calculate_output, graders, name, type }`
 
-      MultiGrader 对象将多个评分器的输出合并为单个分数。
+      MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
       - `calculate_output: string`
 
-        根据评分器结果计算输出的公式。
+        基于评分器结果计算输出的公式。
 
       - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
         - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -2235,34 +2235,34 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入打分。
+          一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
         - `LabelModelGrader object { input, labels, model, 3 more }`
 
-          一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+          LabelModelGrader 对象，使用模型为每个项目分配标签
           在评估中。
 
           - `input: array of object { content, role, type }`
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -2272,7 +2272,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -2286,20 +2286,20 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 输入列表，其中每个元素可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。取值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -2318,11 +2318,11 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
           - `labels: array of string`
 
-            要为评估中每个数据项分配的标签。
+            评估中要为每个项目分配的标签。
 
           - `model: string`
 
-            用于评估的模型。必须支持结构化输出。
+            评估所用的模型。必须支持结构化输出。
 
           - `name: string`
 
@@ -2330,7 +2330,7 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
           - `passing_labels: array of string`
 
-            表示通过的标签。必须是 labels 的子集。
+            表示通过结果的标签。必须是标签的子集。
 
           - `type: "label_model"`
 
@@ -2348,29 +2348,29 @@ curl https://api.openai.com/v1/fine_tuning/alpha/graders/validate \
 
         - `"multi"`
 
-# Checkpoints
+# 检查点
 
-# Permissions
+# 权限
 
-## Create checkpoint permissions
+## 创建检查点权限
 
 **post** `/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions`
 
-**注意：** 调用此端点需要使用 [管理员 API 密钥](/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys).
+**注意：** 调用此端点需要 [管理员 API 密钥](/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys).
 
-这使组织所有者能够将其微调模型共享给组织中的其他项目。
+这使组织所有者能够与其组织中的其他项目共享微调模型。
 
 ### 路径参数
 
 - `fine_tuned_model_checkpoint: string`
 
-### 正文参数
+### 请求体参数
 
 - `project_ids: array of string`
 
   授予访问权限的项目标识符。
 
-### 返回值
+### 返回
 
 - `data: array of object { id, created_at, object, project_id }`
 
@@ -2461,13 +2461,13 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 }
 ```
 
-## 删除 checkpoint 权限
+## 删除检查点权限
 
 **delete** `/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}`
 
-**注意：** 此接口需要 [管理员 API 密钥](/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys).
+**注意：** 此端点需要 [管理员 API 密钥](/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys).
 
-组织所有者可以使用此接口来删除对已微调模型 checkpoint 的某个权限。
+组织所有者可使用此端点删除已微调模型检查点的某项权限。
 
 ### 路径参数
 
@@ -2475,7 +2475,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
 - `permission_id: string`
 
-### 返回值
+### 返回
 
 - `id: string`
 
@@ -2530,7 +2530,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
 **get** `/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions`
 
-**注意：** 此接口需要 [管理员 API 密钥](/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys).
+**注意：** 此端点需要 [管理员 API 密钥](/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys).
 
 组织所有者可使用此端点查看某个微调模型检查点的所有权限。
 
@@ -2542,7 +2542,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
 - `after: optional string`
 
-  上一次分页请求中最后一个权限 ID 的标识符。
+  上一次分页请求中最后一个权限的 ID。
 
 - `limit: optional number`
 
@@ -2560,7 +2560,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
   要获取其权限的项目 ID。
 
-### 返回值
+### 返回
 
 - `data: array of object { id, created_at, object, project_id }`
 
@@ -2654,7 +2654,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
 **get** `/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions`
 
-**注意：** 此接口需要 [管理员 API 密钥](/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys).
+**注意：** 此端点需要 [管理员 API 密钥](/api/reference/resources/admin/subresources/organization/subresources/admin_api_keys).
 
 组织所有者可使用此端点查看某个微调模型检查点的所有权限。
 
@@ -2666,7 +2666,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
 - `after: optional string`
 
-  上一次分页请求中最后一个权限 ID 的标识符。
+  上一次分页请求中最后一个权限的 ID。
 
 - `limit: optional number`
 
@@ -2684,7 +2684,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
   要获取其权限的项目 ID。
 
-### 返回值
+### 返回
 
 - `data: array of object { id, created_at, object, project_id }`
 
@@ -2774,13 +2774,13 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 }
 ```
 
-## Domain Types
+## 域类型
 
 ### Permission Create Response
 
 - `PermissionCreateResponse object { id, created_at, object, project_id }`
 
-  该 `checkpoint.permission` object 表示对微调模型检查点的权限。
+  该 `checkpoint.permission` 对象表示微调模型检查点的权限。
 
   - `id: string`
 
@@ -2822,7 +2822,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
 - `PermissionListResponse object { id, created_at, object, project_id }`
 
-  该 `checkpoint.permission` object 表示对微调模型检查点的权限。
+  该 `checkpoint.permission` 对象表示微调模型检查点的权限。
 
   - `id: string`
 
@@ -2882,25 +2882,25 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
 **post** `/fine_tuning/jobs/{fine_tuning_job_id}/cancel`
 
-立即取消一个微调作业。
+立即取消一个微调任务。
 
 ### 路径参数
 
 - `fine_tuning_job_id: string`
 
-### 返回值
+### 返回
 
 - `FineTuningJob object { id, created_at, error, 16 more }`
 
-  该 `fine_tuning.job` 对象，表示已通过 API 创建的微调作业。
+  该 `fine_tuning.job` 表示通过 API 创建的微调作业的对象。
 
   - `id: string`
 
-    对象标识符，可在 API 端点中引用。
+    对象标识符，可在 API 终结点中引用。
 
   - `created_at: number`
 
-    微调作业创建时的 Unix 时间戳（以秒为单位）。
+    微调作业创建时的 Unix 时间戳（秒）。
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -2920,21 +2920,21 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
       - `param: string or null`
 
-        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非由特定参数引起，此字段将为 null。
+        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非特定于某个参数，则此字段将为 null。
 
     - `unknown`
 
   - `fine_tuned_model: string or null`
 
-    正在创建的微调模型的名称。如果微调作业仍在运行，则该值为 null。
+    正在创建的微调模型的名称。如果微调作业仍在运行，则此值将为 null。
 
   - `finished_at: number or null`
 
-    微调作业完成时的 Unix 时间戳（以秒为单位）。如果微调作业仍在运行，则该值为 null。
+    微调作业完成时的 Unix 时间戳（秒）。如果微调作业仍在运行，该值将为 null。
 
   - `model: string`
 
-    正在微调的基模型。
+    正在进行微调的基模型。
 
   - `object: "fine_tuning.job"`
 
@@ -2948,15 +2948,15 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
   - `result_files: array of string`
 
-    微调作业的编译结果文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    微调作业的编译结果文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `seed: number or null`
 
-    用于该微调作业的种子。
+    微调作业所用的种子。
 
   - `status: "validating_files" or "queued" or "running" or 5 more`
 
-    微调作业的当前状态，可能为 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
+    微调作业的当前状态，可以是 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
 
     - `"validating_files"`
 
@@ -2976,28 +2976,28 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
   - `trained_tokens: number or null`
 
-    此微调作业处理的计费 token 总数。如果微调作业仍在运行，则该值为 null。
+    此微调作业处理的计费 token 总数。如果微调作业仍在运行，该值将为 null。
 
   - `training_file: string`
 
-    用于训练的文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    用于训练的文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `validation_file: string or null`
 
-    用于验证的文件 ID。你可以使用以下方法检索验证结果： [Files API](/api/reference/resources/files/methods/content).
+    用于验证的文件 ID。你可以获取验证结果，方法是 [Files API](/api/reference/resources/files/methods/content).
 
   - `estimated_finish: optional number or null`
 
-    微调作业预计完成时的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
+    微调作业预计完成的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
-    用于微调作业的超参数。仅当运行微调作业时才会返回该值。 `supervised` 作业。
+    用于微调作业的超参数。仅当运行 `supervised` 作业时才会返回该值。
 
     - `batch_size: optional "auto" or number or null`
 
-      每个批次中的示例数量。更大的批量大小意味着模型参数更新的频率降低，
-      但方差也会更小。
+      每个批次中的样本数量。更大的批次大小意味着模型参数
+      更新的频率更低，但方差更小。
 
       - `"auto"`
 
@@ -3018,8 +3018,8 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的 epoch 数。一个 epoch 表示完整地遍历
-      一次训练数据集。
+      训练模型的轮数（epoch 数）。一个 epoch 指的是完整遍历
+      训练数据集一次。
 
       - `"auto"`
 
@@ -3029,7 +3029,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
-    为本次微调作业启用的集成列表。
+    为此次微调作业启用的集成列表。
 
     - `type: "wandb"`
 
@@ -3039,18 +3039,18 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
     - `wandb: FineTuningJobWandbIntegration`
 
-      与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-      指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-      并设置与运行关联的默认实体（团队、用户名等）。
+      与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
       - `project: string`
 
-        将在其中创建新运行的项目名称。
+        将在其下创建新运行的项目名称。
 
       - `entity: optional string or null`
 
-        运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-        如果未设置，则使用已注册 WandB API 密钥的默认实体。
+        运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+        关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
       - `name: optional string or null`
 
@@ -3059,13 +3059,13 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
       - `tags: optional array of string`
 
         要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-        默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+        默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对。可用于
-    以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
-    以结构化格式存储对象的附加信息，并通过 接口 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于以结构化
+    格式存储有关对象的额外信息，
+    并通过 API 或控制面板查询对象。
 
     键为字符串，最长 64 个字符。值为字符串，
     最长 512 个字符。
@@ -3076,7 +3076,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
     - `type: "supervised" or "dpo" or "reinforcement"`
 
-      方法的类型。可为以下之一： `supervised`, `dpo`，或 `reinforcement`.
+      方法的类型。为以下两者之一： `supervised`, `dpo`，或 `reinforcement`.
 
       - `"supervised"`
 
@@ -3090,11 +3090,11 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
       - `hyperparameters: optional DpoHyperparameters`
 
-        用于 DPO 微调任务的超参数。
+        DPO 微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -3104,7 +3104,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `beta: optional "auto" or number`
 
-          DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+          DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
           - `"auto"`
 
@@ -3114,7 +3114,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -3124,7 +3124,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -3142,7 +3142,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
           - `input: string`
 
@@ -3154,7 +3154,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
           - `operation: "eq" or "ne" or "like" or "ilike"`
 
-            要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+            要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
             - `"eq"`
 
@@ -3180,7 +3180,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
           - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-            要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+            要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
             `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
             或 `rouge_l`.
 
@@ -3216,7 +3216,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
           - `reference: string`
 
-            用于对比的文本。
+            用于对比的参考文本。
 
           - `type: "text_similarity"`
 
@@ -3248,27 +3248,27 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入打分。
+          一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
           - `input: array of object { content, role, type }`
 
-            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
                 - `text: string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `type: "input_text"`
 
@@ -3278,7 +3278,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+                  标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
                   - `mode: "explicit"`
 
@@ -3288,11 +3288,11 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -3302,7 +3302,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -3316,17 +3316,17 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
                 - `input_audio: object { data, format }`
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
@@ -3343,26 +3343,26 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
                   - `"input_audio"`
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 输入列表，其中每个元素可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -3372,7 +3372,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
                 - `InputImage object { image_url, type, detail }`
 
-                  在 EvalItem content 数组中使用的图像输入块。
+                  在 EvalItem 内容数组中使用的图像输入块。
 
                   - `image_url: string`
 
@@ -3386,15 +3386,15 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
                   - `detail: optional string`
 
-                    发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
-                  模型的音频输入。
+                  发给模型的音频输入。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。取值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -3427,7 +3427,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
           - `range: optional array of number`
 
-            该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+            该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
           - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -3435,17 +3435,17 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
             - `max_completions_tokens: optional number or null`
 
-              评分模型在响应中可生成的最大 token 数。
+              评分模型在其响应中可生成的最大 token 数。
 
             - `reasoning_effort: optional ReasoningEffort or null`
 
-              在推理模型上限制推理的投入程度。当前支持
-              的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-              降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-              每一个取值。有关模型特定支持情况，请参阅
+              限制推理模型在推理上的投入程度。目前支持的值有
+              值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+              降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+              值。请参阅
               推理指南
               [推理指南](/api/docs/guides/reasoning)
-              。
+              以了解特定模型的支持情况。
 
               - `"none"`
 
@@ -3463,7 +3463,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
             - `seed: optional number or null`
 
-              用于在采样期间初始化随机性的种子值。
+              在采样期间用于初始化随机性的种子值。
 
             - `temperature: optional number or null`
 
@@ -3471,21 +3471,21 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
             - `top_p: optional number or null`
 
-              用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+              temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
         - `MultiGrader object { calculate_output, graders, name, type }`
 
-          MultiGrader 对象将多个评分器的输出合并为单个分数。
+          MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
           - `calculate_output: string`
 
-            根据评分器结果计算输出的公式。
+            基于评分器结果计算输出的公式。
 
           - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 
-              一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+              一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
             - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -3497,34 +3497,34 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
             - `ScoreModelGrader object { input, model, name, 3 more }`
 
-              一个 ScoreModelGrader 对象，使用模型为输入打分。
+              一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
             - `LabelModelGrader object { input, labels, model, 3 more }`
 
-              一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+              LabelModelGrader 对象，使用模型为每个项目分配标签
               在评估中。
 
               - `input: array of object { content, role, type }`
 
-                - `content: string or ResponseInputText or object { text, type }  or 3 more`
+                - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
                   模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -3534,7 +3534,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
                   - `InputImage object { image_url, type, detail }`
 
-                    在 EvalItem content 数组中使用的图像输入块。
+                    在 EvalItem 内容数组中使用的图像输入块。
 
                     - `image_url: string`
 
@@ -3548,20 +3548,20 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
                     - `detail: optional string`
 
-                      发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
-                    模型的音频输入。
+                    发给模型的音频输入。
 
-                  - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+                  - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                     输入列表，其中每个元素可以是输入文本、输出文本、输入
                     图像或输入音频对象。
 
                 - `role: "user" or "assistant" or "system" or "developer"`
 
-                  消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                  消息输入的角色。取值为 `user`, `assistant`, `system`，或
                   `developer`.
 
                   - `"user"`
@@ -3580,11 +3580,11 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
               - `labels: array of string`
 
-                要为评估中每个数据项分配的标签。
+                评估中要为每个项目分配的标签。
 
               - `model: string`
 
-                用于评估的模型。必须支持结构化输出。
+                评估所用的模型。必须支持结构化输出。
 
               - `name: string`
 
@@ -3592,7 +3592,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
               - `passing_labels: array of string`
 
-                表示通过的标签。必须是 labels 的子集。
+                表示通过结果的标签。必须是标签的子集。
 
               - `type: "label_model"`
 
@@ -3612,11 +3612,11 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
       - `hyperparameters: optional ReinforcementHyperparameters`
 
-        用于强化微调任务的超参数。
+        强化微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -3626,7 +3626,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `compute_multiplier: optional "auto" or number`
 
-          训练期间用于探索搜索空间的算力倍数。
+          训练期间用于探索搜索空间的计算量倍数。
 
           - `"auto"`
 
@@ -3646,7 +3646,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `eval_samples: optional "auto" or number`
 
-          每个训练步生成的评估样本数。
+          每个训练步生成的评估样本数量。
 
           - `"auto"`
 
@@ -3656,7 +3656,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -3666,7 +3666,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -3676,7 +3676,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-          推理力度等级。
+          推理力度级别。
 
           - `"default"`
 
@@ -3692,11 +3692,11 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
       - `hyperparameters: optional SupervisedHyperparameters`
 
-        用于微调任务的超参数。
+        微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -3706,7 +3706,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -3716,7 +3716,7 @@ curl https://api.openai.com/v1/fine_tuning/checkpoints/ft:gpt-4o-mini-2024-07-18
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -3846,28 +3846,28 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 }
 ```
 
-## 创建微调任务
+## Create fine-tuning job
 
 **post** `/fine_tuning/jobs`
 
-创建一个微调任务，开启从给定数据集创建新模型的过程。
+创建一个微调作业，开启从给定数据集创建新模型的过程。
 
-响应包含已排队任务的详细信息，包括任务状态以及完成后微调模型的名称。
+响应包含已排队作业的详细信息，包括作业状态以及完成后微调模型的名称。
 
-[了解更多关于微调的信息](/api/docs/guides/model-optimization)
+[了解有关微调的更多信息](/api/docs/guides/model-optimization)
 
-### 正文参数
+### 请求体参数
 
 - `model: string or "babbage-002" or "davinci-002" or "gpt-3.5-turbo" or "gpt-4o-mini"`
 
-  要微调的模型名称。你可以选择以下
+  要微调的模型名称。你可以从以下模型中选择一个
   [支持的模型](/api/docs/guides/model-optimization#fine-tuning-methods).
 
   - `string`
 
   - `"babbage-002" or "davinci-002" or "gpt-3.5-turbo" or "gpt-4o-mini"`
 
-    要微调的模型名称。你可以选择以下
+    要微调的模型名称。你可以从以下模型中选择一个
     [支持的模型](/api/docs/guides/model-optimization#fine-tuning-methods).
 
     - `"babbage-002"`
@@ -3882,23 +3882,23 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
   包含训练数据的上传文件的 ID。
 
-  参见 [upload file](/api/reference/resources/files/methods/create) 了解如何上传文件。
+  请参阅 [upload file](/api/reference/resources/files/methods/create) 了解如何上传文件。
 
-  你的数据集必须格式化为 JSONL 文件。此外,你必须使用以下用途上传文件 `fine-tune`.
+  你的数据集必须格式化为 JSONL 文件。此外，你上传文件时必须将用途（purpose）设置为 `fine-tune`.
 
-  文件内容应根据模型是否使用 [chat](/api/docs/guides/supervised-fine-tuning#formatting-your-data), [completions](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 格式,或微调方法是否使用 [preference](/api/docs/guides/direct-preference-optimization) 格式而有所不同。
+  文件内容需要根据模型使用的是 [chat](/api/docs/guides/supervised-fine-tuning#formatting-your-data), [completions](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 格式，还是微调方法使用的是 [preference](/api/docs/guides/direct-preference-optimization) 格式而有所不同。
 
-  参见 [微调指南](/api/docs/guides/model-optimization) 了解更多信息。
+  请参阅 [微调指南](/api/docs/guides/model-optimization) 了解更多详细信息。
 
 - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }`
 
   用于微调任务的超参数。
-  该值现已弃用,推荐使用 `method`,并应通过 `method` 参数传入。
+  此值现已弃用，推荐使用 `method`，应通过 `method` 参数传入。
 
   - `batch_size: optional "auto" or number`
 
-    每个批次中的示例数量。更大的批量大小意味着模型参数更新的频率降低，
-    但方差也会更小。
+    每个批次中的样本数量。更大的批次大小意味着模型参数
+    更新的频率更低，但方差更小。
 
     - `"auto"`
 
@@ -3919,8 +3919,8 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
   - `n_epochs: optional "auto" or number`
 
-    训练模型的 epoch 数。一个 epoch 表示完整地遍历
-    一次训练数据集。
+    训练模型的轮数（epoch 数）。一个 epoch 指的是完整遍历
+    训练数据集一次。
 
     - `"auto"`
 
@@ -3940,18 +3940,18 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
   - `wandb: object { project, entity, name, tags }`
 
-    与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-    指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-    并设置与运行关联的默认实体（团队、用户名等）。
+    与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+    到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+    到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
     - `project: string`
 
-      将在其中创建新运行的项目名称。
+      将在其下创建新运行的项目名称。
 
     - `entity: optional string or null`
 
-      运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-      如果未设置，则使用已注册 WandB API 密钥的默认实体。
+      运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+      关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
     - `name: optional string or null`
 
@@ -3960,13 +3960,13 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
     - `tags: optional array of string`
 
       要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-      默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+      默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
 - `metadata: optional Metadata or null`
 
-  可附加到对象的 16 个键值对。可用于
-  以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
-  以结构化格式存储对象的附加信息，并通过 接口 或仪表板查询对象。
+  可附加到对象的 16 组键值对。可用于以结构化
+  格式存储有关对象的额外信息，
+  并通过 API 或控制面板查询对象。
 
   键为字符串，最长 64 个字符。值为字符串，
   最长 512 个字符。
@@ -3977,7 +3977,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
   - `type: "supervised" or "dpo" or "reinforcement"`
 
-    方法的类型。可为以下之一： `supervised`, `dpo`，或 `reinforcement`.
+    方法的类型。为以下两者之一： `supervised`, `dpo`，或 `reinforcement`.
 
     - `"supervised"`
 
@@ -3991,11 +3991,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
     - `hyperparameters: optional DpoHyperparameters`
 
-      用于 DPO 微调任务的超参数。
+      DPO 微调任务使用的超参数。
 
       - `batch_size: optional "auto" or number`
 
-        每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+        每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
         - `"auto"`
 
@@ -4005,7 +4005,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `beta: optional "auto" or number`
 
-        DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+        DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
         - `"auto"`
 
@@ -4015,7 +4015,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `learning_rate_multiplier: optional "auto" or number`
 
-        学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+        学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
         - `"auto"`
 
@@ -4025,7 +4025,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `n_epochs: optional "auto" or number`
 
-        训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+        训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
         - `"auto"`
 
@@ -4043,7 +4043,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `StringCheckGrader object { input, name, operation, 2 more }`
 
-        一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+        一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
         - `input: string`
 
@@ -4055,7 +4055,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `operation: "eq" or "ne" or "like" or "ilike"`
 
-          要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+          要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
           - `"eq"`
 
@@ -4081,7 +4081,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-          要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+          要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
           `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
           或 `rouge_l`.
 
@@ -4117,7 +4117,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `reference: string`
 
-          用于对比的文本。
+          用于对比的参考文本。
 
         - `type: "text_similarity"`
 
@@ -4149,27 +4149,27 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `ScoreModelGrader object { input, model, name, 3 more }`
 
-        一个 ScoreModelGrader 对象，使用模型为输入打分。
+        一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
         - `input: array of object { content, role, type }`
 
-          由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+          由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-          - `content: string or ResponseInputText or object { text, type }  or 3 more`
+          - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
             模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
               - `text: string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `type: "input_text"`
 
@@ -4179,7 +4179,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
               - `prompt_cache_breakpoint: optional object { mode }`
 
-                标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+                标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
                 - `mode: "explicit"`
 
@@ -4189,11 +4189,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -4203,7 +4203,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
             - `InputImage object { image_url, type, detail }`
 
-              在 EvalItem content 数组中使用的图像输入块。
+              在 EvalItem 内容数组中使用的图像输入块。
 
               - `image_url: string`
 
@@ -4217,17 +4217,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
               - `detail: optional string`
 
-                发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
-              模型的音频输入。
+              发给模型的音频输入。
 
               - `input_audio: object { data, format }`
 
                 - `data: string`
 
-                  Base64 编码的音频数据。
+                  经过 Base64 编码的音频数据。
 
                 - `format: "mp3" or "wav"`
 
@@ -4244,26 +4244,26 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                 - `"input_audio"`
 
-            - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+            - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
               输入列表，其中每个元素可以是输入文本、输出文本、输入
               图像或输入音频对象。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -4273,7 +4273,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -4287,15 +4287,15 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
           - `role: "user" or "assistant" or "system" or "developer"`
 
-            消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+            消息输入的角色。取值为 `user`, `assistant`, `system`，或
             `developer`.
 
             - `"user"`
@@ -4328,7 +4328,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `range: optional array of number`
 
-          该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+          该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
         - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -4336,17 +4336,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
           - `max_completions_tokens: optional number or null`
 
-            评分模型在响应中可生成的最大 token 数。
+            评分模型在其响应中可生成的最大 token 数。
 
           - `reasoning_effort: optional ReasoningEffort or null`
 
-            在推理模型上限制推理的投入程度。当前支持
-            的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-            降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-            每一个取值。有关模型特定支持情况，请参阅
+            限制推理模型在推理上的投入程度。目前支持的值有
+            值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+            降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+            值。请参阅
             推理指南
             [推理指南](/api/docs/guides/reasoning)
-            。
+            以了解特定模型的支持情况。
 
             - `"none"`
 
@@ -4364,7 +4364,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
           - `seed: optional number or null`
 
-            用于在采样期间初始化随机性的种子值。
+            在采样期间用于初始化随机性的种子值。
 
           - `temperature: optional number or null`
 
@@ -4372,21 +4372,21 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
           - `top_p: optional number or null`
 
-            用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+            temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
       - `MultiGrader object { calculate_output, graders, name, type }`
 
-        MultiGrader 对象将多个评分器的输出合并为单个分数。
+        MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
         - `calculate_output: string`
 
-          根据评分器结果计算输出的公式。
+          基于评分器结果计算输出的公式。
 
         - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
           - `StringCheckGrader object { input, name, operation, 2 more }`
 
-            一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+            一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
           - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -4398,34 +4398,34 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
           - `ScoreModelGrader object { input, model, name, 3 more }`
 
-            一个 ScoreModelGrader 对象，使用模型为输入打分。
+            一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
           - `LabelModelGrader object { input, labels, model, 3 more }`
 
-            一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+            LabelModelGrader 对象，使用模型为每个项目分配标签
             在评估中。
 
             - `input: array of object { content, role, type }`
 
-              - `content: string or ResponseInputText or object { text, type }  or 3 more`
+              - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
                 模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -4435,7 +4435,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  在 EvalItem content 数组中使用的图像输入块。
+                  在 EvalItem 内容数组中使用的图像输入块。
 
                   - `image_url: string`
 
@@ -4449,20 +4449,20 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                   - `detail: optional string`
 
-                    发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
-                  模型的音频输入。
+                  发给模型的音频输入。
 
-                - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+                - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                   输入列表，其中每个元素可以是输入文本、输出文本、输入
                   图像或输入音频对象。
 
               - `role: "user" or "assistant" or "system" or "developer"`
 
-                消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                消息输入的角色。取值为 `user`, `assistant`, `system`，或
                 `developer`.
 
                 - `"user"`
@@ -4481,11 +4481,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
             - `labels: array of string`
 
-              要为评估中每个数据项分配的标签。
+              评估中要为每个项目分配的标签。
 
             - `model: string`
 
-              用于评估的模型。必须支持结构化输出。
+              评估所用的模型。必须支持结构化输出。
 
             - `name: string`
 
@@ -4493,7 +4493,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
             - `passing_labels: array of string`
 
-              表示通过的标签。必须是 labels 的子集。
+              表示通过结果的标签。必须是标签的子集。
 
             - `type: "label_model"`
 
@@ -4513,11 +4513,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
     - `hyperparameters: optional ReinforcementHyperparameters`
 
-      用于强化微调任务的超参数。
+      强化微调任务使用的超参数。
 
       - `batch_size: optional "auto" or number`
 
-        每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+        每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
         - `"auto"`
 
@@ -4527,7 +4527,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `compute_multiplier: optional "auto" or number`
 
-        训练期间用于探索搜索空间的算力倍数。
+        训练期间用于探索搜索空间的计算量倍数。
 
         - `"auto"`
 
@@ -4547,7 +4547,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `eval_samples: optional "auto" or number`
 
-        每个训练步生成的评估样本数。
+        每个训练步生成的评估样本数量。
 
         - `"auto"`
 
@@ -4557,7 +4557,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `learning_rate_multiplier: optional "auto" or number`
 
-        学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+        学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
         - `"auto"`
 
@@ -4567,7 +4567,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `n_epochs: optional "auto" or number`
 
-        训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+        训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
         - `"auto"`
 
@@ -4577,7 +4577,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-        推理力度等级。
+        推理力度级别。
 
         - `"default"`
 
@@ -4593,11 +4593,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
     - `hyperparameters: optional SupervisedHyperparameters`
 
-      用于微调任务的超参数。
+      微调任务使用的超参数。
 
       - `batch_size: optional "auto" or number`
 
-        每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+        每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
         - `"auto"`
 
@@ -4607,7 +4607,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `learning_rate_multiplier: optional "auto" or number`
 
-        学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+        学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
         - `"auto"`
 
@@ -4617,7 +4617,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `n_epochs: optional "auto" or number`
 
-        训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+        训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
         - `"auto"`
 
@@ -4627,41 +4627,41 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
 - `seed: optional number or null`
 
-  种子用于控制任务的可复现性。传入相同的种子和任务参数应能产生相同的结果，但在极少数情况下可能会有所不同。
+  种子用于控制作业的可复现性。传入相同的种子和作业参数应产生相同结果，但在极少数情况下可能有所不同。
   如果未指定种子，将为你自动生成一个。
 
 - `suffix: optional string or null`
 
-  最多 64 个字符的字符串，将被添加到你的微调模型名称中。
+  最多 64 个字符的字符串，将添加到你的微调模型名称中。
 
-  例如， `suffix` 为 "custom-model-name" 将生成类似如下的模型名称： `ft:gpt-4o-mini:openai:custom-model-name:7p4lURel`.
+  例如， `suffix` 值为 "custom-model-name" 会生成类似以下的模型名称： `ft:gpt-4o-mini:openai:custom-model-name:7p4lURel`.
 
 - `validation_file: optional string or null`
 
-  已上传文件的 ID，该文件包含验证数据。
+  包含验证数据的已上传文件的 ID。
 
-  如果你提供该文件，微调过程中会定期使用这些数据生成验证
-  指标。这些指标可以在
-  微调结果文件中查看。
-  训练文件和验证文件中不应包含相同的数据。
+  如果提供此文件，其数据将用于在微调期间定期生成验证
+  指标。可以在以下位置查看这些指标：
+  微调结果文件。
+  训练文件和验证文件中不应包含相同数据。
 
-  你的数据集必须格式化为 JSONL 文件。必须使用以下用途上传文件： `fine-tune`.
+  数据集必须采用 JSONL 文件格式。你必须使用以下用途上传文件： `fine-tune`.
 
-  参见 [微调指南](/api/docs/guides/model-optimization) 了解更多信息。
+  请参阅 [微调指南](/api/docs/guides/model-optimization) 了解更多详细信息。
 
-### 返回值
+### 返回
 
 - `FineTuningJob object { id, created_at, error, 16 more }`
 
-  该 `fine_tuning.job` 对象，表示已通过 API 创建的微调作业。
+  该 `fine_tuning.job` 表示通过 API 创建的微调作业的对象。
 
   - `id: string`
 
-    对象标识符，可在 API 端点中引用。
+    对象标识符，可在 API 终结点中引用。
 
   - `created_at: number`
 
-    微调作业创建时的 Unix 时间戳（以秒为单位）。
+    微调作业创建时的 Unix 时间戳（秒）。
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -4681,21 +4681,21 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `param: string or null`
 
-        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非由特定参数引起，此字段将为 null。
+        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非特定于某个参数，则此字段将为 null。
 
     - `unknown`
 
   - `fine_tuned_model: string or null`
 
-    正在创建的微调模型的名称。如果微调作业仍在运行，则该值为 null。
+    正在创建的微调模型的名称。如果微调作业仍在运行，则此值将为 null。
 
   - `finished_at: number or null`
 
-    微调作业完成时的 Unix 时间戳（以秒为单位）。如果微调作业仍在运行，则该值为 null。
+    微调作业完成时的 Unix 时间戳（秒）。如果微调作业仍在运行，该值将为 null。
 
   - `model: string`
 
-    正在微调的基模型。
+    正在进行微调的基模型。
 
   - `object: "fine_tuning.job"`
 
@@ -4709,15 +4709,15 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
   - `result_files: array of string`
 
-    微调作业的编译结果文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    微调作业的编译结果文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `seed: number or null`
 
-    用于该微调作业的种子。
+    微调作业所用的种子。
 
   - `status: "validating_files" or "queued" or "running" or 5 more`
 
-    微调作业的当前状态，可能为 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
+    微调作业的当前状态，可以是 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
 
     - `"validating_files"`
 
@@ -4737,28 +4737,28 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
   - `trained_tokens: number or null`
 
-    此微调作业处理的计费 token 总数。如果微调作业仍在运行，则该值为 null。
+    此微调作业处理的计费 token 总数。如果微调作业仍在运行，该值将为 null。
 
   - `training_file: string`
 
-    用于训练的文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    用于训练的文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `validation_file: string or null`
 
-    用于验证的文件 ID。你可以使用以下方法检索验证结果： [Files API](/api/reference/resources/files/methods/content).
+    用于验证的文件 ID。你可以获取验证结果，方法是 [Files API](/api/reference/resources/files/methods/content).
 
   - `estimated_finish: optional number or null`
 
-    微调作业预计完成时的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
+    微调作业预计完成的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
-    用于微调作业的超参数。仅当运行微调作业时才会返回该值。 `supervised` 作业。
+    用于微调作业的超参数。仅当运行 `supervised` 作业时才会返回该值。
 
     - `batch_size: optional "auto" or number or null`
 
-      每个批次中的示例数量。更大的批量大小意味着模型参数更新的频率降低，
-      但方差也会更小。
+      每个批次中的样本数量。更大的批次大小意味着模型参数
+      更新的频率更低，但方差更小。
 
       - `"auto"`
 
@@ -4779,8 +4779,8 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的 epoch 数。一个 epoch 表示完整地遍历
-      一次训练数据集。
+      训练模型的轮数（epoch 数）。一个 epoch 指的是完整遍历
+      训练数据集一次。
 
       - `"auto"`
 
@@ -4790,7 +4790,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
-    为本次微调作业启用的集成列表。
+    为此次微调作业启用的集成列表。
 
     - `type: "wandb"`
 
@@ -4800,18 +4800,18 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
     - `wandb: FineTuningJobWandbIntegration`
 
-      与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-      指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-      并设置与运行关联的默认实体（团队、用户名等）。
+      与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
       - `project: string`
 
-        将在其中创建新运行的项目名称。
+        将在其下创建新运行的项目名称。
 
       - `entity: optional string or null`
 
-        运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-        如果未设置，则使用已注册 WandB API 密钥的默认实体。
+        运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+        关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
       - `name: optional string or null`
 
@@ -4820,13 +4820,13 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
       - `tags: optional array of string`
 
         要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-        默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+        默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对。可用于
-    以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
-    以结构化格式存储对象的附加信息，并通过 接口 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于以结构化
+    格式存储有关对象的额外信息，
+    并通过 API 或控制面板查询对象。
 
     键为字符串，最长 64 个字符。值为字符串，
     最长 512 个字符。
@@ -4837,7 +4837,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
     - `type: "supervised" or "dpo" or "reinforcement"`
 
-      方法的类型。可为以下之一： `supervised`, `dpo`，或 `reinforcement`.
+      方法的类型。为以下两者之一： `supervised`, `dpo`，或 `reinforcement`.
 
       - `"supervised"`
 
@@ -4851,11 +4851,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `hyperparameters: optional DpoHyperparameters`
 
-        用于 DPO 微调任务的超参数。
+        DPO 微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -4865,7 +4865,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `beta: optional "auto" or number`
 
-          DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+          DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
           - `"auto"`
 
@@ -4875,7 +4875,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -4885,7 +4885,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -4903,7 +4903,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
           - `input: string`
 
@@ -4915,7 +4915,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
           - `operation: "eq" or "ne" or "like" or "ilike"`
 
-            要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+            要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
             - `"eq"`
 
@@ -4941,7 +4941,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
           - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-            要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+            要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
             `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
             或 `rouge_l`.
 
@@ -4977,7 +4977,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
           - `reference: string`
 
-            用于对比的文本。
+            用于对比的参考文本。
 
           - `type: "text_similarity"`
 
@@ -5009,27 +5009,27 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入打分。
+          一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
           - `input: array of object { content, role, type }`
 
-            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
                 - `text: string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `type: "input_text"`
 
@@ -5039,7 +5039,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+                  标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
                   - `mode: "explicit"`
 
@@ -5049,11 +5049,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -5063,7 +5063,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -5077,17 +5077,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
                 - `input_audio: object { data, format }`
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
@@ -5104,26 +5104,26 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                   - `"input_audio"`
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 输入列表，其中每个元素可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -5133,7 +5133,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  在 EvalItem content 数组中使用的图像输入块。
+                  在 EvalItem 内容数组中使用的图像输入块。
 
                   - `image_url: string`
 
@@ -5147,15 +5147,15 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                   - `detail: optional string`
 
-                    发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
-                  模型的音频输入。
+                  发给模型的音频输入。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。取值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -5188,7 +5188,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
           - `range: optional array of number`
 
-            该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+            该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
           - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -5196,17 +5196,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
             - `max_completions_tokens: optional number or null`
 
-              评分模型在响应中可生成的最大 token 数。
+              评分模型在其响应中可生成的最大 token 数。
 
             - `reasoning_effort: optional ReasoningEffort or null`
 
-              在推理模型上限制推理的投入程度。当前支持
-              的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-              降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-              每一个取值。有关模型特定支持情况，请参阅
+              限制推理模型在推理上的投入程度。目前支持的值有
+              值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+              降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+              值。请参阅
               推理指南
               [推理指南](/api/docs/guides/reasoning)
-              。
+              以了解特定模型的支持情况。
 
               - `"none"`
 
@@ -5224,7 +5224,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
             - `seed: optional number or null`
 
-              用于在采样期间初始化随机性的种子值。
+              在采样期间用于初始化随机性的种子值。
 
             - `temperature: optional number or null`
 
@@ -5232,21 +5232,21 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
             - `top_p: optional number or null`
 
-              用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+              temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
         - `MultiGrader object { calculate_output, graders, name, type }`
 
-          MultiGrader 对象将多个评分器的输出合并为单个分数。
+          MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
           - `calculate_output: string`
 
-            根据评分器结果计算输出的公式。
+            基于评分器结果计算输出的公式。
 
           - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 
-              一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+              一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
             - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -5258,34 +5258,34 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
             - `ScoreModelGrader object { input, model, name, 3 more }`
 
-              一个 ScoreModelGrader 对象，使用模型为输入打分。
+              一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
             - `LabelModelGrader object { input, labels, model, 3 more }`
 
-              一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+              LabelModelGrader 对象，使用模型为每个项目分配标签
               在评估中。
 
               - `input: array of object { content, role, type }`
 
-                - `content: string or ResponseInputText or object { text, type }  or 3 more`
+                - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
                   模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -5295,7 +5295,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                   - `InputImage object { image_url, type, detail }`
 
-                    在 EvalItem content 数组中使用的图像输入块。
+                    在 EvalItem 内容数组中使用的图像输入块。
 
                     - `image_url: string`
 
@@ -5309,20 +5309,20 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
                     - `detail: optional string`
 
-                      发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
-                    模型的音频输入。
+                    发给模型的音频输入。
 
-                  - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+                  - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                     输入列表，其中每个元素可以是输入文本、输出文本、输入
                     图像或输入音频对象。
 
                 - `role: "user" or "assistant" or "system" or "developer"`
 
-                  消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                  消息输入的角色。取值为 `user`, `assistant`, `system`，或
                   `developer`.
 
                   - `"user"`
@@ -5341,11 +5341,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
               - `labels: array of string`
 
-                要为评估中每个数据项分配的标签。
+                评估中要为每个项目分配的标签。
 
               - `model: string`
 
-                用于评估的模型。必须支持结构化输出。
+                评估所用的模型。必须支持结构化输出。
 
               - `name: string`
 
@@ -5353,7 +5353,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
               - `passing_labels: array of string`
 
-                表示通过的标签。必须是 labels 的子集。
+                表示通过结果的标签。必须是标签的子集。
 
               - `type: "label_model"`
 
@@ -5373,11 +5373,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `hyperparameters: optional ReinforcementHyperparameters`
 
-        用于强化微调任务的超参数。
+        强化微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -5387,7 +5387,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `compute_multiplier: optional "auto" or number`
 
-          训练期间用于探索搜索空间的算力倍数。
+          训练期间用于探索搜索空间的计算量倍数。
 
           - `"auto"`
 
@@ -5407,7 +5407,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `eval_samples: optional "auto" or number`
 
-          每个训练步生成的评估样本数。
+          每个训练步生成的评估样本数量。
 
           - `"auto"`
 
@@ -5417,7 +5417,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -5427,7 +5427,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -5437,7 +5437,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-          推理力度等级。
+          推理力度级别。
 
           - `"default"`
 
@@ -5453,11 +5453,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
       - `hyperparameters: optional SupervisedHyperparameters`
 
-        用于微调任务的超参数。
+        微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -5467,7 +5467,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -5477,7 +5477,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/cancel \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -5958,7 +5958,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
 **get** `/fine_tuning/jobs`
 
-列出你所在组织的微调任务
+列出你的组织的微调作业
 
 ### 查询参数
 
@@ -5972,20 +5972,20 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
 - `metadata: optional map[string] or null`
 
-  可选的元数据过滤器。若要过滤，请使用语法 `metadata[k]=v`。省略该参数或传入空对象表示不应用任何元数据过滤器。空值（例如 `metadata[k]=`）表示按空字符串值过滤该键。
-  若要选择元数据为 null 的任务，请发送字面量查询字符串 `metadata=null`。可空的调用方类型未规定客户端如何为深对象参数序列化 null。如果客户端省略 null，请使用原始查询参数。不要混用这两种查询形式。
+  可选的元数据筛选条件。要进行筛选，请使用以下语法 `metadata[k]=v`。省略该参数或传入空对象表示不应用任何元数据筛选条件。空值（例如 `metadata[k]=`）会按空字符串值筛选该键对应的记录。
+  若要选择元数据为 null 的任务，请传入字面量查询字符串 `metadata=null`。可空调用方类型未指定客户端如何为深层对象参数序列化 null。如果客户端省略 null，请使用原始查询参数。请勿混用这两种查询形式。
 
-### 返回值
+### 返回
 
 - `data: array of FineTuningJob`
 
   - `id: string`
 
-    对象标识符，可在 API 端点中引用。
+    对象标识符，可在 API 终结点中引用。
 
   - `created_at: number`
 
-    微调作业创建时的 Unix 时间戳（以秒为单位）。
+    微调作业创建时的 Unix 时间戳（秒）。
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -6005,21 +6005,21 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
       - `param: string or null`
 
-        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非由特定参数引起，此字段将为 null。
+        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非特定于某个参数，则此字段将为 null。
 
     - `unknown`
 
   - `fine_tuned_model: string or null`
 
-    正在创建的微调模型的名称。如果微调作业仍在运行，则该值为 null。
+    正在创建的微调模型的名称。如果微调作业仍在运行，则此值将为 null。
 
   - `finished_at: number or null`
 
-    微调作业完成时的 Unix 时间戳（以秒为单位）。如果微调作业仍在运行，则该值为 null。
+    微调作业完成时的 Unix 时间戳（秒）。如果微调作业仍在运行，该值将为 null。
 
   - `model: string`
 
-    正在微调的基模型。
+    正在进行微调的基模型。
 
   - `object: "fine_tuning.job"`
 
@@ -6033,15 +6033,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
   - `result_files: array of string`
 
-    微调作业的编译结果文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    微调作业的编译结果文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `seed: number or null`
 
-    用于该微调作业的种子。
+    微调作业所用的种子。
 
   - `status: "validating_files" or "queued" or "running" or 5 more`
 
-    微调作业的当前状态，可能为 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
+    微调作业的当前状态，可以是 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
 
     - `"validating_files"`
 
@@ -6061,28 +6061,28 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
   - `trained_tokens: number or null`
 
-    此微调作业处理的计费 token 总数。如果微调作业仍在运行，则该值为 null。
+    此微调作业处理的计费 token 总数。如果微调作业仍在运行，该值将为 null。
 
   - `training_file: string`
 
-    用于训练的文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    用于训练的文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `validation_file: string or null`
 
-    用于验证的文件 ID。你可以使用以下方法检索验证结果： [Files API](/api/reference/resources/files/methods/content).
+    用于验证的文件 ID。你可以获取验证结果，方法是 [Files API](/api/reference/resources/files/methods/content).
 
   - `estimated_finish: optional number or null`
 
-    微调作业预计完成时的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
+    微调作业预计完成的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
-    用于微调作业的超参数。仅当运行微调作业时才会返回该值。 `supervised` 作业。
+    用于微调作业的超参数。仅当运行 `supervised` 作业时才会返回该值。
 
     - `batch_size: optional "auto" or number or null`
 
-      每个批次中的示例数量。更大的批量大小意味着模型参数更新的频率降低，
-      但方差也会更小。
+      每个批次中的样本数量。更大的批次大小意味着模型参数
+      更新的频率更低，但方差更小。
 
       - `"auto"`
 
@@ -6103,8 +6103,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的 epoch 数。一个 epoch 表示完整地遍历
-      一次训练数据集。
+      训练模型的轮数（epoch 数）。一个 epoch 指的是完整遍历
+      训练数据集一次。
 
       - `"auto"`
 
@@ -6114,7 +6114,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
-    为本次微调作业启用的集成列表。
+    为此次微调作业启用的集成列表。
 
     - `type: "wandb"`
 
@@ -6124,18 +6124,18 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
     - `wandb: FineTuningJobWandbIntegration`
 
-      与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-      指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-      并设置与运行关联的默认实体（团队、用户名等）。
+      与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
       - `project: string`
 
-        将在其中创建新运行的项目名称。
+        将在其下创建新运行的项目名称。
 
       - `entity: optional string or null`
 
-        运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-        如果未设置，则使用已注册 WandB API 密钥的默认实体。
+        运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+        关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
       - `name: optional string or null`
 
@@ -6144,13 +6144,13 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
       - `tags: optional array of string`
 
         要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-        默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+        默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对。可用于
-    以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
-    以结构化格式存储对象的附加信息，并通过 接口 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于以结构化
+    格式存储有关对象的额外信息，
+    并通过 API 或控制面板查询对象。
 
     键为字符串，最长 64 个字符。值为字符串，
     最长 512 个字符。
@@ -6161,7 +6161,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
     - `type: "supervised" or "dpo" or "reinforcement"`
 
-      方法的类型。可为以下之一： `supervised`, `dpo`，或 `reinforcement`.
+      方法的类型。为以下两者之一： `supervised`, `dpo`，或 `reinforcement`.
 
       - `"supervised"`
 
@@ -6175,11 +6175,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
       - `hyperparameters: optional DpoHyperparameters`
 
-        用于 DPO 微调任务的超参数。
+        DPO 微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -6189,7 +6189,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `beta: optional "auto" or number`
 
-          DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+          DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
           - `"auto"`
 
@@ -6199,7 +6199,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -6209,7 +6209,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -6227,7 +6227,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
           - `input: string`
 
@@ -6239,7 +6239,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
           - `operation: "eq" or "ne" or "like" or "ilike"`
 
-            要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+            要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
             - `"eq"`
 
@@ -6265,7 +6265,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
           - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-            要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+            要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
             `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
             或 `rouge_l`.
 
@@ -6301,7 +6301,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
           - `reference: string`
 
-            用于对比的文本。
+            用于对比的参考文本。
 
           - `type: "text_similarity"`
 
@@ -6333,27 +6333,27 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入打分。
+          一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
           - `input: array of object { content, role, type }`
 
-            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
                 - `text: string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `type: "input_text"`
 
@@ -6363,7 +6363,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+                  标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
                   - `mode: "explicit"`
 
@@ -6373,11 +6373,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -6387,7 +6387,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -6401,17 +6401,17 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
                 - `input_audio: object { data, format }`
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
@@ -6428,26 +6428,26 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
                   - `"input_audio"`
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 输入列表，其中每个元素可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -6457,7 +6457,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  在 EvalItem content 数组中使用的图像输入块。
+                  在 EvalItem 内容数组中使用的图像输入块。
 
                   - `image_url: string`
 
@@ -6471,15 +6471,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
                   - `detail: optional string`
 
-                    发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
-                  模型的音频输入。
+                  发给模型的音频输入。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。取值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -6512,7 +6512,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
           - `range: optional array of number`
 
-            该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+            该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
           - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -6520,17 +6520,17 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
             - `max_completions_tokens: optional number or null`
 
-              评分模型在响应中可生成的最大 token 数。
+              评分模型在其响应中可生成的最大 token 数。
 
             - `reasoning_effort: optional ReasoningEffort or null`
 
-              在推理模型上限制推理的投入程度。当前支持
-              的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-              降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-              每一个取值。有关模型特定支持情况，请参阅
+              限制推理模型在推理上的投入程度。目前支持的值有
+              值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+              降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+              值。请参阅
               推理指南
               [推理指南](/api/docs/guides/reasoning)
-              。
+              以了解特定模型的支持情况。
 
               - `"none"`
 
@@ -6548,7 +6548,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
             - `seed: optional number or null`
 
-              用于在采样期间初始化随机性的种子值。
+              在采样期间用于初始化随机性的种子值。
 
             - `temperature: optional number or null`
 
@@ -6556,21 +6556,21 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
             - `top_p: optional number or null`
 
-              用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+              temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
         - `MultiGrader object { calculate_output, graders, name, type }`
 
-          MultiGrader 对象将多个评分器的输出合并为单个分数。
+          MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
           - `calculate_output: string`
 
-            根据评分器结果计算输出的公式。
+            基于评分器结果计算输出的公式。
 
           - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 
-              一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+              一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
             - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -6582,34 +6582,34 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
             - `ScoreModelGrader object { input, model, name, 3 more }`
 
-              一个 ScoreModelGrader 对象，使用模型为输入打分。
+              一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
             - `LabelModelGrader object { input, labels, model, 3 more }`
 
-              一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+              LabelModelGrader 对象，使用模型为每个项目分配标签
               在评估中。
 
               - `input: array of object { content, role, type }`
 
-                - `content: string or ResponseInputText or object { text, type }  or 3 more`
+                - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
                   模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -6619,7 +6619,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
                   - `InputImage object { image_url, type, detail }`
 
-                    在 EvalItem content 数组中使用的图像输入块。
+                    在 EvalItem 内容数组中使用的图像输入块。
 
                     - `image_url: string`
 
@@ -6633,20 +6633,20 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
                     - `detail: optional string`
 
-                      发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
-                    模型的音频输入。
+                    发给模型的音频输入。
 
-                  - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+                  - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                     输入列表，其中每个元素可以是输入文本、输出文本、输入
                     图像或输入音频对象。
 
                 - `role: "user" or "assistant" or "system" or "developer"`
 
-                  消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                  消息输入的角色。取值为 `user`, `assistant`, `system`，或
                   `developer`.
 
                   - `"user"`
@@ -6665,11 +6665,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
               - `labels: array of string`
 
-                要为评估中每个数据项分配的标签。
+                评估中要为每个项目分配的标签。
 
               - `model: string`
 
-                用于评估的模型。必须支持结构化输出。
+                评估所用的模型。必须支持结构化输出。
 
               - `name: string`
 
@@ -6677,7 +6677,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
               - `passing_labels: array of string`
 
-                表示通过的标签。必须是 labels 的子集。
+                表示通过结果的标签。必须是标签的子集。
 
               - `type: "label_model"`
 
@@ -6697,11 +6697,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
       - `hyperparameters: optional ReinforcementHyperparameters`
 
-        用于强化微调任务的超参数。
+        强化微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -6711,7 +6711,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `compute_multiplier: optional "auto" or number`
 
-          训练期间用于探索搜索空间的算力倍数。
+          训练期间用于探索搜索空间的计算量倍数。
 
           - `"auto"`
 
@@ -6731,7 +6731,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `eval_samples: optional "auto" or number`
 
-          每个训练步生成的评估样本数。
+          每个训练步生成的评估样本数量。
 
           - `"auto"`
 
@@ -6741,7 +6741,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -6751,7 +6751,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -6761,7 +6761,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-          推理力度等级。
+          推理力度级别。
 
           - `"default"`
 
@@ -6777,11 +6777,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
       - `hyperparameters: optional SupervisedHyperparameters`
 
-        用于微调任务的超参数。
+        微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -6791,7 +6791,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -6801,7 +6801,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -6969,7 +6969,7 @@ curl "https://api.openai.com/v1/fine_tuning/jobs?limit=2&metadata[key]=value" \
 
 **get** `/fine_tuning/jobs/{fine_tuning_job_id}/events`
 
-获取微调作业的状态更新。
+获取微调任务的状态更新。
 
 ### 路径参数
 
@@ -6979,23 +6979,23 @@ curl "https://api.openai.com/v1/fine_tuning/jobs?limit=2&metadata[key]=value" \
 
 - `after: optional string`
 
-  上一次分页请求中最后一个事件的标识符。
+  上一次分页请求中最后一条事件的标识符。
 
 - `limit: optional number`
 
-  要检索的事件数量。
+  要获取的事件数量。
 
-### 返回值
+### 返回
 
 - `data: array of FineTuningJobEvent`
 
   - `id: string`
 
-    对象标识符。
+    对象的标识符。
 
   - `created_at: number`
 
-    微调作业创建时的 Unix 时间戳（以秒为单位）。
+    微调作业创建时的 Unix 时间戳（秒）。
 
   - `level: "info" or "warn" or "error"`
 
@@ -7019,7 +7019,7 @@ curl "https://api.openai.com/v1/fine_tuning/jobs?limit=2&metadata[key]=value" \
 
   - `data: optional unknown or null`
 
-    与该事件关联的数据。
+    与事件关联的数据。
 
   - `type: optional "message" or "metrics"`
 
@@ -7102,25 +7102,25 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
 **post** `/fine_tuning/jobs/{fine_tuning_job_id}/pause`
 
-暂停微调任务。
+暂停一个微调任务。
 
 ### 路径参数
 
 - `fine_tuning_job_id: string`
 
-### 返回值
+### 返回
 
 - `FineTuningJob object { id, created_at, error, 16 more }`
 
-  该 `fine_tuning.job` 对象，表示已通过 API 创建的微调作业。
+  该 `fine_tuning.job` 表示通过 API 创建的微调作业的对象。
 
   - `id: string`
 
-    对象标识符，可在 API 端点中引用。
+    对象标识符，可在 API 终结点中引用。
 
   - `created_at: number`
 
-    微调作业创建时的 Unix 时间戳（以秒为单位）。
+    微调作业创建时的 Unix 时间戳（秒）。
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -7140,21 +7140,21 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
       - `param: string or null`
 
-        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非由特定参数引起，此字段将为 null。
+        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非特定于某个参数，则此字段将为 null。
 
     - `unknown`
 
   - `fine_tuned_model: string or null`
 
-    正在创建的微调模型的名称。如果微调作业仍在运行，则该值为 null。
+    正在创建的微调模型的名称。如果微调作业仍在运行，则此值将为 null。
 
   - `finished_at: number or null`
 
-    微调作业完成时的 Unix 时间戳（以秒为单位）。如果微调作业仍在运行，则该值为 null。
+    微调作业完成时的 Unix 时间戳（秒）。如果微调作业仍在运行，该值将为 null。
 
   - `model: string`
 
-    正在微调的基模型。
+    正在进行微调的基模型。
 
   - `object: "fine_tuning.job"`
 
@@ -7168,15 +7168,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
   - `result_files: array of string`
 
-    微调作业的编译结果文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    微调作业的编译结果文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `seed: number or null`
 
-    用于该微调作业的种子。
+    微调作业所用的种子。
 
   - `status: "validating_files" or "queued" or "running" or 5 more`
 
-    微调作业的当前状态，可能为 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
+    微调作业的当前状态，可以是 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
 
     - `"validating_files"`
 
@@ -7196,28 +7196,28 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
   - `trained_tokens: number or null`
 
-    此微调作业处理的计费 token 总数。如果微调作业仍在运行，则该值为 null。
+    此微调作业处理的计费 token 总数。如果微调作业仍在运行，该值将为 null。
 
   - `training_file: string`
 
-    用于训练的文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    用于训练的文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `validation_file: string or null`
 
-    用于验证的文件 ID。你可以使用以下方法检索验证结果： [Files API](/api/reference/resources/files/methods/content).
+    用于验证的文件 ID。你可以获取验证结果，方法是 [Files API](/api/reference/resources/files/methods/content).
 
   - `estimated_finish: optional number or null`
 
-    微调作业预计完成时的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
+    微调作业预计完成的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
-    用于微调作业的超参数。仅当运行微调作业时才会返回该值。 `supervised` 作业。
+    用于微调作业的超参数。仅当运行 `supervised` 作业时才会返回该值。
 
     - `batch_size: optional "auto" or number or null`
 
-      每个批次中的示例数量。更大的批量大小意味着模型参数更新的频率降低，
-      但方差也会更小。
+      每个批次中的样本数量。更大的批次大小意味着模型参数
+      更新的频率更低，但方差更小。
 
       - `"auto"`
 
@@ -7238,8 +7238,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的 epoch 数。一个 epoch 表示完整地遍历
-      一次训练数据集。
+      训练模型的轮数（epoch 数）。一个 epoch 指的是完整遍历
+      训练数据集一次。
 
       - `"auto"`
 
@@ -7249,7 +7249,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
-    为本次微调作业启用的集成列表。
+    为此次微调作业启用的集成列表。
 
     - `type: "wandb"`
 
@@ -7259,18 +7259,18 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
     - `wandb: FineTuningJobWandbIntegration`
 
-      与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-      指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-      并设置与运行关联的默认实体（团队、用户名等）。
+      与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
       - `project: string`
 
-        将在其中创建新运行的项目名称。
+        将在其下创建新运行的项目名称。
 
       - `entity: optional string or null`
 
-        运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-        如果未设置，则使用已注册 WandB API 密钥的默认实体。
+        运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+        关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
       - `name: optional string or null`
 
@@ -7279,13 +7279,13 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
       - `tags: optional array of string`
 
         要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-        默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+        默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对。可用于
-    以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
-    以结构化格式存储对象的附加信息，并通过 接口 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于以结构化
+    格式存储有关对象的额外信息，
+    并通过 API 或控制面板查询对象。
 
     键为字符串，最长 64 个字符。值为字符串，
     最长 512 个字符。
@@ -7296,7 +7296,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
     - `type: "supervised" or "dpo" or "reinforcement"`
 
-      方法的类型。可为以下之一： `supervised`, `dpo`，或 `reinforcement`.
+      方法的类型。为以下两者之一： `supervised`, `dpo`，或 `reinforcement`.
 
       - `"supervised"`
 
@@ -7310,11 +7310,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
       - `hyperparameters: optional DpoHyperparameters`
 
-        用于 DPO 微调任务的超参数。
+        DPO 微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -7324,7 +7324,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `beta: optional "auto" or number`
 
-          DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+          DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
           - `"auto"`
 
@@ -7334,7 +7334,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -7344,7 +7344,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -7362,7 +7362,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
           - `input: string`
 
@@ -7374,7 +7374,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
           - `operation: "eq" or "ne" or "like" or "ilike"`
 
-            要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+            要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
             - `"eq"`
 
@@ -7400,7 +7400,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
           - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-            要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+            要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
             `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
             或 `rouge_l`.
 
@@ -7436,7 +7436,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
           - `reference: string`
 
-            用于对比的文本。
+            用于对比的参考文本。
 
           - `type: "text_similarity"`
 
@@ -7468,27 +7468,27 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入打分。
+          一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
           - `input: array of object { content, role, type }`
 
-            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
                 - `text: string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `type: "input_text"`
 
@@ -7498,7 +7498,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+                  标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
                   - `mode: "explicit"`
 
@@ -7508,11 +7508,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -7522,7 +7522,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -7536,17 +7536,17 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
                 - `input_audio: object { data, format }`
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
@@ -7563,26 +7563,26 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
                   - `"input_audio"`
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 输入列表，其中每个元素可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -7592,7 +7592,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  在 EvalItem content 数组中使用的图像输入块。
+                  在 EvalItem 内容数组中使用的图像输入块。
 
                   - `image_url: string`
 
@@ -7606,15 +7606,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
                   - `detail: optional string`
 
-                    发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
-                  模型的音频输入。
+                  发给模型的音频输入。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。取值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -7647,7 +7647,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
           - `range: optional array of number`
 
-            该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+            该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
           - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -7655,17 +7655,17 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
             - `max_completions_tokens: optional number or null`
 
-              评分模型在响应中可生成的最大 token 数。
+              评分模型在其响应中可生成的最大 token 数。
 
             - `reasoning_effort: optional ReasoningEffort or null`
 
-              在推理模型上限制推理的投入程度。当前支持
-              的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-              降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-              每一个取值。有关模型特定支持情况，请参阅
+              限制推理模型在推理上的投入程度。目前支持的值有
+              值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+              降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+              值。请参阅
               推理指南
               [推理指南](/api/docs/guides/reasoning)
-              。
+              以了解特定模型的支持情况。
 
               - `"none"`
 
@@ -7683,7 +7683,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
             - `seed: optional number or null`
 
-              用于在采样期间初始化随机性的种子值。
+              在采样期间用于初始化随机性的种子值。
 
             - `temperature: optional number or null`
 
@@ -7691,21 +7691,21 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
             - `top_p: optional number or null`
 
-              用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+              temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
         - `MultiGrader object { calculate_output, graders, name, type }`
 
-          MultiGrader 对象将多个评分器的输出合并为单个分数。
+          MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
           - `calculate_output: string`
 
-            根据评分器结果计算输出的公式。
+            基于评分器结果计算输出的公式。
 
           - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 
-              一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+              一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
             - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -7717,34 +7717,34 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
             - `ScoreModelGrader object { input, model, name, 3 more }`
 
-              一个 ScoreModelGrader 对象，使用模型为输入打分。
+              一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
             - `LabelModelGrader object { input, labels, model, 3 more }`
 
-              一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+              LabelModelGrader 对象，使用模型为每个项目分配标签
               在评估中。
 
               - `input: array of object { content, role, type }`
 
-                - `content: string or ResponseInputText or object { text, type }  or 3 more`
+                - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
                   模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -7754,7 +7754,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
                   - `InputImage object { image_url, type, detail }`
 
-                    在 EvalItem content 数组中使用的图像输入块。
+                    在 EvalItem 内容数组中使用的图像输入块。
 
                     - `image_url: string`
 
@@ -7768,20 +7768,20 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
                     - `detail: optional string`
 
-                      发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
-                    模型的音频输入。
+                    发给模型的音频输入。
 
-                  - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+                  - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                     输入列表，其中每个元素可以是输入文本、输出文本、输入
                     图像或输入音频对象。
 
                 - `role: "user" or "assistant" or "system" or "developer"`
 
-                  消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                  消息输入的角色。取值为 `user`, `assistant`, `system`，或
                   `developer`.
 
                   - `"user"`
@@ -7800,11 +7800,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
               - `labels: array of string`
 
-                要为评估中每个数据项分配的标签。
+                评估中要为每个项目分配的标签。
 
               - `model: string`
 
-                用于评估的模型。必须支持结构化输出。
+                评估所用的模型。必须支持结构化输出。
 
               - `name: string`
 
@@ -7812,7 +7812,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
               - `passing_labels: array of string`
 
-                表示通过的标签。必须是 labels 的子集。
+                表示通过结果的标签。必须是标签的子集。
 
               - `type: "label_model"`
 
@@ -7832,11 +7832,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
       - `hyperparameters: optional ReinforcementHyperparameters`
 
-        用于强化微调任务的超参数。
+        强化微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -7846,7 +7846,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `compute_multiplier: optional "auto" or number`
 
-          训练期间用于探索搜索空间的算力倍数。
+          训练期间用于探索搜索空间的计算量倍数。
 
           - `"auto"`
 
@@ -7866,7 +7866,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `eval_samples: optional "auto" or number`
 
-          每个训练步生成的评估样本数。
+          每个训练步生成的评估样本数量。
 
           - `"auto"`
 
@@ -7876,7 +7876,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -7886,7 +7886,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -7896,7 +7896,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-          推理力度等级。
+          推理力度级别。
 
           - `"default"`
 
@@ -7912,11 +7912,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
       - `hyperparameters: optional SupervisedHyperparameters`
 
-        用于微调任务的超参数。
+        微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -7926,7 +7926,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -7936,7 +7936,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/events \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -8080,29 +8080,29 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 }
 ```
 
-## Resume fine-tuning
+## 恢复微调
 
 **post** `/fine_tuning/jobs/{fine_tuning_job_id}/resume`
 
-恢复一个微调作业。
+恢复一个微调任务。
 
 ### 路径参数
 
 - `fine_tuning_job_id: string`
 
-### 返回值
+### 返回
 
 - `FineTuningJob object { id, created_at, error, 16 more }`
 
-  该 `fine_tuning.job` 对象，表示已通过 API 创建的微调作业。
+  该 `fine_tuning.job` 表示通过 API 创建的微调作业的对象。
 
   - `id: string`
 
-    对象标识符，可在 API 端点中引用。
+    对象标识符，可在 API 终结点中引用。
 
   - `created_at: number`
 
-    微调作业创建时的 Unix 时间戳（以秒为单位）。
+    微调作业创建时的 Unix 时间戳（秒）。
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -8122,21 +8122,21 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
       - `param: string or null`
 
-        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非由特定参数引起，此字段将为 null。
+        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非特定于某个参数，则此字段将为 null。
 
     - `unknown`
 
   - `fine_tuned_model: string or null`
 
-    正在创建的微调模型的名称。如果微调作业仍在运行，则该值为 null。
+    正在创建的微调模型的名称。如果微调作业仍在运行，则此值将为 null。
 
   - `finished_at: number or null`
 
-    微调作业完成时的 Unix 时间戳（以秒为单位）。如果微调作业仍在运行，则该值为 null。
+    微调作业完成时的 Unix 时间戳（秒）。如果微调作业仍在运行，该值将为 null。
 
   - `model: string`
 
-    正在微调的基模型。
+    正在进行微调的基模型。
 
   - `object: "fine_tuning.job"`
 
@@ -8150,15 +8150,15 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
   - `result_files: array of string`
 
-    微调作业的编译结果文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    微调作业的编译结果文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `seed: number or null`
 
-    用于该微调作业的种子。
+    微调作业所用的种子。
 
   - `status: "validating_files" or "queued" or "running" or 5 more`
 
-    微调作业的当前状态，可能为 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
+    微调作业的当前状态，可以是 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
 
     - `"validating_files"`
 
@@ -8178,28 +8178,28 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
   - `trained_tokens: number or null`
 
-    此微调作业处理的计费 token 总数。如果微调作业仍在运行，则该值为 null。
+    此微调作业处理的计费 token 总数。如果微调作业仍在运行，该值将为 null。
 
   - `training_file: string`
 
-    用于训练的文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    用于训练的文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `validation_file: string or null`
 
-    用于验证的文件 ID。你可以使用以下方法检索验证结果： [Files API](/api/reference/resources/files/methods/content).
+    用于验证的文件 ID。你可以获取验证结果，方法是 [Files API](/api/reference/resources/files/methods/content).
 
   - `estimated_finish: optional number or null`
 
-    微调作业预计完成时的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
+    微调作业预计完成的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
-    用于微调作业的超参数。仅当运行微调作业时才会返回该值。 `supervised` 作业。
+    用于微调作业的超参数。仅当运行 `supervised` 作业时才会返回该值。
 
     - `batch_size: optional "auto" or number or null`
 
-      每个批次中的示例数量。更大的批量大小意味着模型参数更新的频率降低，
-      但方差也会更小。
+      每个批次中的样本数量。更大的批次大小意味着模型参数
+      更新的频率更低，但方差更小。
 
       - `"auto"`
 
@@ -8220,8 +8220,8 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的 epoch 数。一个 epoch 表示完整地遍历
-      一次训练数据集。
+      训练模型的轮数（epoch 数）。一个 epoch 指的是完整遍历
+      训练数据集一次。
 
       - `"auto"`
 
@@ -8231,7 +8231,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
-    为本次微调作业启用的集成列表。
+    为此次微调作业启用的集成列表。
 
     - `type: "wandb"`
 
@@ -8241,18 +8241,18 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
     - `wandb: FineTuningJobWandbIntegration`
 
-      与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-      指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-      并设置与运行关联的默认实体（团队、用户名等）。
+      与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
       - `project: string`
 
-        将在其中创建新运行的项目名称。
+        将在其下创建新运行的项目名称。
 
       - `entity: optional string or null`
 
-        运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-        如果未设置，则使用已注册 WandB API 密钥的默认实体。
+        运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+        关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
       - `name: optional string or null`
 
@@ -8261,13 +8261,13 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
       - `tags: optional array of string`
 
         要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-        默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+        默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对。可用于
-    以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
-    以结构化格式存储对象的附加信息，并通过 接口 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于以结构化
+    格式存储有关对象的额外信息，
+    并通过 API 或控制面板查询对象。
 
     键为字符串，最长 64 个字符。值为字符串，
     最长 512 个字符。
@@ -8278,7 +8278,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
     - `type: "supervised" or "dpo" or "reinforcement"`
 
-      方法的类型。可为以下之一： `supervised`, `dpo`，或 `reinforcement`.
+      方法的类型。为以下两者之一： `supervised`, `dpo`，或 `reinforcement`.
 
       - `"supervised"`
 
@@ -8292,11 +8292,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
       - `hyperparameters: optional DpoHyperparameters`
 
-        用于 DPO 微调任务的超参数。
+        DPO 微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -8306,7 +8306,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `beta: optional "auto" or number`
 
-          DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+          DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
           - `"auto"`
 
@@ -8316,7 +8316,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -8326,7 +8326,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -8344,7 +8344,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
           - `input: string`
 
@@ -8356,7 +8356,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
           - `operation: "eq" or "ne" or "like" or "ilike"`
 
-            要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+            要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
             - `"eq"`
 
@@ -8382,7 +8382,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
           - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-            要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+            要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
             `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
             或 `rouge_l`.
 
@@ -8418,7 +8418,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
           - `reference: string`
 
-            用于对比的文本。
+            用于对比的参考文本。
 
           - `type: "text_similarity"`
 
@@ -8450,27 +8450,27 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入打分。
+          一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
           - `input: array of object { content, role, type }`
 
-            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
                 - `text: string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `type: "input_text"`
 
@@ -8480,7 +8480,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+                  标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
                   - `mode: "explicit"`
 
@@ -8490,11 +8490,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -8504,7 +8504,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -8518,17 +8518,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
                 - `input_audio: object { data, format }`
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
@@ -8545,26 +8545,26 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
                   - `"input_audio"`
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 输入列表，其中每个元素可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -8574,7 +8574,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  在 EvalItem content 数组中使用的图像输入块。
+                  在 EvalItem 内容数组中使用的图像输入块。
 
                   - `image_url: string`
 
@@ -8588,15 +8588,15 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
                   - `detail: optional string`
 
-                    发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
-                  模型的音频输入。
+                  发给模型的音频输入。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。取值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -8629,7 +8629,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
           - `range: optional array of number`
 
-            该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+            该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
           - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -8637,17 +8637,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
             - `max_completions_tokens: optional number or null`
 
-              评分模型在响应中可生成的最大 token 数。
+              评分模型在其响应中可生成的最大 token 数。
 
             - `reasoning_effort: optional ReasoningEffort or null`
 
-              在推理模型上限制推理的投入程度。当前支持
-              的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-              降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-              每一个取值。有关模型特定支持情况，请参阅
+              限制推理模型在推理上的投入程度。目前支持的值有
+              值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+              降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+              值。请参阅
               推理指南
               [推理指南](/api/docs/guides/reasoning)
-              。
+              以了解特定模型的支持情况。
 
               - `"none"`
 
@@ -8665,7 +8665,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
             - `seed: optional number or null`
 
-              用于在采样期间初始化随机性的种子值。
+              在采样期间用于初始化随机性的种子值。
 
             - `temperature: optional number or null`
 
@@ -8673,21 +8673,21 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
             - `top_p: optional number or null`
 
-              用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+              temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
         - `MultiGrader object { calculate_output, graders, name, type }`
 
-          MultiGrader 对象将多个评分器的输出合并为单个分数。
+          MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
           - `calculate_output: string`
 
-            根据评分器结果计算输出的公式。
+            基于评分器结果计算输出的公式。
 
           - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 
-              一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+              一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
             - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -8699,34 +8699,34 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
             - `ScoreModelGrader object { input, model, name, 3 more }`
 
-              一个 ScoreModelGrader 对象，使用模型为输入打分。
+              一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
             - `LabelModelGrader object { input, labels, model, 3 more }`
 
-              一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+              LabelModelGrader 对象，使用模型为每个项目分配标签
               在评估中。
 
               - `input: array of object { content, role, type }`
 
-                - `content: string or ResponseInputText or object { text, type }  or 3 more`
+                - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
                   模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -8736,7 +8736,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
                   - `InputImage object { image_url, type, detail }`
 
-                    在 EvalItem content 数组中使用的图像输入块。
+                    在 EvalItem 内容数组中使用的图像输入块。
 
                     - `image_url: string`
 
@@ -8750,20 +8750,20 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
                     - `detail: optional string`
 
-                      发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
-                    模型的音频输入。
+                    发给模型的音频输入。
 
-                  - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+                  - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                     输入列表，其中每个元素可以是输入文本、输出文本、输入
                     图像或输入音频对象。
 
                 - `role: "user" or "assistant" or "system" or "developer"`
 
-                  消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                  消息输入的角色。取值为 `user`, `assistant`, `system`，或
                   `developer`.
 
                   - `"user"`
@@ -8782,11 +8782,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
               - `labels: array of string`
 
-                要为评估中每个数据项分配的标签。
+                评估中要为每个项目分配的标签。
 
               - `model: string`
 
-                用于评估的模型。必须支持结构化输出。
+                评估所用的模型。必须支持结构化输出。
 
               - `name: string`
 
@@ -8794,7 +8794,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
               - `passing_labels: array of string`
 
-                表示通过的标签。必须是 labels 的子集。
+                表示通过结果的标签。必须是标签的子集。
 
               - `type: "label_model"`
 
@@ -8814,11 +8814,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
       - `hyperparameters: optional ReinforcementHyperparameters`
 
-        用于强化微调任务的超参数。
+        强化微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -8828,7 +8828,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `compute_multiplier: optional "auto" or number`
 
-          训练期间用于探索搜索空间的算力倍数。
+          训练期间用于探索搜索空间的计算量倍数。
 
           - `"auto"`
 
@@ -8848,7 +8848,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `eval_samples: optional "auto" or number`
 
-          每个训练步生成的评估样本数。
+          每个训练步生成的评估样本数量。
 
           - `"auto"`
 
@@ -8858,7 +8858,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -8868,7 +8868,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -8878,7 +8878,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-          推理力度等级。
+          推理力度级别。
 
           - `"default"`
 
@@ -8894,11 +8894,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
       - `hyperparameters: optional SupervisedHyperparameters`
 
-        用于微调任务的超参数。
+        微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -8908,7 +8908,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -8918,7 +8918,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/pause \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -9068,25 +9068,25 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
 获取有关微调作业的信息。
 
-[了解更多关于微调的信息](/api/docs/guides/model-optimization)
+[了解有关微调的更多信息](/api/docs/guides/model-optimization)
 
 ### 路径参数
 
 - `fine_tuning_job_id: string`
 
-### 返回值
+### 返回
 
 - `FineTuningJob object { id, created_at, error, 16 more }`
 
-  该 `fine_tuning.job` 对象，表示已通过 API 创建的微调作业。
+  该 `fine_tuning.job` 表示通过 API 创建的微调作业的对象。
 
   - `id: string`
 
-    对象标识符，可在 API 端点中引用。
+    对象标识符，可在 API 终结点中引用。
 
   - `created_at: number`
 
-    微调作业创建时的 Unix 时间戳（以秒为单位）。
+    微调作业创建时的 Unix 时间戳（秒）。
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -9106,21 +9106,21 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
       - `param: string or null`
 
-        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非由特定参数引起，此字段将为 null。
+        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非特定于某个参数，则此字段将为 null。
 
     - `unknown`
 
   - `fine_tuned_model: string or null`
 
-    正在创建的微调模型的名称。如果微调作业仍在运行，则该值为 null。
+    正在创建的微调模型的名称。如果微调作业仍在运行，则此值将为 null。
 
   - `finished_at: number or null`
 
-    微调作业完成时的 Unix 时间戳（以秒为单位）。如果微调作业仍在运行，则该值为 null。
+    微调作业完成时的 Unix 时间戳（秒）。如果微调作业仍在运行，该值将为 null。
 
   - `model: string`
 
-    正在微调的基模型。
+    正在进行微调的基模型。
 
   - `object: "fine_tuning.job"`
 
@@ -9134,15 +9134,15 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
   - `result_files: array of string`
 
-    微调作业的编译结果文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    微调作业的编译结果文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `seed: number or null`
 
-    用于该微调作业的种子。
+    微调作业所用的种子。
 
   - `status: "validating_files" or "queued" or "running" or 5 more`
 
-    微调作业的当前状态，可能为 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
+    微调作业的当前状态，可以是 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
 
     - `"validating_files"`
 
@@ -9162,28 +9162,28 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
   - `trained_tokens: number or null`
 
-    此微调作业处理的计费 token 总数。如果微调作业仍在运行，则该值为 null。
+    此微调作业处理的计费 token 总数。如果微调作业仍在运行，该值将为 null。
 
   - `training_file: string`
 
-    用于训练的文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    用于训练的文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `validation_file: string or null`
 
-    用于验证的文件 ID。你可以使用以下方法检索验证结果： [Files API](/api/reference/resources/files/methods/content).
+    用于验证的文件 ID。你可以获取验证结果，方法是 [Files API](/api/reference/resources/files/methods/content).
 
   - `estimated_finish: optional number or null`
 
-    微调作业预计完成时的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
+    微调作业预计完成的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
-    用于微调作业的超参数。仅当运行微调作业时才会返回该值。 `supervised` 作业。
+    用于微调作业的超参数。仅当运行 `supervised` 作业时才会返回该值。
 
     - `batch_size: optional "auto" or number or null`
 
-      每个批次中的示例数量。更大的批量大小意味着模型参数更新的频率降低，
-      但方差也会更小。
+      每个批次中的样本数量。更大的批次大小意味着模型参数
+      更新的频率更低，但方差更小。
 
       - `"auto"`
 
@@ -9204,8 +9204,8 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的 epoch 数。一个 epoch 表示完整地遍历
-      一次训练数据集。
+      训练模型的轮数（epoch 数）。一个 epoch 指的是完整遍历
+      训练数据集一次。
 
       - `"auto"`
 
@@ -9215,7 +9215,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
-    为本次微调作业启用的集成列表。
+    为此次微调作业启用的集成列表。
 
     - `type: "wandb"`
 
@@ -9225,18 +9225,18 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
     - `wandb: FineTuningJobWandbIntegration`
 
-      与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-      指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-      并设置与运行关联的默认实体（团队、用户名等）。
+      与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
       - `project: string`
 
-        将在其中创建新运行的项目名称。
+        将在其下创建新运行的项目名称。
 
       - `entity: optional string or null`
 
-        运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-        如果未设置，则使用已注册 WandB API 密钥的默认实体。
+        运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+        关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
       - `name: optional string or null`
 
@@ -9245,13 +9245,13 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
       - `tags: optional array of string`
 
         要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-        默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+        默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对。可用于
-    以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
-    以结构化格式存储对象的附加信息，并通过 接口 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于以结构化
+    格式存储有关对象的额外信息，
+    并通过 API 或控制面板查询对象。
 
     键为字符串，最长 64 个字符。值为字符串，
     最长 512 个字符。
@@ -9262,7 +9262,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
     - `type: "supervised" or "dpo" or "reinforcement"`
 
-      方法的类型。可为以下之一： `supervised`, `dpo`，或 `reinforcement`.
+      方法的类型。为以下两者之一： `supervised`, `dpo`，或 `reinforcement`.
 
       - `"supervised"`
 
@@ -9276,11 +9276,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
       - `hyperparameters: optional DpoHyperparameters`
 
-        用于 DPO 微调任务的超参数。
+        DPO 微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -9290,7 +9290,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `beta: optional "auto" or number`
 
-          DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+          DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
           - `"auto"`
 
@@ -9300,7 +9300,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -9310,7 +9310,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -9328,7 +9328,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
           - `input: string`
 
@@ -9340,7 +9340,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
           - `operation: "eq" or "ne" or "like" or "ilike"`
 
-            要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+            要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
             - `"eq"`
 
@@ -9366,7 +9366,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
           - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-            要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+            要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
             `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
             或 `rouge_l`.
 
@@ -9402,7 +9402,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
           - `reference: string`
 
-            用于对比的文本。
+            用于对比的参考文本。
 
           - `type: "text_similarity"`
 
@@ -9434,27 +9434,27 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入打分。
+          一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
           - `input: array of object { content, role, type }`
 
-            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
                 - `text: string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `type: "input_text"`
 
@@ -9464,7 +9464,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+                  标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
                   - `mode: "explicit"`
 
@@ -9474,11 +9474,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -9488,7 +9488,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -9502,17 +9502,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
                 - `input_audio: object { data, format }`
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
@@ -9529,26 +9529,26 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
                   - `"input_audio"`
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 输入列表，其中每个元素可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -9558,7 +9558,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  在 EvalItem content 数组中使用的图像输入块。
+                  在 EvalItem 内容数组中使用的图像输入块。
 
                   - `image_url: string`
 
@@ -9572,15 +9572,15 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
                   - `detail: optional string`
 
-                    发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
-                  模型的音频输入。
+                  发给模型的音频输入。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。取值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -9613,7 +9613,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
           - `range: optional array of number`
 
-            该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+            该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
           - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -9621,17 +9621,17 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
             - `max_completions_tokens: optional number or null`
 
-              评分模型在响应中可生成的最大 token 数。
+              评分模型在其响应中可生成的最大 token 数。
 
             - `reasoning_effort: optional ReasoningEffort or null`
 
-              在推理模型上限制推理的投入程度。当前支持
-              的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-              降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-              每一个取值。有关模型特定支持情况，请参阅
+              限制推理模型在推理上的投入程度。目前支持的值有
+              值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+              降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+              值。请参阅
               推理指南
               [推理指南](/api/docs/guides/reasoning)
-              。
+              以了解特定模型的支持情况。
 
               - `"none"`
 
@@ -9649,7 +9649,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
             - `seed: optional number or null`
 
-              用于在采样期间初始化随机性的种子值。
+              在采样期间用于初始化随机性的种子值。
 
             - `temperature: optional number or null`
 
@@ -9657,21 +9657,21 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
             - `top_p: optional number or null`
 
-              用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+              temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
         - `MultiGrader object { calculate_output, graders, name, type }`
 
-          MultiGrader 对象将多个评分器的输出合并为单个分数。
+          MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
           - `calculate_output: string`
 
-            根据评分器结果计算输出的公式。
+            基于评分器结果计算输出的公式。
 
           - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 
-              一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+              一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
             - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -9683,34 +9683,34 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
             - `ScoreModelGrader object { input, model, name, 3 more }`
 
-              一个 ScoreModelGrader 对象，使用模型为输入打分。
+              一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
             - `LabelModelGrader object { input, labels, model, 3 more }`
 
-              一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+              LabelModelGrader 对象，使用模型为每个项目分配标签
               在评估中。
 
               - `input: array of object { content, role, type }`
 
-                - `content: string or ResponseInputText or object { text, type }  or 3 more`
+                - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
                   模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -9720,7 +9720,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
                   - `InputImage object { image_url, type, detail }`
 
-                    在 EvalItem content 数组中使用的图像输入块。
+                    在 EvalItem 内容数组中使用的图像输入块。
 
                     - `image_url: string`
 
@@ -9734,20 +9734,20 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
                     - `detail: optional string`
 
-                      发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
-                    模型的音频输入。
+                    发给模型的音频输入。
 
-                  - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+                  - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                     输入列表，其中每个元素可以是输入文本、输出文本、输入
                     图像或输入音频对象。
 
                 - `role: "user" or "assistant" or "system" or "developer"`
 
-                  消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                  消息输入的角色。取值为 `user`, `assistant`, `system`，或
                   `developer`.
 
                   - `"user"`
@@ -9766,11 +9766,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
               - `labels: array of string`
 
-                要为评估中每个数据项分配的标签。
+                评估中要为每个项目分配的标签。
 
               - `model: string`
 
-                用于评估的模型。必须支持结构化输出。
+                评估所用的模型。必须支持结构化输出。
 
               - `name: string`
 
@@ -9778,7 +9778,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
               - `passing_labels: array of string`
 
-                表示通过的标签。必须是 labels 的子集。
+                表示通过结果的标签。必须是标签的子集。
 
               - `type: "label_model"`
 
@@ -9798,11 +9798,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
       - `hyperparameters: optional ReinforcementHyperparameters`
 
-        用于强化微调任务的超参数。
+        强化微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -9812,7 +9812,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `compute_multiplier: optional "auto" or number`
 
-          训练期间用于探索搜索空间的算力倍数。
+          训练期间用于探索搜索空间的计算量倍数。
 
           - `"auto"`
 
@@ -9832,7 +9832,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `eval_samples: optional "auto" or number`
 
-          每个训练步生成的评估样本数。
+          每个训练步生成的评估样本数量。
 
           - `"auto"`
 
@@ -9842,7 +9842,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -9852,7 +9852,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -9862,7 +9862,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-          推理力度等级。
+          推理力度级别。
 
           - `"default"`
 
@@ -9878,11 +9878,11 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
       - `hyperparameters: optional SupervisedHyperparameters`
 
-        用于微调任务的超参数。
+        微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -9892,7 +9892,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -9902,7 +9902,7 @@ curl -X POST https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/resume \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -10049,21 +10049,21 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 }
 ```
 
-## Domain Types
+## 域类型
 
 ### 微调任务
 
 - `FineTuningJob object { id, created_at, error, 16 more }`
 
-  该 `fine_tuning.job` 对象，表示已通过 API 创建的微调作业。
+  该 `fine_tuning.job` 表示通过 API 创建的微调作业的对象。
 
   - `id: string`
 
-    对象标识符，可在 API 端点中引用。
+    对象标识符，可在 API 终结点中引用。
 
   - `created_at: number`
 
-    微调作业创建时的 Unix 时间戳（以秒为单位）。
+    微调作业创建时的 Unix 时间戳（秒）。
 
   - `error: object { code, message, param }  or unknown or null`
 
@@ -10083,21 +10083,21 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
       - `param: string or null`
 
-        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非由特定参数引起，此字段将为 null。
+        无效的参数，通常为 `training_file` 或 `validation_file`。如果失败并非特定于某个参数，则此字段将为 null。
 
     - `unknown`
 
   - `fine_tuned_model: string or null`
 
-    正在创建的微调模型的名称。如果微调作业仍在运行，则该值为 null。
+    正在创建的微调模型的名称。如果微调作业仍在运行，则此值将为 null。
 
   - `finished_at: number or null`
 
-    微调作业完成时的 Unix 时间戳（以秒为单位）。如果微调作业仍在运行，则该值为 null。
+    微调作业完成时的 Unix 时间戳（秒）。如果微调作业仍在运行，该值将为 null。
 
   - `model: string`
 
-    正在微调的基模型。
+    正在进行微调的基模型。
 
   - `object: "fine_tuning.job"`
 
@@ -10111,15 +10111,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
   - `result_files: array of string`
 
-    微调作业的编译结果文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    微调作业的编译结果文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `seed: number or null`
 
-    用于该微调作业的种子。
+    微调作业所用的种子。
 
   - `status: "validating_files" or "queued" or "running" or 5 more`
 
-    微调作业的当前状态，可能为 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
+    微调作业的当前状态，可以是 `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`，或 `cancelled`.
 
     - `"validating_files"`
 
@@ -10139,28 +10139,28 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
   - `trained_tokens: number or null`
 
-    此微调作业处理的计费 token 总数。如果微调作业仍在运行，则该值为 null。
+    此微调作业处理的计费 token 总数。如果微调作业仍在运行，该值将为 null。
 
   - `training_file: string`
 
-    用于训练的文件 ID。可以使用 [Files API](/api/reference/resources/files/methods/content).
+    用于训练的文件 ID。你可以使用 [Files API](/api/reference/resources/files/methods/content).
 
   - `validation_file: string or null`
 
-    用于验证的文件 ID。你可以使用以下方法检索验证结果： [Files API](/api/reference/resources/files/methods/content).
+    用于验证的文件 ID。你可以获取验证结果，方法是 [Files API](/api/reference/resources/files/methods/content).
 
   - `estimated_finish: optional number or null`
 
-    微调作业预计完成时的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
+    微调作业预计完成的 Unix 时间戳（以秒为单位）。如果微调作业未运行，则该值为 null。
 
   - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
-    用于微调作业的超参数。仅当运行微调作业时才会返回该值。 `supervised` 作业。
+    用于微调作业的超参数。仅当运行 `supervised` 作业时才会返回该值。
 
     - `batch_size: optional "auto" or number or null`
 
-      每个批次中的示例数量。更大的批量大小意味着模型参数更新的频率降低，
-      但方差也会更小。
+      每个批次中的样本数量。更大的批次大小意味着模型参数
+      更新的频率更低，但方差更小。
 
       - `"auto"`
 
@@ -10181,8 +10181,8 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的 epoch 数。一个 epoch 表示完整地遍历
-      一次训练数据集。
+      训练模型的轮数（epoch 数）。一个 epoch 指的是完整遍历
+      训练数据集一次。
 
       - `"auto"`
 
@@ -10192,7 +10192,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
-    为本次微调作业启用的集成列表。
+    为此次微调作业启用的集成列表。
 
     - `type: "wandb"`
 
@@ -10202,18 +10202,18 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     - `wandb: FineTuningJobWandbIntegration`
 
-      与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-      指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-      并设置与运行关联的默认实体（团队、用户名等）。
+      与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+      到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
       - `project: string`
 
-        将在其中创建新运行的项目名称。
+        将在其下创建新运行的项目名称。
 
       - `entity: optional string or null`
 
-        运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-        如果未设置，则使用已注册 WandB API 密钥的默认实体。
+        运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+        关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
       - `name: optional string or null`
 
@@ -10222,13 +10222,13 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
       - `tags: optional array of string`
 
         要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-        默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+        默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
   - `metadata: optional Metadata or null`
 
-    可附加到对象的 16 个键值对。可用于
-    以结构化格式存储对象的附加信息，并通过 API 或仪表板查询对象。
-    以结构化格式存储对象的附加信息，并通过 接口 或仪表板查询对象。
+    可附加到对象的 16 组键值对。可用于以结构化
+    格式存储有关对象的额外信息，
+    并通过 API 或控制面板查询对象。
 
     键为字符串，最长 64 个字符。值为字符串，
     最长 512 个字符。
@@ -10239,7 +10239,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
     - `type: "supervised" or "dpo" or "reinforcement"`
 
-      方法的类型。可为以下之一： `supervised`, `dpo`，或 `reinforcement`.
+      方法的类型。为以下两者之一： `supervised`, `dpo`，或 `reinforcement`.
 
       - `"supervised"`
 
@@ -10253,11 +10253,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
       - `hyperparameters: optional DpoHyperparameters`
 
-        用于 DPO 微调任务的超参数。
+        DPO 微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -10267,7 +10267,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `beta: optional "auto" or number`
 
-          DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+          DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
           - `"auto"`
 
@@ -10277,7 +10277,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -10287,7 +10287,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -10305,7 +10305,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
           - `input: string`
 
@@ -10317,7 +10317,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `operation: "eq" or "ne" or "like" or "ilike"`
 
-            要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+            要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
             - `"eq"`
 
@@ -10343,7 +10343,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-            要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+            要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
             `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
             或 `rouge_l`.
 
@@ -10379,7 +10379,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `reference: string`
 
-            用于对比的文本。
+            用于对比的参考文本。
 
           - `type: "text_similarity"`
 
@@ -10411,27 +10411,27 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入打分。
+          一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
           - `input: array of object { content, role, type }`
 
-            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+            由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
                 - `text: string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `type: "input_text"`
 
@@ -10441,7 +10441,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                 - `prompt_cache_breakpoint: optional object { mode }`
 
-                  标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+                  标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
                   - `mode: "explicit"`
 
@@ -10451,11 +10451,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -10465,7 +10465,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -10479,17 +10479,17 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
                 - `input_audio: object { data, format }`
 
                   - `data: string`
 
-                    Base64 编码的音频数据。
+                    经过 Base64 编码的音频数据。
 
                   - `format: "mp3" or "wav"`
 
@@ -10506,26 +10506,26 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                   - `"input_audio"`
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 输入列表，其中每个元素可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
                 - `TextInput = string`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                  模型的文本输入。
+                  发给模型的文本输入。
 
                 - `OutputText object { text, type }`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                   - `text: string`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                   - `type: "output_text"`
 
@@ -10535,7 +10535,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                 - `InputImage object { image_url, type, detail }`
 
-                  在 EvalItem content 数组中使用的图像输入块。
+                  在 EvalItem 内容数组中使用的图像输入块。
 
                   - `image_url: string`
 
@@ -10549,15 +10549,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                   - `detail: optional string`
 
-                    发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                    发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                 - `ResponseInputAudio object { input_audio, type }`
 
-                  模型的音频输入。
+                  发给模型的音频输入。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。取值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -10590,7 +10590,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
           - `range: optional array of number`
 
-            该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+            该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
           - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -10598,17 +10598,17 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
             - `max_completions_tokens: optional number or null`
 
-              评分模型在响应中可生成的最大 token 数。
+              评分模型在其响应中可生成的最大 token 数。
 
             - `reasoning_effort: optional ReasoningEffort or null`
 
-              在推理模型上限制推理的投入程度。当前支持
-              的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-              降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-              每一个取值。有关模型特定支持情况，请参阅
+              限制推理模型在推理上的投入程度。目前支持的值有
+              值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+              降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+              值。请参阅
               推理指南
               [推理指南](/api/docs/guides/reasoning)
-              。
+              以了解特定模型的支持情况。
 
               - `"none"`
 
@@ -10626,7 +10626,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
             - `seed: optional number or null`
 
-              用于在采样期间初始化随机性的种子值。
+              在采样期间用于初始化随机性的种子值。
 
             - `temperature: optional number or null`
 
@@ -10634,21 +10634,21 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
             - `top_p: optional number or null`
 
-              用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+              temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
         - `MultiGrader object { calculate_output, graders, name, type }`
 
-          MultiGrader 对象将多个评分器的输出合并为单个分数。
+          MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
           - `calculate_output: string`
 
-            根据评分器结果计算输出的公式。
+            基于评分器结果计算输出的公式。
 
           - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 
-              一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+              一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
             - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -10660,34 +10660,34 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
             - `ScoreModelGrader object { input, model, name, 3 more }`
 
-              一个 ScoreModelGrader 对象，使用模型为输入打分。
+              一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
             - `LabelModelGrader object { input, labels, model, 3 more }`
 
-              一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+              LabelModelGrader 对象，使用模型为每个项目分配标签
               在评估中。
 
               - `input: array of object { content, role, type }`
 
-                - `content: string or ResponseInputText or object { text, type }  or 3 more`
+                - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
                   模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
                   - `TextInput = string`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                    模型的文本输入。
+                    发给模型的文本输入。
 
                   - `OutputText object { text, type }`
 
-                    模型的文本输出。
+                    来自模型的文本输出。
 
                     - `text: string`
 
-                      模型的文本输出。
+                      来自模型的文本输出。
 
                     - `type: "output_text"`
 
@@ -10697,7 +10697,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                   - `InputImage object { image_url, type, detail }`
 
-                    在 EvalItem content 数组中使用的图像输入块。
+                    在 EvalItem 内容数组中使用的图像输入块。
 
                     - `image_url: string`
 
@@ -10711,20 +10711,20 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
                     - `detail: optional string`
 
-                      发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                      发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
                   - `ResponseInputAudio object { input_audio, type }`
 
-                    模型的音频输入。
+                    发给模型的音频输入。
 
-                  - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+                  - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                     输入列表，其中每个元素可以是输入文本、输出文本、输入
                     图像或输入音频对象。
 
                 - `role: "user" or "assistant" or "system" or "developer"`
 
-                  消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+                  消息输入的角色。取值为 `user`, `assistant`, `system`，或
                   `developer`.
 
                   - `"user"`
@@ -10743,11 +10743,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
               - `labels: array of string`
 
-                要为评估中每个数据项分配的标签。
+                评估中要为每个项目分配的标签。
 
               - `model: string`
 
-                用于评估的模型。必须支持结构化输出。
+                评估所用的模型。必须支持结构化输出。
 
               - `name: string`
 
@@ -10755,7 +10755,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
               - `passing_labels: array of string`
 
-                表示通过的标签。必须是 labels 的子集。
+                表示通过结果的标签。必须是标签的子集。
 
               - `type: "label_model"`
 
@@ -10775,11 +10775,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
       - `hyperparameters: optional ReinforcementHyperparameters`
 
-        用于强化微调任务的超参数。
+        强化微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -10789,7 +10789,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `compute_multiplier: optional "auto" or number`
 
-          训练期间用于探索搜索空间的算力倍数。
+          训练期间用于探索搜索空间的计算量倍数。
 
           - `"auto"`
 
@@ -10809,7 +10809,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `eval_samples: optional "auto" or number`
 
-          每个训练步生成的评估样本数。
+          每个训练步生成的评估样本数量。
 
           - `"auto"`
 
@@ -10819,7 +10819,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -10829,7 +10829,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -10839,7 +10839,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-          推理力度等级。
+          推理力度级别。
 
           - `"default"`
 
@@ -10855,11 +10855,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
       - `hyperparameters: optional SupervisedHyperparameters`
 
-        用于微调任务的超参数。
+        微调任务使用的超参数。
 
         - `batch_size: optional "auto" or number`
 
-          每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+          每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
           - `"auto"`
 
@@ -10869,7 +10869,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `learning_rate_multiplier: optional "auto" or number`
 
-          学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+          学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
           - `"auto"`
 
@@ -10879,7 +10879,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
         - `n_epochs: optional "auto" or number`
 
-          训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+          训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
           - `"auto"`
 
@@ -10891,15 +10891,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
 - `FineTuningJobEvent object { id, created_at, level, 4 more }`
 
-  微调任务事件对象
+  微调作业事件对象
 
   - `id: string`
 
-    对象标识符。
+    对象的标识符。
 
   - `created_at: number`
 
-    微调作业创建时的 Unix 时间戳（以秒为单位）。
+    微调作业创建时的 Unix 时间戳（秒）。
 
   - `level: "info" or "warn" or "error"`
 
@@ -10923,7 +10923,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
   - `data: optional unknown or null`
 
-    与该事件关联的数据。
+    与事件关联的数据。
 
   - `type: optional "message" or "metrics"`
 
@@ -10937,18 +10937,18 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
 - `FineTuningJobWandbIntegration object { project, entity, name, tags }`
 
-  与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-  指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-  并设置与运行关联的默认实体（团队、用户名等）。
+  与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+  到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+  到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
   - `project: string`
 
-    将在其中创建新运行的项目名称。
+    将在其下创建新运行的项目名称。
 
   - `entity: optional string or null`
 
-    运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-    如果未设置，则使用已注册 WandB API 密钥的默认实体。
+    运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+    关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
   - `name: optional string or null`
 
@@ -10957,7 +10957,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
   - `tags: optional array of string`
 
     要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-    默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+    默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
 ### 微调任务 Wandb 集成对象
 
@@ -10971,18 +10971,18 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
   - `wandb: FineTuningJobWandbIntegration`
 
-    与 Weights and Biases 集成的设置。此负载指定将指标上报到的项目，还可以为运行设置显式显示名称、为运行添加标签，以及设置与运行关联的默认实体（团队、用户名等）。
-    指标将发送到该项目。你可以为运行设置一个显式的显示名称，为运行添加标签，
-    并设置与运行关联的默认实体（团队、用户名等）。
+    与 Weights and Biases 集成的设置。此负载指定了指标将发送到的项目。你可以选择性地为运行设置显式显示名称，添加标签
+    到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
+    到你的运行，并设置要与运行关联的默认实体（团队、用户名等）。
 
     - `project: string`
 
-      将在其中创建新运行的项目名称。
+      将在其下创建新运行的项目名称。
 
     - `entity: optional string or null`
 
-      运行所使用的实体。你可以通过它设置希望与该运行关联的 WandB 用户的团队或用户名。
-      如果未设置，则使用已注册 WandB API 密钥的默认实体。
+      运行要使用的实体。这允许你设置要关联的 WandB 用户的团队或用户名，如果你希望
+      关联到该运行。如果未设置，则使用已注册 WandB API 密钥的默认实体。
 
     - `name: optional string or null`
 
@@ -10991,15 +10991,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
     - `tags: optional array of string`
 
       要附加到新创建的运行的标签列表。这些标签会直接传递给 WandB。部分
-      默认标签由 OpenAI 生成: "openai/finetune", "openai/{base-model}", "openai/{ftjob-abcdef}".
+      默认标签由 OpenAI 生成："openai/finetune"、"openai/{base-model}"、"openai/{ftjob-abcdef}".
 
-# Checkpoints
+# 检查点
 
 ## 列出微调检查点
 
 **get** `/fine_tuning/jobs/{fine_tuning_job_id}/checkpoints`
 
-列出微调任务的检查点。
+列出微调作业的检查点。
 
 ### 路径参数
 
@@ -11009,35 +11009,35 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
 - `after: optional string`
 
-  上一次分页请求中最后一个检查点 ID 的标识符。
+  上一次分页请求中最后一个 checkpoint 的标识符。
 
 - `limit: optional number`
 
-  要检索的检查点数量。
+  要检索的 checkpoint 数量。
 
-### 返回值
+### 返回
 
 - `data: array of FineTuningJobCheckpoint`
 
   - `id: string`
 
-    检查点标识符，可在 API 端点中引用。
+    checkpoint 标识符，可以在 API 端点中引用。
 
   - `created_at: number`
 
-    检查点创建时的 Unix 时间戳（以秒为单位）。
+    checkpoint 创建时的 Unix 时间戳（以秒为单位）。
 
   - `fine_tuned_model_checkpoint: string`
 
-    已创建微调检查点模型的名称。
+    所创建微调 checkpoint 模型的名称。
 
   - `fine_tuning_job_id: string`
 
-    创建此检查点所对应的微调任务的名称。
+    创建此 checkpoint 的微调任务的名称。
 
   - `metrics: object { full_valid_loss, full_valid_mean_token_accuracy, step, 4 more }`
 
-    微调任务在该步骤编号下的指标。
+    微调任务中指定步数处的指标。
 
     - `full_valid_loss: optional number`
 
@@ -11061,7 +11061,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ft-AF1WoRqd3aJAHsqc9NY7iL8F \
 
   - `step_number: number`
 
-    创建该检查点时所对应的步骤编号。
+    创建该 checkpoint 时的步数。
 
 - `has_more: boolean`
 
@@ -11154,33 +11154,33 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 }
 ```
 
-## Domain Types
+## 域类型
 
-### 微调任务检查点
+### 微调作业检查点
 
 - `FineTuningJobCheckpoint object { id, created_at, fine_tuned_model_checkpoint, 4 more }`
 
-  该 `fine_tuning.job.checkpoint` object 表示已准备就绪、可供使用的微调作业的模型检查点。
+  该 `fine_tuning.job.checkpoint` 对象表示一个可供使用的微调作业的模型检查点。
 
   - `id: string`
 
-    检查点标识符，可在 API 端点中引用。
+    checkpoint 标识符，可以在 API 端点中引用。
 
   - `created_at: number`
 
-    检查点创建时的 Unix 时间戳（以秒为单位）。
+    checkpoint 创建时的 Unix 时间戳（以秒为单位）。
 
   - `fine_tuned_model_checkpoint: string`
 
-    已创建微调检查点模型的名称。
+    所创建微调 checkpoint 模型的名称。
 
   - `fine_tuning_job_id: string`
 
-    创建此检查点所对应的微调任务的名称。
+    创建此 checkpoint 的微调任务的名称。
 
   - `metrics: object { full_valid_loss, full_valid_mean_token_accuracy, step, 4 more }`
 
-    微调任务在该步骤编号下的指标。
+    微调任务中指定步数处的指标。
 
     - `full_valid_loss: optional number`
 
@@ -11204,21 +11204,21 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `step_number: number`
 
-    创建该检查点时所对应的步骤编号。
+    创建该 checkpoint 时的步数。
 
 # 方法
 
-## Domain Types
+## 域类型
 
 ### Dpo 超参数
 
 - `DpoHyperparameters object { batch_size, beta, learning_rate_multiplier, n_epochs }`
 
-  用于 DPO 微调任务的超参数。
+  DPO 微调任务使用的超参数。
 
   - `batch_size: optional "auto" or number`
 
-    每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+    每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
     - `"auto"`
 
@@ -11228,7 +11228,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `beta: optional "auto" or number`
 
-    DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+    DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
     - `"auto"`
 
@@ -11238,7 +11238,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `learning_rate_multiplier: optional "auto" or number`
 
-    学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+    学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
     - `"auto"`
 
@@ -11248,7 +11248,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `n_epochs: optional "auto" or number`
 
-    训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+    训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
     - `"auto"`
 
@@ -11264,11 +11264,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `hyperparameters: optional DpoHyperparameters`
 
-    用于 DPO 微调任务的超参数。
+    DPO 微调任务使用的超参数。
 
     - `batch_size: optional "auto" or number`
 
-      每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+      每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
       - `"auto"`
 
@@ -11278,7 +11278,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `beta: optional "auto" or number`
 
-      DPO 方法的 beta 值。beta 值越高，策略模型与参考模型之间惩罚项的权重就越大。
+      DPO 方法的 beta 值。较高的 beta 值会增大策略模型与参考模型之间惩罚项的权重。
 
       - `"auto"`
 
@@ -11288,7 +11288,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `learning_rate_multiplier: optional "auto" or number`
 
-      学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+      学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
       - `"auto"`
 
@@ -11298,7 +11298,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+      训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
       - `"auto"`
 
@@ -11306,15 +11306,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `number`
 
-### 强化超参数
+### 强化学习超参数
 
 - `ReinforcementHyperparameters object { batch_size, compute_multiplier, eval_interval, 4 more }`
 
-  用于强化微调任务的超参数。
+  强化微调任务使用的超参数。
 
   - `batch_size: optional "auto" or number`
 
-    每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+    每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
     - `"auto"`
 
@@ -11324,7 +11324,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `compute_multiplier: optional "auto" or number`
 
-    训练期间用于探索搜索空间的算力倍数。
+    训练期间用于探索搜索空间的计算量倍数。
 
     - `"auto"`
 
@@ -11344,7 +11344,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `eval_samples: optional "auto" or number`
 
-    每个训练步生成的评估样本数。
+    每个训练步生成的评估样本数量。
 
     - `"auto"`
 
@@ -11354,7 +11354,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `learning_rate_multiplier: optional "auto" or number`
 
-    学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+    学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
     - `"auto"`
 
@@ -11364,7 +11364,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `n_epochs: optional "auto" or number`
 
-    训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+    训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
     - `"auto"`
 
@@ -11374,7 +11374,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-    推理力度等级。
+    推理力度级别。
 
     - `"default"`
 
@@ -11384,7 +11384,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `"high"`
 
-### 强化方法
+### 强化学习方法
 
 - `ReinforcementMethod object { grader, hyperparameters }`
 
@@ -11396,7 +11396,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `StringCheckGrader object { input, name, operation, 2 more }`
 
-      一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+      一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
       - `input: string`
 
@@ -11408,7 +11408,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `operation: "eq" or "ne" or "like" or "ilike"`
 
-        要执行的字符串检查操作。其值之一为 `eq`, `ne`, `like`，或 `ilike`.
+        要执行的字符串检查操作。可选值之一为 `eq`, `ne`, `like`，或 `ilike`.
 
         - `"eq"`
 
@@ -11434,7 +11434,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `evaluation_metric: "cosine" or "fuzzy_match" or "bleu" or 8 more`
 
-        要使用的评估指标。其值之一为 `cosine`, `fuzzy_match`, `bleu`,
+        要使用的评估指标。可选值之一为 `cosine`, `fuzzy_match`, `bleu`,
         `gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`,
         或 `rouge_l`.
 
@@ -11470,7 +11470,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `reference: string`
 
-        用于对比的文本。
+        用于对比的参考文本。
 
       - `type: "text_similarity"`
 
@@ -11502,27 +11502,27 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `ScoreModelGrader object { input, model, name, 3 more }`
 
-      一个 ScoreModelGrader 对象，使用模型为输入打分。
+      一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
       - `input: array of object { content, role, type }`
 
-        由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并且可以包含模板字符串。
+        由评分器评估的输入消息。支持文本、输出文本、输入图像和输入音频内容块，并可包含模板字符串。
 
-        - `content: string or ResponseInputText or object { text, type }  or 3 more`
+        - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
           模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
           - `TextInput = string`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
           - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-            模型的文本输入。
+            发给模型的文本输入。
 
             - `text: string`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `type: "input_text"`
 
@@ -11532,7 +11532,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的精确结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+              标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会对齐到 token 块。
 
               - `mode: "explicit"`
 
@@ -11542,11 +11542,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
           - `OutputText object { text, type }`
 
-            模型的文本输出。
+            来自模型的文本输出。
 
             - `text: string`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
             - `type: "output_text"`
 
@@ -11556,7 +11556,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
           - `InputImage object { image_url, type, detail }`
 
-            在 EvalItem content 数组中使用的图像输入块。
+            在 EvalItem 内容数组中使用的图像输入块。
 
             - `image_url: string`
 
@@ -11570,17 +11570,17 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
             - `detail: optional string`
 
-              发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+              发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
-            模型的音频输入。
+            发给模型的音频输入。
 
             - `input_audio: object { data, format }`
 
               - `data: string`
 
-                Base64 编码的音频数据。
+                经过 Base64 编码的音频数据。
 
               - `format: "mp3" or "wav"`
 
@@ -11597,26 +11597,26 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
               - `"input_audio"`
 
-          - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+          - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
             输入列表，其中每个元素可以是输入文本、输出文本、输入
             图像或输入音频对象。
 
             - `TextInput = string`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-              模型的文本输入。
+              发给模型的文本输入。
 
             - `OutputText object { text, type }`
 
-              模型的文本输出。
+              来自模型的文本输出。
 
               - `text: string`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
               - `type: "output_text"`
 
@@ -11626,7 +11626,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
             - `InputImage object { image_url, type, detail }`
 
-              在 EvalItem content 数组中使用的图像输入块。
+              在 EvalItem 内容数组中使用的图像输入块。
 
               - `image_url: string`
 
@@ -11640,15 +11640,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
               - `detail: optional string`
 
-                发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
-              模型的音频输入。
+              发给模型的音频输入。
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+          消息输入的角色。取值为 `user`, `assistant`, `system`，或
           `developer`.
 
           - `"user"`
@@ -11681,7 +11681,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `range: optional array of number`
 
-        该服务要求分数范围提供两个数值。默认为 `[0, 1]`.
+        该服务需要两个数字作为分数范围。默认为 `[0, 1]`.
 
       - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -11689,17 +11689,17 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
         - `max_completions_tokens: optional number or null`
 
-          评分模型在响应中可生成的最大 token 数。
+          评分模型在其响应中可生成的最大 token 数。
 
         - `reasoning_effort: optional ReasoningEffort or null`
 
-          在推理模型上限制推理的投入程度。当前支持
-          的取值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，以及 `max`.
-          降低推理投入程度可以加快响应速度，并减少响应中用于推理的 token 数。并非所有推理模型都支持
-          每一个取值。有关模型特定支持情况，请参阅
+          限制推理模型在推理上的投入程度。目前支持的值有
+          值为 `none`, `minimal`, `low`, `medium`, `high`, `xhigh`，和 `max`.
+          降低推理投入程度可加快响应速度并减少响应中用于推理的 token 数量。并非所有推理模型都支持每个
+          值。请参阅
           推理指南
           [推理指南](/api/docs/guides/reasoning)
-          。
+          以了解特定模型的支持情况。
 
           - `"none"`
 
@@ -11717,7 +11717,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
         - `seed: optional number or null`
 
-          用于在采样期间初始化随机性的种子值。
+          在采样期间用于初始化随机性的种子值。
 
         - `temperature: optional number or null`
 
@@ -11725,21 +11725,21 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
         - `top_p: optional number or null`
 
-          用于 nucleus 采样的 temperature 替代方案；1.0 表示包含所有 token。
+          temperature 的替代方案，采用 nucleus 采样；1.0 表示包含所有 token。
 
     - `MultiGrader object { calculate_output, graders, name, type }`
 
-      MultiGrader 对象将多个评分器的输出合并为单个分数。
+      MultiGrader 对象会将多个评分器的输出合并为单个分数。
 
       - `calculate_output: string`
 
-        根据评分器结果计算输出的公式。
+        基于评分器结果计算输出的公式。
 
       - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
         - `StringCheckGrader object { input, name, operation, 2 more }`
 
-          一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
+          一个 StringCheckGrader 对象，使用指定的操作对输入和参考文本进行字符串比较。
 
         - `TextSimilarityGrader object { evaluation_metric, input, name, 2 more }`
 
@@ -11751,34 +11751,34 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
         - `ScoreModelGrader object { input, model, name, 3 more }`
 
-          一个 ScoreModelGrader 对象，使用模型为输入打分。
+          一个 ScoreModelGrader 对象，使用模型对输入进行打分。
 
         - `LabelModelGrader object { input, labels, model, 3 more }`
 
-          一个 LabelModelGrader 对象，它使用模型为每个项目分配标签
+          LabelModelGrader 对象，使用模型为每个项目分配标签
           在评估中。
 
           - `input: array of object { content, role, type }`
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
               - `TextInput = string`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
-                模型的文本输入。
+                发给模型的文本输入。
 
               - `OutputText object { text, type }`
 
-                模型的文本输出。
+                来自模型的文本输出。
 
                 - `text: string`
 
-                  模型的文本输出。
+                  来自模型的文本输出。
 
                 - `type: "output_text"`
 
@@ -11788,7 +11788,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
               - `InputImage object { image_url, type, detail }`
 
-                在 EvalItem content 数组中使用的图像输入块。
+                在 EvalItem 内容数组中使用的图像输入块。
 
                 - `image_url: string`
 
@@ -11802,20 +11802,20 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
                 - `detail: optional string`
 
-                  发送给模型的图像细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
+                  发送给模型的图像的细节级别。可选值为 `high`, `low`，或 `auto`。之一。默认为 `auto`.
 
               - `ResponseInputAudio object { input_audio, type }`
 
-                模型的音频输入。
+                发给模型的音频输入。
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 输入列表，其中每个元素可以是输入文本、输出文本、输入
                 图像或输入音频对象。
 
             - `role: "user" or "assistant" or "system" or "developer"`
 
-              消息输入的角色。可选值为 `user`, `assistant`, `system`，或
+              消息输入的角色。取值为 `user`, `assistant`, `system`，或
               `developer`.
 
               - `"user"`
@@ -11834,11 +11834,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
           - `labels: array of string`
 
-            要为评估中每个数据项分配的标签。
+            评估中要为每个项目分配的标签。
 
           - `model: string`
 
-            用于评估的模型。必须支持结构化输出。
+            评估所用的模型。必须支持结构化输出。
 
           - `name: string`
 
@@ -11846,7 +11846,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
           - `passing_labels: array of string`
 
-            表示通过的标签。必须是 labels 的子集。
+            表示通过结果的标签。必须是标签的子集。
 
           - `type: "label_model"`
 
@@ -11866,11 +11866,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `hyperparameters: optional ReinforcementHyperparameters`
 
-    用于强化微调任务的超参数。
+    强化微调任务使用的超参数。
 
     - `batch_size: optional "auto" or number`
 
-      每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+      每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
       - `"auto"`
 
@@ -11880,7 +11880,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `compute_multiplier: optional "auto" or number`
 
-      训练期间用于探索搜索空间的算力倍数。
+      训练期间用于探索搜索空间的计算量倍数。
 
       - `"auto"`
 
@@ -11900,7 +11900,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `eval_samples: optional "auto" or number`
 
-      每个训练步生成的评估样本数。
+      每个训练步生成的评估样本数量。
 
       - `"auto"`
 
@@ -11910,7 +11910,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `learning_rate_multiplier: optional "auto" or number`
 
-      学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+      学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
       - `"auto"`
 
@@ -11920,7 +11920,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+      训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
       - `"auto"`
 
@@ -11930,7 +11930,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `reasoning_effort: optional "default" or "low" or "medium" or "high"`
 
-      推理力度等级。
+      推理力度级别。
 
       - `"default"`
 
@@ -11940,15 +11940,15 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
       - `"high"`
 
-### 监督超参数
+### 监督学习超参数
 
 - `SupervisedHyperparameters object { batch_size, learning_rate_multiplier, n_epochs }`
 
-  用于微调任务的超参数。
+  微调任务使用的超参数。
 
   - `batch_size: optional "auto" or number`
 
-    每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+    每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
     - `"auto"`
 
@@ -11958,7 +11958,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `learning_rate_multiplier: optional "auto" or number`
 
-    学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+    学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
     - `"auto"`
 
@@ -11968,7 +11968,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `n_epochs: optional "auto" or number`
 
-    训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+    训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
     - `"auto"`
 
@@ -11976,7 +11976,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `number`
 
-### 监督方法
+### 监督学习方法
 
 - `SupervisedMethod object { hyperparameters }`
 
@@ -11984,11 +11984,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
   - `hyperparameters: optional SupervisedHyperparameters`
 
-    用于微调任务的超参数。
+    微调任务使用的超参数。
 
     - `batch_size: optional "auto" or number`
 
-      每个批次中的样本数。更大的批次大小意味着模型参数更新频率降低，但方差更小。
+      每个批次中的示例数量。较大的批次大小意味着模型参数更新频率较低，但方差也较低。
 
       - `"auto"`
 
@@ -11998,7 +11998,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `learning_rate_multiplier: optional "auto" or number`
 
-      学习率的缩放因子。使用较小的学习率可能有助于防止过拟合。
+      学习率的缩放因子。较小的学习率可能有助于避免过拟合。
 
       - `"auto"`
 
@@ -12008,7 +12008,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs/ftjob-abc123/checkpoints \
 
     - `n_epochs: optional "auto" or number`
 
-      训练模型的轮次数。一个 epoch 指的是完整遍历一次训练数据集。
+      训练模型的轮数。一个轮次指遍历整个训练数据集一次。
 
       - `"auto"`
 

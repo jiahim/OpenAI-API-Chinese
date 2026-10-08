@@ -1,10 +1,10 @@
-> 完整的文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需完整文档索引,请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 列出 ChatKit 线程项
 
 **get** `/chatkit/threads/{thread_id}/items`
 
-列出属于某个 ChatKit 线程的条目。
+列出属于 ChatKit 会话的条目。
 
 ### 路径参数
 
@@ -14,19 +14,19 @@
 
 - `after: optional string`
 
-  在此线程项 ID 之后创建的列表项。对于第一页，默认为 null。
+  在此会话条目 ID 之后创建的列表项。首页默认为 null。
 
 - `before: optional string`
 
-  在此线程项 ID 之前创建的列表项。对于最新结果，默认为 null。
+  在此会话条目 ID 之前创建的列表项。最新结果默认为 null。
 
 - `limit: optional number`
 
-  要返回的线程项的最大数量。默认为 20。
+  返回的最大会话条目数。默认为 20。
 
 - `order: optional "asc" or "desc"`
 
-  按创建时间排序结果的顺序。默认为 `desc`.
+  按创建时间排序结果。默认为 `desc`.
 
   - `"asc"`
 
@@ -36,7 +36,7 @@
 
 - `ChatKitThreadItemList object { data, first_id, has_more, 2 more }`
 
-  为 ChatKit API 渲染的线程项的分页列表。
+  为 ChatKit API 渲染的分页会话项列表。
 
   - `data: array of ChatKitThreadUserMessageItem or ChatKitThreadAssistantMessageItem or ChatKitWidgetItem or 3 more`
 
@@ -44,11 +44,11 @@
 
     - `ChatKitThreadUserMessageItem object { id, attachments, content, 5 more }`
 
-      线程中由用户撰写的消息。
+      会话中由用户撰写的消息。
 
       - `id: string`
 
-        线程项的标识符。
+        会话项的标识符。
 
       - `attachments: array of ChatKitAttachment`
 
@@ -72,19 +72,19 @@
 
         - `type: "image" or "file"`
 
-          附件的判别字段。
+          附件判别字段。
 
           - `"image"`
 
           - `"file"`
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of InputText { text, type }  or QuotedText { text, type }`
 
         用户提供的有序内容元素。
 
         - `InputText object { text, type }`
 
-          用户在该线程中贡献的文本块。
+          用户向会话贡献的文本块。
 
           - `text: string`
 
@@ -92,39 +92,39 @@
 
           - `type: "input_text"`
 
-            始终为以下值的类型判别字段 `input_text`.
+            类型判别字段，始终为 `input_text`.
 
             - `"input_text"`
 
         - `QuotedText object { text, type }`
 
-          用户在消息中引用的引用片段。
+          用户在消息中引用的带引号片段。
 
           - `text: string`
 
-            引用文本内容。
+            带引号的文本内容。
 
           - `type: "quoted_text"`
 
-            始终为以下值的类型判别字段 `quoted_text`.
+            类型判别字段，始终为 `quoted_text`.
 
             - `"quoted_text"`
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该条目创建时的 Unix 时间戳（以秒为单位）。
 
       - `inference_options: object { model, tool_choice }  or null`
 
-        应用于消息的推理覆盖参数。未设置时默认为 null。
+        应用于该消息的推理覆盖设置。未设置时默认为 null。
 
         - `model: string or null`
 
-          生成响应的模型名称。使用会话默认模型时默认为 null。
+          生成该响应的模型名称。使用会话默认模型时默认为 null。
 
         - `tool_choice: object { id }  or null`
 
-          首选调用的工具。由 ChatKit 自动选择时默认为 null。
+          首选调用的工具。当由 ChatKit 自动选择时默认为 null。
 
           - `id: string`
 
@@ -132,7 +132,7 @@
 
       - `object: "chatkit.thread_item"`
 
-        始终为以下值的类型判别字段 `chatkit.thread_item`.
+        类型判别字段，始终为 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
@@ -146,85 +146,85 @@
 
     - `ChatKitThreadAssistantMessageItem object { id, content, created_at, 3 more }`
 
-      线程中由智能体创建的消息。
+      线程内由助手创作的消息。
 
       - `id: string`
 
-        线程项的标识符。
+        会话项的标识符。
 
       - `content: array of ChatKitResponseOutputText`
 
-        有序的智能体响应片段。
+        按顺序排列的助手响应片段。
 
-        - `annotations: array of object { source, type }  or object { source, type }`
+        - `annotations: array of File { source, type }  or URL { source, type }`
 
-          附加到响应文本的有序注解列表。
+          附加到响应文本的注释有序列表。
 
           - `File object { source, type }`
 
-            引用已上传文件的注解。
+            引用已上传文件的注释。
 
             - `source: object { filename, type }`
 
-              注解所引用的文件附件。
+              注释引用的文件附件。
 
               - `filename: string`
 
-                注解所引用的文件名。
+                注释引用的文件名。
 
               - `type: "file"`
 
-                始终为以下值的类型判别字段 `file`.
+                类型判别字段，始终为 `file`.
 
                 - `"file"`
 
             - `type: "file"`
 
-              类型判别字段，始终为 `file` （针对该注解）。
+              类型判别字段，始终 `file` 用于此注释。
 
               - `"file"`
 
           - `URL object { source, type }`
 
-            引用 URL 的注解。
+            引用 URL 的注释。
 
             - `source: object { type, url }`
 
-              注解所引用的 URL。
+              注释引用的 URL。
 
               - `type: "url"`
 
-                始终为以下值的类型判别字段 `url`.
+                类型判别字段，始终为 `url`.
 
                 - `"url"`
 
               - `url: string`
 
-                注解所引用的 URL。
+                注释引用的 URL。
 
             - `type: "url"`
 
-              类型判别字段，始终为 `url` （针对该注解）。
+              类型判别字段，始终 `url` 用于此注释。
 
               - `"url"`
 
         - `text: string`
 
-          智能体生成的文本。
+          助手生成的文本。
 
         - `type: "output_text"`
 
-          始终为以下值的类型判别字段 `output_text`.
+          类型判别字段，始终为 `output_text`.
 
           - `"output_text"`
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该条目创建时的 Unix 时间戳（以秒为单位）。
 
       - `object: "chatkit.thread_item"`
 
-        始终为以下值的类型判别字段 `chatkit.thread_item`.
+        类型判别字段，始终为 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
@@ -234,25 +234,25 @@
 
       - `type: "chatkit.assistant_message"`
 
-        始终为以下值的类型判别字段 `chatkit.assistant_message`.
+        类型判别字段，始终为 `chatkit.assistant_message`.
 
         - `"chatkit.assistant_message"`
 
     - `ChatKitWidgetItem object { id, created_at, object, 3 more }`
 
-      用于渲染 widget 负载的线程条目。
+      呈现小部件载荷的线程项。
 
       - `id: string`
 
-        线程项的标识符。
+        会话项的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该条目创建时的 Unix 时间戳（以秒为单位）。
 
       - `object: "chatkit.thread_item"`
 
-        始终为以下值的类型判别字段 `chatkit.thread_item`.
+        类型判别字段，始终为 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
@@ -262,21 +262,21 @@
 
       - `type: "chatkit.widget"`
 
-        始终为以下值的类型判别字段 `chatkit.widget`.
+        类型判别字段，始终为 `chatkit.widget`.
 
         - `"chatkit.widget"`
 
       - `widget: string`
 
-        在 UI 中渲染的序列化 widget 负载。
+        在 UI 中呈现的序列化小部件载荷。
 
     - `ChatKitClientToolCall object { id, arguments, call_id, 7 more }`
 
-      由智能体发起的客户端工具调用记录。
+      由助手发起的客户端工具调用记录。
 
       - `id: string`
 
-        线程项的标识符。
+        会话项的标识符。
 
       - `arguments: string`
 
@@ -288,21 +288,21 @@
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该条目创建时的 Unix 时间戳（以秒为单位）。
 
       - `name: string`
 
-        被调用的工具名称。
+        调用的工具名称。
 
       - `object: "chatkit.thread_item"`
 
-        始终为以下值的类型判别字段 `chatkit.thread_item`.
+        类型判别字段，始终为 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
       - `output: string or null`
 
-        从工具捕获的 JSON 编码输出。在执行进行中默认为 null。
+        从工具捕获的 JSON 编码输出。执行进行中时默认为 null。
 
       - `status: "in_progress" or "completed"`
 
@@ -318,7 +318,7 @@
 
       - `type: "chatkit.client_tool_call"`
 
-        始终为以下值的类型判别字段 `chatkit.client_tool_call`.
+        类型判别字段，始终为 `chatkit.client_tool_call`.
 
         - `"chatkit.client_tool_call"`
 
@@ -328,11 +328,11 @@
 
       - `id: string`
 
-        线程项的标识符。
+        会话项的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该条目创建时的 Unix 时间戳（以秒为单位）。
 
       - `heading: string or null`
 
@@ -340,7 +340,7 @@
 
       - `object: "chatkit.thread_item"`
 
-        始终为以下值的类型判别字段 `chatkit.thread_item`.
+        类型判别字段，始终为 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
@@ -362,25 +362,25 @@
 
       - `type: "chatkit.task"`
 
-        始终为以下值的类型判别字段 `chatkit.task`.
+        类型判别字段，始终为 `chatkit.task`.
 
         - `"chatkit.task"`
 
     - `ChatKitTaskGroup object { id, created_at, object, 3 more }`
 
-      在线程中分组到一起的工作流任务集合。
+      在线程中分组在一起的一组工作流任务。
 
       - `id: string`
 
-        线程项的标识符。
+        会话项的标识符。
 
       - `created_at: number`
 
-        项创建时的 Unix 时间戳（以秒为单位）。
+        该条目创建时的 Unix 时间戳（以秒为单位）。
 
       - `object: "chatkit.thread_item"`
 
-        始终为以下值的类型判别字段 `chatkit.thread_item`.
+        类型判别字段，始终为 `chatkit.thread_item`.
 
         - `"chatkit.thread_item"`
 
@@ -410,7 +410,7 @@
 
       - `type: "chatkit.task_group"`
 
-        始终为以下值的类型判别字段 `chatkit.task_group`.
+        类型判别字段，始终为 `chatkit.task_group`.
 
         - `"chatkit.task_group"`
 

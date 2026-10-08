@@ -1,8 +1,8 @@
 # Sideband WebSocket
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取文档页面的 Markdown 版本。
 
-使用你的 OpenAI API 密钥将你的后端服务器接入现有的 Live 会话。例如，当你的前端通过 WebRTC 连接时，可使用此 WebSocket 在后端处理事件并控制会话。
+使用你的 OpenAI API 密钥将后端服务器接入现有的 Live 会话。例如，当你的前端通过 WebRTC 连接时，可使用此 WebSocket 处理事件并从后端控制会话。
 
 WS `/v1/live/sessions/{session_id}/attach`
 
@@ -10,17 +10,17 @@ WS `/v1/live/sessions/{session_id}/attach`
 
 `wss://api.openai.com/v1/live/sessions/{session_id}/attach`
 
-在请求头中使用你的 OpenAI API 密钥从你的后端进行身份验证 `Authorization: Bearer $OPENAI_API_KEY` 。请将密钥保存在你的服务器上。
+在你的后端使用 OpenAI API 密钥在请求头中进行认证 `Authorization: Bearer $OPENAI_API_KEY` 中对该密钥进行认证。请将密钥保存在你的服务器上。
 
 `session_id` （必填路径参数）：要附加到的现有会话的 ID。
 
-附加操作不会创建会话，也不会重放之前的事件。主连接承载实时媒体；该旁路通道接收回传的输入和输出音频。请勿在此 WebSocket 上发送 session.start 或 session.input_audio.append。
+附加操作不会创建会话，也不会重放之前的事件。主连接承载实时媒体，此旁路连接接收回放的输入和输出音频。请勿在该 WebSocket 上发送 session.start 或 session.input_audio.append。
 
-## Inputs
+## 输入
 
-对于使用 Responses 委托的会话，更新其工具选择。委托类型无法更改。附加后无需首条必需消息。
+对于使用 Responses 委派的会话，请更新其工具选择。委派类型无法更改。附加后无需发送任何必需的首条消息。
 
-### 示例客户端事件：session.update
+### 客户端事件示例：session.update
 
 ```json
 {
@@ -39,11 +39,11 @@ WS `/v1/live/sessions/{session_id}/attach`
 
 [所有客户端事件](#client-events)
 
-## Outputs
+## 输出
 
-配置更新通过 session.updated 进行确认。你还会收到后续的会话事件；仅附加操作不会触发该事件。
+配置更新会通过 session.updated 事件进行确认。你还会收到后续的会话事件；仅附加不会触发此事件。
 
-### 示例服务端事件 · 节选：session.updated
+### 服务端事件示例 · 节选：session.updated
 
 ```json
 {
@@ -61,7 +61,7 @@ WS `/v1/live/sessions/{session_id}/attach`
 
 [所有服务端事件](#server-events)
 
-[需要启动会话并从后端流式传输音频？请使用主 WebSocket。](https://developers.openai.com/api/reference/resources/live/primary-websocket)
+[需要从你的后端启动会话并流式传输音频？请使用主 WebSocket。](https://developers.openai.com/api/reference/resources/live/primary-websocket)
 
 <a id="client-events"></a>
 
@@ -71,7 +71,7 @@ WS `/v1/live/sessions/{session_id}/attach`
 
 ### session.update
 
-更新一个活跃的 Live 会话的委托设置。服务端通过以下方式确认已接受的更改： `session.updated`.
+更新一个活跃 Live 会话的委派设置。服务端会通过以下方式确认已接受的更改： `session.updated`.
 
 #### Schema
 
@@ -79,11 +79,11 @@ Schema name: `LiveSessionUpdateParam`
 
 - `session: SessionUpdateConfig`
 
-  稀疏的委托更新。省略的设置保留其原值。委托类型不能更改，包括将 Responses 委托重置为 null 或 client。模型、前端指令、音频和启动输入不可更改。
+  稀疏委托更新。省略的设置保持其原值。委托类型不可更改，包括将 Responses 委托重置为 null 或 client。模型、前端指令、音频和启动输入均为不可变。
 
-  - `delegation: optional ClientDelegation or object { type, responses }  or null`
+  - `delegation: optional ClientDelegation or Responses { type, responses }  or null`
 
-    要更新的委托设置。委托类型必须与当前会话匹配；省略的设置保留其原值。
+    要更新的委托设置。委托类型必须与当前会话一致；省略的设置保持其原值。
 
     - `ClientDelegation object { type }`
 
@@ -97,7 +97,7 @@ Schema name: `LiveSessionUpdateParam`
 
     - `Responses object { type, responses }`
 
-      在已存在的 Live 会话中更新 Responses 后端，且不更改委托所有权。
+      在不改委托所有权的情况下，为现有 Live 会话更新 Responses 后端。
 
       - `type: "responses"`
 
@@ -107,31 +107,31 @@ Schema name: `LiveSessionUpdateParam`
 
       - `responses: optional ResponsesDelegationUpdateConfig`
 
-        要更新的 Responses 后端设置。省略的设置保留其现有值。
+        要更新的 Responses 后端设置。省略的设置保持其现有值。
 
         - `instructions: optional string or null`
 
-          用于被委托模型 Responses 的指令，独立于 Live 指令。参见 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
+          委托 Responses 模型的指令，与 Live 指令分开。参见 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
 
         - `max_output_tokens: optional number or null`
 
-          每个被委托响应的最大输出 token 数。
+          每个委托响应的最大输出 token 数。
 
         - `model: optional string`
 
-          用于后续被委托请求的 Responses 后端模型。省略以保留当前的后端模型。
+          用于后续委托请求的 Responses 后端模型。省略则保持当前的后端模型。
 
         - `parallel_tool_calls: optional boolean or null`
 
-          被委托的 Responses 模型是否可以在单次响应中请求多个工具调用。
+          委托的 Responses 模型是否可以在单个响应中发起多个工具调用。
 
         - `reasoning: optional object { effort, summary }  or null`
 
-          传递给每个被委托 Responses 请求的推理设置。
+          传递给每个委托 Responses 请求的推理设置。
 
           - `effort: optional "none" or "minimal" or "low" or 3 more or null`
 
-            被委托的 Responses 模型应使用的推理力度。支持的取值取决于后端模型。
+            委托的 Responses 模型应使用的推理力度。支持的取值取决于后端模型。
 
             - `"none"`
 
@@ -147,7 +147,7 @@ Schema name: `LiveSessionUpdateParam`
 
           - `summary: optional "concise" or "detailed" or "auto" or null`
 
-            在被委托的 Responses 模型支持时，向其请求的推理摘要。
+            在受支持时，向委托的 Responses 模型请求的推理摘要。
 
             - `"concise"`
 
@@ -157,7 +157,7 @@ Schema name: `LiveSessionUpdateParam`
 
         - `service_tier: optional "auto" or "default" or "fast_tier_temp_pilot" or 3 more or null`
 
-          被委托 Responses 请求的服务层级。
+          委托 Responses 请求的服务层级。
 
           - `"auto"`
 
@@ -173,11 +173,11 @@ Schema name: `LiveSessionUpdateParam`
 
         - `text: optional object { verbosity }  or null`
 
-          传递给每个被委托 Responses 请求的文本生成设置。
+          传递给每个委托 Responses 请求的文本生成设置。
 
           - `verbosity: optional "low" or "medium" or "high" or null`
 
-            Responses 后端生成文本时的详细程度。这不会配置 Live 模型的口头表达方式。
+            Responses 后端生成文本的详细程度。这不会配置 Live 模型的口语表达方式。
 
             - `"low"`
 
@@ -185,13 +185,11 @@ Schema name: `LiveSessionUpdateParam`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
+        - `tool_choice: optional "auto" or "none" or "required" or Function { name, type }  or Mcp { server_label, type, name }  or 11 more`
 
-          控制 Responses 后端在处理 Live 模型委托的任务时所使用的工具。
+          控制 Live 模型委托任务时，Responses 后端所使用的工具。
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
-
-            控制 Responses 后端在处理 Live 模型委托的任务时所使用的工具。
 
             - `"auto"`
 
@@ -199,45 +197,297 @@ Schema name: `LiveSessionUpdateParam`
 
             - `"required"`
 
-          - `map[unknown]`
-
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
-
-          在 Live 模型委托的任务处理期间，Responses 后端可用的工具。
-
-          - `FunctionTool object { name, type, description, 2 more }`
-
-            当 Live 模型委托任务时，Responses 后端可用的函数工具。
+          - `Function object { name, type }`
 
             - `name: string`
 
-              被委托的 Responses 模型在调用此函数时使用的名称。
+              要调用的函数工具名称。
 
             - `type: "function"`
 
-              工具类型。始终为 `function`.
+              要调用的工具。始终 `function`.
+
+              - `"function"`
+
+          - `Mcp object { server_label, type, name }`
+
+            - `server_label: string`
+
+              要调用的 MCP 服务器标签。
+
+            - `type: "mcp"`
+
+              要调用的工具。始终 `mcp`.
+
+              - `"mcp"`
+
+            - `name: optional string or null`
+
+              要调用的 MCP 工具名称。如果省略，服务器可以选择默认值。
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              要调用的工具。始终 `file_search`.
+
+              - `"file_search"`
+
+          - `WebSearch object { type }`
+
+            - `type: "web_search"`
+
+              要调用的工具。始终 `web_search`.
+
+              - `"web_search"`
+
+          - `WebSearchPreview object { type }`
+
+            - `type: "web_search_preview"`
+
+              要调用的工具。始终 `web_search_preview`.
+
+              - `"web_search_preview"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              要调用的工具。始终 `image_generation`.
+
+              - `"image_generation"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              要调用的工具。始终 `computer`.
+
+              - `"computer"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              要调用的工具。始终 `code_interpreter`.
+
+              - `"code_interpreter"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              要调用的工具。始终 `programmatic_tool_calling`.
+
+              - `"programmatic_tool_calling"`
+
+          - `Shell object { type }`
+
+            强制模型在需要调用工具时调用 shell 工具。
+
+            - `type: "shell"`
+
+              要调用的工具。始终 `shell`.
+
+              - `"shell"`
+
+          - `Custom object { name, type }`
+
+            - `name: string`
+
+              要调用的自定义工具名称。
+
+            - `type: "custom"`
+
+              要调用的工具。始终 `custom`.
+
+              - `"custom"`
+
+          - `ApplyPatch object { type }`
+
+            强制模型在执行工具调用时调用 apply_patch 工具。
+
+            - `type: "apply_patch"`
+
+              要调用的工具。始终 `apply_patch`.
+
+              - `"apply_patch"`
+
+          - `LiveAllowedToolsChoiceParam object { tools, type, mode }`
+
+            - `tools: array of Function { name, type }  or Mcp { server_label, type, name }  or FileSearch { type }  or 9 more`
+
+              委派的 Responses 模型可以调用的工具。
+
+              - `Function object { name, type }`
+
+                - `name: string`
+
+                  要调用的函数工具名称。
+
+                - `type: "function"`
+
+                  要调用的工具。始终 `function`.
+
+                  - `"function"`
+
+              - `Mcp object { server_label, type, name }`
+
+                - `server_label: string`
+
+                  要调用的 MCP 服务器标签。
+
+                - `type: "mcp"`
+
+                  要调用的工具。始终 `mcp`.
+
+                  - `"mcp"`
+
+                - `name: optional string or null`
+
+                  要调用的 MCP 工具名称。如果省略，服务器可以选择默认值。
+
+              - `FileSearch object { type }`
+
+                - `type: "file_search"`
+
+                  要调用的工具。始终 `file_search`.
+
+                  - `"file_search"`
+
+              - `WebSearch object { type }`
+
+                - `type: "web_search"`
+
+                  要调用的工具。始终 `web_search`.
+
+                  - `"web_search"`
+
+              - `WebSearchPreview object { type }`
+
+                - `type: "web_search_preview"`
+
+                  要调用的工具。始终 `web_search_preview`.
+
+                  - `"web_search_preview"`
+
+              - `ImageGeneration object { type }`
+
+                - `type: "image_generation"`
+
+                  要调用的工具。始终 `image_generation`.
+
+                  - `"image_generation"`
+
+              - `Computer object { type }`
+
+                - `type: "computer"`
+
+                  要调用的工具。始终 `computer`.
+
+                  - `"computer"`
+
+              - `CodeInterpreter object { type }`
+
+                - `type: "code_interpreter"`
+
+                  要调用的工具。始终 `code_interpreter`.
+
+                  - `"code_interpreter"`
+
+              - `ProgrammaticToolCalling object { type }`
+
+                - `type: "programmatic_tool_calling"`
+
+                  要调用的工具。始终 `programmatic_tool_calling`.
+
+                  - `"programmatic_tool_calling"`
+
+              - `Shell object { type }`
+
+                强制模型在需要调用工具时调用 shell 工具。
+
+                - `type: "shell"`
+
+                  要调用的工具。始终 `shell`.
+
+                  - `"shell"`
+
+              - `Custom object { name, type }`
+
+                - `name: string`
+
+                  要调用的自定义工具名称。
+
+                - `type: "custom"`
+
+                  要调用的工具。始终 `custom`.
+
+                  - `"custom"`
+
+              - `ApplyPatch object { type }`
+
+                强制模型在执行工具调用时调用 apply_patch 工具。
+
+                - `type: "apply_patch"`
+
+                  要调用的工具。始终 `apply_patch`.
+
+                  - `"apply_patch"`
+
+            - `type: "allowed_tools"`
+
+              工具选择类型。始终 `allowed_tools`.
+
+              - `"allowed_tools"`
+
+            - `mode: optional "none" or "auto" or "required" or null`
+
+              如何从允许的工具集中选择工具。
+
+              - `"none"`
+
+              - `"auto"`
+
+              - `"required"`
+
+        - `tools: optional array of FunctionTool or WebSearch { type }  or FileSearch { type }  or 10 more`
+
+          Responses 后端在处理 Live 模型委派的任务时可用的工具。
+
+          - `FunctionTool object { name, type, description, 2 more }`
+
+            Live 模型委派任务时 Responses 后端可用的函数工具。
+
+            - `name: string`
+
+              委派的 Responses 模型调用此函数时使用的名称。
+
+            - `type: "function"`
+
+              工具类型。始终 `function`.
 
               - `"function"`
 
             - `description: optional string or null`
 
-              该函数的功能，以及被委托的 Responses 模型应在何时调用它。
+              函数的作用以及委派的 Responses 模型应何时调用它。
 
             - `parameters: optional map[unknown] or null`
 
-              用于描述该函数所接受参数的 JSON Schema 对象。
+              描述函数所接受参数的 JSON Schema 对象。
 
             - `strict: optional boolean or null`
 
-              被委托的 Responses 模型是否必须严格遵循该函数的参数 schema。
+              委派的 Responses 模型是否必须严格遵循函数的参数 schema。
 
           - `WebSearch object { type }`
 
-            Live 会话的 Responses 后端可用的 网页搜索 工具。
+            Live 会话的 Responses 后端可用的 网页搜索工具。
 
             - `type: "web_search"`
 
-              工具类型。始终为 `web_search`.
+              工具类型。始终 `web_search`.
 
               - `"web_search"`
 
@@ -255,29 +505,29 @@ Schema name: `LiveSessionUpdateParam`
 
           - `Shell object { type, environment }`
 
-            一个 Responses shell 工具。使用托管容器或通过 response.item.create 返回本地 shell 结果。不支持域密钥。
+            Responses shell 工具。使用托管容器，或通过 response.item.create 返回本地 shell 结果。不支持域机密。
 
             - `type: "shell"`
 
               - `"shell"`
 
-            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+            - `environment: optional ContainerAuto { type, file_ids, memory_limit, 2 more }  or ContainerReference { container_id, type }  or Local { type, skills }  or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
                 - `type: "container_auto"`
 
-                  自动为此请求创建容器
+                  为此请求自动创建容器
 
                   - `"container_auto"`
 
                 - `file_ids: optional array of string or null`
 
-                  可选的上传文件列表，供你的代码使用。
+                  可供你的代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
-                  该容器的内存限制。
+                  容器的内存限制。
 
                   - `"1g"`
 
@@ -287,15 +537,15 @@ Schema name: `LiveSessionUpdateParam`
 
                   - `"64g"`
 
-                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+                - `network_policy: optional Disabled { type }  or Allowlist { allowed_domains, type }  or null`
 
-                  该容器的网络访问策略。
+                  容器的网络访问策略。
 
                   - `Disabled object { type }`
 
                     - `type: "disabled"`
 
-                      禁用出站网络访问。始终为 `disabled`.
+                      禁用出站网络访问。始终 `disabled`.
 
                       - `"disabled"`
 
@@ -303,17 +553,17 @@ Schema name: `LiveSessionUpdateParam`
 
                     - `allowed_domains: array of string`
 
-                      当类型为时的允许域名列表 `allowlist`.
+                      当 type 为时的允许域名列表 `allowlist`.
 
                     - `type: "allowlist"`
 
-                      仅允许向指定域名进行出站网络访问。始终为 `allowlist`.
+                      仅允许对指定域名的出站网络访问。始终 `allowlist`.
 
                       - `"allowlist"`
 
-                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+                - `skills: optional array of SkillReference { skill_id, type, version }  or Inline { description, name, source, type }  or null`
 
-                  可选的技能列表，通过 ID 或内联数据引用。
+                  按 id 或内联数据引用的技能的可选列表。
 
                   - `SkillReference object { skill_id, type, version }`
 
@@ -329,13 +579,13 @@ Schema name: `LiveSessionUpdateParam`
 
                     - `version: optional string or null`
 
-                      可选的技能版本。使用正整数或 'latest'。省略以使用默认值。
+                      可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
                   - `Inline object { description, name, source, type }`
 
                     - `description: string`
 
-                      该技能的描述。
+                      技能的描述。
 
                     - `name: string`
 
@@ -393,7 +643,7 @@ Schema name: `LiveSessionUpdateParam`
 
                   - `description: string`
 
-                    该技能的描述。
+                    技能的描述。
 
                   - `name: string`
 
@@ -453,13 +703,13 @@ Schema name: `LiveSessionUpdateParam`
 
 - `type: "session.update"`
 
-  实时客户端事件类型。始终为 `session.update`.
+  Live 客户端事件类型。始终为 `session.update`.
 
   - `"session.update"`
 
 - `event_id: optional string or null`
 
-  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 相关联。
+  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 进行关联。
 
 #### 示例
 
@@ -483,7 +733,7 @@ Schema name: `LiveSessionUpdateParam`
 
 ### session.input_audio.mute
 
-在不关闭会话的情况下将音频输入静音给 Live 模型。服务端会回复确认 `session.input_audio.muted`.
+在不关闭会话的情况下将静音音频输入到 Live 模型。服务器会回复确认， `session.input_audio.muted`.
 
 #### Schema
 
@@ -491,13 +741,13 @@ Schema name: `LiveInputAudioMuteParam`
 
 - `type: "session.input_audio.mute"`
 
-  实时客户端事件类型。始终为 `session.input_audio.mute`.
+  Live 客户端事件类型。始终为 `session.input_audio.mute`.
 
   - `"session.input_audio.mute"`
 
 - `event_id: optional string or null`
 
-  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 相关联。
+  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 进行关联。
 
 #### 示例
 
@@ -512,7 +762,7 @@ Schema name: `LiveInputAudioMuteParam`
 
 ### session.input_audio.unmute
 
-在静音后恢复对 Live 模型的音频输入。服务端会通过以下内容进行确认 `session.input_audio.unmuted`.
+在静音后恢复 Live 模型的音频输入。服务端会通过以下方式确认 `session.input_audio.unmuted`.
 
 #### Schema
 
@@ -520,13 +770,13 @@ Schema name: `LiveInputAudioUnmuteParam`
 
 - `type: "session.input_audio.unmute"`
 
-  实时客户端事件类型。始终为 `session.input_audio.unmute`.
+  Live 客户端事件类型。始终为 `session.input_audio.unmute`.
 
   - `"session.input_audio.unmute"`
 
 - `event_id: optional string or null`
 
-  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 相关联。
+  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 进行关联。
 
 #### 示例
 
@@ -541,7 +791,7 @@ Schema name: `LiveInputAudioUnmuteParam`
 
 ### session.instructions.append
 
-在 Live 会话运行期间向其追加指令，可选择将其与现有的客户端委托关联。
+在 Live 对话运行期间向其追加指令，并可选择将其与现有的客户端委托相关联。
 
 #### Schema
 
@@ -549,21 +799,21 @@ Schema name: `LiveInstructionsAppendParam`
 
 - `content: string`
 
-  要追加的指令文本，限制为 500 个 token。这是一个普通字符串，而不是内容部分的数组。
+  用于追加的指令文本，长度上限为 500 个 token。这是一个纯字符串，不是内容部分数组。
 
 - `delegation_id: string or null`
 
-  必填，可为空。设置为 null 表示通用会话上下文，或者使用来自 session.delegation.created 的 ID 表示现有的客户端委托。不能将非 null 的 ID 与 Responses 委托一起使用。
+  必填，可为 null。对于通用会话上下文请设为 null，或使用 session.delegation.created 中的 ID 关联到现有的客户端委派。非 null 的 ID 不能与 Responses 委派一起使用。
 
 - `type: "session.instructions.append"`
 
-  实时客户端事件类型。始终为 `session.instructions.append`.
+  Live 客户端事件类型。始终为 `session.instructions.append`.
 
   - `"session.instructions.append"`
 
 - `event_id: optional string or null`
 
-  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 相关联。
+  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 进行关联。
 
 #### 示例
 
@@ -580,7 +830,7 @@ Schema name: `LiveInstructionsAppendParam`
 
 ### session.thinking.append
 
-向 Live 模型提供静默推理或进度上下文，可选地用于现有的客户端委托。
+为 Live 模型提供静默推理或进度上下文，可选用于现有的客户端委派。
 
 #### Schema
 
@@ -588,21 +838,21 @@ Schema name: `LiveThinkingAppendParam`
 
 - `content: string`
 
-  静默推理或进度上下文，上限为 500 个 token。它不直接请求语音，但会影响后续语音，且不构成保密边界。
+  静默推理或进度上下文，上限为 500 个 token。它不会直接请求语音，但可能影响后续语音，且不构成保密边界。
 
 - `delegation_id: string or null`
 
-  必填，可为空。设置为 null 表示通用会话上下文，或者使用来自 session.delegation.created 的 ID 表示现有的客户端委托。不能将非 null 的 ID 与 Responses 委托一起使用。
+  必填，可为 null。对于通用会话上下文请设为 null，或使用 session.delegation.created 中的 ID 关联到现有的客户端委派。非 null 的 ID 不能与 Responses 委派一起使用。
 
 - `type: "session.thinking.append"`
 
-  实时客户端事件类型。始终为 `session.thinking.append`.
+  Live 客户端事件类型。始终为 `session.thinking.append`.
 
   - `"session.thinking.append"`
 
 - `event_id: optional string or null`
 
-  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 相关联。
+  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 进行关联。
 
 #### 示例
 
@@ -619,7 +869,7 @@ Schema name: `LiveThinkingAppendParam`
 
 ### session.commentary.append
 
-为 Live 模型提供可向用户传达的上下文信息，可选择用于现有的客户端委托。
+提供可供 Live 模型与用户通信的上下文，可选地用于现有的客户端委托。
 
 #### Schema
 
@@ -627,21 +877,21 @@ Schema name: `LiveCommentaryAppendParam`
 
 - `content: string`
 
-  面向 Live 模型的语音可朗读上下文，上限为 500 个 token。用于模型应当朗读的结果；若为静默上下文，请使用 session.thinking.append。
+  用于 Live 模型的语音化上下文，上限 500 tokens。用于希望模型朗读出来的结果；若要添加静默上下文，请使用 session.thinking.append。
 
 - `delegation_id: string or null`
 
-  必填，可为空。设置为 null 表示通用会话上下文，或者使用来自 session.delegation.created 的 ID 表示现有的客户端委托。不能将非 null 的 ID 与 Responses 委托一起使用。
+  必填，可为 null。对于通用会话上下文请设为 null，或使用 session.delegation.created 中的 ID 关联到现有的客户端委派。非 null 的 ID 不能与 Responses 委派一起使用。
 
 - `type: "session.commentary.append"`
 
-  实时客户端事件类型。始终为 `session.commentary.append`.
+  Live 客户端事件类型。始终为 `session.commentary.append`.
 
   - `"session.commentary.append"`
 
 - `event_id: optional string or null`
 
-  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 相关联。
+  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 进行关联。
 
 #### 示例
 
@@ -658,23 +908,23 @@ Schema name: `LiveCommentaryAppendParam`
 
 ### response.item.create
 
-向 Live 会话的 Responses 后端添加一个输入项。需要 Responses 委托；使用 `response.create` 来请求响应。
+向 Live 会话的 Responses 后端添加输入项。需要 Responses 委派；请使用 `response.create` 来请求响应。
 
 #### Schema
 
 Schema name: `LiveResponseItemCreateParam`
 
-- `item: EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+- `item: EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
-  要追加到 Responses 后端会话中的输入项，例如用户消息或函数工具结果。
+  要追加到 Responses 后端对话中的输入项，例如用户消息或函数工具结果。
 
   - `EasyInputMessage object { content, role, phase, type }`
 
-    发送给模型的消息输入，其角色表明遵循指令
-    的层级关系。使用 `developer` 或 `system` 角色给出的指令优先级高于使用
-    角色给出的指令。使用 `user` 角色的消息假定是模型在先前
-    `assistant` 交互中生成的。使用
-    角色。
+    发送给模型的消息输入，其角色表示遵循指令
+    的层级关系。使用 `developer` 或 `system` 角色给出的指令优先
+    于使用 `user` 角色给出的指令。使用
+    `assistant` 角色的消息被视为模型在之前的交互中生成
+    的内容。
 
     - `content: string or ResponseInputMessageContentList`
 
@@ -706,7 +956,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -720,7 +970,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `detail: ImageDetail`
 
-            发送给模型的图像的细节级别。取值之一 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送到模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
             - `"low"`
 
@@ -738,15 +988,15 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `file_id: optional string or null`
 
-            发送给模型的文件 ID。
+            要发送到模型的文件 ID。
 
           - `image_url: optional string or null`
 
-            发送给模型的图像 URL。完全限定 URL 或 data URL 中 base64 编码的图像。
+            要发送到模型的图像 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -756,7 +1006,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          发送给模型的文件输入。
+          模型的输入文件。
 
           - `type: "input_file"`
 
@@ -766,7 +1016,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `detail: optional "auto" or "low" or "high"`
 
-            发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 用量。使用 `low` 进行低成本渲染，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
+            要发送到模型的文件细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 以获得较低成本的渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -776,23 +1026,23 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `file_data: optional string`
 
-            发送给模型的文件内容。
+            要发送到模型的文件内容。
 
           - `file_id: optional string or null`
 
-            发送给模型的文件 ID。
+            要发送到模型的文件 ID。
 
           - `file_url: optional string`
 
-            发送给模型的文件 URL。
+            要发送到模型的文件的 URL。
 
           - `filename: optional string`
 
-            发送给模型的文件名称。
+            要发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }`
 
-            标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -802,7 +1052,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `role: "user" or "assistant" or "system" or "developer"`
 
-      消息输入的角色。取值之一 `user`, `assistant`, `system`，或
+      消息输入的角色。可选值为 `user`, `assistant`, `system`，或
       `developer`.
 
       - `"user"`
@@ -816,8 +1066,8 @@ Schema name: `LiveResponseItemCreateParam`
     - `phase: optional "commentary" or "final_answer" or null`
 
       将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-      对于类似 `gpt-5.3-codex` 并在后续请求中保留并重新发送该
-      阶段作用于所有助手消息——丢弃该字段可能导致性能下降。不用于用户消息。
+      对于像 `gpt-5.3-codex` 并在后续请求时保留并重新发送该 phase 字段——该字段适用于所有 assistant 消息,省略它可能会降低性能。不适用于 user 消息。
+      phase 字段适用于所有 assistant 消息,省略它可能会降低性能。不适用于 user 消息。
 
       - `"commentary"`
 
@@ -831,9 +1081,9 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `Message object { content, role, status, type }`
 
-    发送给模型的消息输入，其角色表明遵循指令
-    的层级关系。使用 `developer` 或 `system` 角色给出的指令优先级高于使用
-    角色给出的指令。使用 `user` 。
+    发送给模型的消息输入，其角色表示遵循指令
+    的层级关系。使用 `developer` 或 `system` 角色给出的指令优先
+    于使用 `user` role。
 
     - `content: ResponseInputMessageContentList`
 
@@ -842,7 +1092,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `role: "user" or "system" or "developer"`
 
-      消息输入的角色。取值之一 `user`, `system`，或 `developer`.
+      消息输入的角色。可选值为 `user`, `system`，或 `developer`.
 
       - `"user"`
 
@@ -852,8 +1102,8 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      项的状态。可选值为 `in_progress`, `completed`，或
-      `incomplete`。在通过 API 返回项时填充。
+      item 的状态。取值之一为 `in_progress`, `completed`，或
+      `incomplete`。当通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -869,7 +1119,7 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `ResponseOutputMessage object { id, content, role, 3 more }`
 
-    模型生成的输出消息。
+    来自模型的输出消息。
 
     - `id: string`
 
@@ -881,11 +1131,11 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `ResponseOutputText object { annotations, logprobs, text, type }`
 
-        模型生成的文本输出。
+        来自模型的文本输出。
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
-          文本输出的注释。
+          文本输出的注解。
 
           - `FileCitation object { file_id, filename, index, type }`
 
@@ -911,7 +1161,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `URLCitation object { end_index, start_index, title, 2 more }`
 
-            用于生成模型响应的网页资源引用。
+            用于生成模型响应的网页资源的引用。
 
             - `end_index: number`
 
@@ -923,17 +1173,17 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `title: string`
 
-              网页资源的标题。
+              该网页资源的标题。
 
             - `type: "url_citation"`
 
-              URL 引用的类型。始终为 `url_citation`.
+              该 URL 引用的类型。始终为 `url_citation`.
 
               - `"url_citation"`
 
             - `url: string`
 
-              网页资源的 URL。
+              该网页资源的 URL。
 
           - `ContainerFileCitation object { container_id, end_index, file_id, 3 more }`
 
@@ -941,7 +1191,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `container_id: string`
 
-              容器文件的 ID。
+              该容器文件的 ID。
 
             - `end_index: number`
 
@@ -953,7 +1203,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `filename: string`
 
-              被引用容器文件的文件名。
+              所引用容器文件的文件名。
 
             - `start_index: number`
 
@@ -961,7 +1211,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `type: "container_file_citation"`
 
-              容器文件引用的类型。始终为 `container_file_citation`.
+              该容器文件引用的类型。始终为 `container_file_citation`.
 
               - `"container_file_citation"`
 
@@ -975,11 +1225,11 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `index: number`
 
-              文件列表中文件的索引。
+              文件在文件列表中的索引。
 
             - `type: "file_path"`
 
-              文件路径的类型。始终为 `file_path`.
+              该文件路径的类型。始终为 `file_path`.
 
               - `"file_path"`
 
@@ -1001,37 +1251,37 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `text: string`
 
-          模型的文本输出。
+          模型输出的文本。
 
         - `type: "output_text"`
 
-          输出文本的类型。始终为 `output_text`.
+          该输出文本的类型。始终为 `output_text`.
 
           - `"output_text"`
 
       - `ResponseOutputRefusal object { refusal, type }`
 
-        模型的拒绝回复。
+        模型的拒绝。
 
         - `refusal: string`
 
-          模型的拒绝解释。
+          模型给出的拒绝解释。
 
         - `type: "refusal"`
 
-          拒绝回复的类型。始终为 `refusal`.
+          该拒绝的类型。始终为 `refusal`.
 
           - `"refusal"`
 
     - `role: "assistant"`
 
-      输出消息的角色。始终为 `assistant`.
+      该输出消息的角色。始终为 `assistant`.
 
       - `"assistant"`
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      消息输入的状态。取值为以下之一 `in_progress`, `completed`，或
+      消息输入的状态。其值之一为 `in_progress`, `completed`，或
       `incomplete`。当输入项通过 API 返回时填充。
 
       - `"in_progress"`
@@ -1049,8 +1299,8 @@ Schema name: `LiveResponseItemCreateParam`
     - `phase: optional "commentary" or "final_answer" or null`
 
       将 `assistant` 消息标记为中间评论（`commentary`）或最终答案（`final_answer`).
-      对于类似 `gpt-5.3-codex` 并在后续请求中保留并重新发送该
-      阶段作用于所有助手消息——丢弃该字段可能导致性能下降。不用于用户消息。
+      对于像 `gpt-5.3-codex` 并在后续请求时保留并重新发送该 phase 字段——该字段适用于所有 assistant 消息,省略它可能会降低性能。不适用于 user 消息。
+      phase 字段适用于所有 assistant 消息,省略它可能会降低性能。不适用于 user 消息。
 
       - `"commentary"`
 
@@ -1059,7 +1309,7 @@ Schema name: `LiveResponseItemCreateParam`
   - `FileSearchCall object { id, queries, status, 2 more }`
 
     文件搜索 工具调用的结果。请参阅
-    [文件搜索 指南](https://developers.openai.com/api/docs/guides/tools-file-search) 了解更多信息。
+    [文件搜索 指南](https://developers.openai.com/api/docs/guides/tools-file-search) 以了解更多信息。
 
     - `id: string`
 
@@ -1071,7 +1321,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `status: "in_progress" or "searching" or "completed" or 2 more`
 
-      文件搜索 工具调用的状态。取值为 `in_progress`,
+      文件搜索 工具调用的状态。可选值为 `in_progress`,
       `searching`, `incomplete` 或 `failed`,
 
       - `"in_progress"`
@@ -1096,11 +1346,11 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `attributes: optional map[string or number or boolean] or null`
 
-        可附加到对象的 16 个键值对集合。可用于
-        以结构化格式存储对象的附加信息，
-        并通过 API 或仪表板查询对象。键为字符串，
-        最大长度为 64 个字符。值为字符串，
-        最大长度为 512 个字符、布尔值或数字。
+        可以附加到对象的 16 组键值对。可用于
+        可用于以结构化形式存储对象的附加信息，
+        并通过 API 或控制面板查询对象。键为字符串，
+        最大长度为 64 个字符。值为最大长度为 512 个字符的字符串、
+        布尔值或数字。
 
         - `string`
 
@@ -1126,20 +1376,20 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
-    对计算机使用工具的工具调用。请参阅
-    [computer use 指南](https://developers.openai.com/api/docs/guides/tools-computer-use) 了解更多信息。
+    对计算机使用工具的工具调用。参阅
+    [计算机使用指南](https://developers.openai.com/api/docs/guides/tools-computer-use) 以了解更多信息。
 
     - `id: string`
 
-      计算机调用的唯一 ID。
+      该计算机调用的唯一 ID。
 
     - `call_id: string`
 
-      用于在响应工具调用时附带输出的标识符。
+      在向该工具调用返回输出时所使用的标识符。
 
     - `pending_safety_checks: array of object { id, code, message }`
 
-      针对该计算机调用的待处理安全检查。
+      该计算机调用待处理的安全检查。
 
       - `id: string`
 
@@ -1151,12 +1401,12 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `message: optional string or null`
 
-        待处理安全检查的详细信息。
+        关于待处理安全检查的详细信息。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。取以下值之一 `in_progress`, `completed`，或
-      `incomplete`。在通过 API 返回项时填充。
+      该项的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。当通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -1180,7 +1430,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `button: "left" or "right" or "wheel" or 2 more`
 
-          指示点击时按下了哪个鼠标按键。取以下值之一 `left`, `right`, `wheel`, `back`，或 `forward`.
+          指示点击时按下了哪个鼠标按键。可选值为 `left`, `right`, `wheel`, `back`，或 `forward`.
 
           - `"left"`
 
@@ -1200,15 +1450,15 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `x: number`
 
-          发生点击的 x 坐标。
+          点击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生点击的 y 坐标。
+          点击发生位置的 y 坐标。
 
         - `keys: optional array of string or null`
 
-          点击时同时按下的按键。
+          点击时按住的按键。
 
       - `DoubleClick object { keys, type, x, y }`
 
@@ -1216,7 +1466,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `keys: array of string or null`
 
-          双击时同时按下的按键。
+          双击时按住的按键。
 
         - `type: "double_click"`
 
@@ -1226,11 +1476,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `x: number`
 
-          发生双击的 x 坐标。
+          双击发生位置的 x 坐标。
 
         - `y: number`
 
-          发生双击的 y 坐标。
+          双击发生位置的 y 坐标。
 
       - `Drag object { path, type, keys }`
 
@@ -1238,7 +1488,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `path: array of object { x, y }`
 
-          一个由坐标组成的数组，表示拖动操作的路径。坐标将以对象数组的形式呈现，例如
+          表示拖动操作路径的坐标数组。坐标将以对象数组的形式出现，例如
 
           ```
           [
@@ -1257,25 +1507,25 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `type: "drag"`
 
-          指定事件类型。对于拖动操作，该属性始终设置为 `drag`.
+          指定事件类型。对于拖动操作，此属性始终设置为 `drag`.
 
           - `"drag"`
 
         - `keys: optional array of string or null`
 
-          拖动鼠标时按住的键。
+          拖动鼠标时按住的按键。
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一组按键操作。
+        模型希望执行的按键集合。
 
         - `keys: array of string`
 
-          模型请求按下的键组合。这是一个字符串数组，每个字符串代表一个键。
+          模型请求按下的按键组合。这是一个字符串数组，每个字符串表示一个按键。
 
         - `type: "keypress"`
 
-          指定事件类型。对于按键操作，该属性始终设置为 `keypress`.
+          指定事件类型。对于按键操作，此属性始终设置为 `keypress`.
 
           - `"keypress"`
 
@@ -1285,7 +1535,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `type: "move"`
 
-          指定事件类型。对于移动操作，该属性始终设置为 `move`.
+          指定事件类型。对于移动操作，此属性始终设置为 `move`.
 
           - `"move"`
 
@@ -1299,7 +1549,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `keys: optional array of string or null`
 
-          移动鼠标时按住的键。
+          移动鼠标时按住的按键。
 
       - `Screenshot object { type }`
 
@@ -1307,7 +1557,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `type: "screenshot"`
 
-          指定事件类型。对于截图操作，该属性始终设置为 `screenshot`.
+          指定事件类型。对于截图操作，此属性始终设置为 `screenshot`.
 
           - `"screenshot"`
 
@@ -1325,13 +1575,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `type: "scroll"`
 
-          指定事件类型。对于滚动操作，该属性始终设置为 `scroll`.
+          指定事件类型。对于滚动操作，此属性始终设置为 `scroll`.
 
           - `"scroll"`
 
         - `x: number`
 
-          发生滚动处的 x 坐标。
+          发生滚动位置的 x 坐标。
 
         - `y: number`
 
@@ -1351,7 +1601,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `type: "type"`
 
-          指定事件类型。对于输入操作，此属性始终设置为 `type`.
+          指定事件类型。对于 type 操作，此属性始终设置为 `type`.
 
           - `"type"`
 
@@ -1367,8 +1617,8 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `actions: optional ComputerActionList`
 
-      展平的批量操作列表， `computer_use`。每个操作都包含一个
-      `type` 判别字段和操作专属字段。
+      的已展平批量操作。 `computer_use`。每个操作都包含一个
+      `type` 鉴别字段以及操作专属字段。
 
       - `Click object { button, type, x, 2 more }`
 
@@ -1384,7 +1634,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Keypress object { keys, type }`
 
-        模型希望执行的一组按键操作。
+        模型希望执行的按键集合。
 
       - `Move object { type, x, y, keys }`
 
@@ -1416,7 +1666,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `output: ResponseComputerToolCallOutputScreenshot`
 
-      与计算机使用工具配合使用的计算机截图图像。
+      与计算机使用工具配合使用的计算机截图。
 
       - `type: "computer_screenshot"`
 
@@ -1431,7 +1681,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `image_url: optional string`
 
-        截图图像的 URL。
+        截图的 URL。
 
     - `type: "computer_call_output"`
 
@@ -1445,7 +1695,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `acknowledged_safety_checks: optional array of object { id, code, message }  or null`
 
-      开发者已确认的由 API 报告的安全检查。
+      已由开发者确认的 API 所报告的安全检查。
 
       - `id: string`
 
@@ -1457,11 +1707,11 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `message: optional string or null`
 
-        待处理安全检查的详细信息。
+        关于待处理安全检查的详细信息。
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      消息输入的状态。取值为以下之一 `in_progress`, `completed`，或 `incomplete`。当输入项通过 API 返回时填充。
+      消息输入的状态。其值之一为 `in_progress`, `completed`，或 `incomplete`。当输入项通过 API 返回时填充。
 
       - `"in_progress"`
 
@@ -1472,7 +1722,7 @@ Schema name: `LiveResponseItemCreateParam`
   - `WebSearchCall object { id, status, type, action }`
 
     网页搜索工具调用的结果。参见
-    [网页搜索指南](https://developers.openai.com/api/docs/guides/tools-web-search) 了解更多信息。
+    [网页搜索指南](https://developers.openai.com/api/docs/guides/tools-web-search) 以了解更多信息。
 
     - `id: string`
 
@@ -1494,32 +1744,32 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `type: "web_search_call"`
 
-      网页搜索工具调用的类型。始终 `web_search_call`.
+      网页搜索工具调用的类型。始终为 `web_search_call`.
 
       - `"web_search_call"`
 
-    - `action: optional object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
-      描述本次网页搜索调用中所执行的具体操作的对象。
-      包含模型如何使用网页的详细信息（search、open_page、find_in_page）。
+      描述本次 网页搜索调用中所执行具体操作的对象。
+      包含模型如何使用网页的详细信息（搜索、open_page、find_in_page）。
 
       - `Search object { type, queries, query, sources }`
 
-        动作类型 "search" - 执行一次网页搜索查询。
+        操作类型 "search" - 执行一次 网页搜索查询。
 
         - `type: "search"`
 
-          动作类型。
+          操作类型。
 
           - `"search"`
 
         - `queries: optional array of string`
 
-          搜索查询语句。
+          搜索查询。
 
         - `query: optional string`
 
-          搜索查询语句。
+          搜索查询。
 
         - `sources: optional array of object { type, url }`
 
@@ -1527,7 +1777,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `type: "url"`
 
-            来源的类型。始终 `url`.
+            来源的类型。始终为 `url`.
 
             - `"url"`
 
@@ -1537,11 +1787,11 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `OpenPage object { type, url }`
 
-        动作类型 "open_page" - 打开搜索结果中的某个特定 URL。
+        操作类型 "open_page" - 打开搜索结果中的某个特定 URL。
 
         - `type: "open_page"`
 
-          动作类型。
+          操作类型。
 
           - `"open_page"`
 
@@ -1551,30 +1801,30 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `FindInPage object { pattern, type, url }`
 
-        动作类型 "find_in_page"：在已加载的页面中搜索某个模式。
+        操作类型 "find_in_page"：在已加载的页面中搜索某个模式。
 
         - `pattern: string`
 
-          要在页面中搜索的模式或文本。
+          在页面中搜索的模式或文本。
 
         - `type: "find_in_page"`
 
-          动作类型。
+          操作类型。
 
           - `"find_in_page"`
 
         - `url: string`
 
-          在其中搜索该模式的页面的 URL。
+          在其中搜索模式的页面 URL。
 
   - `FunctionCall object { arguments, call_id, name, 6 more }`
 
     用于运行函数的工具调用。参见
-    [function calling guide](https://developers.openai.com/api/docs/guides/function-calling) 了解更多信息。
+    [函数调用指南](https://developers.openai.com/api/docs/guides/function-calling) 以了解更多信息。
 
     - `arguments: string`
 
-      传递给函数的参数的 JSON 字符串。
+      要传递给函数的参数的 JSON 字符串。
 
     - `call_id: string`
 
@@ -1598,7 +1848,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       函数工具调用是否异步运行。
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       生成此工具调用的执行上下文。
 
@@ -1624,8 +1874,8 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。取以下值之一 `in_progress`, `completed`，或
-      `incomplete`。在通过 API 返回项时填充。
+      该项的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。当通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -1665,7 +1915,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-            标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1685,19 +1935,19 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `detail: optional ImageDetail or null`
 
-            发送给模型的图像的细节级别。取值之一 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
+            发送到模型的图像的细节级别。可选值为 `high`, `low`, `auto`，或 `original`。默认为 `auto`.
 
           - `file_id: optional string or null`
 
-            发送给模型的文件 ID。
+            要发送到模型的文件 ID。
 
           - `image_url: optional string or null`
 
-            发送给模型的图像 URL。完全限定 URL 或 data URL 中 base64 编码的图像。
+            要发送到模型的图像 URL。可以是完全限定的 URL，也可以是 data URL 中 base64 编码的图像。
 
           - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-            标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1707,7 +1957,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `ResponseInputFileContent object { type, detail, file_data, 4 more }`
 
-          发送给模型的文件输入。
+          模型的输入文件。
 
           - `type: "input_file"`
 
@@ -1717,7 +1967,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `detail: optional "auto" or "low" or "high"`
 
-            发送给模型的文件的细节级别。使用 `auto` 可让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，可能会增加输入 token 用量。使用 `low` 进行低成本渲染，或使用 `high` 以更高质量渲染文件。默认为 `auto`.
+            要发送到模型的文件细节级别。使用 `auto` 让系统选择细节级别；对于 GPT-5.6 及更高版本的模型， `auto` 使用高质量渲染，这可能会增加输入 token 用量。使用 `low` 以获得较低成本的渲染，或 `high` 以更高质量渲染文件。默认为 `auto`.
 
             - `"auto"`
 
@@ -1731,19 +1981,19 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `file_id: optional string or null`
 
-            发送给模型的文件 ID。
+            要发送到模型的文件 ID。
 
           - `file_url: optional string or null`
 
-            发送给模型的文件 URL。
+            要发送到模型的文件的 URL。
 
           - `filename: optional string or null`
 
-            发送给模型的文件名称。
+            要发送到模型的文件的名称。
 
           - `prompt_cache_breakpoint: optional object { mode }  or null`
 
-            标记可复用提示前缀的确切结束位置。该断点从请求的 `prompt_cache_options.ttl`；继承其 TTL；边界不会四舍五入到 token 块。
+            标记可复用提示前缀的精确结束位置。该断点的 TTL 继承自请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
 
             - `mode: "explicit"`
 
@@ -1759,13 +2009,13 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: optional string or null`
 
-      函数工具调用输出的唯一 ID。当此项通过 API 返回时填充。
+      函数工具调用输出的唯一 ID。通过 API 返回此项时会填充。
 
     - `call_id: optional string or null`
 
       模型生成的函数工具调用的唯一 ID。
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       生成此工具调用的执行上下文。
 
@@ -1791,15 +2041,15 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `name: optional string or null`
 
-      生成输出的工具的名称。
+      生成此输出的工具的名称。
 
     - `namespace: optional string or null`
 
-      生成输出的工具的命名空间。
+      生成此输出的工具的命名空间。
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      条目的状态。取以下值之一 `in_progress`, `completed`，或 `incomplete`。在通过 API 返回项时填充。
+      该项的状态。可选值为 `in_progress`, `completed`，或 `incomplete`。当通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -1815,7 +2065,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `type: "tool_search_call"`
 
-      条目类型。始终为 `tool_search_call`.
+      项目类型。始终为 `tool_search_call`.
 
       - `"tool_search_call"`
 
@@ -1825,11 +2075,11 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `call_id: optional string or null`
 
-      由模型生成的工具搜索调用的唯一 ID。
+      模型生成的工具搜索调用的唯一 ID。
 
     - `execution: optional "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是客户端执行。
 
       - `"server"`
 
@@ -1847,25 +2097,25 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       工具搜索输出返回的已加载工具定义。
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        定义你自己代码中可供模型选择调用的函数。了解更多关于 [函数调用](https://developers.openai.com/api/docs/guides/function-calling).
+        定义你自己的代码中的函数，模型可以选择调用该函数。了解更多信息，请参阅 [function calling](https://developers.openai.com/api/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
         - `parameters: map[unknown] or null`
 
-          描述该函数参数的 JSON 架构对象。
+          描述函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否为此函数工具强制执行严格的参数校验。
+          是否为此函数工具强制执行严格的参数验证。
 
         - `type: "function"`
 
@@ -1885,23 +2135,23 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `defer_loading: optional boolean`
 
-          此函数是否为延迟加载并通过工具搜索加载。
+          此函数是否被延迟并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。由模型用于决定是否调用该函数。
+          函数的描述。模型使用该描述来判断是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述该函数的字符串输出中所编码 JSON 值的 JSON 架构对象。
+          描述此函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        从已上传文件中搜索相关内容的工具。了解更多关于文件搜索工具 [文件搜索工具](https://developers.openai.com/api/docs/guides/tools-file-search).
+        从上传的文件中搜索相关内容的工具。了解更多信息，请参阅 [文件搜索 工具](https://developers.openai.com/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
-          文件搜索工具的类型。始终为 `file_search`.
+          文件搜索 工具的类型。始终为 `file_search`.
 
           - `"file_search"`
 
@@ -1911,28 +2161,28 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-          要应用的筛选器。
+          要应用的筛选条件。
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于在指定比较操作下，将指定属性键与给定值进行比较的筛选器。
+            用于将指定属性键与给定值通过定义的比较运算进行比较的筛选条件。
 
             - `key: string`
 
-              要与该值进行比较的键。
+              要与值进行比较的键。
 
             - `type: "eq" or "ne" or "gt" or 5 more`
 
               指定比较运算符： `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
 
-              - `eq`：等于
-              - `ne`：不等于
-              - `gt`：大于
-              - `gte`：大于等于
-              - `lt`：小于
-              - `lte`：小于等于
-              - `in`：包含于
-              - `nin`：不包含于
+              - `eq`: 等于
+              - `ne`: 不等于
+              - `gt`: 大于
+              - `gte`: 大于或等于
+              - `lt`: 小于
+              - `lte`: 小于或等于
+              - `in`: 包含于
+              - `nin`: 不包含于
 
               - `"eq"`
 
@@ -1968,23 +2218,23 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式合并多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个筛选条件 `and` 或 `or`.
 
             - `filters: array of ComparisonFilter or CompoundFilter`
 
-              要合并的筛选器数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
+              要组合的筛选条件数组。项可以是 `ComparisonFilter` 或 `CompoundFilter`.
 
               - `ComparisonFilter object { key, type, value }`
 
-                用于在指定比较操作下，将指定属性键与给定值进行比较的筛选器。
+                用于将指定属性键与给定值通过定义的比较运算进行比较的筛选条件。
 
               - `CompoundFilter object { filters, type }`
 
-                使用以下方式合并多个筛选器 `and` 或 `or`.
+                使用以下方式组合多个筛选条件 `and` 或 `or`.
 
             - `type: "and" or "or"`
 
-              操作类型： `and` 或 `or`.
+              运算类型： `and` 或 `or`.
 
               - `"and"`
 
@@ -1992,7 +2242,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。该数值应在 1 到 50（含）之间。
+          要返回的最大结果数。此数值应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -2000,15 +2250,15 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            用于在启用混合搜索时，控制倒数排名融合在语义嵌入匹配与稀疏关键词匹配之间平衡程度的权重。
+            启用混合搜索时，用于控制倒数排名融合在语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              倒排排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              倒排排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -2020,21 +2270,21 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能较少。
+            文件搜索的分数阈值，介于 0 到 1 之间。越接近 1 的数值越倾向于只返回最相关的结果，但可能会返回更少的结果。
 
       - `Computer object { type }`
 
-        控制虚拟计算机的工具。了解更多关于 [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。了解更多关于 [computer 工具](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
-          计算机工具的类型。始终为 `computer`.
+          computer 工具的类型。始终为 `computer`.
 
           - `"computer"`
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        控制虚拟计算机的工具。了解更多关于 [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。了解更多关于 [computer 工具](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -2060,13 +2310,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `type: "computer_use_preview"`
 
-          计算机使用工具的类型。始终为 `computer_use_preview`.
+          computer use 工具的类型。始终为 `computer_use_preview`.
 
           - `"computer_use_preview"`
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        在互联网上搜索与提示相关的来源。了解更多关于
+        根据提示在互联网上搜索相关来源。了解更多关于
         [网页搜索工具](https://developers.openai.com/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
@@ -2079,7 +2329,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `external_web_access: optional boolean`
 
-          允许 网页搜索 访问实时互联网。省略时默认为 true。当为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索进行实时互联网访问。如果省略，默认值为 true。当为 false 时，网页搜索工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
@@ -2087,14 +2337,14 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `allowed_domains: optional array of string or null`
 
-            允许的搜索域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也同样被允许。
+            搜索所允许的域名。如果未提供，则允许所有域名。
+            所提供的域名的子域名同样允许。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          用于搜索的上下文窗口空间使用量的高层指导。可选值为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索要使用的上下文窗口空间的高级指导量。可选值为 `low`, `medium`，或 `high`. `medium` 是默认值。
 
           - `"low"`
 
@@ -2105,43 +2355,43 @@ Schema name: `LiveResponseItemCreateParam`
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
           用户的近似位置。如果省略或为 null，则默认为
-          美国。若要避免此回退行为，请在请求中 `{"type": "approximate"}` 不要传
-          任何位置字段。若希望对结果进行本地化，请提供相应的位置字段。
+          美国。若要避免此回退，请传递 `{"type": "approximate"}` 且不包含
+          位置字段。若要本地化结果，请提供相应的位置字段。
 
           - `city: optional string or null`
 
-            用户所在城市的自由文本输入，例如： `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            由两个字母组成的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如： `US`.
+            两位字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户所在地区的自由文本输入，例如： `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
-            该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) ，例如： `America/Los_Angeles`.
+            该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) ，例如。 `America/Los_Angeles`.
 
           - `type: optional "approximate"`
 
-            近似位置的类型，固定为 `approximate`.
+            位置近似类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程模型上下文协议
-        (MCP) 服务器为模型提供对额外工具的访问能力。 [详细了解 MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
+        通过远程 Model Context Protocol
+        (MCP) 服务器为模型提供额外的工具访问能力。 [了解更多关于 MCP 的信息](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
-          该 MCP 服务器的标签，用于在工具调用中识别它。
+          此 MCP 服务器的标签，用于在工具调用中标识它。
 
         - `type: "mcp"`
 
-          MCP 工具的类型，固定为 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
@@ -2153,13 +2403,13 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
-          允许使用的工具名称列表或过滤对象。
+          允许使用的工具名称列表或过滤器对象。
 
           - `McpAllowedTools = array of string`
 
-            由允许使用的工具名称组成的字符串数组
+            允许使用的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -2167,9 +2417,9 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `read_only: optional boolean`
 
-              指示某个工具是否会修改数据，或者仅为只读。如果某个
+              指示工具是否会修改数据或是否为只读。如果某个
               MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              标注，它就会匹配此过滤器。
+              标记，则它将与此过滤器匹配。
 
             - `tool_names: optional array of string`
 
@@ -2177,21 +2427,21 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-          程序必须自行处理 OAuth 授权流程，并在该字段中提供令牌。
-          必须自行处理 OAuth 授权流程，并在该字段中提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可配合自定义 MCP 服务器
+          URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，例如 ChatGPT 中提供的连接器。以下值之
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供一项。详细了解
-          about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中可用的那些连接器。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。详细了解
+          服务连接器 [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
-          对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。请。
-          使用 `server_url` 以连接远程 MCP 服务器，或使用 `tunnel_id` 通过
-          Secure MCP Tunnel 进行连接。
+          此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+          请使用 `server_url` 连接远程 MCP 服务器，或使用 `tunnel_id` 通过
+          安全 MCP 隧道进行连接。
 
-          当前支持的 `connector_id` 值包括：
+          目前支持 `connector_id` 的取值包括：
 
           - Dropbox: `connector_dropbox`
           - Gmail: `connector_gmail`
@@ -2220,22 +2470,22 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `defer_loading: optional boolean`
 
-          该 MCP 工具是否为延迟加载，并通过工具搜索发现。
+          该 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 标头。可用于身份验证
+          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
           或其他用途。
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
-          指定 MCP 服务器中哪些工具需要审批。
+          指定 MCP 服务器的哪些工具需要审批。
 
           - `McpToolApprovalFilter object { always, never }`
 
-            指定 MCP 服务器中哪些工具需要审批。可以是
-            `always`, `never`,或与工具关联的过滤对象
-            需要审批的工具。
+            指定 MCP 服务器的哪些工具需要审批。可以是
+            `always`, `never`,或与需要审批的工具关联的过滤器对象
+            。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -2243,9 +2493,9 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `read_only: optional boolean`
 
-                指示某个工具是否会修改数据，或者仅为只读。如果某个
+                指示工具是否会修改数据或是否为只读。如果某个
                 MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                标注，它就会匹配此过滤器。
+                标记，则它将与此过滤器匹配。
 
               - `tool_names: optional array of string`
 
@@ -2257,9 +2507,9 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `read_only: optional boolean`
 
-                指示某个工具是否会修改数据，或者仅为只读。如果某个
+                指示工具是否会修改数据或是否为只读。如果某个
                 MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                标注，它就会匹配此过滤器。
+                标记，则它将与此过滤器匹配。
 
               - `tool_names: optional array of string`
 
@@ -2268,7 +2518,7 @@ Schema name: `LiveResponseItemCreateParam`
           - `McpToolApprovalSetting = "always" or "never"`
 
             为所有工具指定统一的审批策略。可选值为 `always` 或
-            `never`。之一。设置为 `always`，时,所有工具都需要审批。设置为
+            `never`。当设置为 `always`，时,所有工具都需要审批。当
             设置为 `never`，时,所有工具都不需要审批。
 
             - `"always"`
@@ -2281,23 +2531,23 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。 `server_url`, `connector_id`，或
-          `tunnel_id` 必须提供其中一个。
+          MCP 服务器的 URL。二者之一 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供。
 
         - `tunnel_id: optional string`
 
-          要使用的安全 MCP 隧道 ID，用于代替直接的服务器 URL。
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
+          用于替代直接服务器 URL 的 Secure MCP Tunnel ID。二者之一
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        运行 Python 代码以帮助生成对提示词回应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，也可以是用于指定
-          可供代码使用的已上传文件 ID 以及一个
-          可选的 `memory_limit` 设置的对象。
+          代码解释器容器。可以是容器 ID，也可以是指定对象的对象，该对象
+          指定可供代码使用的已上传文件 ID，并包含一项
+          可选的 `memory_limit` 设置。
 
           - `string`
 
@@ -2305,7 +2555,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可以指定用于运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定用于运行代码的文件 ID。
 
             - `type: "auto"`
 
@@ -2315,7 +2565,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `file_ids: optional array of string`
 
-              可选的上传文件列表，供你的代码使用。
+              可供你的代码使用的已上传文件的可选列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -2331,13 +2581,13 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `network_policy: optional ContainerNetworkPolicyDisabled or ContainerNetworkPolicyAllowlist`
 
-              该容器的网络访问策略。
+              容器的网络访问策略。
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
                 - `type: "disabled"`
 
-                  禁用出站网络访问。始终为 `disabled`.
+                  禁用出站网络访问。始终 `disabled`.
 
                   - `"disabled"`
 
@@ -2345,29 +2595,29 @@ Schema name: `LiveResponseItemCreateParam`
 
                 - `allowed_domains: array of string`
 
-                  当类型为时的允许域名列表 `allowlist`.
+                  当 type 为时的允许域名列表 `allowlist`.
 
                 - `type: "allowlist"`
 
-                  仅允许向指定域名进行出站网络访问。始终为 `allowlist`.
+                  仅允许对指定域名的出站网络访问。始终 `allowlist`.
 
                   - `"allowlist"`
 
                 - `domain_secrets: optional array of ContainerNetworkPolicyDomainSecret`
 
-                  针对已加入白名单域名的可选域范围密钥。
+                  用于已加入白名单域名的可选域作用域密钥。
 
                   - `domain: string`
 
-                    与密钥关联的域名。
+                    与该密钥关联的域名。
 
                   - `name: string`
 
-                    要为该域名注入的密钥名称。
+                    为该域名注入的密钥名称。
 
                   - `value: string`
 
-                    要为该域名注入的密钥值。
+                    为该域名注入的密钥值。
 
         - `type: "code_interpreter"`
 
@@ -2413,11 +2663,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一 `transparent`, `opaque`,
-          或 `auto`. `gpt-image-2.5-sunburst` 以及 `gpt-image-2.5-flare`，包括
-          其 `2026-09-08` 快照，支持 `opaque` 以及 `transparent`
-          背景。受支持的 GPT Image 模型支持透明背景。对于
-          模型，此支持处于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，此支持处于
+          设置生成图像的背景。可选值包括 `transparent`, `opaque`,
+          或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括其
+          快照，支持 `2026-09-08` 背景。受支持的 GPT Image `opaque` 和 `transparent`
+          背景。受支持的 GPT Image 模型可使用透明背景。对于
+          模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持处于
           预览阶段。使用 `transparent`，时，将输出格式设置为 `png` 或 `webp`.
           默认值： `auto`.
 
@@ -2429,7 +2679,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。支持 `high` 以及 `low` 于 `gpt-image-1` 以及 `gpt-image-1.5`; `gpt-image-1-mini` 仅支持 `low`。对于 `gpt-image-2`，请省略此参数。默认值为 `low` （在支持的模型上）。
+          控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。支持 `high` 和 `low` 上 `gpt-image-1` 和 `gpt-image-1.5`; `gpt-image-1-mini` 仅支持 `low`。对于 `gpt-image-2`，请省略此参数。默认值为 `low` （在受支持的模型上）。
 
           - `"high"`
 
@@ -2437,16 +2687,16 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复（inpainting）的可选蒙版。包含 `image_url`
-          (string, optional) 和 `file_id` (string, optional)。
+          用于局部重绘的可选蒙版。包含 `image_url`
+          （字符串，可选），以及 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
 
-            遮罩图像的文件 ID。
+            蒙版图像的文件 ID。
 
           - `image_url: optional string`
 
-            Base64 编码的遮罩图像。
+            Base64 编码的蒙版图像。
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -2488,7 +2738,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的内容审核级别。默认值： `auto`.
+          生成图像的审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -2511,13 +2761,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `partial_images: optional number`
 
-          在流式模式下生成的中间图像数量，范围为 0（默认值）到 3。
+          流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or 3 more`
 
           生成图像的质量。GPT 图像模型支持 `low`,
-          `medium`，以及 `high`. `gpt-image-2.5-sunburst` 以及 `gpt-image-2.5-flare`,
-          ，包括其 `2026-09-08` 快照，也支持 `xhigh` 以及 `max`.
+          `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
+          （包括其 `2026-09-08` 快照），还支持 `xhigh` 和 `max`.
           默认值： `auto`.
 
           - `"low"`
@@ -2534,13 +2784,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且所请求的宽高比必须介于 1:3 与 3:1 之间。超过 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸也必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。
+          生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度必须均可被 16 整除，且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性功能，支持的最高分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且所请求的宽高比必须介于 1:3 与 3:1 之间。超过 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸也必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。
+            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度必须均可被 16 整除，且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性功能，支持的最高分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。
 
             - `"1024x1024"`
 
@@ -2584,17 +2834,17 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `type: "container_auto"`
 
-              自动为此请求创建容器
+              为此请求自动创建容器
 
               - `"container_auto"`
 
             - `file_ids: optional array of string`
 
-              可选的上传文件列表，供你的代码使用。
+              可供你的代码使用的已上传文件的可选列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
-              该容器的内存限制。
+              容器的内存限制。
 
               - `"1g"`
 
@@ -2606,7 +2856,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `network_policy: optional ContainerNetworkPolicyDisabled or ContainerNetworkPolicyAllowlist`
 
-              该容器的网络访问策略。
+              容器的网络访问策略。
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
@@ -2614,7 +2864,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `skills: optional array of SkillReference or InlineSkill`
 
-              可选的技能列表，通过 ID 或内联数据引用。
+              按 id 或内联数据引用的技能的可选列表。
 
               - `SkillReference object { skill_id, type, version }`
 
@@ -2630,13 +2880,13 @@ Schema name: `LiveResponseItemCreateParam`
 
                 - `version: optional string`
 
-                  可选的技能版本。使用正整数或 'latest'。省略以使用默认值。
+                  可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
               - `InlineSkill object { description, name, source, type }`
 
                 - `description: string`
 
-                  该技能的描述。
+                  技能的描述。
 
                 - `name: string`
 
@@ -2682,7 +2932,7 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `description: string`
 
-                该技能的描述。
+                技能的描述。
 
               - `name: string`
 
@@ -2706,11 +2956,11 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](https://developers.openai.com/api/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](https://developers.openai.com/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
-          自定义工具的名称，用于在工具调用中标识该工具。
+          自定义工具的名称，用于在工具调用中标识它。
 
         - `type: "custom"`
 
@@ -2728,11 +2978,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `async: optional boolean`
 
-          工具响应是否可以异步返回，而不是在下次创建响应时立即返回。
+          工具响应是异步返回，还是在下次创建响应时立即返回。
 
         - `defer_loading: optional boolean`
 
-          是否应推迟此工具并通过工具搜索发现它。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -2740,15 +2990,15 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认为不受约束的文本。
 
           - `Text object { type }`
 
-            无约束的自由格式文本。
+            不受约束的自由形式文本。
 
             - `type: "text"`
 
-              无约束文本格式。始终为 `text`.
+              不受约束的文本格式。始终为 `text`.
 
               - `"text"`
 
@@ -2762,7 +3012,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `syntax: "lark" or "regex"`
 
-              语法定义的语法。取值为 `lark` 或 `regex`.
+              语法定义的语法。为以下之一： `lark` 或 `regex`.
 
               - `"lark"`
 
@@ -2776,25 +3026,25 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
-        将函数/自定义工具归入同一命名空间下。
+        将 function/custom 工具归入共享命名空间。
 
         - `description: string`
 
-          展示给模型的命名空间描述。
+          向模型展示的命名空间说明。
 
         - `name: string`
 
-          在工具调用中使用的命名空间名称（例如， `crm`).
+          工具调用中使用的命名空间名称（例如， `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-          加载到此命名空间内的函数/自定义工具。
+          此命名空间内加载的 function/custom 工具。
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
 
-              已加载函数工具的名称。
+              已加载的函数工具的名称。
 
             - `type: "function"`
 
@@ -2810,31 +3060,31 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `async: optional boolean`
 
-              工具响应是否可以异步返回，而不是在下次创建响应时立即返回。
+              工具响应是异步返回，还是在下次创建响应时立即返回。
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此函数，并通过工具搜索发现。
+              是否应延迟加载此函数并通过工具搜索进行发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。这不描述 content 数组输出。
+              描述此函数工具在字符串输出中编码的 JSON 值的 JSON Schema。这不描述 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制执行严格的参数校验。若省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
+              是否强制执行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](https://developers.openai.com/api/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](https://developers.openai.com/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
-              自定义工具的名称，用于在工具调用中标识该工具。
+              自定义工具的名称，用于在工具调用中标识它。
 
             - `type: "custom"`
 
@@ -2852,11 +3102,11 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `async: optional boolean`
 
-              工具响应是否可以异步返回，而不是在下次创建响应时立即返回。
+              工具响应是异步返回，还是在下次创建响应时立即返回。
 
             - `defer_loading: optional boolean`
 
-              是否应推迟此工具并通过工具搜索发现它。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -2864,7 +3114,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认为不受约束的文本。
 
         - `type: "namespace"`
 
@@ -2874,7 +3124,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        针对延迟工具的托管或 BYOT 工具搜索配置。
+        延迟加载工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
@@ -2884,11 +3134,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `description: optional string or null`
 
-          展示给模型的、用于客户端执行的工具搜索工具的描述。
+          向模型展示的客户端执行工具搜索工具的说明。
 
         - `execution: optional "server" or "client"`
 
-          工具搜索是由服务端执行还是由客户端执行。
+          工具搜索是由服务端还是客户端执行。
 
           - `"server"`
 
@@ -2896,11 +3146,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `parameters: optional unknown or null`
 
-          客户端执行的工具搜索工具的参数 schema。
+          客户端执行工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具会在网络上搜索相关结果以用于回答。了解更多关于 [网页搜索工具](https://developers.openai.com/api/docs/guides/tools-web-search).
+        此工具在网页中搜索相关结果，以用于响应。详细了解 [网页搜索工具](https://developers.openai.com/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -2918,7 +3168,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          用于搜索的上下文窗口空间使用量的高层指导。可选值为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索要使用的上下文窗口空间的高级指导量。可选值为 `low`, `medium`，或 `high`. `medium` 是默认值。
 
           - `"low"`
 
@@ -2928,33 +3178,33 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的大致位置。若省略或为 null，则默认为美国。若要避免此回退，请传递 `{"type": "approximate"}` ，不包含 location 字段。若要使结果本地化，请提供相关的 location 字段。
+          用户的大致位置。如果省略或为 null，则默认为美国。要避免此回退，请传入 `{"type": "approximate"}` 且不含位置字段。若要本地化结果，请提供相关的位置字段。
 
           - `type: "approximate"`
 
-            近似位置的类型，固定为 `approximate`.
+            位置近似类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户所在城市的自由文本输入，例如： `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            由两个字母组成的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如： `US`.
+            两位字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户所在地区的自由文本输入，例如： `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
-            该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) ，例如： `America/Los_Angeles`.
+            该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) ，例如。 `America/Los_Angeles`.
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用 unified diff 创建、删除或更新文件。
+        允许助手使用统一 diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
@@ -2972,7 +3222,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `type: "tool_search_output"`
 
-      条目类型。始终为 `tool_search_output`.
+      项目类型。始终为 `tool_search_output`.
 
       - `"tool_search_output"`
 
@@ -2982,11 +3232,11 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `call_id: optional string or null`
 
-      由模型生成的工具搜索调用的唯一 ID。
+      模型生成的工具搜索调用的唯一 ID。
 
     - `execution: optional "server" or "client"`
 
-      工具搜索是由服务端还是客户端执行的。
+      工具搜索是由服务端还是客户端执行。
 
       - `"server"`
 
@@ -3006,29 +3256,29 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `role: "developer"`
 
-      提供这些额外工具的角色。仅支持 `developer` 。
+      提供额外工具的角色。仅支持 `developer` 。
 
       - `"developer"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
-      在此项中提供的其他工具列表。
+      此项中提供的其他工具列表。
 
       - `Function object { name, parameters, strict, 6 more }`
 
-        定义你自己代码中可供模型选择调用的函数。了解更多关于 [函数调用](https://developers.openai.com/api/docs/guides/function-calling).
+        定义你自己的代码中的函数，模型可以选择调用该函数。了解更多信息，请参阅 [function calling](https://developers.openai.com/api/docs/guides/function-calling).
 
         - `name: string`
 
-          要调用的函数名称。
+          要调用的函数的名称。
 
         - `parameters: map[unknown] or null`
 
-          描述该函数参数的 JSON 架构对象。
+          描述函数参数的 JSON schema 对象。
 
         - `strict: boolean or null`
 
-          是否为此函数工具强制执行严格的参数校验。
+          是否为此函数工具强制执行严格的参数验证。
 
         - `type: "function"`
 
@@ -3048,23 +3298,23 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `defer_loading: optional boolean`
 
-          此函数是否为延迟加载并通过工具搜索加载。
+          此函数是否被延迟并通过工具搜索加载。
 
         - `description: optional string or null`
 
-          函数的描述。由模型用于决定是否调用该函数。
+          函数的描述。模型使用该描述来判断是否调用该函数。
 
         - `output_schema: optional map[unknown] or null`
 
-          描述该函数的字符串输出中所编码 JSON 值的 JSON 架构对象。
+          描述此函数在字符串输出中编码的 JSON 值的 JSON schema 对象。
 
       - `FileSearch object { type, vector_store_ids, filters, 2 more }`
 
-        从已上传文件中搜索相关内容的工具。了解更多关于文件搜索工具 [文件搜索工具](https://developers.openai.com/api/docs/guides/tools-file-search).
+        从上传的文件中搜索相关内容的工具。了解更多信息，请参阅 [文件搜索 工具](https://developers.openai.com/api/docs/guides/tools-file-search).
 
         - `type: "file_search"`
 
-          文件搜索工具的类型。始终为 `file_search`.
+          文件搜索 工具的类型。始终为 `file_search`.
 
           - `"file_search"`
 
@@ -3074,19 +3324,19 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `filters: optional ComparisonFilter or CompoundFilter or null`
 
-          要应用的筛选器。
+          要应用的筛选条件。
 
           - `ComparisonFilter object { key, type, value }`
 
-            用于在指定比较操作下，将指定属性键与给定值进行比较的筛选器。
+            用于将指定属性键与给定值通过定义的比较运算进行比较的筛选条件。
 
           - `CompoundFilter object { filters, type }`
 
-            使用以下方式合并多个筛选器 `and` 或 `or`.
+            使用以下方式组合多个筛选条件 `and` 或 `or`.
 
         - `max_num_results: optional number`
 
-          要返回的最大结果数。该数值应在 1 到 50（含）之间。
+          要返回的最大结果数。此数值应介于 1 到 50 之间（含两端）。
 
         - `ranking_options: optional object { hybrid_search, ranker, score_threshold }`
 
@@ -3094,15 +3344,15 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `hybrid_search: optional object { embedding_weight, text_weight }`
 
-            用于在启用混合搜索时，控制倒数排名融合在语义嵌入匹配与稀疏关键词匹配之间平衡程度的权重。
+            启用混合搜索时，用于控制倒数排名融合在语义嵌入匹配与稀疏关键词匹配之间平衡的权重。
 
             - `embedding_weight: number`
 
-              嵌入在倒数排名融合中的权重。
+              倒排排名融合中嵌入的权重。
 
             - `text_weight: number`
 
-              文本在倒数排名融合中的权重。
+              倒排排名融合中文本的权重。
 
           - `ranker: optional "auto" or "default-2024-11-15"`
 
@@ -3114,21 +3364,21 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `score_threshold: optional number`
 
-            文件搜索的分数阈值，取值范围为 0 到 1。越接近 1 的数值会尝试仅返回最相关的结果，但返回的结果数量可能较少。
+            文件搜索的分数阈值，介于 0 到 1 之间。越接近 1 的数值越倾向于只返回最相关的结果，但可能会返回更少的结果。
 
       - `Computer object { type }`
 
-        控制虚拟计算机的工具。了解更多关于 [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。了解更多关于 [computer 工具](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
         - `type: "computer"`
 
-          计算机工具的类型。始终为 `computer`.
+          computer 工具的类型。始终为 `computer`.
 
           - `"computer"`
 
       - `ComputerUsePreview object { display_height, display_width, environment, type }`
 
-        控制虚拟计算机的工具。了解更多关于 [computer tool](https://developers.openai.com/api/docs/guides/tools-computer-use).
+        用于控制虚拟计算机的工具。了解更多关于 [computer 工具](https://developers.openai.com/api/docs/guides/tools-computer-use).
 
         - `display_height: number`
 
@@ -3154,13 +3404,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `type: "computer_use_preview"`
 
-          计算机使用工具的类型。始终为 `computer_use_preview`.
+          computer use 工具的类型。始终为 `computer_use_preview`.
 
           - `"computer_use_preview"`
 
       - `WebSearch object { type, external_web_access, filters, 2 more }`
 
-        在互联网上搜索与提示相关的来源。了解更多关于
+        根据提示在互联网上搜索相关来源。了解更多关于
         [网页搜索工具](https://developers.openai.com/api/docs/guides/tools-web-search).
 
         - `type: "web_search" or "web_search_2025_08_26"`
@@ -3173,7 +3423,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `external_web_access: optional boolean`
 
-          允许 网页搜索 访问实时互联网。省略时默认为 true。当为 false 时，网页搜索工具以离线/仅缓存模式运行，不会获取新的外部内容。
+          允许 网页搜索进行实时互联网访问。如果省略，默认值为 true。当为 false 时，网页搜索工具将以离线/仅缓存模式运行，并且不会获取新的外部内容。
 
         - `filters: optional object { allowed_domains }  or null`
 
@@ -3181,14 +3431,14 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `allowed_domains: optional array of string or null`
 
-            允许的搜索域名。如果未提供，则允许所有域名。
-            所提供域名的子域名也同样被允许。
+            搜索所允许的域名。如果未提供，则允许所有域名。
+            所提供的域名的子域名同样允许。
 
             示例： `["pubmed.ncbi.nlm.nih.gov"]`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          用于搜索的上下文窗口空间使用量的高层指导。可选值为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索要使用的上下文窗口空间的高级指导量。可选值为 `low`, `medium`，或 `high`. `medium` 是默认值。
 
           - `"low"`
 
@@ -3199,43 +3449,43 @@ Schema name: `LiveResponseItemCreateParam`
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
           用户的近似位置。如果省略或为 null，则默认为
-          美国。若要避免此回退行为，请在请求中 `{"type": "approximate"}` 不要传
-          任何位置字段。若希望对结果进行本地化，请提供相应的位置字段。
+          美国。若要避免此回退，请传递 `{"type": "approximate"}` 且不包含
+          位置字段。若要本地化结果，请提供相应的位置字段。
 
           - `city: optional string or null`
 
-            用户所在城市的自由文本输入，例如： `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            由两个字母组成的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如： `US`.
+            两位字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户所在地区的自由文本输入，例如： `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
-            该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) ，例如： `America/Los_Angeles`.
+            该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) ，例如。 `America/Los_Angeles`.
 
           - `type: optional "approximate"`
 
-            近似位置的类型，固定为 `approximate`.
+            位置近似类型。始终为 `approximate`.
 
             - `"approximate"`
 
       - `Mcp object { server_label, type, allowed_callers, 9 more }`
 
-        通过远程模型上下文协议
-        (MCP) 服务器为模型提供对额外工具的访问能力。 [详细了解 MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
+        通过远程 Model Context Protocol
+        (MCP) 服务器为模型提供额外的工具访问能力。 [了解更多关于 MCP 的信息](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).
 
         - `server_label: string`
 
-          该 MCP 服务器的标签，用于在工具调用中识别它。
+          此 MCP 服务器的标签，用于在工具调用中标识它。
 
         - `type: "mcp"`
 
-          MCP 工具的类型，固定为 `mcp`.
+          MCP 工具的类型。始终为 `mcp`.
 
           - `"mcp"`
 
@@ -3247,13 +3497,13 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
-          允许使用的工具名称列表或过滤对象。
+          允许使用的工具名称列表或过滤器对象。
 
           - `McpAllowedTools = array of string`
 
-            由允许使用的工具名称组成的字符串数组
+            允许使用的工具名称组成的字符串数组
 
           - `McpToolFilter object { read_only, tool_names }`
 
@@ -3261,9 +3511,9 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `read_only: optional boolean`
 
-              指示某个工具是否会修改数据，或者仅为只读。如果某个
+              指示工具是否会修改数据或是否为只读。如果某个
               MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-              标注，它就会匹配此过滤器。
+              标记，则它将与此过滤器匹配。
 
             - `tool_names: optional array of string`
 
@@ -3271,21 +3521,21 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `authorization: optional string`
 
-          可用于远程 MCP 服务器的 OAuth 访问令牌，可配合自定义 MCP 服务器 URL 或服务连接器使用。你的应用
-          程序必须自行处理 OAuth 授权流程，并在该字段中提供令牌。
-          必须自行处理 OAuth 授权流程，并在该字段中提供令牌。
+          可用于远程 MCP 服务器的 OAuth 访问令牌，可配合自定义 MCP 服务器
+          URL 或服务连接器使用。你的应用
+          必须处理 OAuth 授权流程并在此处提供该令牌。
 
         - `connector_id: optional "connector_dropbox" or "connector_gmail" or "connector_googlecalendar" or 5 more`
 
-          服务连接器的标识符，例如 ChatGPT 中提供的连接器。以下值之
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供一项。详细了解
-          about service connectors [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
+          服务连接器的标识符，例如 ChatGPT 中可用的那些连接器。
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中之一。详细了解
+          服务连接器 [here](https://developers.openai.com/api/docs/guides/tools-connectors-mcp#connectors).
 
-          对于 2026 年 9 月 1 日之后发布的模型，此字段已弃用。请。
-          使用 `server_url` 以连接远程 MCP 服务器，或使用 `tunnel_id` 通过
-          Secure MCP Tunnel 进行连接。
+          此字段对于 2026 年 9 月 1 日之后发布的模型已弃用。
+          请使用 `server_url` 连接远程 MCP 服务器，或使用 `tunnel_id` 通过
+          安全 MCP 隧道进行连接。
 
-          当前支持的 `connector_id` 值包括：
+          目前支持 `connector_id` 的取值包括：
 
           - Dropbox: `connector_dropbox`
           - Gmail: `connector_gmail`
@@ -3314,22 +3564,22 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `defer_loading: optional boolean`
 
-          该 MCP 工具是否为延迟加载，并通过工具搜索发现。
+          该 MCP 工具是否被延迟，并通过工具搜索发现。
 
         - `headers: optional map[string] or null`
 
-          发送到 MCP 服务器的可选 HTTP 标头。可用于身份验证
+          发送到 MCP 服务器的可选 HTTP 头。用于身份验证
           或其他用途。
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
-          指定 MCP 服务器中哪些工具需要审批。
+          指定 MCP 服务器的哪些工具需要审批。
 
           - `McpToolApprovalFilter object { always, never }`
 
-            指定 MCP 服务器中哪些工具需要审批。可以是
-            `always`, `never`,或与工具关联的过滤对象
-            需要审批的工具。
+            指定 MCP 服务器的哪些工具需要审批。可以是
+            `always`, `never`,或与需要审批的工具关联的过滤器对象
+            。
 
             - `always: optional object { read_only, tool_names }`
 
@@ -3337,9 +3587,9 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `read_only: optional boolean`
 
-                指示某个工具是否会修改数据，或者仅为只读。如果某个
+                指示工具是否会修改数据或是否为只读。如果某个
                 MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                标注，它就会匹配此过滤器。
+                标记，则它将与此过滤器匹配。
 
               - `tool_names: optional array of string`
 
@@ -3351,9 +3601,9 @@ Schema name: `LiveResponseItemCreateParam`
 
               - `read_only: optional boolean`
 
-                指示某个工具是否会修改数据，或者仅为只读。如果某个
+                指示工具是否会修改数据或是否为只读。如果某个
                 MCP 服务器被 [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
-                标注，它就会匹配此过滤器。
+                标记，则它将与此过滤器匹配。
 
               - `tool_names: optional array of string`
 
@@ -3362,7 +3612,7 @@ Schema name: `LiveResponseItemCreateParam`
           - `McpToolApprovalSetting = "always" or "never"`
 
             为所有工具指定统一的审批策略。可选值为 `always` 或
-            `never`。之一。设置为 `always`，时,所有工具都需要审批。设置为
+            `never`。当设置为 `always`，时,所有工具都需要审批。当
             设置为 `never`，时,所有工具都不需要审批。
 
             - `"always"`
@@ -3375,23 +3625,23 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `server_url: optional string`
 
-          MCP 服务器的 URL。 `server_url`, `connector_id`，或
-          `tunnel_id` 必须提供其中一个。
+          MCP 服务器的 URL。二者之一 `server_url`, `connector_id`，或
+          `tunnel_id` 必须提供。
 
         - `tunnel_id: optional string`
 
-          要使用的安全 MCP 隧道 ID，用于代替直接的服务器 URL。
-          `server_url`, `connector_id`，或 `tunnel_id` 必须提供其中一个。
+          用于替代直接服务器 URL 的 Secure MCP Tunnel ID。二者之一
+          `server_url`, `connector_id`，或 `tunnel_id` 必须提供。
 
       - `CodeInterpreter object { container, type, allowed_callers }`
 
-        运行 Python 代码以帮助生成对提示词回应的工具。
+        运行 Python 代码以帮助生成对提示词响应的工具。
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
-          代码解释器容器。可以是容器 ID，也可以是用于指定
-          可供代码使用的已上传文件 ID 以及一个
-          可选的 `memory_limit` 设置的对象。
+          代码解释器容器。可以是容器 ID，也可以是指定对象的对象，该对象
+          指定可供代码使用的已上传文件 ID，并包含一项
+          可选的 `memory_limit` 设置。
 
           - `string`
 
@@ -3399,7 +3649,7 @@ Schema name: `LiveResponseItemCreateParam`
 
           - `CodeInterpreterToolAuto object { type, file_ids, memory_limit, network_policy }`
 
-            代码解释器容器的配置。可以指定用于运行代码的文件 ID。
+            代码解释器容器的配置。可选择指定用于运行代码的文件 ID。
 
             - `type: "auto"`
 
@@ -3409,7 +3659,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `file_ids: optional array of string`
 
-              可选的上传文件列表，供你的代码使用。
+              可供你的代码使用的已上传文件的可选列表。
 
             - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
@@ -3425,7 +3675,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `network_policy: optional ContainerNetworkPolicyDisabled or ContainerNetworkPolicyAllowlist`
 
-              该容器的网络访问策略。
+              容器的网络访问策略。
 
               - `ContainerNetworkPolicyDisabled object { type }`
 
@@ -3475,11 +3725,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `background: optional "transparent" or "opaque" or "auto"`
 
-          设置生成图像的背景。可选值之一 `transparent`, `opaque`,
-          或 `auto`. `gpt-image-2.5-sunburst` 以及 `gpt-image-2.5-flare`，包括
-          其 `2026-09-08` 快照，支持 `opaque` 以及 `transparent`
-          背景。受支持的 GPT Image 模型支持透明背景。对于
-          模型，此支持处于 `gpt-image-2` 以及 `gpt-image-2-2026-04-21`，此支持处于
+          设置生成图像的背景。可选值包括 `transparent`, `opaque`,
+          或 `auto`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`，包括其
+          快照，支持 `2026-09-08` 背景。受支持的 GPT Image `opaque` 和 `transparent`
+          背景。受支持的 GPT Image 模型可使用透明背景。对于
+          模型。对于 `gpt-image-2` 和 `gpt-image-2-2026-04-21`，该支持处于
           预览阶段。使用 `transparent`，时，将输出格式设置为 `png` 或 `webp`.
           默认值： `auto`.
 
@@ -3491,7 +3741,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。支持 `high` 以及 `low` 于 `gpt-image-1` 以及 `gpt-image-1.5`; `gpt-image-1-mini` 仅支持 `low`。对于 `gpt-image-2`，请省略此参数。默认值为 `low` （在支持的模型上）。
+          控制模型在匹配输入图像的风格和特征（尤其是面部特征）时所投入的精力。支持 `high` 和 `low` 上 `gpt-image-1` 和 `gpt-image-1.5`; `gpt-image-1-mini` 仅支持 `low`。对于 `gpt-image-2`，请省略此参数。默认值为 `low` （在受支持的模型上）。
 
           - `"high"`
 
@@ -3499,16 +3749,16 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `input_image_mask: optional object { file_id, image_url }`
 
-          用于修复（inpainting）的可选蒙版。包含 `image_url`
-          (string, optional) 和 `file_id` (string, optional)。
+          用于局部重绘的可选蒙版。包含 `image_url`
+          （字符串，可选），以及 `file_id` （字符串，可选）。
 
           - `file_id: optional string`
 
-            遮罩图像的文件 ID。
+            蒙版图像的文件 ID。
 
           - `image_url: optional string`
 
-            Base64 编码的遮罩图像。
+            Base64 编码的蒙版图像。
 
         - `model: optional string or "gpt-image-1" or "gpt-image-1-mini" or "gpt-image-1.5" or 6 more`
 
@@ -3550,7 +3800,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `moderation: optional "auto" or "low"`
 
-          生成图像的内容审核级别。默认值： `auto`.
+          生成图像的审核级别。默认值： `auto`.
 
           - `"auto"`
 
@@ -3573,13 +3823,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `partial_images: optional number`
 
-          在流式模式下生成的中间图像数量，范围为 0（默认值）到 3。
+          流式模式下生成的部分图像数量，取值范围为 0（默认值）到 3。
 
         - `quality: optional "low" or "medium" or "high" or 3 more`
 
           生成图像的质量。GPT 图像模型支持 `low`,
-          `medium`，以及 `high`. `gpt-image-2.5-sunburst` 以及 `gpt-image-2.5-flare`,
-          ，包括其 `2026-09-08` 快照，也支持 `xhigh` 以及 `max`.
+          `medium`，以及 `high`. `gpt-image-2.5-sunburst` 和 `gpt-image-2.5-flare`,
+          （包括其 `2026-09-08` 快照），还支持 `xhigh` 和 `max`.
           默认值： `auto`.
 
           - `"low"`
@@ -3596,13 +3846,13 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且所请求的宽高比必须介于 1:3 与 3:1 之间。超过 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸也必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。
+          生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度必须均可被 16 整除，且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性功能，支持的最高分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度都必须能被 16 整除，且所请求的宽高比必须介于 1:3 与 3:1 之间。超过 `2560x1440` 的分辨率为实验性，最大支持的分辨率为 `3840x2160`。所请求的尺寸也必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。
+            生成图像的尺寸。对于 `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`，以及 `gpt-image-2.5-flare-2026-09-08`，支持以字符串形式指定任意分辨率，例如 `WIDTHxHEIGHT` 字符串，例如 `1536x864`。宽度和高度必须均可被 16 整除，且请求的宽高比必须介于 1:3 和 3:1 之间。高于 `2560x1440` 的分辨率属于实验性功能，支持的最高分辨率为 `3840x2160`。请求的尺寸还必须满足模型当前的像素和边长限制。标准尺寸 `1024x1024`, `1536x1024`，以及 `1024x1536` 由 GPT 图像模型支持； `auto` 适用于允许自动调整大小的模型。
 
             - `"1024x1024"`
 
@@ -3650,11 +3900,11 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Custom object { name, type, allowed_callers, 4 more }`
 
-        使用指定格式处理输入的自定义工具。详细了解   [自定义工具](https://developers.openai.com/api/docs/guides/function-calling#custom-tools)
+        使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](https://developers.openai.com/api/docs/guides/function-calling#custom-tools)
 
         - `name: string`
 
-          自定义工具的名称，用于在工具调用中标识该工具。
+          自定义工具的名称，用于在工具调用中标识它。
 
         - `type: "custom"`
 
@@ -3672,11 +3922,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `async: optional boolean`
 
-          工具响应是否可以异步返回，而不是在下次创建响应时立即返回。
+          工具响应是异步返回，还是在下次创建响应时立即返回。
 
         - `defer_loading: optional boolean`
 
-          是否应推迟此工具并通过工具搜索发现它。
+          是否应延迟此工具并通过工具搜索发现它。
 
         - `description: optional string`
 
@@ -3684,21 +3934,21 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `format: optional CustomToolInputFormat`
 
-          自定义工具的输入格式。默认为无约束文本。
+          自定义工具的输入格式。默认为不受约束的文本。
 
       - `Namespace object { description, name, tools, type }`
 
-        将函数/自定义工具归入同一命名空间下。
+        将 function/custom 工具归入共享命名空间。
 
         - `description: string`
 
-          展示给模型的命名空间描述。
+          向模型展示的命名空间说明。
 
         - `name: string`
 
-          在工具调用中使用的命名空间名称（例如， `crm`).
+          工具调用中使用的命名空间名称（例如， `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           此命名空间内可用的函数/自定义工具。
 
@@ -3720,31 +3970,31 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `async: optional boolean`
 
-              工具响应是否可以异步返回，而不是在下次创建响应时立即返回。
+              工具响应是异步返回，还是在下次创建响应时立即返回。
 
             - `defer_loading: optional boolean`
 
-              是否应延迟此函数，并通过工具搜索发现。
+              是否应延迟加载此函数并通过工具搜索进行发现。
 
             - `description: optional string or null`
 
             - `output_schema: optional map[unknown] or null`
 
-              描述此函数工具字符串输出中所编码 JSON 值的 JSON Schema。这不描述 content 数组输出。
+              描述此函数工具在字符串输出中编码的 JSON 值的 JSON Schema。这不描述 content-array 输出。
 
             - `parameters: optional unknown or null`
 
             - `strict: optional boolean or null`
 
-              是否强制执行严格的参数校验。若省略，当 schema 兼容时 Responses 会尝试使用严格校验，否则回退到非严格校验。
+              是否强制执行严格的参数验证。如果省略，当 schema 兼容时，Responses 会尝试使用严格验证，否则回退到非严格验证。
 
           - `Custom object { name, type, allowed_callers, 4 more }`
 
-            使用指定格式处理输入的自定义工具。详细了解   [自定义工具](https://developers.openai.com/api/docs/guides/function-calling#custom-tools)
+            使用指定格式处理输入的自定义工具。了解更多关于   [自定义工具](https://developers.openai.com/api/docs/guides/function-calling#custom-tools)
 
             - `name: string`
 
-              自定义工具的名称，用于在工具调用中标识该工具。
+              自定义工具的名称，用于在工具调用中标识它。
 
             - `type: "custom"`
 
@@ -3762,11 +4012,11 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `async: optional boolean`
 
-              工具响应是否可以异步返回，而不是在下次创建响应时立即返回。
+              工具响应是异步返回，还是在下次创建响应时立即返回。
 
             - `defer_loading: optional boolean`
 
-              是否应推迟此工具并通过工具搜索发现它。
+              是否应延迟此工具并通过工具搜索发现它。
 
             - `description: optional string`
 
@@ -3774,7 +4024,7 @@ Schema name: `LiveResponseItemCreateParam`
 
             - `format: optional CustomToolInputFormat`
 
-              自定义工具的输入格式。默认为无约束文本。
+              自定义工具的输入格式。默认为不受约束的文本。
 
         - `type: "namespace"`
 
@@ -3784,7 +4034,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `ToolSearch object { type, description, execution, parameters }`
 
-        针对延迟工具的托管或 BYOT 工具搜索配置。
+        延迟加载工具的托管或 BYOT 工具搜索配置。
 
         - `type: "tool_search"`
 
@@ -3794,11 +4044,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `description: optional string or null`
 
-          展示给模型的、用于客户端执行的工具搜索工具的描述。
+          向模型展示的客户端执行工具搜索工具的说明。
 
         - `execution: optional "server" or "client"`
 
-          工具搜索是由服务端执行还是由客户端执行。
+          工具搜索是由服务端还是客户端执行。
 
           - `"server"`
 
@@ -3806,11 +4056,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `parameters: optional unknown or null`
 
-          客户端执行的工具搜索工具的参数 schema。
+          客户端执行工具搜索工具的参数 schema。
 
       - `WebSearchPreview object { type, search_content_types, search_context_size, user_location }`
 
-        此工具会在网络上搜索相关结果以用于回答。了解更多关于 [网页搜索工具](https://developers.openai.com/api/docs/guides/tools-web-search).
+        此工具在网页中搜索相关结果，以用于响应。详细了解 [网页搜索工具](https://developers.openai.com/api/docs/guides/tools-web-search).
 
         - `type: "web_search_preview" or "web_search_preview_2025_03_11"`
 
@@ -3828,7 +4078,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `search_context_size: optional "low" or "medium" or "high"`
 
-          用于搜索的上下文窗口空间使用量的高层指导。可选值为 `low`, `medium`，或 `high`. `medium` 是默认值。
+          搜索要使用的上下文窗口空间的高级指导量。可选值为 `low`, `medium`，或 `high`. `medium` 是默认值。
 
           - `"low"`
 
@@ -3838,33 +4088,33 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          用户的大致位置。若省略或为 null，则默认为美国。若要避免此回退，请传递 `{"type": "approximate"}` ，不包含 location 字段。若要使结果本地化，请提供相关的 location 字段。
+          用户的大致位置。如果省略或为 null，则默认为美国。要避免此回退，请传入 `{"type": "approximate"}` 且不含位置字段。若要本地化结果，请提供相关的位置字段。
 
           - `type: "approximate"`
 
-            近似位置的类型，固定为 `approximate`.
+            位置近似类型。始终为 `approximate`.
 
             - `"approximate"`
 
           - `city: optional string or null`
 
-            用户所在城市的自由文本输入，例如： `San Francisco`.
+            用户所在城市的自由文本输入，例如 `San Francisco`.
 
           - `country: optional string or null`
 
-            由两个字母组成的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如： `US`.
+            两位字母的 [ISO 国家代码](https://en.wikipedia.org/wiki/ISO_3166-1) ，例如。 `US`.
 
           - `region: optional string or null`
 
-            用户所在地区的自由文本输入，例如： `California`.
+            用户所在地区的自由文本输入，例如 `California`.
 
           - `timezone: optional string or null`
 
-            该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) ，例如： `America/Los_Angeles`.
+            该 [IANA 时区](https://timeapi.io/documentation/iana-timezones) ，例如。 `America/Los_Angeles`.
 
       - `ApplyPatch object { type, allowed_callers }`
 
-        允许助手使用 unified diff 创建、删除或更新文件。
+        允许助手使用统一 diff 创建、删除或更新文件。
 
         - `type: "apply_patch"`
 
@@ -3882,7 +4132,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `type: "additional_tools"`
 
-      条目类型。始终为 `additional_tools`.
+      项目类型。始终为 `additional_tools`.
 
       - `"additional_tools"`
 
@@ -3892,13 +4142,13 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `ConfigurationUpdate object { type, id, reasoning }`
 
-    对会话响应配置的更新。该配置
-    在后续响应中持续生效，直到被另一个
-    配置更新所替换。
+    对话响应配置的更新。该配置
+    将持续适用于后续响应，直到被另一个
+    配置更新替换。
 
     - `type: "configuration_update"`
 
-      条目类型。始终为 `configuration_update`.
+      项目类型。始终为 `configuration_update`.
 
       - `"configuration_update"`
 
@@ -3908,11 +4158,11 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `reasoning: optional object { effort }`
 
-      推理配置的更新。目前仅支持 effort。
+      推理配置的更新。仅支持 effort。
 
       - `effort: optional ReasoningEffort or null`
 
-        后续响应使用的推理 effort，直到另一个
+        后续响应使用的推理力度，直到另一个
         配置更新将其替换。
 
         - `"none"`
@@ -3931,9 +4181,9 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `Reasoning object { id, summary, type, 3 more }`
 
-    对推理模型在生成响应时所使用的思维链的描述。如果你正在手动
-    管理上下文，请务必在后续对话轮次中将这些项包含到你的 `input` 到 Responses API 中
-    如果你正在手动管理上下文
+    推理模型生成响应时所用的思维链说明。
+    请确保将这些项目包含在你的 `input` 中传递给 Responses API
+    ，以用于对话的后续轮次，如果你手动
     [管理上下文](https://developers.openai.com/api/docs/guides/conversation-state).
 
     - `id: string`
@@ -3946,7 +4196,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `text: string`
 
-        到目前为止模型推理输出的摘要。
+        模型到目前为止的推理输出摘要。
 
       - `type: "summary_text"`
 
@@ -3966,7 +4216,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `text: string`
 
-        来自模型的推理文本。
+        模型生成的推理文本。
 
       - `type: "reasoning_text"`
 
@@ -3977,19 +4227,19 @@ Schema name: `LiveResponseItemCreateParam`
     - `encrypted_content: optional string or null`
 
       推理项的加密内容。默认情况下会填充该字段
-      针对通过 `POST /v1/responses` 和 WebSocket
+      用于由 `POST /v1/responses` 和 WebSocket
       `response.create` 请求返回的推理项。
 
-      在流式传输时，请使用已完成的推理项及其
-      `encrypted_content` 来自 `response.output_item.done` 事件，在后续请求中
-      使用。流式事件中的 `encrypted_content` 可能不完整。这一点在
-      `response.output_item.added` 时尤为重要，尤其是当
-      为 `store` ，或 `false` 使用 Zero Data Retention 时。
+      流式传输时，请在后续请求中使用已完成的推理项及其
+      `encrypted_content` 来自 `response.output_item.done` 事件中的
+      后续请求。其中 `encrypted_content` 中的
+      `response.output_item.added` 可能不完整。在以下情况下这一点尤为
+      重要：当 `store` 为 `false` 时，或使用零数据保留时。
 
     - `status: optional "in_progress" or "completed" or "incomplete"`
 
-      条目的状态。取以下值之一 `in_progress`, `completed`，或
-      `incomplete`。在通过 API 返回项时填充。
+      该项的状态。可选值为 `in_progress`, `completed`，或
+      `incomplete`。当通过 API 返回 item 时填充。
 
       - `"in_progress"`
 
@@ -4017,7 +4267,7 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `ImageGenerationCall object { id, result, status, 7 more }`
 
-    模型发出的图像生成请求。
+    由模型发起的图像生成请求。
 
     - `id: string`
 
@@ -4047,7 +4297,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `action: optional "generate" or "edit" or "auto" or null`
 
-      用于图像生成的动作。
+      用于图像生成的操作。
 
       - `"generate"`
 
@@ -4057,7 +4307,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `background: optional "transparent" or "opaque" or "auto" or null`
 
-      生成时使用的背景设置。
+      用于生成的背景设置。
 
       - `"transparent"`
 
@@ -4067,7 +4317,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `output_format: optional "png" or "webp" or "jpeg" or null`
 
-      生成时使用的输出格式。
+      用于生成的输出格式。
 
       - `"png"`
 
@@ -4077,7 +4327,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `quality: optional "low" or "medium" or "high" or 3 more or null`
 
-      由图像生成工具调用生成的图像质量。其值为 `low`, `medium`, `high`, `xhigh`, `max`，或 `auto`.
+      图像生成工具调用所生成图像的质量。其中之一为 `low`, `medium`, `high`, `xhigh`, `max`，或 `auto`.
 
       - `"low"`
 
@@ -4093,17 +4343,17 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `revised_prompt: optional string or null`
 
-      经过任何模型提示重写后使用的提示。
+      经过模型提示词重写后使用的提示词。
 
     - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or null`
 
-      以 `WIDTHxHEIGHT` 字符串表示的图像尺寸，例如 `1536x864`.
+      图像尺寸，以 `WIDTHxHEIGHT` 字符串表示，例如 `1536x864`.
 
       - `string`
 
       - `"1024x1024" or "1024x1536" or "1536x1024"`
 
-        以 `WIDTHxHEIGHT` 字符串表示的图像尺寸，例如 `1536x864`.
+        图像尺寸，以 `WIDTHxHEIGHT` 字符串表示，例如 `1536x864`.
 
         - `"1024x1024"`
 
@@ -4121,24 +4371,24 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `code: string or null`
 
-      要运行的代码，如果不可用则为 null。
+      要运行的代码，如不可用则为 null。
 
     - `container_id: string`
 
       用于运行代码的容器 ID。
 
-    - `outputs: array of object { logs, type }  or object { type, url }  or null`
+    - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
-      由代码解释器生成的输出，例如日志或图像。
-      如果没有可用输出，可能为 null。
+      代码解释器生成的输出，例如日志或图像。
+      如无输出可用，则可为 null。
 
       - `Logs object { logs, type }`
 
-        由代码解释器输出的日志。
+        代码解释器输出的日志。
 
         - `logs: string`
 
-          由代码解释器输出的日志。
+          代码解释器输出的日志。
 
         - `type: "logs"`
 
@@ -4148,7 +4398,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `Image object { type, url }`
 
-        代码解释器输出的图像。
+        代码解释器的图片输出。
 
         - `type: "image"`
 
@@ -4158,11 +4408,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `url: string`
 
-          代码解释器输出图像的 URL。
+          代码解释器图片输出的 URL。
 
     - `status: "in_progress" or "completed" or "incomplete" or 2 more`
 
-      代码解释器工具调用的状态。有效值为 `in_progress`, `completed`, `incomplete`, `interpreting`，以及 `failed`.
+      代码解释器工具调用的状态。有效值包括 `in_progress`, `completed`, `incomplete`, `interpreting`，以及 `failed`.
 
       - `"in_progress"`
 
@@ -4182,7 +4432,7 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `LocalShellCall object { id, action, call_id, 2 more }`
 
-    在本地 shell 上运行命令的工具调用。
+    用于在本地 shell 上运行命令的工具调用。
 
     - `id: string`
 
@@ -4212,15 +4462,15 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `user: optional string or null`
 
-        运行命令的可选用户。
+        运行命令时使用的可选用户。
 
       - `working_directory: optional string or null`
 
-        运行命令的可选工作目录。
+        运行命令所在的可选工作目录。
 
     - `call_id: string`
 
-      由模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本地 shell 工具调用的唯一 ID。
 
     - `status: "in_progress" or "completed" or "incomplete"`
 
@@ -4244,7 +4494,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: string`
 
-      由模型生成的本地 shell 工具调用的唯一 ID。
+      模型生成的本地 shell 工具调用的唯一 ID。
 
     - `output: string`
 
@@ -4258,7 +4508,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      条目的状态。取以下值之一 `in_progress`, `completed`，或 `incomplete`.
+      该项的状态。可选值为 `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -4272,7 +4522,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `action: object { commands, max_output_length, timeout_ms }`
 
-      描述如何运行该工具调用的 shell 命令和限制。
+      描述如何运行工具调用的 shell 命令和限制。
 
       - `commands: array of string`
 
@@ -4280,15 +4530,15 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `max_output_length: optional number or null`
 
-        从合并的 stdout 和 stderr 输出中捕获的最大 UTF-8 字符数。
+        从合并的 stdout 和 stderr 输出中捕获的 UTF-8 字符的最大数量。
 
       - `timeout_ms: optional number or null`
 
-        允许 shell 命令运行的最长挂钟时间（毫秒）。
+        允许 shell 命令运行的 최대墙钟时间（毫秒）。
 
     - `call_id: string`
 
-      由模型生成的 shell 工具调用的唯一 ID。
+      模型生成的 shell 工具调用的唯一 ID。
 
     - `type: "shell_call"`
 
@@ -4298,9 +4548,9 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: optional string or null`
 
-      shell 工具调用的唯一 ID。当此 item 通过 API 返回时填充。
+      shell 工具调用的唯一 ID。通过 API 返回此项目时会填充。
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       生成此工具调用的执行上下文。
 
@@ -4326,7 +4576,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `environment: optional LocalEnvironment or ContainerReference or null`
 
-      在其中执行 shell 命令的环境。
+      执行 shell 命令的环境。
 
       - `LocalEnvironment object { type, skills }`
 
@@ -4334,7 +4584,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
-      shell 调用的状态。取值为 `in_progress`, `completed`，或 `incomplete`.
+      shell 调用的状态。其中之一为 `in_progress`, `completed`，或 `incomplete`.
 
       - `"in_progress"`
 
@@ -4344,23 +4594,23 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `ShellCallOutput object { call_id, output, type, 4 more }`
 
-    shell 工具调用发出的流式输出 item。
+    shell 工具调用发出的流式输出项目。
 
     - `call_id: string`
 
-      由模型生成的 shell 工具调用的唯一 ID。
+      模型生成的 shell 工具调用的唯一 ID。
 
     - `output: array of ResponseFunctionShellCallOutputContent`
 
       捕获的 stdout 和 stderr 输出块及其相关结果。
 
-      - `outcome: object { type }  or object { exit_code, type }`
+      - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
         与此 shell 调用关联的退出或超时结果。
 
         - `Timeout object { type }`
 
-          表示 shell 调用超过了其配置的时间限制。
+          表示 shell 调用超出了配置的时间限制。
 
           - `type: "timeout"`
 
@@ -4370,11 +4620,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `Exit object { exit_code, type }`
 
-          表示 shell 命令已执行完毕并返回了退出码。
+          表示 shell 命令已完成并返回了退出代码。
 
           - `exit_code: number`
 
-            shell 进程返回的退出码。
+            shell 进程返回的退出代码。
 
           - `type: "exit"`
 
@@ -4384,11 +4634,11 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `stderr: string`
 
-        为该 shell 调用捕获的 stderr 输出。
+        为 shell 调用捕获的 stderr 输出。
 
       - `stdout: string`
 
-        为该 shell 调用捕获的 stdout 输出。
+        为 shell 调用捕获的 stdout 输出。
 
     - `type: "shell_call_output"`
 
@@ -4398,9 +4648,9 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: optional string or null`
 
-      shell 工具调用输出的唯一 ID。当此 item 通过 API 返回时填充。
+      shell 工具调用输出的唯一 ID。通过 API 返回此项目时会填充。
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       生成此工具调用的执行上下文。
 
@@ -4426,7 +4676,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `max_output_length: optional number or null`
 
-      为该 shell 调用的合并输出所捕获的最大 UTF-8 字符数。
+      为此 shell 调用的合并输出捕获的 UTF-8 字符的最大数量。
 
     - `status: optional "in_progress" or "completed" or "incomplete" or null`
 
@@ -4440,15 +4690,15 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `ApplyPatchCall object { call_id, operation, status, 3 more }`
 
-    一个工具调用，表示使用 diff 补丁创建、删除或更新文件的请求。
+    表示使用差异补丁创建、删除或更新文件的请求的工具调用。
 
     - `call_id: string`
 
       模型生成的 apply patch 工具调用的唯一 ID。
 
-    - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+    - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
-      apply_patch 工具调用的具体创建、删除或更新指令。
+      用于 apply_patch 工具调用的具体创建、删除或更新指令。
 
       - `CreateFile object { diff, path, type }`
 
@@ -4456,15 +4706,15 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `diff: string`
 
-          创建文件时应用的统一 diff 内容。
+          创建文件时要应用的统一差异内容。
 
         - `path: string`
 
-          相对于工作区根目录的要创建的文件的路径。
+          相对于工作区根目录的待创建文件路径。
 
         - `type: "create_file"`
 
-          操作类型，始终为 `create_file`.
+          操作类型。始终为 `create_file`.
 
           - `"create_file"`
 
@@ -4474,11 +4724,11 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `path: string`
 
-          相对于工作区根目录的要删除的文件的路径。
+          相对于工作区根目录的待删除文件路径。
 
         - `type: "delete_file"`
 
-          操作类型，始终为 `delete_file`.
+          操作类型。始终为 `delete_file`.
 
           - `"delete_file"`
 
@@ -4488,21 +4738,21 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `diff: string`
 
-          要应用到现有文件的统一 diff 内容。
+          要应用到现有文件的统一差异内容。
 
         - `path: string`
 
-          相对于工作区根目录的要更新的文件的路径。
+          相对于工作区根目录的待更新文件路径。
 
         - `type: "update_file"`
 
-          操作类型，始终为 `update_file`.
+          操作类型。始终为 `update_file`.
 
           - `"update_file"`
 
     - `status: "in_progress" or "completed"`
 
-      apply patch 工具调用的状态，取值为 `in_progress` 或 `completed`.
+      apply patch 工具调用的状态。其中之一为 `in_progress` 或 `completed`.
 
       - `"in_progress"`
 
@@ -4516,9 +4766,9 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: optional string or null`
 
-      apply patch 工具调用的唯一 ID。当此项通过 API 返回时填充。
+      apply patch 工具调用的唯一 ID。通过 API 返回此条目时会填充。
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       生成此工具调用的执行上下文。
 
@@ -4552,7 +4802,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `status: "completed" or "failed"`
 
-      apply patch 工具调用输出的状态，取值为 `completed` 或 `failed`.
+      apply patch 工具调用输出的状态。其中之一为 `completed` 或 `failed`.
 
       - `"completed"`
 
@@ -4566,9 +4816,9 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: optional string or null`
 
-      apply patch 工具调用输出的唯一 ID。当此项通过 API 返回时填充。
+      apply patch 工具调用输出的唯一 ID。通过 API 返回此条目时会填充。
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       生成此工具调用的执行上下文。
 
@@ -4594,7 +4844,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `output: optional string or null`
 
-      apply patch 工具的可读日志文本（例如补丁结果或错误）。
+      来自 apply patch 工具的可选人类可读日志文本（例如补丁结果或错误）。
 
   - `McpListTools object { id, server_label, tools, 2 more }`
 
@@ -4602,7 +4852,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: string`
 
-      此列表的唯一 ID。
+      列表的唯一 ID。
 
     - `server_label: string`
 
@@ -4614,7 +4864,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `input_schema: unknown`
 
-        用于描述该工具输入的 JSON schema。
+        描述工具输入的 JSON schema。
 
       - `name: string`
 
@@ -4626,7 +4876,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `description: optional string or null`
 
-        该工具的描述。
+        工具的描述。
 
     - `type: "mcp_list_tools"`
 
@@ -4636,11 +4886,11 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `error: optional string or null`
 
-      若服务器无法列出工具时的错误信息。
+      服务器无法列出工具时的错误消息。
 
   - `McpApprovalRequest object { id, arguments, name, 2 more }`
 
-    对一次工具调用的人工审批请求。
+    请求人工批准工具调用的请求。
 
     - `id: string`
 
@@ -4648,7 +4898,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `arguments: string`
 
-      该工具参数的 JSON 字符串。
+      工具参数的 JSON 字符串。
 
     - `name: string`
 
@@ -4656,7 +4906,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `server_label: string`
 
-      发起请求的 MCP 服务器的标签。
+      发出请求的 MCP 服务器的标签。
 
     - `type: "mcp_approval_request"`
 
@@ -4670,7 +4920,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `approval_request_id: string`
 
-      正在被回复的审批请求的 ID。
+      正在答复的审批请求的 ID。
 
     - `approve: boolean`
 
@@ -4688,23 +4938,23 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `reason: optional string or null`
 
-      可选的决策原因。
+      作出决定的可选原因。
 
   - `McpCall object { id, arguments, name, 6 more }`
 
-    对 MCP 服务器上某个工具的一次调用。
+    对 MCP 服务器上某个工具的调用。
 
     - `id: string`
 
-      该工具调用的唯一 ID。
+      工具调用的唯一 ID。
 
     - `arguments: string`
 
-      传递给该工具的参数的 JSON 字符串。
+      传递给工具的参数的 JSON 字符串。
 
     - `name: string`
 
-      所运行工具的名称。
+      已运行工具的名称。
 
     - `server_label: string`
 
@@ -4719,7 +4969,7 @@ Schema name: `LiveResponseItemCreateParam`
     - `approval_request_id: optional string or null`
 
       MCP 工具调用审批请求的唯一标识符。
-      在后续的 `mcp_approval_response` 输入中包含此值，以批准或拒绝相应的工具调用。
+      在后续的 `mcp_approval_response` 输入中传入此值，以批准或拒绝相应的工具调用。
 
     - `error: optional McpToolCallError or null`
 
@@ -4759,7 +5009,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `status: optional "in_progress" or "completed" or "incomplete" or 2 more`
 
-      工具调用的状态。取值之一为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
+      工具调用的状态。取值为 `in_progress`, `completed`, `incomplete`, `calling`，或 `failed`.
 
       - `"in_progress"`
 
@@ -4773,16 +5023,16 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `CustomToolCallOutput object { call_id, output, type, 2 more }`
 
-    由你的代码生成的自定义工具调用输出，将发回给模型。
+    由你的代码生成的自定义工具调用输出，将回传给模型。
 
     - `call_id: string`
 
-      调用 ID，用于将此自定义工具调用输出映射到对应的自定义工具调用。
+      调用 ID，用于将此自定义工具调用输出映射到相应的自定义工具调用。
 
     - `output: string or array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
       由你的代码生成的自定义工具调用的输出。
-      可以是字符串或输出内容列表。
+      可以是字符串或输出内容的列表。
 
       - `StringOutput = string`
 
@@ -4790,7 +5040,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       - `OutputContentList = array of ResponseInputText or ResponseInputImage or ResponseInputFile`
 
-        自定义工具调用的文本、图像或文件输出。
+        自定义工具调用的文本、图片或文件输出。
 
         - `ResponseInputText object { text, type, prompt_cache_breakpoint }`
 
@@ -4802,7 +5052,7 @@ Schema name: `LiveResponseItemCreateParam`
 
         - `ResponseInputFile object { type, detail, file_data, 4 more }`
 
-          发送给模型的文件输入。
+          模型的输入文件。
 
     - `type: "custom_tool_call_output"`
 
@@ -4814,7 +5064,7 @@ Schema name: `LiveResponseItemCreateParam`
 
       该自定义工具调用输出在 OpenAI 平台上的唯一 ID。
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       生成此工具调用的执行上下文。
 
@@ -4840,11 +5090,11 @@ Schema name: `LiveResponseItemCreateParam`
 
   - `CustomToolCall object { call_id, input, name, 5 more }`
 
-    模型创建的对自定义工具的调用。
+    对模型创建的自定义工具的调用。
 
     - `call_id: string`
 
-      用于将此自定义工具调用映射到工具调用输出的标识符。
+      用于将此自定义工具调用映射到相应工具调用输出的标识符。
 
     - `input: string`
 
@@ -4862,13 +5112,13 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: optional string`
 
-      该自定义工具调用在 OpenAI 平台中的唯一 ID。
+      OpenAI 平台中此自定义工具调用的唯一 ID。
 
     - `async: optional boolean`
 
-      自定义工具调用是否异步运行。
+      该自定义工具调用是否以异步方式运行。
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       生成此工具调用的执行上下文。
 
@@ -4890,7 +5140,7 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `namespace: optional string`
 
-      被调用的自定义工具的命名空间。
+      所调用自定义工具的命名空间。
 
   - `CompactionTrigger object { type, id }`
 
@@ -4904,19 +5154,19 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: optional string or null`
 
-      该压缩触发器的唯一 ID。
+      此压缩触发器的唯一 ID。
 
   - `ItemReference object { id, type }`
 
-    用于引用某个项的内部标识符。
+    用于引用某项的内部标识符。
 
     - `id: string`
 
-      要引用的项的 ID。
+      所引用项的 ID。
 
     - `type: optional "item_reference" or null`
 
-      要引用的项的类型。始终为 `item_reference`.
+      所引用项的类型。始终为 `item_reference`.
 
       - `"item_reference"`
 
@@ -4924,23 +5174,23 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: string`
 
-      该程序项的唯一 ID。
+      此 program 项的唯一 ID。
 
     - `call_id: string`
 
-      该程序项的稳定调用 ID。
+      该 program 项的稳定调用 ID。
 
     - `code: string`
 
-      由程序化工具调用执行的 JavaScript 源代码。
+      由程序化工具调用执行的 JavaScript 源码。
 
     - `fingerprint: string`
 
-      必须往返回传的、不透明的程序重放指纹。
+      必须往返透传的程序重放不透明指纹。
 
     - `type: "program"`
 
-      条目类型。始终为 `program`.
+      项目类型。始终为 `program`.
 
       - `"program"`
 
@@ -4948,19 +5198,19 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `id: string`
 
-      该程序输出项的唯一 ID。
+      此 program 输出项的唯一 ID。
 
     - `call_id: string`
 
-      该程序项的调用 ID。
+      该 program 项的调用 ID。
 
     - `result: string`
 
-      由该程序项产生的结果。
+      该 program 项产生的结果。
 
     - `status: "completed" or "incomplete"`
 
-      该程序输出的终止状态。
+      该 program 输出的终止状态。
 
       - `"completed"`
 
@@ -4968,19 +5218,19 @@ Schema name: `LiveResponseItemCreateParam`
 
     - `type: "program_output"`
 
-      条目类型。始终为 `program_output`.
+      项目类型。始终为 `program_output`.
 
       - `"program_output"`
 
 - `type: "response.item.create"`
 
-  实时客户端事件类型。始终为 `response.item.create`.
+  Live 客户端事件类型。始终为 `response.item.create`.
 
   - `"response.item.create"`
 
 - `event_id: optional string or null`
 
-  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 相关联。
+  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 进行关联。
 
 #### 示例
 
@@ -5005,7 +5255,7 @@ Schema name: `LiveResponseItemCreateParam`
 
 ### response.create
 
-向 Live 会话的 Responses 后端请求一次响应，或继续一个正在等待工具结果的已委托响应。需要启用 Responses 委托。
+从 Live 会话的 Responses 后端请求一次响应，或继续一个等待工具结果的已委托响应。需要 Responses 委托。
 
 #### Schema
 
@@ -5013,13 +5263,13 @@ Schema name: `LiveResponseCreateParam`
 
 - `type: "response.create"`
 
-  实时客户端事件类型。始终为 `response.create`.
+  Live 客户端事件类型。始终为 `response.create`.
 
   - `"response.create"`
 
 - `event_id: optional string or null`
 
-  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 相关联。
+  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 进行关联。
 
 #### 示例
 
@@ -5034,7 +5284,7 @@ Schema name: `LiveResponseCreateParam`
 
 ### session.close
 
-请求关闭 Live 会话。结束 `session.closed` 事件中包含关闭原因和最终使用情况。
+请求关闭 Live 会话。终端 `session.closed` 事件包含关闭原因和最终用量。
 
 #### Schema
 
@@ -5042,13 +5292,13 @@ Schema name: `LiveSessionCloseParam`
 
 - `type: "session.close"`
 
-  实时客户端事件类型。始终为 `session.close`.
+  Live 客户端事件类型。始终为 `session.close`.
 
   - `"session.close"`
 
 - `event_id: optional string or null`
 
-  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 相关联。
+  可选的客户端标识符，用于将此命令与服务端事件的 client_event_id 或 error.client_event_id 进行关联。
 
 #### 示例
 
@@ -5067,7 +5317,7 @@ Schema name: `LiveSessionCloseParam`
 
 ### transport.ringing
 
-出站 SIP 提供商线路正在振铃或播放早期媒体。仅发送给旁路监听者。
+呼出 SIP 提供商链路正在振铃或提供早期媒体。仅向带外观察者发送。
 
 #### Schema
 
@@ -5097,7 +5347,7 @@ Schema name: `LiveTransportRinging`
 
 ### transport.answered
 
-出站 SIP 提供商一侧已应答并建立媒体。仅发送给边带观察者。
+出站 SIP 通信方已接听并建立媒体流。仅发送给 sideband 观察者。
 
 #### Schema
 
@@ -5127,7 +5377,7 @@ Schema name: `LiveTransportAnswered`
 
 ### transport.failed
 
-异步出站 SIP 建立失败。仅传递给旁带观察者。
+异步传出 SIP 设置失败。仅传递给边带观察者。
 
 #### Schema
 
@@ -5137,7 +5387,7 @@ Schema name: `LiveTransportFailed`
 
   - `code: string`
 
-    呼叫建立失败的错误代码。
+    调用设置失败的错误代码。
 
   - `message: string`
 
@@ -5147,7 +5397,7 @@ Schema name: `LiveTransportFailed`
 
   - `param: optional string`
 
-    与错误相关的参数（如有）。当没有适用的参数时为空。
+    与错误相关的参数（若有）。当无适用参数时为空。
 
 - `event_id: string`
 
@@ -5179,7 +5429,7 @@ Schema name: `LiveTransportFailed`
 
 ### session.started
 
-当 Live 会话已开始时返回。包含已解析的会话配置，包括服务端默认值。
+在 Live 会话已启动时返回。包含已解析的会话配置，包括服务端默认值。
 
 #### Schema
 
@@ -5191,11 +5441,11 @@ Schema name: `LiveSessionStarted`
 
 - `session: SessionResource`
 
-  已解析的 Live 会话配置以及服务端分配的会话元数据。
+  已解析的 Live 会话配置以及由服务端分配的会话元数据。
 
   - `id: string`
 
-    Live 会话的唯一 ID。使用此 ID 进行旁路连接、分叉和录制下载。
+    Live 会话的唯一 ID。使用此 ID 进行旁路连接、分叉以及录音下载。
 
   - `expires_at: number`
 
@@ -5203,37 +5453,37 @@ Schema name: `LiveSessionStarted`
 
   - `model: string or "gpt-live-1"`
 
-    Live 模型。在每种传输方式的会话配置中都需要填写；不要将其作为 URL 查询参数传递。
+    Live 模型。在每种传输方式的会话配置中均为必填；不要将其作为 URL 查询参数传递。
 
     - `string`
 
     - `"gpt-live-1"`
 
-      Live 模型。在每种传输方式的会话配置中都需要填写；不要将其作为 URL 查询参数传递。
+      Live 模型。在每种传输方式的会话配置中均为必填；不要将其作为 URL 查询参数传递。
 
       - `"gpt-live-1"`
 
   - `status: "active"`
 
-    会话快照的状态。始终为 `active`，包括 session.closed 中的最终快照；可使用事件类型来判断会话是否已关闭。
+    会话快照的状态。始终为 `active`，包括 session.closed 中的最终快照；请使用事件类型来判断会话是否已关闭。
 
     - `"active"`
 
   - `audio: optional object { format, output }`
 
-    启动时的音频配置。只有主 WebSocket 接受 audio.format；WebRTC 和 SIP 会协商其媒体格式。语音和格式在启动后不可更改。
+    启动时的音频配置。仅主 WebSocket 支持 audio.format；WebRTC 和 SIP 会自行协商其媒体格式。voice 和 format 在启动后不可更改。
 
     - `format: optional AudioFormat`
 
-      通过 Live WebSocket 连接发送和接收的音频编码与采样率。WebRTC 和 SIP 会分别协商其媒体格式。
+      通过 Live WebSocket 连接发送和接收的音频编码及采样率。WebRTC 和 SIP 会单独协商其媒体格式。
 
       - `AudioPCM object { rate, type }`
 
-        Live WebSocket 连接使用的原始单声道 16 位小端 PCM 音频。
+        用于 Live WebSocket 连接的原始、单声道、16 位小端 PCM 音频。
 
         - `rate: 16000 or 24000`
 
-          音频采样率，单位为赫兹。Live WebSocket PCM 音频支持 16000 或 24000 Hz。
+          音频采样率（以赫兹为单位）。Live WebSocket PCM 音频支持 16000 或 24000 Hz。
 
           - `16000`
 
@@ -5247,11 +5497,11 @@ Schema name: `LiveSessionStarted`
 
       - `AudioPCMU object { rate, type }`
 
-        Live WebSocket 连接使用的原始单声道 G.711 μ-law 音频。
+        用于 Live WebSocket 连接的原始、单声道 G.711 μ-law 音频。
 
         - `rate: number`
 
-          音频采样率，单位为赫兹。G.711 音频使用 8000 Hz。
+          音频采样率（以赫兹为单位）。G.711 音频使用 8000 Hz。
 
         - `type: "audio/pcmu"`
 
@@ -5261,11 +5511,11 @@ Schema name: `LiveSessionStarted`
 
       - `AudioPCMA object { rate, type }`
 
-        Live WebSocket 连接使用的原始单声道 G.711 A-law 音频。
+        用于 Live WebSocket 连接的原始、单声道 G.711 A-law 音频。
 
         - `rate: number`
 
-          音频采样率，单位为赫兹。G.711 音频使用 8000 Hz。
+          音频采样率（以赫兹为单位）。G.711 音频使用 8000 Hz。
 
         - `type: "audio/pcma"`
 
@@ -5275,17 +5525,17 @@ Schema name: `LiveSessionStarted`
 
     - `output: optional object { voice }`
 
-      Live 模型生成语音所用的语音。
+      Live 模型生成语音时所使用的声音。
 
       - `voice: optional string or "alloy" or "ash" or "ballad" or 28 more or CustomVoice`
 
-        Live 语音所用的语音，可以是内置语音名称，也可以是包含其 ID 的自定义语音对象。默认为 `marin` ，且启动后不可更改。
+        Live 语音使用的声音，可以是内置声音名称，也可以是包含其 ID 的自定义声音对象。默认为 `marin` ，且启动后不可更改。
 
         - `string`
 
         - `"alloy" or "ash" or "ballad" or 28 more`
 
-          Live 语音所用的语音，可以是内置语音名称，也可以是包含其 ID 的自定义语音对象。默认为 `marin` ，且启动后不可更改。
+          Live 语音使用的声音，可以是内置声音名称，也可以是包含其 ID 的自定义声音对象。默认为 `marin` ，且启动后不可更改。
 
           - `"alloy"`
 
@@ -5355,7 +5605,7 @@ Schema name: `LiveSessionStarted`
 
   - `client: optional ClientConfig`
 
-    仅在启动时生效的、附加到统一 WebRTC 会话上的不受信任前端的可用能力。可信的旁路连接不受影响。
+    附加到统一 WebRTC 会话上的不受信任前端的仅启动时能力。受信的旁路连接不受影响。
 
     - `data_channel: DataChannelConfig`
 
@@ -5363,7 +5613,7 @@ Schema name: `LiveSessionStarted`
 
       - `allowed_client_events: optional "all" or array of string`
 
-        前端数据通道可能发送的客户端事件类型。使用 'all' 以允许所有客户端事件；空数组表示不允许任何事件。省略时保留现有的允许全部行为。
+        前端数据通道可以发送的客户端事件类型。使用 'all' 允许所有客户端事件；空数组不允许任何客户端事件。省略此字段将保留现有的全部允许行为。
 
         - `"all"`
 
@@ -5373,7 +5623,7 @@ Schema name: `LiveSessionStarted`
 
       - `allowed_server_events: optional "all" or array of ServerEventSelector`
 
-        可能发送到前端数据通道的服务端事件。使用 'all' 以允许所有服务端事件；空数组表示不允许任何事件。省略时保留现有的允许全部行为。Responses 事件使用一个 type 为 'response.event' 的对象，并附带 response_event 选择器。
+        可以发送到前端数据通道的服务器事件。使用 'all' 允许所有服务器事件；空数组不允许任何服务器事件。省略此字段将保留现有的全部允许行为。Responses 事件使用 type 为 'response.event' 且带有 response_event 选择器的对象。
 
         - `"all"`
 
@@ -5383,15 +5633,15 @@ Schema name: `LiveSessionStarted`
 
           - `type: string`
 
-            外部 Live 服务端事件类型。Responses 事件使用 'response.event'。
+            外层 Live 服务器事件类型。对于 Responses 事件，使用 'response.event'。
 
           - `response_event: optional string`
 
-            嵌套的 Responses 事件类型。当 type 为 'response.event' 时必填；其他事件类型下禁止使用。
+            嵌套的 Responses 事件类型。type 为 'response.event' 时必须提供；其他事件类型禁止使用。
 
-  - `delegation: optional ClientDelegation or object { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
 
-    由 Live 模型委派的任务由谁处理。省略或为 null 时选择你的应用；可使用 `responses` 以让 API 管理一个 Responses 后端。
+    处理 Live 模型委派任务的接收方。省略此字段或设为 null 会选择你的应用；使用 `responses` 让 API 管理 Responses 后端。
 
     - `ClientDelegation object { type }`
 
@@ -5409,31 +5659,31 @@ Schema name: `LiveSessionStarted`
 
       - `responses: ResponsesDelegationConfig`
 
-        当 Live 会话将任务委派给 Responses 时使用的后端模型、提示和工具。
+        Live 会话将任务委派给 Responses 时使用的后端模型、提示词和工具。
 
         - `model: string`
 
-          用于服务端拥有的 Responses 委派任务的模型。
+          用于服务器所属的 Responses 委派任务的模型。
 
         - `instructions: optional string or null`
 
-          用于被委托模型 Responses 的指令，独立于 Live 指令。参见 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
+          委托 Responses 模型的指令，与 Live 指令分开。参见 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
 
         - `max_output_tokens: optional number or null`
 
-          每个被委托响应的最大输出 token 数。
+          每个委托响应的最大输出 token 数。
 
         - `parallel_tool_calls: optional boolean or null`
 
-          被委托的 Responses 模型是否可以在单次响应中请求多个工具调用。
+          委托的 Responses 模型是否可以在单个响应中发起多个工具调用。
 
         - `reasoning: optional object { effort, summary }  or null`
 
-          传递给每个被委托 Responses 请求的推理设置。
+          传递给每个委托 Responses 请求的推理设置。
 
           - `effort: optional "none" or "minimal" or "low" or 3 more or null`
 
-            被委托的 Responses 模型应使用的推理力度。支持的取值取决于后端模型。
+            委托的 Responses 模型应使用的推理力度。支持的取值取决于后端模型。
 
             - `"none"`
 
@@ -5449,7 +5699,7 @@ Schema name: `LiveSessionStarted`
 
           - `summary: optional "concise" or "detailed" or "auto" or null`
 
-            在被委托的 Responses 模型支持时，向其请求的推理摘要。
+            在受支持时，向委托的 Responses 模型请求的推理摘要。
 
             - `"concise"`
 
@@ -5459,7 +5709,7 @@ Schema name: `LiveSessionStarted`
 
         - `service_tier: optional "auto" or "default" or "fast_tier_temp_pilot" or 3 more or null`
 
-          被委托 Responses 请求的服务层级。
+          委托 Responses 请求的服务层级。
 
           - `"auto"`
 
@@ -5475,11 +5725,11 @@ Schema name: `LiveSessionStarted`
 
         - `text: optional object { verbosity }  or null`
 
-          传递给每个被委托 Responses 请求的文本生成设置。
+          传递给每个委托 Responses 请求的文本生成设置。
 
           - `verbosity: optional "low" or "medium" or "high" or null`
 
-            Responses 后端生成文本时的详细程度。这不会配置 Live 模型的口头表达方式。
+            Responses 后端生成文本的详细程度。这不会配置 Live 模型的口语表达方式。
 
             - `"low"`
 
@@ -5487,13 +5737,11 @@ Schema name: `LiveSessionStarted`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
+        - `tool_choice: optional "auto" or "none" or "required" or Function { name, type }  or Mcp { server_label, type, name }  or 11 more`
 
-          控制 Responses 后端在处理 Live 模型委托的任务时所使用的工具。
+          控制 Live 模型委托任务时，Responses 后端所使用的工具。
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
-
-            控制 Responses 后端在处理 Live 模型委托的任务时所使用的工具。
 
             - `"auto"`
 
@@ -5501,45 +5749,297 @@ Schema name: `LiveSessionStarted`
 
             - `"required"`
 
-          - `map[unknown]`
-
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
-
-          在 Live 模型委托的任务处理期间，Responses 后端可用的工具。
-
-          - `FunctionTool object { name, type, description, 2 more }`
-
-            当 Live 模型委托任务时，Responses 后端可用的函数工具。
+          - `Function object { name, type }`
 
             - `name: string`
 
-              被委托的 Responses 模型在调用此函数时使用的名称。
+              要调用的函数工具名称。
 
             - `type: "function"`
 
-              工具类型。始终为 `function`.
+              要调用的工具。始终 `function`.
+
+              - `"function"`
+
+          - `Mcp object { server_label, type, name }`
+
+            - `server_label: string`
+
+              要调用的 MCP 服务器标签。
+
+            - `type: "mcp"`
+
+              要调用的工具。始终 `mcp`.
+
+              - `"mcp"`
+
+            - `name: optional string or null`
+
+              要调用的 MCP 工具名称。如果省略，服务器可以选择默认值。
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              要调用的工具。始终 `file_search`.
+
+              - `"file_search"`
+
+          - `WebSearch object { type }`
+
+            - `type: "web_search"`
+
+              要调用的工具。始终 `web_search`.
+
+              - `"web_search"`
+
+          - `WebSearchPreview object { type }`
+
+            - `type: "web_search_preview"`
+
+              要调用的工具。始终 `web_search_preview`.
+
+              - `"web_search_preview"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              要调用的工具。始终 `image_generation`.
+
+              - `"image_generation"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              要调用的工具。始终 `computer`.
+
+              - `"computer"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              要调用的工具。始终 `code_interpreter`.
+
+              - `"code_interpreter"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              要调用的工具。始终 `programmatic_tool_calling`.
+
+              - `"programmatic_tool_calling"`
+
+          - `Shell object { type }`
+
+            强制模型在需要调用工具时调用 shell 工具。
+
+            - `type: "shell"`
+
+              要调用的工具。始终 `shell`.
+
+              - `"shell"`
+
+          - `Custom object { name, type }`
+
+            - `name: string`
+
+              要调用的自定义工具名称。
+
+            - `type: "custom"`
+
+              要调用的工具。始终 `custom`.
+
+              - `"custom"`
+
+          - `ApplyPatch object { type }`
+
+            强制模型在执行工具调用时调用 apply_patch 工具。
+
+            - `type: "apply_patch"`
+
+              要调用的工具。始终 `apply_patch`.
+
+              - `"apply_patch"`
+
+          - `LiveAllowedToolsChoiceParam object { tools, type, mode }`
+
+            - `tools: array of Function { name, type }  or Mcp { server_label, type, name }  or FileSearch { type }  or 9 more`
+
+              委派的 Responses 模型可以调用的工具。
+
+              - `Function object { name, type }`
+
+                - `name: string`
+
+                  要调用的函数工具名称。
+
+                - `type: "function"`
+
+                  要调用的工具。始终 `function`.
+
+                  - `"function"`
+
+              - `Mcp object { server_label, type, name }`
+
+                - `server_label: string`
+
+                  要调用的 MCP 服务器标签。
+
+                - `type: "mcp"`
+
+                  要调用的工具。始终 `mcp`.
+
+                  - `"mcp"`
+
+                - `name: optional string or null`
+
+                  要调用的 MCP 工具名称。如果省略，服务器可以选择默认值。
+
+              - `FileSearch object { type }`
+
+                - `type: "file_search"`
+
+                  要调用的工具。始终 `file_search`.
+
+                  - `"file_search"`
+
+              - `WebSearch object { type }`
+
+                - `type: "web_search"`
+
+                  要调用的工具。始终 `web_search`.
+
+                  - `"web_search"`
+
+              - `WebSearchPreview object { type }`
+
+                - `type: "web_search_preview"`
+
+                  要调用的工具。始终 `web_search_preview`.
+
+                  - `"web_search_preview"`
+
+              - `ImageGeneration object { type }`
+
+                - `type: "image_generation"`
+
+                  要调用的工具。始终 `image_generation`.
+
+                  - `"image_generation"`
+
+              - `Computer object { type }`
+
+                - `type: "computer"`
+
+                  要调用的工具。始终 `computer`.
+
+                  - `"computer"`
+
+              - `CodeInterpreter object { type }`
+
+                - `type: "code_interpreter"`
+
+                  要调用的工具。始终 `code_interpreter`.
+
+                  - `"code_interpreter"`
+
+              - `ProgrammaticToolCalling object { type }`
+
+                - `type: "programmatic_tool_calling"`
+
+                  要调用的工具。始终 `programmatic_tool_calling`.
+
+                  - `"programmatic_tool_calling"`
+
+              - `Shell object { type }`
+
+                强制模型在需要调用工具时调用 shell 工具。
+
+                - `type: "shell"`
+
+                  要调用的工具。始终 `shell`.
+
+                  - `"shell"`
+
+              - `Custom object { name, type }`
+
+                - `name: string`
+
+                  要调用的自定义工具名称。
+
+                - `type: "custom"`
+
+                  要调用的工具。始终 `custom`.
+
+                  - `"custom"`
+
+              - `ApplyPatch object { type }`
+
+                强制模型在执行工具调用时调用 apply_patch 工具。
+
+                - `type: "apply_patch"`
+
+                  要调用的工具。始终 `apply_patch`.
+
+                  - `"apply_patch"`
+
+            - `type: "allowed_tools"`
+
+              工具选择类型。始终 `allowed_tools`.
+
+              - `"allowed_tools"`
+
+            - `mode: optional "none" or "auto" or "required" or null`
+
+              如何从允许的工具集中选择工具。
+
+              - `"none"`
+
+              - `"auto"`
+
+              - `"required"`
+
+        - `tools: optional array of FunctionTool or WebSearch { type }  or FileSearch { type }  or 10 more`
+
+          Responses 后端在处理 Live 模型委派的任务时可用的工具。
+
+          - `FunctionTool object { name, type, description, 2 more }`
+
+            Live 模型委派任务时 Responses 后端可用的函数工具。
+
+            - `name: string`
+
+              委派的 Responses 模型调用此函数时使用的名称。
+
+            - `type: "function"`
+
+              工具类型。始终 `function`.
 
               - `"function"`
 
             - `description: optional string or null`
 
-              该函数的功能，以及被委托的 Responses 模型应在何时调用它。
+              函数的作用以及委派的 Responses 模型应何时调用它。
 
             - `parameters: optional map[unknown] or null`
 
-              用于描述该函数所接受参数的 JSON Schema 对象。
+              描述函数所接受参数的 JSON Schema 对象。
 
             - `strict: optional boolean or null`
 
-              被委托的 Responses 模型是否必须严格遵循该函数的参数 schema。
+              委派的 Responses 模型是否必须严格遵循函数的参数 schema。
 
           - `WebSearch object { type }`
 
-            Live 会话的 Responses 后端可用的 网页搜索 工具。
+            Live 会话的 Responses 后端可用的 网页搜索工具。
 
             - `type: "web_search"`
 
-              工具类型。始终为 `web_search`.
+              工具类型。始终 `web_search`.
 
               - `"web_search"`
 
@@ -5557,29 +6057,29 @@ Schema name: `LiveSessionStarted`
 
           - `Shell object { type, environment }`
 
-            一个 Responses shell 工具。使用托管容器或通过 response.item.create 返回本地 shell 结果。不支持域密钥。
+            Responses shell 工具。使用托管容器，或通过 response.item.create 返回本地 shell 结果。不支持域机密。
 
             - `type: "shell"`
 
               - `"shell"`
 
-            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+            - `environment: optional ContainerAuto { type, file_ids, memory_limit, 2 more }  or ContainerReference { container_id, type }  or Local { type, skills }  or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
                 - `type: "container_auto"`
 
-                  自动为此请求创建容器
+                  为此请求自动创建容器
 
                   - `"container_auto"`
 
                 - `file_ids: optional array of string or null`
 
-                  可选的上传文件列表，供你的代码使用。
+                  可供你的代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
-                  该容器的内存限制。
+                  容器的内存限制。
 
                   - `"1g"`
 
@@ -5589,15 +6089,15 @@ Schema name: `LiveSessionStarted`
 
                   - `"64g"`
 
-                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+                - `network_policy: optional Disabled { type }  or Allowlist { allowed_domains, type }  or null`
 
-                  该容器的网络访问策略。
+                  容器的网络访问策略。
 
                   - `Disabled object { type }`
 
                     - `type: "disabled"`
 
-                      禁用出站网络访问。始终为 `disabled`.
+                      禁用出站网络访问。始终 `disabled`.
 
                       - `"disabled"`
 
@@ -5605,17 +6105,17 @@ Schema name: `LiveSessionStarted`
 
                     - `allowed_domains: array of string`
 
-                      当类型为时的允许域名列表 `allowlist`.
+                      当 type 为时的允许域名列表 `allowlist`.
 
                     - `type: "allowlist"`
 
-                      仅允许向指定域名进行出站网络访问。始终为 `allowlist`.
+                      仅允许对指定域名的出站网络访问。始终 `allowlist`.
 
                       - `"allowlist"`
 
-                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+                - `skills: optional array of SkillReference { skill_id, type, version }  or Inline { description, name, source, type }  or null`
 
-                  可选的技能列表，通过 ID 或内联数据引用。
+                  按 id 或内联数据引用的技能的可选列表。
 
                   - `SkillReference object { skill_id, type, version }`
 
@@ -5631,13 +6131,13 @@ Schema name: `LiveSessionStarted`
 
                     - `version: optional string or null`
 
-                      可选的技能版本。使用正整数或 'latest'。省略以使用默认值。
+                      可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
                   - `Inline object { description, name, source, type }`
 
                     - `description: string`
 
-                      该技能的描述。
+                      技能的描述。
 
                     - `name: string`
 
@@ -5695,7 +6195,7 @@ Schema name: `LiveSessionStarted`
 
                   - `description: string`
 
-                    该技能的描述。
+                    技能的描述。
 
                   - `name: string`
 
@@ -5761,19 +6261,19 @@ Schema name: `LiveSessionStarted`
 
   - `input: optional array of InitialItem`
 
-    启动前提供的有序纯文本历史。支持开发者、用户和助手消息，每条消息仅包含一个文本部分；总共最多 128 条消息和 8,192 个渲染后的 token。
+    启动前提供的有序纯文本历史记录。支持开发者、用户和助手消息，每条消息包含一个文本部分；总计最多 128 条消息和 8,192 个渲染令牌。
 
     - `Developer object { content, role, id, 2 more }`
 
-      包含在 Live 会话初始文本历史中的开发者消息。
+      包含在 Live 会话初始文本历史记录中的开发者消息。
 
       - `content: array of object { text, type }`
 
-        消息内容。为 Live 会话的初始对话历史提供恰好一个文本部分。
+        消息内容。为 Live 初始对话历史记录提供恰好一个文本部分。
 
         - `text: string`
 
-          要包含在 Live 会话初始对话历史中的消息文本。
+          要包含在 Live 会话初始对话历史记录中的消息文本。
 
         - `type: optional "input_text"`
 
@@ -5783,17 +6283,17 @@ Schema name: `LiveSessionStarted`
 
       - `role: "developer"`
 
-        此条历史消息的作者。始终为 `developer`.
+        此历史消息的作者。始终为 `developer`.
 
         - `"developer"`
 
       - `id: optional string or null`
 
-        所提供历史消息的可选标识符。Live 使用消息的角色和文本来初始化对话。
+        所提供历史消息的可选标识符。Live 使用该消息的角色和文本初始化对话。
 
       - `status: optional "incomplete" or "completed" or null`
 
-        所提供消息的状态。Live 将其文本用作历史，并且不会恢复未完成的消息。
+        所提供消息的状态。Live 使用其文本作为历史记录，并且不会恢复未完成的消息。
 
         - `"incomplete"`
 
@@ -5801,21 +6301,21 @@ Schema name: `LiveSessionStarted`
 
       - `type: optional "message"`
 
-        历史项类型。始终为 `message`.
+        历史记录项类型。始终为 `message`.
 
         - `"message"`
 
     - `User object { content, role, id, 2 more }`
 
-      包含在 Live 会话初始文本历史中的用户消息。
+      包含在 Live 会话初始文本历史记录中的用户消息。
 
       - `content: array of object { text, type }`
 
-        消息内容。为 Live 会话的初始对话历史提供恰好一个文本部分。
+        消息内容。为 Live 初始对话历史记录提供恰好一个文本部分。
 
         - `text: string`
 
-          要包含在 Live 会话初始对话历史中的消息文本。
+          要包含在 Live 会话初始对话历史记录中的消息文本。
 
         - `type: optional "input_text"`
 
@@ -5825,17 +6325,17 @@ Schema name: `LiveSessionStarted`
 
       - `role: "user"`
 
-        此条历史消息的作者。始终为 `user`.
+        此历史消息的作者。始终为 `user`.
 
         - `"user"`
 
       - `id: optional string or null`
 
-        所提供历史消息的可选标识符。Live 使用消息的角色和文本来初始化对话。
+        所提供历史消息的可选标识符。Live 使用该消息的角色和文本初始化对话。
 
       - `status: optional "incomplete" or "completed" or null`
 
-        所提供消息的状态。Live 将其文本用作历史，并且不会恢复未完成的消息。
+        所提供消息的状态。Live 使用其文本作为历史记录，并且不会恢复未完成的消息。
 
         - `"incomplete"`
 
@@ -5843,25 +6343,25 @@ Schema name: `LiveSessionStarted`
 
       - `type: optional "message"`
 
-        历史项类型。始终为 `message`.
+        历史记录项类型。始终为 `message`.
 
         - `"message"`
 
     - `Assistant object { content, role, id, 2 more }`
 
-      包含在 Live 会话初始文本历史中的助手消息。
+      包含在 Live 会话初始文本历史记录中的助手消息。
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of Text { text, type }  or OutputText { text, type }`
 
-        消息内容。为 Live 会话的初始对话历史提供恰好一个文本部分。
+        消息内容。为 Live 初始对话历史记录提供恰好一个文本部分。
 
         - `Text object { text, type }`
 
-          启动 Live 会话时，作为会话历史提供的 Assistant 文本。
+          启动 Live 会话时作为对话历史提供的助手文本。
 
           - `text: string`
 
-            要包含在 Live 会话初始对话历史中的消息文本。
+            要包含在 Live 会话初始对话历史记录中的消息文本。
 
           - `type: optional "text"`
 
@@ -5871,11 +6371,11 @@ Schema name: `LiveSessionStarted`
 
         - `OutputText object { text, type }`
 
-          启动 Live 会话时，作为会话历史提供的 Assistant 输出文本。
+          启动 Live 会话时作为对话历史提供的助手输出文本。
 
           - `text: string`
 
-            要包含在 Live 会话初始对话历史中的消息文本。
+            要包含在 Live 会话初始对话历史记录中的消息文本。
 
           - `type: "output_text"`
 
@@ -5885,17 +6385,17 @@ Schema name: `LiveSessionStarted`
 
       - `role: "assistant"`
 
-        此条历史消息的作者。始终为 `assistant`.
+        此历史消息的作者。始终为 `assistant`.
 
         - `"assistant"`
 
       - `id: optional string or null`
 
-        所提供历史消息的可选标识符。Live 使用消息的角色和文本来初始化对话。
+        所提供历史消息的可选标识符。Live 使用该消息的角色和文本初始化对话。
 
       - `status: optional "incomplete" or "completed" or null`
 
-        所提供消息的状态。Live 将其文本用作历史，并且不会恢复未完成的消息。
+        所提供消息的状态。Live 使用其文本作为历史记录，并且不会恢复未完成的消息。
 
         - `"incomplete"`
 
@@ -5903,27 +6403,27 @@ Schema name: `LiveSessionStarted`
 
       - `type: optional "message"`
 
-        历史项类型。始终为 `message`.
+        历史记录项类型。始终为 `message`.
 
         - `"message"`
 
   - `instructions: optional string or null`
 
-    针对语音、对话、插话以及何时委托的前端指令。从 [Live 提示指南](https://developers.openai.com/api/docs/guides/live-prompting)；开始；将业务规则和工具工作流放在单独的 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt)。中。客户端提供的 token 上限为 16,384。为空或留空的指令将使用服务端默认设置。启动后不可更改。
+    针对语音、对话、打断以及何时进行委派的前端指令。请先阅读 [Live 提示指南](https://developers.openai.com/api/docs/guides/live-prompting)；将业务规则和工具工作流放在单独的 [后端提示词](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt)。中。最多支持 16,384 个客户端提供的 token。省略或留空时使用服务端默认值。启动后不可更改。
 
   - `store: optional boolean`
 
-    是否存储该会话，以便后续派生和下载录制。新建会话默认为 false。
+    是否存储会话，以便之后派生和下载记录。新会话默认为 false。
 
 - `type: "session.started"`
 
-  事件类型，恒为 `session.started`.
+  事件类型，始终为 `session.started`.
 
   - `"session.started"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -5959,7 +6459,7 @@ Schema name: `LiveSessionStarted`
 
 ### session.updated
 
-在接受 Live 会话更新时返回。包含更新后的已解析会话配置。
+在接受 Live 会话更新时返回。包含更新后已解析的会话配置。
 
 #### Schema
 
@@ -5971,11 +6471,11 @@ Schema name: `LiveSessionUpdated`
 
 - `session: SessionResource`
 
-  已解析的 Live 会话配置以及服务端分配的会话元数据。
+  已解析的 Live 会话配置以及由服务端分配的会话元数据。
 
   - `id: string`
 
-    Live 会话的唯一 ID。使用此 ID 进行旁路连接、分叉和录制下载。
+    Live 会话的唯一 ID。使用此 ID 进行旁路连接、分叉以及录音下载。
 
   - `expires_at: number`
 
@@ -5983,37 +6483,37 @@ Schema name: `LiveSessionUpdated`
 
   - `model: string or "gpt-live-1"`
 
-    Live 模型。在每种传输方式的会话配置中都需要填写；不要将其作为 URL 查询参数传递。
+    Live 模型。在每种传输方式的会话配置中均为必填；不要将其作为 URL 查询参数传递。
 
     - `string`
 
     - `"gpt-live-1"`
 
-      Live 模型。在每种传输方式的会话配置中都需要填写；不要将其作为 URL 查询参数传递。
+      Live 模型。在每种传输方式的会话配置中均为必填；不要将其作为 URL 查询参数传递。
 
       - `"gpt-live-1"`
 
   - `status: "active"`
 
-    会话快照的状态。始终为 `active`，包括 session.closed 中的最终快照；可使用事件类型来判断会话是否已关闭。
+    会话快照的状态。始终为 `active`，包括 session.closed 中的最终快照；请使用事件类型来判断会话是否已关闭。
 
     - `"active"`
 
   - `audio: optional object { format, output }`
 
-    启动时的音频配置。只有主 WebSocket 接受 audio.format；WebRTC 和 SIP 会协商其媒体格式。语音和格式在启动后不可更改。
+    启动时的音频配置。仅主 WebSocket 支持 audio.format；WebRTC 和 SIP 会自行协商其媒体格式。voice 和 format 在启动后不可更改。
 
     - `format: optional AudioFormat`
 
-      通过 Live WebSocket 连接发送和接收的音频编码与采样率。WebRTC 和 SIP 会分别协商其媒体格式。
+      通过 Live WebSocket 连接发送和接收的音频编码及采样率。WebRTC 和 SIP 会单独协商其媒体格式。
 
       - `AudioPCM object { rate, type }`
 
-        Live WebSocket 连接使用的原始单声道 16 位小端 PCM 音频。
+        用于 Live WebSocket 连接的原始、单声道、16 位小端 PCM 音频。
 
         - `rate: 16000 or 24000`
 
-          音频采样率，单位为赫兹。Live WebSocket PCM 音频支持 16000 或 24000 Hz。
+          音频采样率（以赫兹为单位）。Live WebSocket PCM 音频支持 16000 或 24000 Hz。
 
           - `16000`
 
@@ -6027,11 +6527,11 @@ Schema name: `LiveSessionUpdated`
 
       - `AudioPCMU object { rate, type }`
 
-        Live WebSocket 连接使用的原始单声道 G.711 μ-law 音频。
+        用于 Live WebSocket 连接的原始、单声道 G.711 μ-law 音频。
 
         - `rate: number`
 
-          音频采样率，单位为赫兹。G.711 音频使用 8000 Hz。
+          音频采样率（以赫兹为单位）。G.711 音频使用 8000 Hz。
 
         - `type: "audio/pcmu"`
 
@@ -6041,11 +6541,11 @@ Schema name: `LiveSessionUpdated`
 
       - `AudioPCMA object { rate, type }`
 
-        Live WebSocket 连接使用的原始单声道 G.711 A-law 音频。
+        用于 Live WebSocket 连接的原始、单声道 G.711 A-law 音频。
 
         - `rate: number`
 
-          音频采样率，单位为赫兹。G.711 音频使用 8000 Hz。
+          音频采样率（以赫兹为单位）。G.711 音频使用 8000 Hz。
 
         - `type: "audio/pcma"`
 
@@ -6055,17 +6555,17 @@ Schema name: `LiveSessionUpdated`
 
     - `output: optional object { voice }`
 
-      Live 模型生成语音所用的语音。
+      Live 模型生成语音时所使用的声音。
 
       - `voice: optional string or "alloy" or "ash" or "ballad" or 28 more or CustomVoice`
 
-        Live 语音所用的语音，可以是内置语音名称，也可以是包含其 ID 的自定义语音对象。默认为 `marin` ，且启动后不可更改。
+        Live 语音使用的声音，可以是内置声音名称，也可以是包含其 ID 的自定义声音对象。默认为 `marin` ，且启动后不可更改。
 
         - `string`
 
         - `"alloy" or "ash" or "ballad" or 28 more`
 
-          Live 语音所用的语音，可以是内置语音名称，也可以是包含其 ID 的自定义语音对象。默认为 `marin` ，且启动后不可更改。
+          Live 语音使用的声音，可以是内置声音名称，也可以是包含其 ID 的自定义声音对象。默认为 `marin` ，且启动后不可更改。
 
           - `"alloy"`
 
@@ -6135,7 +6635,7 @@ Schema name: `LiveSessionUpdated`
 
   - `client: optional ClientConfig`
 
-    仅在启动时生效的、附加到统一 WebRTC 会话上的不受信任前端的可用能力。可信的旁路连接不受影响。
+    附加到统一 WebRTC 会话上的不受信任前端的仅启动时能力。受信的旁路连接不受影响。
 
     - `data_channel: DataChannelConfig`
 
@@ -6143,7 +6643,7 @@ Schema name: `LiveSessionUpdated`
 
       - `allowed_client_events: optional "all" or array of string`
 
-        前端数据通道可能发送的客户端事件类型。使用 'all' 以允许所有客户端事件；空数组表示不允许任何事件。省略时保留现有的允许全部行为。
+        前端数据通道可以发送的客户端事件类型。使用 'all' 允许所有客户端事件；空数组不允许任何客户端事件。省略此字段将保留现有的全部允许行为。
 
         - `"all"`
 
@@ -6153,7 +6653,7 @@ Schema name: `LiveSessionUpdated`
 
       - `allowed_server_events: optional "all" or array of ServerEventSelector`
 
-        可能发送到前端数据通道的服务端事件。使用 'all' 以允许所有服务端事件；空数组表示不允许任何事件。省略时保留现有的允许全部行为。Responses 事件使用一个 type 为 'response.event' 的对象，并附带 response_event 选择器。
+        可以发送到前端数据通道的服务器事件。使用 'all' 允许所有服务器事件；空数组不允许任何服务器事件。省略此字段将保留现有的全部允许行为。Responses 事件使用 type 为 'response.event' 且带有 response_event 选择器的对象。
 
         - `"all"`
 
@@ -6163,15 +6663,15 @@ Schema name: `LiveSessionUpdated`
 
           - `type: string`
 
-            外部 Live 服务端事件类型。Responses 事件使用 'response.event'。
+            外层 Live 服务器事件类型。对于 Responses 事件，使用 'response.event'。
 
           - `response_event: optional string`
 
-            嵌套的 Responses 事件类型。当 type 为 'response.event' 时必填；其他事件类型下禁止使用。
+            嵌套的 Responses 事件类型。type 为 'response.event' 时必须提供；其他事件类型禁止使用。
 
-  - `delegation: optional ClientDelegation or object { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
 
-    由 Live 模型委派的任务由谁处理。省略或为 null 时选择你的应用；可使用 `responses` 以让 API 管理一个 Responses 后端。
+    处理 Live 模型委派任务的接收方。省略此字段或设为 null 会选择你的应用；使用 `responses` 让 API 管理 Responses 后端。
 
     - `ClientDelegation object { type }`
 
@@ -6189,31 +6689,31 @@ Schema name: `LiveSessionUpdated`
 
       - `responses: ResponsesDelegationConfig`
 
-        当 Live 会话将任务委派给 Responses 时使用的后端模型、提示和工具。
+        Live 会话将任务委派给 Responses 时使用的后端模型、提示词和工具。
 
         - `model: string`
 
-          用于服务端拥有的 Responses 委派任务的模型。
+          用于服务器所属的 Responses 委派任务的模型。
 
         - `instructions: optional string or null`
 
-          用于被委托模型 Responses 的指令，独立于 Live 指令。参见 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
+          委托 Responses 模型的指令，与 Live 指令分开。参见 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
 
         - `max_output_tokens: optional number or null`
 
-          每个被委托响应的最大输出 token 数。
+          每个委托响应的最大输出 token 数。
 
         - `parallel_tool_calls: optional boolean or null`
 
-          被委托的 Responses 模型是否可以在单次响应中请求多个工具调用。
+          委托的 Responses 模型是否可以在单个响应中发起多个工具调用。
 
         - `reasoning: optional object { effort, summary }  or null`
 
-          传递给每个被委托 Responses 请求的推理设置。
+          传递给每个委托 Responses 请求的推理设置。
 
           - `effort: optional "none" or "minimal" or "low" or 3 more or null`
 
-            被委托的 Responses 模型应使用的推理力度。支持的取值取决于后端模型。
+            委托的 Responses 模型应使用的推理力度。支持的取值取决于后端模型。
 
             - `"none"`
 
@@ -6229,7 +6729,7 @@ Schema name: `LiveSessionUpdated`
 
           - `summary: optional "concise" or "detailed" or "auto" or null`
 
-            在被委托的 Responses 模型支持时，向其请求的推理摘要。
+            在受支持时，向委托的 Responses 模型请求的推理摘要。
 
             - `"concise"`
 
@@ -6239,7 +6739,7 @@ Schema name: `LiveSessionUpdated`
 
         - `service_tier: optional "auto" or "default" or "fast_tier_temp_pilot" or 3 more or null`
 
-          被委托 Responses 请求的服务层级。
+          委托 Responses 请求的服务层级。
 
           - `"auto"`
 
@@ -6255,11 +6755,11 @@ Schema name: `LiveSessionUpdated`
 
         - `text: optional object { verbosity }  or null`
 
-          传递给每个被委托 Responses 请求的文本生成设置。
+          传递给每个委托 Responses 请求的文本生成设置。
 
           - `verbosity: optional "low" or "medium" or "high" or null`
 
-            Responses 后端生成文本时的详细程度。这不会配置 Live 模型的口头表达方式。
+            Responses 后端生成文本的详细程度。这不会配置 Live 模型的口语表达方式。
 
             - `"low"`
 
@@ -6267,13 +6767,11 @@ Schema name: `LiveSessionUpdated`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
+        - `tool_choice: optional "auto" or "none" or "required" or Function { name, type }  or Mcp { server_label, type, name }  or 11 more`
 
-          控制 Responses 后端在处理 Live 模型委托的任务时所使用的工具。
+          控制 Live 模型委托任务时，Responses 后端所使用的工具。
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
-
-            控制 Responses 后端在处理 Live 模型委托的任务时所使用的工具。
 
             - `"auto"`
 
@@ -6281,45 +6779,297 @@ Schema name: `LiveSessionUpdated`
 
             - `"required"`
 
-          - `map[unknown]`
-
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
-
-          在 Live 模型委托的任务处理期间，Responses 后端可用的工具。
-
-          - `FunctionTool object { name, type, description, 2 more }`
-
-            当 Live 模型委托任务时，Responses 后端可用的函数工具。
+          - `Function object { name, type }`
 
             - `name: string`
 
-              被委托的 Responses 模型在调用此函数时使用的名称。
+              要调用的函数工具名称。
 
             - `type: "function"`
 
-              工具类型。始终为 `function`.
+              要调用的工具。始终 `function`.
+
+              - `"function"`
+
+          - `Mcp object { server_label, type, name }`
+
+            - `server_label: string`
+
+              要调用的 MCP 服务器标签。
+
+            - `type: "mcp"`
+
+              要调用的工具。始终 `mcp`.
+
+              - `"mcp"`
+
+            - `name: optional string or null`
+
+              要调用的 MCP 工具名称。如果省略，服务器可以选择默认值。
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              要调用的工具。始终 `file_search`.
+
+              - `"file_search"`
+
+          - `WebSearch object { type }`
+
+            - `type: "web_search"`
+
+              要调用的工具。始终 `web_search`.
+
+              - `"web_search"`
+
+          - `WebSearchPreview object { type }`
+
+            - `type: "web_search_preview"`
+
+              要调用的工具。始终 `web_search_preview`.
+
+              - `"web_search_preview"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              要调用的工具。始终 `image_generation`.
+
+              - `"image_generation"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              要调用的工具。始终 `computer`.
+
+              - `"computer"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              要调用的工具。始终 `code_interpreter`.
+
+              - `"code_interpreter"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              要调用的工具。始终 `programmatic_tool_calling`.
+
+              - `"programmatic_tool_calling"`
+
+          - `Shell object { type }`
+
+            强制模型在需要调用工具时调用 shell 工具。
+
+            - `type: "shell"`
+
+              要调用的工具。始终 `shell`.
+
+              - `"shell"`
+
+          - `Custom object { name, type }`
+
+            - `name: string`
+
+              要调用的自定义工具名称。
+
+            - `type: "custom"`
+
+              要调用的工具。始终 `custom`.
+
+              - `"custom"`
+
+          - `ApplyPatch object { type }`
+
+            强制模型在执行工具调用时调用 apply_patch 工具。
+
+            - `type: "apply_patch"`
+
+              要调用的工具。始终 `apply_patch`.
+
+              - `"apply_patch"`
+
+          - `LiveAllowedToolsChoiceParam object { tools, type, mode }`
+
+            - `tools: array of Function { name, type }  or Mcp { server_label, type, name }  or FileSearch { type }  or 9 more`
+
+              委派的 Responses 模型可以调用的工具。
+
+              - `Function object { name, type }`
+
+                - `name: string`
+
+                  要调用的函数工具名称。
+
+                - `type: "function"`
+
+                  要调用的工具。始终 `function`.
+
+                  - `"function"`
+
+              - `Mcp object { server_label, type, name }`
+
+                - `server_label: string`
+
+                  要调用的 MCP 服务器标签。
+
+                - `type: "mcp"`
+
+                  要调用的工具。始终 `mcp`.
+
+                  - `"mcp"`
+
+                - `name: optional string or null`
+
+                  要调用的 MCP 工具名称。如果省略，服务器可以选择默认值。
+
+              - `FileSearch object { type }`
+
+                - `type: "file_search"`
+
+                  要调用的工具。始终 `file_search`.
+
+                  - `"file_search"`
+
+              - `WebSearch object { type }`
+
+                - `type: "web_search"`
+
+                  要调用的工具。始终 `web_search`.
+
+                  - `"web_search"`
+
+              - `WebSearchPreview object { type }`
+
+                - `type: "web_search_preview"`
+
+                  要调用的工具。始终 `web_search_preview`.
+
+                  - `"web_search_preview"`
+
+              - `ImageGeneration object { type }`
+
+                - `type: "image_generation"`
+
+                  要调用的工具。始终 `image_generation`.
+
+                  - `"image_generation"`
+
+              - `Computer object { type }`
+
+                - `type: "computer"`
+
+                  要调用的工具。始终 `computer`.
+
+                  - `"computer"`
+
+              - `CodeInterpreter object { type }`
+
+                - `type: "code_interpreter"`
+
+                  要调用的工具。始终 `code_interpreter`.
+
+                  - `"code_interpreter"`
+
+              - `ProgrammaticToolCalling object { type }`
+
+                - `type: "programmatic_tool_calling"`
+
+                  要调用的工具。始终 `programmatic_tool_calling`.
+
+                  - `"programmatic_tool_calling"`
+
+              - `Shell object { type }`
+
+                强制模型在需要调用工具时调用 shell 工具。
+
+                - `type: "shell"`
+
+                  要调用的工具。始终 `shell`.
+
+                  - `"shell"`
+
+              - `Custom object { name, type }`
+
+                - `name: string`
+
+                  要调用的自定义工具名称。
+
+                - `type: "custom"`
+
+                  要调用的工具。始终 `custom`.
+
+                  - `"custom"`
+
+              - `ApplyPatch object { type }`
+
+                强制模型在执行工具调用时调用 apply_patch 工具。
+
+                - `type: "apply_patch"`
+
+                  要调用的工具。始终 `apply_patch`.
+
+                  - `"apply_patch"`
+
+            - `type: "allowed_tools"`
+
+              工具选择类型。始终 `allowed_tools`.
+
+              - `"allowed_tools"`
+
+            - `mode: optional "none" or "auto" or "required" or null`
+
+              如何从允许的工具集中选择工具。
+
+              - `"none"`
+
+              - `"auto"`
+
+              - `"required"`
+
+        - `tools: optional array of FunctionTool or WebSearch { type }  or FileSearch { type }  or 10 more`
+
+          Responses 后端在处理 Live 模型委派的任务时可用的工具。
+
+          - `FunctionTool object { name, type, description, 2 more }`
+
+            Live 模型委派任务时 Responses 后端可用的函数工具。
+
+            - `name: string`
+
+              委派的 Responses 模型调用此函数时使用的名称。
+
+            - `type: "function"`
+
+              工具类型。始终 `function`.
 
               - `"function"`
 
             - `description: optional string or null`
 
-              该函数的功能，以及被委托的 Responses 模型应在何时调用它。
+              函数的作用以及委派的 Responses 模型应何时调用它。
 
             - `parameters: optional map[unknown] or null`
 
-              用于描述该函数所接受参数的 JSON Schema 对象。
+              描述函数所接受参数的 JSON Schema 对象。
 
             - `strict: optional boolean or null`
 
-              被委托的 Responses 模型是否必须严格遵循该函数的参数 schema。
+              委派的 Responses 模型是否必须严格遵循函数的参数 schema。
 
           - `WebSearch object { type }`
 
-            Live 会话的 Responses 后端可用的 网页搜索 工具。
+            Live 会话的 Responses 后端可用的 网页搜索工具。
 
             - `type: "web_search"`
 
-              工具类型。始终为 `web_search`.
+              工具类型。始终 `web_search`.
 
               - `"web_search"`
 
@@ -6337,29 +7087,29 @@ Schema name: `LiveSessionUpdated`
 
           - `Shell object { type, environment }`
 
-            一个 Responses shell 工具。使用托管容器或通过 response.item.create 返回本地 shell 结果。不支持域密钥。
+            Responses shell 工具。使用托管容器，或通过 response.item.create 返回本地 shell 结果。不支持域机密。
 
             - `type: "shell"`
 
               - `"shell"`
 
-            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+            - `environment: optional ContainerAuto { type, file_ids, memory_limit, 2 more }  or ContainerReference { container_id, type }  or Local { type, skills }  or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
                 - `type: "container_auto"`
 
-                  自动为此请求创建容器
+                  为此请求自动创建容器
 
                   - `"container_auto"`
 
                 - `file_ids: optional array of string or null`
 
-                  可选的上传文件列表，供你的代码使用。
+                  可供你的代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
-                  该容器的内存限制。
+                  容器的内存限制。
 
                   - `"1g"`
 
@@ -6369,15 +7119,15 @@ Schema name: `LiveSessionUpdated`
 
                   - `"64g"`
 
-                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+                - `network_policy: optional Disabled { type }  or Allowlist { allowed_domains, type }  or null`
 
-                  该容器的网络访问策略。
+                  容器的网络访问策略。
 
                   - `Disabled object { type }`
 
                     - `type: "disabled"`
 
-                      禁用出站网络访问。始终为 `disabled`.
+                      禁用出站网络访问。始终 `disabled`.
 
                       - `"disabled"`
 
@@ -6385,17 +7135,17 @@ Schema name: `LiveSessionUpdated`
 
                     - `allowed_domains: array of string`
 
-                      当类型为时的允许域名列表 `allowlist`.
+                      当 type 为时的允许域名列表 `allowlist`.
 
                     - `type: "allowlist"`
 
-                      仅允许向指定域名进行出站网络访问。始终为 `allowlist`.
+                      仅允许对指定域名的出站网络访问。始终 `allowlist`.
 
                       - `"allowlist"`
 
-                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+                - `skills: optional array of SkillReference { skill_id, type, version }  or Inline { description, name, source, type }  or null`
 
-                  可选的技能列表，通过 ID 或内联数据引用。
+                  按 id 或内联数据引用的技能的可选列表。
 
                   - `SkillReference object { skill_id, type, version }`
 
@@ -6411,13 +7161,13 @@ Schema name: `LiveSessionUpdated`
 
                     - `version: optional string or null`
 
-                      可选的技能版本。使用正整数或 'latest'。省略以使用默认值。
+                      可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
                   - `Inline object { description, name, source, type }`
 
                     - `description: string`
 
-                      该技能的描述。
+                      技能的描述。
 
                     - `name: string`
 
@@ -6475,7 +7225,7 @@ Schema name: `LiveSessionUpdated`
 
                   - `description: string`
 
-                    该技能的描述。
+                    技能的描述。
 
                   - `name: string`
 
@@ -6541,19 +7291,19 @@ Schema name: `LiveSessionUpdated`
 
   - `input: optional array of InitialItem`
 
-    启动前提供的有序纯文本历史。支持开发者、用户和助手消息，每条消息仅包含一个文本部分；总共最多 128 条消息和 8,192 个渲染后的 token。
+    启动前提供的有序纯文本历史记录。支持开发者、用户和助手消息，每条消息包含一个文本部分；总计最多 128 条消息和 8,192 个渲染令牌。
 
     - `Developer object { content, role, id, 2 more }`
 
-      包含在 Live 会话初始文本历史中的开发者消息。
+      包含在 Live 会话初始文本历史记录中的开发者消息。
 
       - `content: array of object { text, type }`
 
-        消息内容。为 Live 会话的初始对话历史提供恰好一个文本部分。
+        消息内容。为 Live 初始对话历史记录提供恰好一个文本部分。
 
         - `text: string`
 
-          要包含在 Live 会话初始对话历史中的消息文本。
+          要包含在 Live 会话初始对话历史记录中的消息文本。
 
         - `type: optional "input_text"`
 
@@ -6563,17 +7313,17 @@ Schema name: `LiveSessionUpdated`
 
       - `role: "developer"`
 
-        此条历史消息的作者。始终为 `developer`.
+        此历史消息的作者。始终为 `developer`.
 
         - `"developer"`
 
       - `id: optional string or null`
 
-        所提供历史消息的可选标识符。Live 使用消息的角色和文本来初始化对话。
+        所提供历史消息的可选标识符。Live 使用该消息的角色和文本初始化对话。
 
       - `status: optional "incomplete" or "completed" or null`
 
-        所提供消息的状态。Live 将其文本用作历史，并且不会恢复未完成的消息。
+        所提供消息的状态。Live 使用其文本作为历史记录，并且不会恢复未完成的消息。
 
         - `"incomplete"`
 
@@ -6581,21 +7331,21 @@ Schema name: `LiveSessionUpdated`
 
       - `type: optional "message"`
 
-        历史项类型。始终为 `message`.
+        历史记录项类型。始终为 `message`.
 
         - `"message"`
 
     - `User object { content, role, id, 2 more }`
 
-      包含在 Live 会话初始文本历史中的用户消息。
+      包含在 Live 会话初始文本历史记录中的用户消息。
 
       - `content: array of object { text, type }`
 
-        消息内容。为 Live 会话的初始对话历史提供恰好一个文本部分。
+        消息内容。为 Live 初始对话历史记录提供恰好一个文本部分。
 
         - `text: string`
 
-          要包含在 Live 会话初始对话历史中的消息文本。
+          要包含在 Live 会话初始对话历史记录中的消息文本。
 
         - `type: optional "input_text"`
 
@@ -6605,17 +7355,17 @@ Schema name: `LiveSessionUpdated`
 
       - `role: "user"`
 
-        此条历史消息的作者。始终为 `user`.
+        此历史消息的作者。始终为 `user`.
 
         - `"user"`
 
       - `id: optional string or null`
 
-        所提供历史消息的可选标识符。Live 使用消息的角色和文本来初始化对话。
+        所提供历史消息的可选标识符。Live 使用该消息的角色和文本初始化对话。
 
       - `status: optional "incomplete" or "completed" or null`
 
-        所提供消息的状态。Live 将其文本用作历史，并且不会恢复未完成的消息。
+        所提供消息的状态。Live 使用其文本作为历史记录，并且不会恢复未完成的消息。
 
         - `"incomplete"`
 
@@ -6623,25 +7373,25 @@ Schema name: `LiveSessionUpdated`
 
       - `type: optional "message"`
 
-        历史项类型。始终为 `message`.
+        历史记录项类型。始终为 `message`.
 
         - `"message"`
 
     - `Assistant object { content, role, id, 2 more }`
 
-      包含在 Live 会话初始文本历史中的助手消息。
+      包含在 Live 会话初始文本历史记录中的助手消息。
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of Text { text, type }  or OutputText { text, type }`
 
-        消息内容。为 Live 会话的初始对话历史提供恰好一个文本部分。
+        消息内容。为 Live 初始对话历史记录提供恰好一个文本部分。
 
         - `Text object { text, type }`
 
-          启动 Live 会话时，作为会话历史提供的 Assistant 文本。
+          启动 Live 会话时作为对话历史提供的助手文本。
 
           - `text: string`
 
-            要包含在 Live 会话初始对话历史中的消息文本。
+            要包含在 Live 会话初始对话历史记录中的消息文本。
 
           - `type: optional "text"`
 
@@ -6651,11 +7401,11 @@ Schema name: `LiveSessionUpdated`
 
         - `OutputText object { text, type }`
 
-          启动 Live 会话时，作为会话历史提供的 Assistant 输出文本。
+          启动 Live 会话时作为对话历史提供的助手输出文本。
 
           - `text: string`
 
-            要包含在 Live 会话初始对话历史中的消息文本。
+            要包含在 Live 会话初始对话历史记录中的消息文本。
 
           - `type: "output_text"`
 
@@ -6665,17 +7415,17 @@ Schema name: `LiveSessionUpdated`
 
       - `role: "assistant"`
 
-        此条历史消息的作者。始终为 `assistant`.
+        此历史消息的作者。始终为 `assistant`.
 
         - `"assistant"`
 
       - `id: optional string or null`
 
-        所提供历史消息的可选标识符。Live 使用消息的角色和文本来初始化对话。
+        所提供历史消息的可选标识符。Live 使用该消息的角色和文本初始化对话。
 
       - `status: optional "incomplete" or "completed" or null`
 
-        所提供消息的状态。Live 将其文本用作历史，并且不会恢复未完成的消息。
+        所提供消息的状态。Live 使用其文本作为历史记录，并且不会恢复未完成的消息。
 
         - `"incomplete"`
 
@@ -6683,27 +7433,27 @@ Schema name: `LiveSessionUpdated`
 
       - `type: optional "message"`
 
-        历史项类型。始终为 `message`.
+        历史记录项类型。始终为 `message`.
 
         - `"message"`
 
   - `instructions: optional string or null`
 
-    针对语音、对话、插话以及何时委托的前端指令。从 [Live 提示指南](https://developers.openai.com/api/docs/guides/live-prompting)；开始；将业务规则和工具工作流放在单独的 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt)。中。客户端提供的 token 上限为 16,384。为空或留空的指令将使用服务端默认设置。启动后不可更改。
+    针对语音、对话、打断以及何时进行委派的前端指令。请先阅读 [Live 提示指南](https://developers.openai.com/api/docs/guides/live-prompting)；将业务规则和工具工作流放在单独的 [后端提示词](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt)。中。最多支持 16,384 个客户端提供的 token。省略或留空时使用服务端默认值。启动后不可更改。
 
   - `store: optional boolean`
 
-    是否存储该会话，以便后续派生和下载录制。新建会话默认为 false。
+    是否存储会话，以便之后派生和下载记录。新会话默认为 false。
 
 - `type: "session.updated"`
 
-  事件类型，恒为 `session.updated`.
+  事件类型，始终为 `session.updated`.
 
   - `"session.updated"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -6745,7 +7495,7 @@ Schema name: `LiveSessionUpdated`
 
 ### session.input_audio.muted
 
-当 session.input_audio.mute 命令被接受时返回。输入音频不再发送给模型；侧链音频回传继续进行。
+当 session.input_audio.mute 命令被接受时返回。输入音频不再发送给模型；边带音频反射继续进行。
 
 #### Schema
 
@@ -6757,13 +7507,13 @@ Schema name: `LiveInputAudioMuted`
 
 - `type: "session.input_audio.muted"`
 
-  事件类型，恒为 `session.input_audio.muted`.
+  事件类型，始终为 `session.input_audio.muted`.
 
   - `"session.input_audio.muted"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -6779,7 +7529,7 @@ Schema name: `LiveInputAudioMuted`
 
 ### session.input_audio.unmuted
 
-当 session.input_audio.unmute 命令被接受时返回。输入音频将再次发送给模型。
+当 session.input_audio.unmute 命令被接受时返回。输入音频再次发送给模型。
 
 #### Schema
 
@@ -6791,13 +7541,13 @@ Schema name: `LiveInputAudioUnmuted`
 
 - `type: "session.input_audio.unmuted"`
 
-  事件类型，恒为 `session.input_audio.unmuted`.
+  事件类型，始终为 `session.input_audio.unmuted`.
 
   - `"session.input_audio.unmuted"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -6813,7 +7563,7 @@ Schema name: `LiveInputAudioUnmuted`
 
 ### session.instructions.appended
 
-当 session.instructions.append 命令被接受并加入 Live 会话时间线时返回。用于确认已追加的指令，但不保证模型已据此执行。
+当 session.instructions.append 命令被接受并加入 Live session 时间线时返回。该返回值仅确认已追加指令，但不保证模型已按其执行。
 
 #### Schema
 
@@ -6821,7 +7571,7 @@ Schema name: `LiveInstructionsAppended`
 
 - `end_ms: number`
 
-  此事件在 Live 会话时间线上的结束位置，以距会话开始的毫秒数表示。对于追加的上下文，这可以等于 start_ms。
+  Live 会话时间轴上该事件的结束时间，以会话开始起的毫秒数表示。对于追加的上下文，该值可以等于 start_ms。
 
 - `event_id: string`
 
@@ -6829,17 +7579,17 @@ Schema name: `LiveInstructionsAppended`
 
 - `start_ms: number`
 
-  此事件在 Live 会话时间线上的开始位置，以距会话开始的毫秒数表示。
+  Live 会话时间轴上该事件的开始时间，以会话开始起的毫秒数表示。
 
 - `type: "session.instructions.appended"`
 
-  事件类型，恒为 `session.instructions.appended`.
+  事件类型，始终为 `session.instructions.appended`.
 
   - `"session.instructions.appended"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -6857,7 +7607,7 @@ Schema name: `LiveInstructionsAppended`
 
 ### session.thinking.appended
 
-当 session.thinking.append 命令被接受并加入 Live 会话时间线时返回。该返回值确认已追加推理上下文，但不保证会产生任何语音输出。
+在 session.thinking.append 命令被接受并加入 Live 会话时间线时返回。该返回仅确认已添加推理上下文,并不保证会产生任何语音输出。
 
 #### Schema
 
@@ -6865,7 +7615,7 @@ Schema name: `LiveThinkingAppended`
 
 - `end_ms: number`
 
-  此事件在 Live 会话时间线上的结束位置，以距会话开始的毫秒数表示。对于追加的上下文，这可以等于 start_ms。
+  Live 会话时间轴上该事件的结束时间，以会话开始起的毫秒数表示。对于追加的上下文，该值可以等于 start_ms。
 
 - `event_id: string`
 
@@ -6873,17 +7623,17 @@ Schema name: `LiveThinkingAppended`
 
 - `start_ms: number`
 
-  此事件在 Live 会话时间线上的开始位置，以距会话开始的毫秒数表示。
+  Live 会话时间轴上该事件的开始时间，以会话开始起的毫秒数表示。
 
 - `type: "session.thinking.appended"`
 
-  事件类型，恒为 `session.thinking.appended`.
+  事件类型，始终为 `session.thinking.appended`.
 
   - `"session.thinking.appended"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -6901,7 +7651,7 @@ Schema name: `LiveThinkingAppended`
 
 ### session.commentary.appended
 
-当 session.commentary.append 命令被接受并加入 Live 会话时间线时返回。用于确认已添加的旁白，但不保证措辞完全一致或音频播放已完成。
+当 session.commentary.append 命令被接受并加入 Live 会话时间线时返回。该返回表示已确认添加的旁白，但不保证旁白的措辞完全一致，也不保证音频已播放完毕。
 
 #### Schema
 
@@ -6909,7 +7659,7 @@ Schema name: `LiveCommentaryAppended`
 
 - `end_ms: number`
 
-  此事件在 Live 会话时间线上的结束位置，以距会话开始的毫秒数表示。对于追加的上下文，这可以等于 start_ms。
+  Live 会话时间轴上该事件的结束时间，以会话开始起的毫秒数表示。对于追加的上下文，该值可以等于 start_ms。
 
 - `event_id: string`
 
@@ -6917,17 +7667,17 @@ Schema name: `LiveCommentaryAppended`
 
 - `start_ms: number`
 
-  此事件在 Live 会话时间线上的开始位置，以距会话开始的毫秒数表示。
+  Live 会话时间轴上该事件的开始时间，以会话开始起的毫秒数表示。
 
 - `type: "session.commentary.appended"`
 
-  事件类型，恒为 `session.commentary.appended`.
+  事件类型，始终为 `session.commentary.appended`.
 
   - `"session.commentary.appended"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -6945,7 +7695,7 @@ Schema name: `LiveCommentaryAppended`
 
 ### session.output_audio.delta
 
-由 Live 模型生成的音频分块。使用配置的会话音频格式,按投递顺序解码并播放主 WebSocket 分块。边带连接会接收带时间戳的反射输出音频。
+由 Live 模型生成的音频分块。按照配置的会话音频格式，按交付顺序解码并播放主要的 WebSocket 分块。旁路连接会接收带有时间戳的反射输出音频。
 
 #### Schema
 
@@ -6953,21 +7703,21 @@ Schema name: `LiveOutputAudioDelta`
 
 - `delta: string`
 
-  Base64 编码的原始音频。主 WebSocket 事件使用会话配置的格式；反射的旁路事件使用 24 kHz 的单声道 PCM16LE。
+  Base64 编码的原始音频。主 WebSocket 事件使用会话配置的格式；回带的旁路事件使用 24 kHz 的单声道 PCM16LE。
 
 - `type: "session.output_audio.delta"`
 
-  事件类型，恒为 `session.output_audio.delta`.
+  事件类型，始终为 `session.output_audio.delta`.
 
   - `"session.output_audio.delta"`
 
 - `end_ms: optional number`
 
-  以毫秒为单位的会话相对结束时间（不含端点）。反射的旁路事件必填；主 WebSocket 上省略。被丢弃的输出帧会在反射区间之间留下空隙。
+  会话相对的独占结束位置，单位为毫秒。在回带的旁路事件中必填；在主 WebSocket 中省略。被丢弃的输出帧会在旁路范围之间留下空隙。
 
 - `start_ms: optional number`
 
-  以毫秒为单位的会话相对开始时间（含端点）。反射的旁路事件必填；主 WebSocket 上省略。
+  会话相对的包含起始位置，单位为毫秒。在回带的旁路事件中必填；在主 WebSocket 中省略。
 
 #### 示例
 
@@ -6984,7 +7734,7 @@ Schema name: `LiveOutputAudioDelta`
 
 ### session.input_transcript.delta
 
-Live 会话中用户输入音频的转写片段。按投递顺序累积片段；这些事件不定义完整的轮次，也不包含转写完成事件。
+Live 会话中用户输入音频的转写片段。按投递顺序累积这些片段；这些事件不定义完整的轮次，也不包含转写完成事件。
 
 #### Schema
 
@@ -6992,11 +7742,11 @@ Schema name: `LiveInputTranscriptDelta`
 
 - `delta: string`
 
-  该时间范围内音频的转录文本片段。按交付顺序追加片段以构建转录文本。
+  该时间范围内音频对应的转写文本片段。按交付顺序追加片段以构建转写文本。
 
 - `end_ms: number`
 
-  此事件在 Live 会话时间线上的结束位置，以距会话开始的毫秒数表示。对于追加的上下文，这可以等于 start_ms。
+  Live 会话时间轴上该事件的结束时间，以会话开始起的毫秒数表示。对于追加的上下文，该值可以等于 start_ms。
 
 - `event_id: string`
 
@@ -7004,17 +7754,17 @@ Schema name: `LiveInputTranscriptDelta`
 
 - `start_ms: number`
 
-  此事件在 Live 会话时间线上的开始位置，以距会话开始的毫秒数表示。
+  Live 会话时间轴上该事件的开始时间，以会话开始起的毫秒数表示。
 
 - `type: "session.input_transcript.delta"`
 
-  事件类型，恒为 `session.input_transcript.delta`.
+  事件类型，始终为 `session.input_transcript.delta`.
 
   - `"session.input_transcript.delta"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -7032,7 +7782,7 @@ Schema name: `LiveInputTranscriptDelta`
 
 ### session.output_transcript.delta
 
-Live 会话中助手输出音频的转录片段。按交付顺序累积片段；这些事件不定义完整的对话轮次，也不包含转录完成事件。
+实时会话中助手输出音频的转录片段。按交付顺序累积片段；这些事件不定义完整的轮次，也不包含转录完成事件。
 
 #### Schema
 
@@ -7040,11 +7790,11 @@ Schema name: `LiveOutputTranscriptDelta`
 
 - `delta: string`
 
-  该时间范围内音频的转录文本片段。按交付顺序追加片段以构建转录文本。
+  该时间范围内音频对应的转写文本片段。按交付顺序追加片段以构建转写文本。
 
 - `end_ms: number`
 
-  此事件在 Live 会话时间线上的结束位置，以距会话开始的毫秒数表示。对于追加的上下文，这可以等于 start_ms。
+  Live 会话时间轴上该事件的结束时间，以会话开始起的毫秒数表示。对于追加的上下文，该值可以等于 start_ms。
 
 - `event_id: string`
 
@@ -7052,17 +7802,17 @@ Schema name: `LiveOutputTranscriptDelta`
 
 - `start_ms: number`
 
-  此事件在 Live 会话时间线上的开始位置，以距会话开始的毫秒数表示。
+  Live 会话时间轴上该事件的开始时间，以会话开始起的毫秒数表示。
 
 - `type: "session.output_transcript.delta"`
 
-  事件类型，恒为 `session.output_transcript.delta`.
+  事件类型，始终为 `session.output_transcript.delta`.
 
   - `"session.output_transcript.delta"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -7080,7 +7830,7 @@ Schema name: `LiveOutputTranscriptDelta`
 
 ### session.delegation.created
 
-当 Live 模型将工作委托给你的应用或 Responses 后端时返回。包含委托元数据以及会话时间轴上发生委托的位置。
+当 Live 模型将工作委派给你的应用或 Responses 后端时返回。包含委派元数据以及该工作在会话时间线上的位置。
 
 #### Schema
 
@@ -7088,19 +7838,19 @@ Schema name: `LiveDelegationCreated`
 
 - `delegation: object { id, target, type, response_id }`
 
-  委托工作的标识符与目标位置。该对象包含的是元数据，而非任务文本本身。
+  委派工作的标识符和目标位置。此对象包含元数据，而不是任务文本。
 
   - `id: string`
 
-    该委托工作的唯一 ID。在回复客户端拥有的工作或将 Responses 事件进行关联时，请将其用作 delegation_id。
+    该委派的唯一 ID。在回复客户端拥有的工作或将 Responses 事件进行关联时，请将其用作 delegation_id。
 
   - `target: "client" or "responses"`
 
-    Live 模型将工作委托到以下位置： `client` 供你的应用使用，或 `responses` 用于已配置的 Responses 后端。
+    Live 模型将工作委派到何处： `client` 委派给你的应用，或 `responses` 委派给已配置的 Responses 后端。
 
     - `"client" or "responses"`
 
-      Live 模型将工作委托到以下位置： `client` 供你的应用使用，或 `responses` 用于已配置的 Responses 后端。
+      Live 模型将工作委派到何处： `client` 委派给你的应用，或 `responses` 委派给已配置的 Responses 后端。
 
       - `"client"`
 
@@ -7114,7 +7864,7 @@ Schema name: `LiveDelegationCreated`
 
   - `response_id: optional string`
 
-    与 Responses 委托相关联的 Responses API 响应 ID。客户端委托省略此字段。
+    与 Responses 委派相关的 Responses API 响应的 ID。对于客户端委派，该字段会被省略。
 
 - `event_id: string`
 
@@ -7122,17 +7872,17 @@ Schema name: `LiveDelegationCreated`
 
 - `offset_ms: number`
 
-  在 Live 会话时间轴上创建委托的位置，以距会话开头的毫秒数表示。
+  委派在 Live 会话时间轴上创建时的位置，以会话开始起的毫秒数表示。
 
 - `type: "session.delegation.created"`
 
-  事件类型，恒为 `session.delegation.created`.
+  事件类型，始终为 `session.delegation.created`.
 
   - `"session.delegation.created"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -7153,7 +7903,7 @@ Schema name: `LiveDelegationCreated`
 
 ### response.event
 
-来自由 Live 会话回传的后端的流式 Responses API 事件。使用外部的 delegation_id 将嵌套的流关联到其 Live 委托。
+来自由 Live 会话委托的后端的流式 Responses API 事件。请使用外部的 delegation_id 将嵌套流与其 Live 委托关联起来。
 
 #### Schema
 
@@ -7161,7 +7911,7 @@ Schema name: `LiveResponseEvent`
 
 - `event: map[unknown]`
 
-  嵌套的 Responses 流式事件。根据其 type 字段进行分发。Response 生命周期快照省略输入并清除 instructions、tools 和 output，以保持消息体量较小；如需获取生成的内容，请消费细粒度的 output 事件。
+  嵌套 Responses 流式事件。根据其 type 字段进行分发。响应生命周期快照会省略输入，并清除指令、工具和输出，以保持消息精简；请使用 granular 输出事件获取生成内容。
 
 - `event_id: string`
 
@@ -7169,17 +7919,17 @@ Schema name: `LiveResponseEvent`
 
 - `type: "response.event"`
 
-  事件类型，恒为 `response.event`.
+  事件类型，始终为 `response.event`.
 
   - `"response.event"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 - `delegation_id: optional string or null`
 
-  与嵌套 Responses 事件关联的 Live 委托。当该事件无法与某个委托关联时，可能为 null 或被省略。
+  与嵌套 Responses 事件关联的 Live 委派。当事件无法与委派关联时，可能为 null 或被省略。
 
 #### 示例
 
@@ -7204,7 +7954,7 @@ Schema name: `LiveResponseEvent`
 
 ### session.usage.updated
 
-报告累计的实时音频用量，以及在可用时最近一个上下文窗口的用量。被委托的 Responses token 用量会在 response.event 事件中单独上报。
+报告累计的 Live 音频用量，并在可用时报告最近一次的上下文窗口用量。委托 Responses 的 token 用量会在 response.event 事件中单独报告。
 
 #### Schema
 
@@ -7216,29 +7966,29 @@ Schema name: `LiveSessionUsageUpdated`
 
 - `type: "session.usage.updated"`
 
-  事件类型，恒为 `session.usage.updated`.
+  事件类型，始终为 `session.usage.updated`.
 
   - `"session.usage.updated"`
 
 - `usage: SessionUsage`
 
-  到目前为止累计的 Live 音频用量。
+  截至目前累计的 Live 音频用量。
 
   - `seconds: number`
 
-    累计的 Live 音频时长（秒）。不要跨用量事件累加该值。
+    截至目前累计的 Live 音频时长（秒）。请勿跨用量事件累加此值。
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 - `context_window: optional object { usage_ratio }`
 
-  最近一次测得的 Live 上下文窗口用量。当上下文上限未知时省略。
+  最近一次测量的 Live 上下文窗口用量。上下文限制未知时省略。
 
   - `usage_ratio: number`
 
-    当前活跃上下文 token 数除以 Live 模型上下文上限。压缩后可能会下降，并可能在测得的音频帧之间存在滞后。
+    最近一次活跃上下文 token 数除以 Live 模型上下文限制。压缩后可能会降低，并且在相邻音频帧测量之间可能存在滞后。
 
 #### 示例
 
@@ -7259,7 +8009,7 @@ Schema name: `LiveSessionUsageUpdated`
 
 ### session.closed
 
-在 Live 会话完成最终化后返回，包含关闭原因、最终会话快照以及累计音频用量。连接关闭但未发出此事件并不代表已成功完成最终化。
+在 Live 会话完成收尾后返回，包含关闭原因、最终会话快照以及累计音频用量。若连接关闭但未收到此事件，则无法确认是否已成功收尾。
 
 #### Schema
 
@@ -7271,11 +8021,11 @@ Schema name: `LiveSessionClosed`
 
 - `reason: "close_requested" or "expired" or "content" or 2 more`
 
-  Live 会话结束的原因： `close_requested` 由于应用关闭或挂断请求， `expired` 由于达到会话时长限制， `content` 由于安全过滤， `remote_hangup` 由于正常的远端断开连接，或 `connection_lost` 由于意外的主连接或上游连接断开。
+  实时会话结束的原因： `close_requested` 因应用程序关闭或挂断请求， `expired` 因会话时长限制， `content` 因安全过滤， `remote_hangup` 因远程正常断开连接，或 `connection_lost` 因主连接或上游意外断开。
 
   - `"close_requested" or "expired" or "content" or 2 more`
 
-    Live 会话结束的原因： `close_requested` 由于应用关闭或挂断请求， `expired` 由于达到会话时长限制， `content` 由于安全过滤， `remote_hangup` 由于正常的远端断开连接，或 `connection_lost` 由于意外的主连接或上游连接断开。
+    实时会话结束的原因： `close_requested` 因应用程序关闭或挂断请求， `expired` 因会话时长限制， `content` 因安全过滤， `remote_hangup` 因远程正常断开连接，或 `connection_lost` 因主连接或上游意外断开。
 
     - `"close_requested"`
 
@@ -7289,11 +8039,11 @@ Schema name: `LiveSessionClosed`
 
 - `session: SessionResource`
 
-  已解析的 Live 会话配置以及服务端分配的会话元数据。
+  已解析的 Live 会话配置以及由服务端分配的会话元数据。
 
   - `id: string`
 
-    Live 会话的唯一 ID。使用此 ID 进行旁路连接、分叉和录制下载。
+    Live 会话的唯一 ID。使用此 ID 进行旁路连接、分叉以及录音下载。
 
   - `expires_at: number`
 
@@ -7301,37 +8051,37 @@ Schema name: `LiveSessionClosed`
 
   - `model: string or "gpt-live-1"`
 
-    Live 模型。在每种传输方式的会话配置中都需要填写；不要将其作为 URL 查询参数传递。
+    Live 模型。在每种传输方式的会话配置中均为必填；不要将其作为 URL 查询参数传递。
 
     - `string`
 
     - `"gpt-live-1"`
 
-      Live 模型。在每种传输方式的会话配置中都需要填写；不要将其作为 URL 查询参数传递。
+      Live 模型。在每种传输方式的会话配置中均为必填；不要将其作为 URL 查询参数传递。
 
       - `"gpt-live-1"`
 
   - `status: "active"`
 
-    会话快照的状态。始终为 `active`，包括 session.closed 中的最终快照；可使用事件类型来判断会话是否已关闭。
+    会话快照的状态。始终为 `active`，包括 session.closed 中的最终快照；请使用事件类型来判断会话是否已关闭。
 
     - `"active"`
 
   - `audio: optional object { format, output }`
 
-    启动时的音频配置。只有主 WebSocket 接受 audio.format；WebRTC 和 SIP 会协商其媒体格式。语音和格式在启动后不可更改。
+    启动时的音频配置。仅主 WebSocket 支持 audio.format；WebRTC 和 SIP 会自行协商其媒体格式。voice 和 format 在启动后不可更改。
 
     - `format: optional AudioFormat`
 
-      通过 Live WebSocket 连接发送和接收的音频编码与采样率。WebRTC 和 SIP 会分别协商其媒体格式。
+      通过 Live WebSocket 连接发送和接收的音频编码及采样率。WebRTC 和 SIP 会单独协商其媒体格式。
 
       - `AudioPCM object { rate, type }`
 
-        Live WebSocket 连接使用的原始单声道 16 位小端 PCM 音频。
+        用于 Live WebSocket 连接的原始、单声道、16 位小端 PCM 音频。
 
         - `rate: 16000 or 24000`
 
-          音频采样率，单位为赫兹。Live WebSocket PCM 音频支持 16000 或 24000 Hz。
+          音频采样率（以赫兹为单位）。Live WebSocket PCM 音频支持 16000 或 24000 Hz。
 
           - `16000`
 
@@ -7345,11 +8095,11 @@ Schema name: `LiveSessionClosed`
 
       - `AudioPCMU object { rate, type }`
 
-        Live WebSocket 连接使用的原始单声道 G.711 μ-law 音频。
+        用于 Live WebSocket 连接的原始、单声道 G.711 μ-law 音频。
 
         - `rate: number`
 
-          音频采样率，单位为赫兹。G.711 音频使用 8000 Hz。
+          音频采样率（以赫兹为单位）。G.711 音频使用 8000 Hz。
 
         - `type: "audio/pcmu"`
 
@@ -7359,11 +8109,11 @@ Schema name: `LiveSessionClosed`
 
       - `AudioPCMA object { rate, type }`
 
-        Live WebSocket 连接使用的原始单声道 G.711 A-law 音频。
+        用于 Live WebSocket 连接的原始、单声道 G.711 A-law 音频。
 
         - `rate: number`
 
-          音频采样率，单位为赫兹。G.711 音频使用 8000 Hz。
+          音频采样率（以赫兹为单位）。G.711 音频使用 8000 Hz。
 
         - `type: "audio/pcma"`
 
@@ -7373,17 +8123,17 @@ Schema name: `LiveSessionClosed`
 
     - `output: optional object { voice }`
 
-      Live 模型生成语音所用的语音。
+      Live 模型生成语音时所使用的声音。
 
       - `voice: optional string or "alloy" or "ash" or "ballad" or 28 more or CustomVoice`
 
-        Live 语音所用的语音，可以是内置语音名称，也可以是包含其 ID 的自定义语音对象。默认为 `marin` ，且启动后不可更改。
+        Live 语音使用的声音，可以是内置声音名称，也可以是包含其 ID 的自定义声音对象。默认为 `marin` ，且启动后不可更改。
 
         - `string`
 
         - `"alloy" or "ash" or "ballad" or 28 more`
 
-          Live 语音所用的语音，可以是内置语音名称，也可以是包含其 ID 的自定义语音对象。默认为 `marin` ，且启动后不可更改。
+          Live 语音使用的声音，可以是内置声音名称，也可以是包含其 ID 的自定义声音对象。默认为 `marin` ，且启动后不可更改。
 
           - `"alloy"`
 
@@ -7453,7 +8203,7 @@ Schema name: `LiveSessionClosed`
 
   - `client: optional ClientConfig`
 
-    仅在启动时生效的、附加到统一 WebRTC 会话上的不受信任前端的可用能力。可信的旁路连接不受影响。
+    附加到统一 WebRTC 会话上的不受信任前端的仅启动时能力。受信的旁路连接不受影响。
 
     - `data_channel: DataChannelConfig`
 
@@ -7461,7 +8211,7 @@ Schema name: `LiveSessionClosed`
 
       - `allowed_client_events: optional "all" or array of string`
 
-        前端数据通道可能发送的客户端事件类型。使用 'all' 以允许所有客户端事件；空数组表示不允许任何事件。省略时保留现有的允许全部行为。
+        前端数据通道可以发送的客户端事件类型。使用 'all' 允许所有客户端事件；空数组不允许任何客户端事件。省略此字段将保留现有的全部允许行为。
 
         - `"all"`
 
@@ -7471,7 +8221,7 @@ Schema name: `LiveSessionClosed`
 
       - `allowed_server_events: optional "all" or array of ServerEventSelector`
 
-        可能发送到前端数据通道的服务端事件。使用 'all' 以允许所有服务端事件；空数组表示不允许任何事件。省略时保留现有的允许全部行为。Responses 事件使用一个 type 为 'response.event' 的对象，并附带 response_event 选择器。
+        可以发送到前端数据通道的服务器事件。使用 'all' 允许所有服务器事件；空数组不允许任何服务器事件。省略此字段将保留现有的全部允许行为。Responses 事件使用 type 为 'response.event' 且带有 response_event 选择器的对象。
 
         - `"all"`
 
@@ -7481,15 +8231,15 @@ Schema name: `LiveSessionClosed`
 
           - `type: string`
 
-            外部 Live 服务端事件类型。Responses 事件使用 'response.event'。
+            外层 Live 服务器事件类型。对于 Responses 事件，使用 'response.event'。
 
           - `response_event: optional string`
 
-            嵌套的 Responses 事件类型。当 type 为 'response.event' 时必填；其他事件类型下禁止使用。
+            嵌套的 Responses 事件类型。type 为 'response.event' 时必须提供；其他事件类型禁止使用。
 
-  - `delegation: optional ClientDelegation or object { responses, type }  or null`
+  - `delegation: optional ClientDelegation or Responses { responses, type }  or null`
 
-    由 Live 模型委派的任务由谁处理。省略或为 null 时选择你的应用；可使用 `responses` 以让 API 管理一个 Responses 后端。
+    处理 Live 模型委派任务的接收方。省略此字段或设为 null 会选择你的应用；使用 `responses` 让 API 管理 Responses 后端。
 
     - `ClientDelegation object { type }`
 
@@ -7507,31 +8257,31 @@ Schema name: `LiveSessionClosed`
 
       - `responses: ResponsesDelegationConfig`
 
-        当 Live 会话将任务委派给 Responses 时使用的后端模型、提示和工具。
+        Live 会话将任务委派给 Responses 时使用的后端模型、提示词和工具。
 
         - `model: string`
 
-          用于服务端拥有的 Responses 委派任务的模型。
+          用于服务器所属的 Responses 委派任务的模型。
 
         - `instructions: optional string or null`
 
-          用于被委托模型 Responses 的指令，独立于 Live 指令。参见 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
+          委托 Responses 模型的指令，与 Live 指令分开。参见 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
 
         - `max_output_tokens: optional number or null`
 
-          每个被委托响应的最大输出 token 数。
+          每个委托响应的最大输出 token 数。
 
         - `parallel_tool_calls: optional boolean or null`
 
-          被委托的 Responses 模型是否可以在单次响应中请求多个工具调用。
+          委托的 Responses 模型是否可以在单个响应中发起多个工具调用。
 
         - `reasoning: optional object { effort, summary }  or null`
 
-          传递给每个被委托 Responses 请求的推理设置。
+          传递给每个委托 Responses 请求的推理设置。
 
           - `effort: optional "none" or "minimal" or "low" or 3 more or null`
 
-            被委托的 Responses 模型应使用的推理力度。支持的取值取决于后端模型。
+            委托的 Responses 模型应使用的推理力度。支持的取值取决于后端模型。
 
             - `"none"`
 
@@ -7547,7 +8297,7 @@ Schema name: `LiveSessionClosed`
 
           - `summary: optional "concise" or "detailed" or "auto" or null`
 
-            在被委托的 Responses 模型支持时，向其请求的推理摘要。
+            在受支持时，向委托的 Responses 模型请求的推理摘要。
 
             - `"concise"`
 
@@ -7557,7 +8307,7 @@ Schema name: `LiveSessionClosed`
 
         - `service_tier: optional "auto" or "default" or "fast_tier_temp_pilot" or 3 more or null`
 
-          被委托 Responses 请求的服务层级。
+          委托 Responses 请求的服务层级。
 
           - `"auto"`
 
@@ -7573,11 +8323,11 @@ Schema name: `LiveSessionClosed`
 
         - `text: optional object { verbosity }  or null`
 
-          传递给每个被委托 Responses 请求的文本生成设置。
+          传递给每个委托 Responses 请求的文本生成设置。
 
           - `verbosity: optional "low" or "medium" or "high" or null`
 
-            Responses 后端生成文本时的详细程度。这不会配置 Live 模型的口头表达方式。
+            Responses 后端生成文本的详细程度。这不会配置 Live 模型的口语表达方式。
 
             - `"low"`
 
@@ -7585,13 +8335,11 @@ Schema name: `LiveSessionClosed`
 
             - `"high"`
 
-        - `tool_choice: optional "auto" or "none" or "required" or map[unknown]`
+        - `tool_choice: optional "auto" or "none" or "required" or Function { name, type }  or Mcp { server_label, type, name }  or 11 more`
 
-          控制 Responses 后端在处理 Live 模型委托的任务时所使用的工具。
+          控制 Live 模型委托任务时，Responses 后端所使用的工具。
 
           - `LiveToolChoiceEnum = "auto" or "none" or "required"`
-
-            控制 Responses 后端在处理 Live 模型委托的任务时所使用的工具。
 
             - `"auto"`
 
@@ -7599,45 +8347,297 @@ Schema name: `LiveSessionClosed`
 
             - `"required"`
 
-          - `map[unknown]`
-
-        - `tools: optional array of FunctionTool or object { type }  or object { type }  or 10 more`
-
-          在 Live 模型委托的任务处理期间，Responses 后端可用的工具。
-
-          - `FunctionTool object { name, type, description, 2 more }`
-
-            当 Live 模型委托任务时，Responses 后端可用的函数工具。
+          - `Function object { name, type }`
 
             - `name: string`
 
-              被委托的 Responses 模型在调用此函数时使用的名称。
+              要调用的函数工具名称。
 
             - `type: "function"`
 
-              工具类型。始终为 `function`.
+              要调用的工具。始终 `function`.
+
+              - `"function"`
+
+          - `Mcp object { server_label, type, name }`
+
+            - `server_label: string`
+
+              要调用的 MCP 服务器标签。
+
+            - `type: "mcp"`
+
+              要调用的工具。始终 `mcp`.
+
+              - `"mcp"`
+
+            - `name: optional string or null`
+
+              要调用的 MCP 工具名称。如果省略，服务器可以选择默认值。
+
+          - `FileSearch object { type }`
+
+            - `type: "file_search"`
+
+              要调用的工具。始终 `file_search`.
+
+              - `"file_search"`
+
+          - `WebSearch object { type }`
+
+            - `type: "web_search"`
+
+              要调用的工具。始终 `web_search`.
+
+              - `"web_search"`
+
+          - `WebSearchPreview object { type }`
+
+            - `type: "web_search_preview"`
+
+              要调用的工具。始终 `web_search_preview`.
+
+              - `"web_search_preview"`
+
+          - `ImageGeneration object { type }`
+
+            - `type: "image_generation"`
+
+              要调用的工具。始终 `image_generation`.
+
+              - `"image_generation"`
+
+          - `Computer object { type }`
+
+            - `type: "computer"`
+
+              要调用的工具。始终 `computer`.
+
+              - `"computer"`
+
+          - `CodeInterpreter object { type }`
+
+            - `type: "code_interpreter"`
+
+              要调用的工具。始终 `code_interpreter`.
+
+              - `"code_interpreter"`
+
+          - `ProgrammaticToolCalling object { type }`
+
+            - `type: "programmatic_tool_calling"`
+
+              要调用的工具。始终 `programmatic_tool_calling`.
+
+              - `"programmatic_tool_calling"`
+
+          - `Shell object { type }`
+
+            强制模型在需要调用工具时调用 shell 工具。
+
+            - `type: "shell"`
+
+              要调用的工具。始终 `shell`.
+
+              - `"shell"`
+
+          - `Custom object { name, type }`
+
+            - `name: string`
+
+              要调用的自定义工具名称。
+
+            - `type: "custom"`
+
+              要调用的工具。始终 `custom`.
+
+              - `"custom"`
+
+          - `ApplyPatch object { type }`
+
+            强制模型在执行工具调用时调用 apply_patch 工具。
+
+            - `type: "apply_patch"`
+
+              要调用的工具。始终 `apply_patch`.
+
+              - `"apply_patch"`
+
+          - `LiveAllowedToolsChoiceParam object { tools, type, mode }`
+
+            - `tools: array of Function { name, type }  or Mcp { server_label, type, name }  or FileSearch { type }  or 9 more`
+
+              委派的 Responses 模型可以调用的工具。
+
+              - `Function object { name, type }`
+
+                - `name: string`
+
+                  要调用的函数工具名称。
+
+                - `type: "function"`
+
+                  要调用的工具。始终 `function`.
+
+                  - `"function"`
+
+              - `Mcp object { server_label, type, name }`
+
+                - `server_label: string`
+
+                  要调用的 MCP 服务器标签。
+
+                - `type: "mcp"`
+
+                  要调用的工具。始终 `mcp`.
+
+                  - `"mcp"`
+
+                - `name: optional string or null`
+
+                  要调用的 MCP 工具名称。如果省略，服务器可以选择默认值。
+
+              - `FileSearch object { type }`
+
+                - `type: "file_search"`
+
+                  要调用的工具。始终 `file_search`.
+
+                  - `"file_search"`
+
+              - `WebSearch object { type }`
+
+                - `type: "web_search"`
+
+                  要调用的工具。始终 `web_search`.
+
+                  - `"web_search"`
+
+              - `WebSearchPreview object { type }`
+
+                - `type: "web_search_preview"`
+
+                  要调用的工具。始终 `web_search_preview`.
+
+                  - `"web_search_preview"`
+
+              - `ImageGeneration object { type }`
+
+                - `type: "image_generation"`
+
+                  要调用的工具。始终 `image_generation`.
+
+                  - `"image_generation"`
+
+              - `Computer object { type }`
+
+                - `type: "computer"`
+
+                  要调用的工具。始终 `computer`.
+
+                  - `"computer"`
+
+              - `CodeInterpreter object { type }`
+
+                - `type: "code_interpreter"`
+
+                  要调用的工具。始终 `code_interpreter`.
+
+                  - `"code_interpreter"`
+
+              - `ProgrammaticToolCalling object { type }`
+
+                - `type: "programmatic_tool_calling"`
+
+                  要调用的工具。始终 `programmatic_tool_calling`.
+
+                  - `"programmatic_tool_calling"`
+
+              - `Shell object { type }`
+
+                强制模型在需要调用工具时调用 shell 工具。
+
+                - `type: "shell"`
+
+                  要调用的工具。始终 `shell`.
+
+                  - `"shell"`
+
+              - `Custom object { name, type }`
+
+                - `name: string`
+
+                  要调用的自定义工具名称。
+
+                - `type: "custom"`
+
+                  要调用的工具。始终 `custom`.
+
+                  - `"custom"`
+
+              - `ApplyPatch object { type }`
+
+                强制模型在执行工具调用时调用 apply_patch 工具。
+
+                - `type: "apply_patch"`
+
+                  要调用的工具。始终 `apply_patch`.
+
+                  - `"apply_patch"`
+
+            - `type: "allowed_tools"`
+
+              工具选择类型。始终 `allowed_tools`.
+
+              - `"allowed_tools"`
+
+            - `mode: optional "none" or "auto" or "required" or null`
+
+              如何从允许的工具集中选择工具。
+
+              - `"none"`
+
+              - `"auto"`
+
+              - `"required"`
+
+        - `tools: optional array of FunctionTool or WebSearch { type }  or FileSearch { type }  or 10 more`
+
+          Responses 后端在处理 Live 模型委派的任务时可用的工具。
+
+          - `FunctionTool object { name, type, description, 2 more }`
+
+            Live 模型委派任务时 Responses 后端可用的函数工具。
+
+            - `name: string`
+
+              委派的 Responses 模型调用此函数时使用的名称。
+
+            - `type: "function"`
+
+              工具类型。始终 `function`.
 
               - `"function"`
 
             - `description: optional string or null`
 
-              该函数的功能，以及被委托的 Responses 模型应在何时调用它。
+              函数的作用以及委派的 Responses 模型应何时调用它。
 
             - `parameters: optional map[unknown] or null`
 
-              用于描述该函数所接受参数的 JSON Schema 对象。
+              描述函数所接受参数的 JSON Schema 对象。
 
             - `strict: optional boolean or null`
 
-              被委托的 Responses 模型是否必须严格遵循该函数的参数 schema。
+              委派的 Responses 模型是否必须严格遵循函数的参数 schema。
 
           - `WebSearch object { type }`
 
-            Live 会话的 Responses 后端可用的 网页搜索 工具。
+            Live 会话的 Responses 后端可用的 网页搜索工具。
 
             - `type: "web_search"`
 
-              工具类型。始终为 `web_search`.
+              工具类型。始终 `web_search`.
 
               - `"web_search"`
 
@@ -7655,29 +8655,29 @@ Schema name: `LiveSessionClosed`
 
           - `Shell object { type, environment }`
 
-            一个 Responses shell 工具。使用托管容器或通过 response.item.create 返回本地 shell 结果。不支持域密钥。
+            Responses shell 工具。使用托管容器，或通过 response.item.create 返回本地 shell 结果。不支持域机密。
 
             - `type: "shell"`
 
               - `"shell"`
 
-            - `environment: optional object { type, file_ids, memory_limit, 2 more }  or object { container_id, type }  or object { type, skills }  or null`
+            - `environment: optional ContainerAuto { type, file_ids, memory_limit, 2 more }  or ContainerReference { container_id, type }  or Local { type, skills }  or null`
 
               - `ContainerAuto object { type, file_ids, memory_limit, 2 more }`
 
                 - `type: "container_auto"`
 
-                  自动为此请求创建容器
+                  为此请求自动创建容器
 
                   - `"container_auto"`
 
                 - `file_ids: optional array of string or null`
 
-                  可选的上传文件列表，供你的代码使用。
+                  可供你的代码使用的已上传文件的可选列表。
 
                 - `memory_limit: optional "1g" or "4g" or "16g" or "64g" or null`
 
-                  该容器的内存限制。
+                  容器的内存限制。
 
                   - `"1g"`
 
@@ -7687,15 +8687,15 @@ Schema name: `LiveSessionClosed`
 
                   - `"64g"`
 
-                - `network_policy: optional object { type }  or object { allowed_domains, type }  or null`
+                - `network_policy: optional Disabled { type }  or Allowlist { allowed_domains, type }  or null`
 
-                  该容器的网络访问策略。
+                  容器的网络访问策略。
 
                   - `Disabled object { type }`
 
                     - `type: "disabled"`
 
-                      禁用出站网络访问。始终为 `disabled`.
+                      禁用出站网络访问。始终 `disabled`.
 
                       - `"disabled"`
 
@@ -7703,17 +8703,17 @@ Schema name: `LiveSessionClosed`
 
                     - `allowed_domains: array of string`
 
-                      当类型为时的允许域名列表 `allowlist`.
+                      当 type 为时的允许域名列表 `allowlist`.
 
                     - `type: "allowlist"`
 
-                      仅允许向指定域名进行出站网络访问。始终为 `allowlist`.
+                      仅允许对指定域名的出站网络访问。始终 `allowlist`.
 
                       - `"allowlist"`
 
-                - `skills: optional array of object { skill_id, type, version }  or object { description, name, source, type }  or null`
+                - `skills: optional array of SkillReference { skill_id, type, version }  or Inline { description, name, source, type }  or null`
 
-                  可选的技能列表，通过 ID 或内联数据引用。
+                  按 id 或内联数据引用的技能的可选列表。
 
                   - `SkillReference object { skill_id, type, version }`
 
@@ -7729,13 +8729,13 @@ Schema name: `LiveSessionClosed`
 
                     - `version: optional string or null`
 
-                      可选的技能版本。使用正整数或 'latest'。省略以使用默认值。
+                      可选的技能版本。使用正整数或 'latest'。省略则使用默认值。
 
                   - `Inline object { description, name, source, type }`
 
                     - `description: string`
 
-                      该技能的描述。
+                      技能的描述。
 
                     - `name: string`
 
@@ -7793,7 +8793,7 @@ Schema name: `LiveSessionClosed`
 
                   - `description: string`
 
-                    该技能的描述。
+                    技能的描述。
 
                   - `name: string`
 
@@ -7859,19 +8859,19 @@ Schema name: `LiveSessionClosed`
 
   - `input: optional array of InitialItem`
 
-    启动前提供的有序纯文本历史。支持开发者、用户和助手消息，每条消息仅包含一个文本部分；总共最多 128 条消息和 8,192 个渲染后的 token。
+    启动前提供的有序纯文本历史记录。支持开发者、用户和助手消息，每条消息包含一个文本部分；总计最多 128 条消息和 8,192 个渲染令牌。
 
     - `Developer object { content, role, id, 2 more }`
 
-      包含在 Live 会话初始文本历史中的开发者消息。
+      包含在 Live 会话初始文本历史记录中的开发者消息。
 
       - `content: array of object { text, type }`
 
-        消息内容。为 Live 会话的初始对话历史提供恰好一个文本部分。
+        消息内容。为 Live 初始对话历史记录提供恰好一个文本部分。
 
         - `text: string`
 
-          要包含在 Live 会话初始对话历史中的消息文本。
+          要包含在 Live 会话初始对话历史记录中的消息文本。
 
         - `type: optional "input_text"`
 
@@ -7881,17 +8881,17 @@ Schema name: `LiveSessionClosed`
 
       - `role: "developer"`
 
-        此条历史消息的作者。始终为 `developer`.
+        此历史消息的作者。始终为 `developer`.
 
         - `"developer"`
 
       - `id: optional string or null`
 
-        所提供历史消息的可选标识符。Live 使用消息的角色和文本来初始化对话。
+        所提供历史消息的可选标识符。Live 使用该消息的角色和文本初始化对话。
 
       - `status: optional "incomplete" or "completed" or null`
 
-        所提供消息的状态。Live 将其文本用作历史，并且不会恢复未完成的消息。
+        所提供消息的状态。Live 使用其文本作为历史记录，并且不会恢复未完成的消息。
 
         - `"incomplete"`
 
@@ -7899,21 +8899,21 @@ Schema name: `LiveSessionClosed`
 
       - `type: optional "message"`
 
-        历史项类型。始终为 `message`.
+        历史记录项类型。始终为 `message`.
 
         - `"message"`
 
     - `User object { content, role, id, 2 more }`
 
-      包含在 Live 会话初始文本历史中的用户消息。
+      包含在 Live 会话初始文本历史记录中的用户消息。
 
       - `content: array of object { text, type }`
 
-        消息内容。为 Live 会话的初始对话历史提供恰好一个文本部分。
+        消息内容。为 Live 初始对话历史记录提供恰好一个文本部分。
 
         - `text: string`
 
-          要包含在 Live 会话初始对话历史中的消息文本。
+          要包含在 Live 会话初始对话历史记录中的消息文本。
 
         - `type: optional "input_text"`
 
@@ -7923,17 +8923,17 @@ Schema name: `LiveSessionClosed`
 
       - `role: "user"`
 
-        此条历史消息的作者。始终为 `user`.
+        此历史消息的作者。始终为 `user`.
 
         - `"user"`
 
       - `id: optional string or null`
 
-        所提供历史消息的可选标识符。Live 使用消息的角色和文本来初始化对话。
+        所提供历史消息的可选标识符。Live 使用该消息的角色和文本初始化对话。
 
       - `status: optional "incomplete" or "completed" or null`
 
-        所提供消息的状态。Live 将其文本用作历史，并且不会恢复未完成的消息。
+        所提供消息的状态。Live 使用其文本作为历史记录，并且不会恢复未完成的消息。
 
         - `"incomplete"`
 
@@ -7941,25 +8941,25 @@ Schema name: `LiveSessionClosed`
 
       - `type: optional "message"`
 
-        历史项类型。始终为 `message`.
+        历史记录项类型。始终为 `message`.
 
         - `"message"`
 
     - `Assistant object { content, role, id, 2 more }`
 
-      包含在 Live 会话初始文本历史中的助手消息。
+      包含在 Live 会话初始文本历史记录中的助手消息。
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of Text { text, type }  or OutputText { text, type }`
 
-        消息内容。为 Live 会话的初始对话历史提供恰好一个文本部分。
+        消息内容。为 Live 初始对话历史记录提供恰好一个文本部分。
 
         - `Text object { text, type }`
 
-          启动 Live 会话时，作为会话历史提供的 Assistant 文本。
+          启动 Live 会话时作为对话历史提供的助手文本。
 
           - `text: string`
 
-            要包含在 Live 会话初始对话历史中的消息文本。
+            要包含在 Live 会话初始对话历史记录中的消息文本。
 
           - `type: optional "text"`
 
@@ -7969,11 +8969,11 @@ Schema name: `LiveSessionClosed`
 
         - `OutputText object { text, type }`
 
-          启动 Live 会话时，作为会话历史提供的 Assistant 输出文本。
+          启动 Live 会话时作为对话历史提供的助手输出文本。
 
           - `text: string`
 
-            要包含在 Live 会话初始对话历史中的消息文本。
+            要包含在 Live 会话初始对话历史记录中的消息文本。
 
           - `type: "output_text"`
 
@@ -7983,17 +8983,17 @@ Schema name: `LiveSessionClosed`
 
       - `role: "assistant"`
 
-        此条历史消息的作者。始终为 `assistant`.
+        此历史消息的作者。始终为 `assistant`.
 
         - `"assistant"`
 
       - `id: optional string or null`
 
-        所提供历史消息的可选标识符。Live 使用消息的角色和文本来初始化对话。
+        所提供历史消息的可选标识符。Live 使用该消息的角色和文本初始化对话。
 
       - `status: optional "incomplete" or "completed" or null`
 
-        所提供消息的状态。Live 将其文本用作历史，并且不会恢复未完成的消息。
+        所提供消息的状态。Live 使用其文本作为历史记录，并且不会恢复未完成的消息。
 
         - `"incomplete"`
 
@@ -8001,35 +9001,35 @@ Schema name: `LiveSessionClosed`
 
       - `type: optional "message"`
 
-        历史项类型。始终为 `message`.
+        历史记录项类型。始终为 `message`.
 
         - `"message"`
 
   - `instructions: optional string or null`
 
-    针对语音、对话、插话以及何时委托的前端指令。从 [Live 提示指南](https://developers.openai.com/api/docs/guides/live-prompting)；开始；将业务规则和工具工作流放在单独的 [后端提示](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt)。中。客户端提供的 token 上限为 16,384。为空或留空的指令将使用服务端默认设置。启动后不可更改。
+    针对语音、对话、打断以及何时进行委派的前端指令。请先阅读 [Live 提示指南](https://developers.openai.com/api/docs/guides/live-prompting)；将业务规则和工具工作流放在单独的 [后端提示词](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt)。中。最多支持 16,384 个客户端提供的 token。省略或留空时使用服务端默认值。启动后不可更改。
 
   - `store: optional boolean`
 
-    是否存储该会话，以便后续派生和下载录制。新建会话默认为 false。
+    是否存储会话，以便之后派生和下载记录。新会话默认为 false。
 
 - `type: "session.closed"`
 
-  事件类型，恒为 `session.closed`.
+  事件类型，始终为 `session.closed`.
 
   - `"session.closed"`
 
 - `usage: SessionUsage`
 
-  会话结束后最终的 Live 音频累计用量。
+  会话结束后累计的最终实时音频用量。
 
   - `seconds: number`
 
-    累计的 Live 音频时长（秒）。不要跨用量事件累加该值。
+    截至目前累计的 Live 音频时长（秒）。请勿跨用量事件累加此值。
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -8067,9 +9067,9 @@ Schema name: `LiveSessionClosed`
 
 <a id="error"></a>
 
-### 错误
+### error
 
-上报 Live 会话中的错误，例如无效的客户端命令。若存在 error.client_event_id，请使用它来定位引发该错误的命令。
+报告 Live 会话中的错误，例如无效的客户端命令。出现时，可使用 error.client_event_id 标识引发该错误的命令。
 
 #### Schema
 
@@ -8077,7 +9077,7 @@ Schema name: `LiveErrorEvent`
 
 - `error: Error`
 
-  已知的 Live 错误详情以及导致该错误的客户端命令。
+  已知时，提供 Live 错误及引发该错误的客户端命令的详细信息。
 
   - `code: string`
 
@@ -8085,19 +9085,19 @@ Schema name: `LiveErrorEvent`
 
   - `message: string`
 
-    对 Live 错误的人类可读解释。
+    对 Live 错误的人类可读说明。
 
   - `type: string`
 
-    错误类别，例如 `invalid_request_error` 表示无效的 Live 客户端命令。
+    错误的类别，例如 `invalid_request_error` ，对应无效的 Live 客户端命令。
 
   - `client_event_id: optional string`
 
-    导致错误的客户端命令的 event_id（如果提供）。
+    引发该错误的客户端命令的 event_id（如果提供）。
 
   - `param: optional string`
 
-    导致错误的参数（如果适用），例如 `session.voice`.
+    引发该错误的参数（如果适用），例如 `session.voice`.
 
 - `event_id: string`
 
@@ -8105,13 +9105,13 @@ Schema name: `LiveErrorEvent`
 
 - `type: "error"`
 
-  事件类型，恒为 `error`.
+  事件类型，始终为 `error`.
 
   - `"error"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -8141,7 +9141,7 @@ Schema name: `LiveInfoEvent`
 
 - `code: string`
 
-  通知的机器可读代码，例如 `data_channel_permissions`.
+  该通知的机器可读代码，例如 `data_channel_permissions`.
 
 - `event_id: string`
 
@@ -8149,17 +9149,17 @@ Schema name: `LiveInfoEvent`
 
 - `message: string`
 
-  对实时会话通知的人类可读说明。
+  对该实时会话通知的可读说明。
 
 - `type: "info"`
 
-  事件类型，恒为 `info`.
+  事件类型，始终为 `info`.
 
   - `"info"`
 
 - `client_event_id: optional string`
 
-  与此服务端事件关联的客户端命令的 event_id（如果提供）。
+  与此服务端事件关联的客户端命令的 event_id（如果已提供）。
 
 #### 示例
 
@@ -8176,7 +9176,7 @@ Schema name: `LiveInfoEvent`
 
 ### session.input_audio.append
 
-从主传输接收的输入音频，会先反射到 Live 边带连接，再进入模型输入静音阶段。
+从主传输接收的音频输入，在模型输入静音之前被反射到一个 Live 边带连接。
 
 #### Schema
 
@@ -8184,11 +9184,11 @@ Schema name: `LiveInputAudioAppend`
 
 - `audio: string`
 
-  来自主传输的 Base64 编码原始单声道 PCM16LE（24 kHz），在模型输入静音之前反射到边带。此服务端事件使用与客户端命令相同的音频键，但并不是对该客户端命令的确认。
+  来自主传输接收的 Base64 编码原始 mono PCM16LE（24 kHz），在模型输入静音前反射到边带。该服务端事件使用与客户端命令相同的 audio key，但并不是对该命令的确认。
 
 - `type: "session.input_audio.append"`
 
-  事件类型，恒为 `session.input_audio.append`.
+  事件类型，始终为 `session.input_audio.append`.
 
   - `"session.input_audio.append"`
 
@@ -8205,7 +9205,7 @@ Schema name: `LiveInputAudioAppend`
 
 ### transport.dtmf.received
 
-来自呼叫方的 SIP DTMF 按键。仅传递给旁路监听者。
+来自主叫方的 SIP DTMF 按键。仅传递给 sideband 观察者。
 
 #### Schema
 
@@ -8233,7 +9233,7 @@ Schema name: `LiveTransportDTMFReceived`
 
 ### transport.dtmf.send
 
-成功发送到 SIP 中继的 SIP DTMF 按键事件。仅交付给边带观察者；这不是客户端命令。
+SIP DTMF 按键事件已成功发送至 SIP 中继。仅传递给旁路观察者；这不是客户端命令。
 
 #### Schema
 
@@ -8249,7 +9249,7 @@ Schema name: `LiveTransportDTMFSend`
 
 - `client_event_id: optional string`
 
-  提供时的客户端命令的 event_id。
+  客户端命令的 event_id（如果提供）。
 
 #### 示例
 

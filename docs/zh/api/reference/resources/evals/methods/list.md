@@ -1,8 +1,8 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。你可以通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-## List evals
+## 列出评估
 
-**get** `/evals`
+**获取** `/evals`
 
 列出项目的评估。
 
@@ -18,7 +18,7 @@
 
 - `order: optional "asc" or "desc"`
 
-  按时间戳对 eval 排序的方式。使用 `asc` 表示升序，或使用 `desc` 表示降序。
+  按时间戳对 evals 排序的顺序。使用 `asc` 表示升序，或 `desc` 表示降序。
 
   - `"asc"`
 
@@ -26,14 +26,14 @@
 
 - `order_by: optional "created_at" or "updated_at"`
 
-  eval 可按创建时间或最后更新时间排序。使用
-  `created_at` 表示创建时间，或使用 `updated_at` 表示最后更新时间。
+  Evals 可以按创建时间或最后更新时间排序。使用
+  `created_at` 表示创建时间，或 `updated_at` 表示最后更新时间。
 
   - `"created_at"`
 
   - `"updated_at"`
 
-### 返回值
+### 返回
 
 - `data: array of object { id, created_at, data_source_config, 4 more }`
 
@@ -45,89 +45,89 @@
 
   - `created_at: number`
 
-    eval 创建时的 Unix 时间戳（单位：秒）。
+    评估创建时的 Unix 时间戳（以秒为单位）。
 
-  - `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
+  - `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
-    评估运行中所使用数据源的配置。
+    评估运行中使用的数据源配置。
 
     - `EvalCustomDataSourceConfig object { schema, type }`
 
-      一个 CustomDataSourceConfig，用于指定你的 `item` 以及可选的 `sample` 命名空间。
-      响应模式定义了数据的形状，这些数据将用于：
+      一个 CustomDataSourceConfig，用于指定你的数据模式 `item` 以及可选的 `sample` 命名空间。
+      响应模式定义的数据形状将用于：
 
-      - 定义你的测试评判标准，以及
-      - 创建运行时所需的数据
+      - 用于定义你的测试标准，并且
+      - 创建运行（run）时需要哪些数据
 
       - `schema: map[unknown]`
 
-        运行数据源条目的 json schema。
-        了解如何构建 JSON schema [请参见此处](https://json-schema.org/).
+        运行数据源条目的 json 模式。
+        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
 
       - `type: "custom"`
 
-        数据源的类型，恒为 `custom`.
+        数据源的类型。始终为 `custom`.
 
         - `"custom"`
 
     - `LogsDataSourceConfig object { schema, type, metadata }`
 
-      一个 LogsDataSourceConfig，用于指定你日志查询的元数据属性。
-      这通常是类似于 `usecase=chatbot` 或 `prompt-version=v2`，等的元数据。
-      此数据源配置返回的模式用于定义你的评估中可用的变量。
-      `item` 以及 `sample` 在使用此数据源配置时都会定义这两个字段。
+      一个 LogsDataSourceConfig，用于指定你的日志查询的元数据属性。
+      这通常是像 `usecase=chatbot` 或 `prompt-version=v2`，等的元数据。
+      此数据源配置返回的模式用于定义评估中可用的变量。
+      `item` 和 `sample` 在使用此数据源配置时都会被定义。
 
       - `schema: map[unknown]`
 
-        运行数据源条目的 json schema。
-        了解如何构建 JSON schema [请参见此处](https://json-schema.org/).
+        运行数据源条目的 json 模式。
+        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
 
       - `type: "logs"`
 
-        数据源的类型，恒为 `logs`.
+        数据源的类型。始终为 `logs`.
 
         - `"logs"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个可以附加到对象的键值对。这可以
-        用于以结构化格式存储对象的附加信息，并通过
-        API 或仪表板查询对象。
+        可以附加到对象的 16 组键值对。可用于
+        以结构化格式存储有关对象的附加信息，并通过
+        API 或控制台查询对象。
 
-        键为字符串，最大长度为 64 个字符。值为字符串
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
     - `EvalStoredCompletionsDataSourceConfig object { schema, type, metadata }`
 
-      已弃用，请改用 LogsDataSourceConfig。
+      已弃用，推荐使用 LogsDataSourceConfig。
 
       - `schema: map[unknown]`
 
-        运行数据源条目的 json schema。
-        了解如何构建 JSON schema [请参见此处](https://json-schema.org/).
+        运行数据源条目的 json 模式。
+        了解如何构建 JSON 模式 [此处](https://json-schema.org/).
 
       - `type: "stored_completions"`
 
-        数据源的类型，恒为 `stored_completions`.
+        数据源的类型。始终为 `stored_completions`.
 
         - `"stored_completions"`
 
       - `metadata: optional Metadata or null`
 
-        一组 16 个可以附加到对象的键值对。这可以
-        用于以结构化格式存储对象的附加信息，并通过
-        API 或仪表板查询对象。
+        可以附加到对象的 16 组键值对。可用于
+        以结构化格式存储有关对象的附加信息，并通过
+        API 或控制台查询对象。
 
-        键为字符串，最大长度为 64 个字符。值为字符串
+        键为字符串，最大长度为 64 个字符。值为字符串，
         最大长度为 512 个字符。
 
   - `metadata: Metadata or null`
 
-    一组 16 个可以附加到对象的键值对。这可以
-    用于以结构化格式存储对象的附加信息，并通过
-    API 或仪表板查询对象。
+    可以附加到对象的 16 组键值对。可用于
+    以结构化格式存储有关对象的附加信息，并通过
+    API 或控制台查询对象。
 
-    键为字符串，最大长度为 64 个字符。值为字符串
+    键为字符串，最大长度为 64 个字符。值为字符串，
     最大长度为 512 个字符。
 
   - `name: string`
@@ -146,14 +146,14 @@
 
     - `LabelModelGrader object { input, labels, model, 3 more }`
 
-      一个 LabelModelGrader 对象，它使用一个模型为评估中的每个条目
-      分配标签。
+      一个 LabelModelGrader 对象，使用模型为评估中
+      的每个项分配标签。
 
       - `input: array of object { content, role, type }`
 
-        - `content: string or ResponseInputText or object { text, type }  or 3 more`
+        - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
-          模型的输入——可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项或项的数组。
+          模型的输入，可以包含模板字符串。支持文本、输出文本、输入图像和输入音频，可以是单个项，也可以是项的数组。
 
           - `TextInput = string`
 
@@ -175,7 +175,7 @@
 
             - `prompt_cache_breakpoint: optional object { mode }`
 
-              标记可复用提示前缀的确切结束位置。该断点继承其来自请求的 TTL `prompt_cache_options.ttl`；边界不会舍入到 token 块。
+              标记可复用提示前缀的精确结束位置。该断点继承请求的 `prompt_cache_options.ttl`；边界不会向下取整到 token 块。
 
               - `mode: "explicit"`
 
@@ -189,7 +189,7 @@
 
             - `text: string`
 
-              模型输出的文本。
+              模型的文本输出。
 
             - `type: "output_text"`
 
@@ -199,21 +199,21 @@
 
           - `InputImage object { image_url, type, detail }`
 
-            EvalItem content 数组中使用的图像输入块。
+            在 EvalItem content 数组中使用的图片输入块。
 
             - `image_url: string`
 
-              图像输入的 URL。
+              图片输入的 URL。
 
             - `type: "input_image"`
 
-              图像输入的类型。始终为 `input_image`.
+              图片输入的类型。始终为 `input_image`.
 
               - `"input_image"`
 
             - `detail: optional string`
 
-              发送给模型的图像细节级别。取值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
+              发送给模型的图片细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
           - `ResponseInputAudio object { input_audio, type }`
 
@@ -227,7 +227,7 @@
 
               - `format: "mp3" or "wav"`
 
-                音频数据的格式。当前支持的格式包括 `mp3` 以及
+                音频数据的格式。当前支持的格式包括 `mp3` 和
                 `wav`.
 
                 - `"mp3"`
@@ -240,10 +240,10 @@
 
               - `"input_audio"`
 
-          - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+          - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
-            输入列表，其中每一项可以是输入文本、输出文本、输入
-            图像或输入音频对象。
+            输入列表，其中每个输入可以是输入文本、输出文本、输入
+            图片或输入音频对象。
 
             - `TextInput = string`
 
@@ -259,7 +259,7 @@
 
               - `text: string`
 
-                模型输出的文本。
+                模型的文本输出。
 
               - `type: "output_text"`
 
@@ -269,21 +269,21 @@
 
             - `InputImage object { image_url, type, detail }`
 
-              EvalItem content 数组中使用的图像输入块。
+              在 EvalItem content 数组中使用的图片输入块。
 
               - `image_url: string`
 
-                图像输入的 URL。
+                图片输入的 URL。
 
               - `type: "input_image"`
 
-                图像输入的类型。始终为 `input_image`.
+                图片输入的类型。始终为 `input_image`.
 
                 - `"input_image"`
 
               - `detail: optional string`
 
-                发送给模型的图像细节级别。取值为 `high`, `low`、或 `auto`。之一。默认为 `auto`.
+                发送给模型的图片细节级别。可选值为 `high`, `low`，或 `auto`。默认为 `auto`.
 
             - `ResponseInputAudio object { input_audio, type }`
 
@@ -291,7 +291,7 @@
 
         - `role: "user" or "assistant" or "system" or "developer"`
 
-          消息输入的角色。取值为 `user`, `assistant`, `system`、或
+          消息输入的角色。可选值为 `user`, `assistant`, `system`，或
           `developer`.
 
           - `"user"`
@@ -310,7 +310,7 @@
 
       - `labels: array of string`
 
-        要分配给评估中每个条目的标签。
+        要为评估中的每个项分配的标签。
 
       - `model: string`
 
@@ -332,7 +332,7 @@
 
     - `StringCheckGrader object { input, name, operation, 2 more }`
 
-      一个 StringCheckGrader 对象，使用指定操作对输入和参考文本进行字符串比较。
+      一个 StringCheckGrader 对象，使用指定的操作在输入和参考之间执行字符串比较。
 
       - `input: string`
 
@@ -344,7 +344,7 @@
 
       - `operation: "eq" or "ne" or "like" or "ilike"`
 
-        要执行的字符串检查操作。可选值之一 `eq`, `ne`, `like`、或 `ilike`.
+        要执行的字符串检查操作。取值之一 `eq`, `ne`, `like`，或 `ilike`.
 
         - `"eq"`
 
@@ -366,7 +366,7 @@
 
     - `TextSimilarityGrader = TextSimilarityGrader`
 
-      一个 TextSimilarityGrader 对象，根据相似度指标对文本进行评分。
+      一个 TextSimilarityGrader 对象，基于相似度指标对文本进行评分。
 
       - `pass_threshold: number`
 
@@ -374,7 +374,7 @@
 
     - `PythonGrader = PythonGrader`
 
-      一个 PythonGrader 对象，用于在输入上运行 python 脚本。
+      一个 PythonGrader 对象，对输入运行 python 脚本。
 
       - `pass_threshold: optional number`
 
@@ -382,7 +382,7 @@
 
     - `ScoreModelGrader = ScoreModelGrader`
 
-      一个 ScoreModelGrader 对象，使用模型为输入分配分数。
+      一个 ScoreModelGrader 对象，使用模型为输入打分。
 
       - `pass_threshold: optional number`
 
@@ -394,7 +394,7 @@
 
 - `has_more: boolean`
 
-  指示是否还有更多 eval 可用。
+  指示是否有更多可用的 eval。
 
 - `last_id: string`
 

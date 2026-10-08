@@ -1,21 +1,21 @@
-# 极速模式
+# 超高速模式
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-极速模式是 OpenAI API 中最快的服务等级。它已广泛可用于 GPT-6 Astra，并 [预览访问](https://openai.com/index/previewing-ultrafast/) GPT-5.6 Sol。当速度值得付出更高成本时使用它。
+极速模式是 OpenAI API 中最快的服务层级。它广泛适用于 GPT-6 Astra 和 GPT-6.1 Sol，对于 GPT-5.6 Sol 提供 [预览访问](https://openai.com/index/previewing-ultrafast/) 。在速度优势足以抵消更高成本时使用它。
 
-我们强烈建议 [WebSockets](https://developers.openai.com/api/docs/guides/websocket-mode)，特别是对于在短时间内发起大量工具调用的智能体应用而言。如果没有持久连接，网络开销可能会降低延迟带来的收益。
+我们强烈推荐使用 [WebSockets](https://developers.openai.com/api/docs/guides/websocket-mode)，尤其适用于短时间内连续多次调用工具的智能体应用。如果没有持久连接，网络开销可能会抵消延迟优化带来的收益。
 
-GPT-6 Astra 的极速模式目前对所有 API 用户开放，使用 [低
-  速率限制](#availability)。如果你的组织与 OpenAI 账户
-  团队合作，请联系他们以申请更高的速率限制或 GPT-5.6
-  Sol 的预览访问。
+所有 API 用户均可为 GPT-6 Astra 和 GPT-6.1 Sol 使用超快速模式。
+  超快速模式与 Standard 和 Fast 模式采用独立的速率限制。增加流量前，请查看你的
+  组织限制。如果你的组织与 OpenAI 客户团队合作，请联系他们申请提高速率限制。
+  如果你的组织有 该公司 客户团队，请联系他们申请更高的速率限制。
 
 ## 配置你的请求
 
-Set `model` to `gpt-6-astra` 和 `service_tier` to `ultrafast` 在每个 `response.create` 事件中。
+Set `model` to `gpt-6-astra` or `gpt-6.1-sol` and `service_tier` to `ultrafast` in each `response.create` event.
 
-在同一个 WebSocket 上的多个回合中使用 Ultrafast
+Use Ultrafast across turns on one WebSocket
 
 ```javascript
 // Install: npm install openai ws
@@ -106,13 +106,13 @@ with client.responses.connect() as connection:
 ```
 
 
-该示例通过同一连接流式传输两个响应。第二个请求发送新的提示，并将第一个响应的 ID 作为 `previous_response_id`。传入。后续回合和工具结果可复用同一连接。参见 [使用增量输入继续](https://developers.openai.com/api/docs/guides/websocket-mode#continue-with-incremental-inputs).
+The example streams two responses over the same connection. The second request sends the new prompt and passes the first response's ID as `previous_response_id`. Reuse the connection for later turns and tool results. See [Continue with incremental inputs](https://developers.openai.com/api/docs/guides/websocket-mode#continue-with-incremental-inputs).
 
 ## HTTP 替代方案
 
-Ultrafast 也支持通过 SDK 发送 HTTP 请求。对于需要频繁调用工具的智能体应用，请使用持久化的 WebSocket 连接，以降低请求间的开销。
+Ultrafast 也支持通过 SDK 发起 HTTP 请求。对于需要频繁调用工具的智能体应用，请使用持久的 WebSocket 连接，以降低请求之间的开销。
 
-通过 HTTP 创建 Ultrafast 响应
+通过 HTTP 创建一个 Ultrafast 响应
 
 ```javascript
 import OpenAI from "openai";
@@ -199,9 +199,17 @@ curl https://api.openai.com/v1/responses \
 ```
 
 
-本示例会等待完整响应。若要边生成边显示输出，请启用 [流式输出](https://developers.openai.com/api/docs/guides/streaming-responses?api-mode=responses).
+本示例会等待完整响应返回。若要边接收边显示输出，请启用 [流式传输](https://developers.openai.com/api/docs/guides/streaming-responses?api-mode=responses).
 
 ## 可用性
+
+GPT-6.1 Sol 具有以下默认的 Ultrafast 令牌速率限制：
+
+| API 使用层级 | 每分钟令牌数 (TPM) |
+| -------------- | ----------------------- |
+| Build          | 1,000,000               |
+| Launch         | 4,000,000               |
+| Grow           | 40,000,000              |
 
 GPT-6 Astra 具有以下默认 Ultrafast 速率限制：
 
@@ -211,6 +219,6 @@ GPT-6 Astra 具有以下默认 Ultrafast 速率限制：
 | Launch         | 1,000,000               |
 | Grow           | 5,000,000               |
 
-请参阅 [Ultrafast 价格表](https://developers.openai.com/api/docs/pricing?latest-pricing=ultrafast) 以了解输入、缓存输入、缓存写入和输出的价格。
+请参阅 [超快模式定价表](https://developers.openai.com/api/docs/pricing?latest-pricing=ultrafast) 了解输入、缓存输入、缓存写入以及输出价格。
 
-Ultrafast 仅支持美国数据驻留和全球处理，不支持欧盟或其他非美国区域的处理端点。
+GPT-6.1 Sol 的超快模式支持美国和欧盟的数据驻留以及全球处理。GPT-6 Astra 超快模式仅支持美国数据驻留和全球处理。

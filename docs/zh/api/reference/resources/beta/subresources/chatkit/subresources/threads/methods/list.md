@@ -1,24 +1,24 @@
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt). 可在页面 URL 末尾追加 `.md` 以获取该页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## 列出 ChatKit 会话
+## 列出 ChatKit 线程
 
 **get** `/chatkit/threads`
 
-列出 ChatKit 会话线程，支持可选的分页和用户筛选条件。
+列出 ChatKit 会话线程，支持可选的分页和用户过滤。
 
 ### 查询参数
 
 - `after: optional string`
 
-  在此线程项目 ID 之后创建的列表项。首页默认为 null。
+  在此线程项 ID 之后创建的列表项。首页默认为 null。
 
 - `before: optional string`
 
-  在此线程项目 ID 之前创建的列表项。用于获取最新结果时默认为 null。
+  在此线程项 ID 之前创建的列表项。最新结果默认为 null。
 
 - `limit: optional number`
 
-  要返回的线程项目最大数量。默认为 20。
+  要返回的最大线程项数。默认为 20。
 
 - `order: optional "asc" or "desc"`
 
@@ -30,9 +30,9 @@
 
 - `user: optional string`
 
-  筛选属于此用户标识符的线程。默认为 null 以返回所有用户。
+  筛选属于该用户标识符的线程。默认为 null，以返回所有用户。
 
-### 返回值
+### 返回
 
 - `data: array of ChatKitThread`
 
@@ -48,11 +48,11 @@
 
   - `object: "chatkit.thread"`
 
-    类型区分符，恒为 `chatkit.thread`.
+    类型鉴别字段，值始终为 `chatkit.thread`.
 
     - `"chatkit.thread"`
 
-  - `status: object { type }  or object { reason, type }  or object { reason, type }`
+  - `status: Active { type }  or Locked { reason, type }  or Closed { reason, type }`
 
     会话的当前状态。新建会话默认为 `active` 。
 
@@ -62,13 +62,13 @@
 
       - `type: "active"`
 
-        状态区分符，恒为 `active`.
+        状态鉴别字段，值始终为 `active`.
 
         - `"active"`
 
     - `Locked object { reason, type }`
 
-      表示会话已锁定，无法接受新的输入。
+      表示会话已锁定，不能再接受新的输入。
 
       - `reason: string or null`
 
@@ -76,13 +76,13 @@
 
       - `type: "locked"`
 
-        状态区分符，恒为 `locked`.
+        状态鉴别字段，值始终为 `locked`.
 
         - `"locked"`
 
     - `Closed object { reason, type }`
 
-      表示会话已关闭。
+      表示会话已被关闭。
 
       - `reason: string or null`
 
@@ -90,7 +90,7 @@
 
       - `type: "closed"`
 
-        状态区分符，恒为 `closed`.
+        状态鉴别字段，值始终为 `closed`.
 
         - `"closed"`
 
@@ -100,19 +100,19 @@
 
   - `user: string`
 
-    用于标识拥有该会话的终端用户的自由格式字符串。
+    用于标识拥有该会话的最终用户的任意字符串。
 
 - `first_id: string or null`
 
-  列表中第一个项目的 ID。
+  列表中第一项的 ID。
 
 - `has_more: boolean`
 
-  是否还有更多项目可用。
+  是否还有更多项可用。
 
 - `last_id: string or null`
 
-  列表中最后一个项目的 ID。
+  列表中最后一项的 ID。
 
 - `object: "list"`
 

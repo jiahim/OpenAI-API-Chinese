@@ -1,6 +1,6 @@
 # 定价
 
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。你可以通过向页面 URL 追加 `.md` 来获取文档页面的 Markdown 版本。
+> 查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需各文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 来获取。
 
 <a id="astra"></a>
 <a id="latest-models"></a>
@@ -17,13 +17,13 @@
 我们的最新模型
 
     
-每 1M tokens 的价格。
+每 100 万 token 的价格。
 
   
 
   
 
-Standard
+标准
 
 
       
@@ -77,7 +77,7 @@ Standard
     
 
       
-Batch
+批处理
 
 
       
@@ -163,11 +163,11 @@ Flex
     
 
       
-Fast
+快速
 
 
       
-### Fast pricing data
+### 快速定价数据
 
 | 模型 | 短上下文输入 | 短上下文缓存输入 | 短上下文缓存写入 | 短上下文输出 | 长上下文输入 | 长上下文缓存输入 | 长上下文缓存写入 | 长上下文输出 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -199,7 +199,7 @@ Fast
     
 
       
-Ultrafast
+超高速
 
       
 ### 超快速定价数据
@@ -207,6 +207,7 @@ Ultrafast
 | 模型 | 短上下文输入 | 短上下文缓存输入 | 短上下文缓存写入 | 短上下文输出 | 长上下文输入 | 长上下文缓存输入 | 长上下文缓存写入 | 长上下文输出 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gpt-6-astra | $60.00 | $6.00 | $75.00 | $300.00 | $120.00 | $12.00 | $150.00 | $450.00 |
+| gpt-6.1-sol | $12.00 | $0.60 | $15.00 | $60.00 | $24.00 | $1.20 | $30.00 | $90.00 |
 
 短上下文：≤272K 输入 token。长上下文：>272K 输入 token。
 
@@ -233,7 +234,7 @@ Cyber 模型
 我们最新的 Daybreak 模型。
 
   
-每 1M tokens 的价格。
+每 100 万 token 的价格。
 
 
 
@@ -269,8 +270,8 @@ GPT-Live 会话
 
 
 [GPT-Live 1](https://developers.openai.com/api/docs/models/gpt-live-1) 语音会话按秒计费，
-不会向上取整到整分钟。后端模型和工具的使用另行计费
-。
+不会向上取整到整分钟。后端模型和工具使用另行计费，
+费用单独计算。
 
 ### 定价表数据
 
@@ -282,13 +283,13 @@ GPT-Live 会话
 
   
 
-实时与音频生成模型
+实时和音频生成模型
 
 
 
 
 
-除非另有说明，价格以每 100 万 token 计。
+除非另有说明，否则价格按每 100 万 token 计算。
 
 
 ### 分组定价表数据
@@ -334,14 +335,14 @@ GPT-Live 会话
 
 
     
-每 1M tokens 的价格。
+每 100 万 token 的价格。
 
   
 
 
   
 
-Standard
+标准
 
 
       For image generation cost estimates, use the calculator in the image generation guide.
@@ -372,7 +373,7 @@ GPT Image 2 和 GPT Image 2.5 的缓存输入费率仅适用于通过 Responses 
     
 
       
-Batch
+批处理
 
 
       For image generation cost estimates, use the calculator in the image generation guide.
@@ -411,21 +412,21 @@ GPT Image 2 和 GPT Image 2.5 的缓存输入费率仅适用于通过 Responses 
 
 
 
-除非另有说明，价格以每 100 万 token 计。
+除非另有说明，否则价格按每 100 万 token 计算。
 
 
 ### 分组定价表数据
 
-| 模型 | 用例 | 输入 | 输出 | 预估成本 |
+| 模型 | 用例 | 输入 | 输出 | 预估费用 |
 | --- | --- | --- | --- | --- |
 | gpt-realtime-translate | 实时翻译 | - | - | $0.034 / 分钟 |
-| gpt-live-transcribe | 实时转写 | - | - | $0.017 / 分钟 |
-| gpt-realtime-whisper | 实时转写 | - | - | $0.017 / 分钟 |
-| gpt-transcribe | 转写 | - | - | $0.0045 / 分钟 |
-| gpt-4o-transcribe | 转写 | $2.50 | $10.00 | $0.006 / 分钟 |
-| gpt-4o-mini-transcribe | 转写 | $1.25 | $5.00 | $0.003 / 分钟 |
-| gpt-4o-transcribe-diarize | 转写 + 说话人区分 | $2.50 | $10.00 | $0.006 / 分钟 |
-| Whisper | 转写 | - | - | $0.006 / 分钟 |
+| gpt-live-transcribe | 实时转录 | - | - | $0.017 / 分钟 |
+| gpt-realtime-whisper | 实时转录 | - | - | $0.017 / 分钟 |
+| gpt-transcribe | 转录 | - | - | $0.0045 / 分钟 |
+| gpt-4o-transcribe | 转录 | $2.50 | $10.00 | $0.006 / 分钟 |
+| gpt-4o-mini-transcribe | 转录 | $1.25 | $5.00 | $0.003 / 分钟 |
+| gpt-4o-transcribe-diarize | 转录 + 说话人分离 | $2.50 | $10.00 | $0.006 / 分钟 |
+| Whisper | 转录 | - | - | $0.006 / 分钟 |
 
 
 
@@ -439,26 +440,26 @@ GPT Image 2 和 GPT Image 2.5 的缓存输入费率仅适用于通过 Responses 
 
 ### 分组定价表数据
 
-| 工具 | 详情 | 价格 |
+| Tool | Details | Pricing |
 | --- | --- | --- |
-| 网页搜索 | 网页搜索（所有模型） | $10.00 / 1k 次调用 + 搜索内容 token 按模型费率计费。 |
-| 网页搜索 | 图像网页搜索（所有模型） | $10.00 / 1k 次调用 + 搜索内容 token 按模型费率计费。 |
-| 网页搜索 | 网页搜索预览（推理模型，包括 `gpt-5`, `o-series`) | $10.00 / 1k 次调用 + 搜索内容 token 按模型费率计费。 |
-| 网页搜索 | 网页搜索预览（非推理模型） | $25.00 / 1k 次调用 + 搜索内容 token 免费。 |
-| 容器 | 托管 Shell 与代码解释器 | 1 GB $0.03、4 GB $0.12、16 GB $0.48、64 GB $1.92，按每个容器每个 20 分钟会话计费。 |
-| 文件搜索 | 存储 | $0.10 / GB 每天（1 GB 免费） |
-| 文件搜索 | 工具调用 | $2.50 / 1k 次调用 |
-| 智能体 Kit | ChatKit 文件与图像上传存储 | 每个账户每月 1 GB 免费后，按 $0.10 / GB-day 计费 |
+| 网页搜索 | 网页搜索（所有模型） | $10.00 / 1k calls + Search content tokens billed at model rates. |
+| 网页搜索 | 图片网页搜索（所有模型） | $10.00 / 1k calls + Search content tokens billed at model rates. |
+| 网页搜索 | 网页搜索预览（推理模型，包括 `gpt-5`, `o-series`) | $10.00 / 1k calls + Search content tokens billed at model rates. |
+| 网页搜索 | 网页搜索预览（非推理模型） | $25.00 / 1k calls + Search content tokens are free. |
+| Containers | Hosted Shell and Code Interpreter | 1 GB $0.03，4 GB $0.12，16 GB $0.48，64 GB $1.92，每个 20 分钟会话按每个容器计费。 |
+| 文件搜索 | 存储 | $0.10 / GB per day (1 GB free) |
+| 文件搜索 | Tool call | $2.50 / 1k calls |
+| 智能体 Kit | ChatKit file and image upload storage | 每个账户每月前 1 GB 免费，之后按 $0.10 / GB-day 计费 |
 
-$10.00 / 1k 次调用 + 搜索内容令牌按模型费率计费。
+$10.00 / 1k 次调用 + 搜索内容 token 按模型费率计费。
 
 网页搜索预览版（推理模型，包括 `gpt-5`, `o-series`)
 
-$25.00 / 1k 次调用 + 搜索内容令牌免费。
+$25.00 / 1k 次调用 + 搜索内容 token 免费。
 
-托管 Shell 和代码解释器
+托管 Shell 和 Code Interpreter
 
-用于内置工具的令牌按所选模型的每令牌费率计费。GB 指的是二进制千兆字节（即 gibibyte），其中 1 GB 等于 2^30 字节。网页搜索内容令牌是从搜索索引检索并连同你的提示一起提供给模型以生成答案的令牌。对于使用非预览版 网页搜索 工具的 gpt-4o-mini 和 gpt-4.1-mini，搜索内容令牌按每次调用 8,000 个输入令牌的固定块计费。文件搜索工具调用定价仅适用于 Responses API。容器定价包含托管 Shell 和代码解释器。符合条件的容器会话将按分钟计费，每次会话最少 5 分钟。Responses API、Chat Completions API、Realtime API、Batch API 和 Assistants API 不单独计费。令牌按所选模型的输入和输出费率计费。
+内置工具使用的 token 按所选模型的每 token 费率计费。GB 指二进制千兆字节（即 gibibyte），其中 1 GB 等于 2^30 字节。网页搜索内容 token 是从搜索索引中检索并与你的 prompt 一起提供给模型以生成回答的 token。对于使用非预览版网页搜索工具的 gpt-4o-mini 和 gpt-4.1-mini，搜索内容 token 按每次调用固定 8,000 个输入 token 的块计费。文件搜索工具调用定价仅适用于Responses API。容器定价包含托管 Shell 和 Code Interpreter。符合条件的容器会话将按分钟计费，每次会话最低计费 5 分钟。Responses API、Chat Completions API、Realtime API、Batch API 和 Assistants API 不单独定价。Token 按所选模型的输入和输出费率计费。
 
 
   
@@ -469,14 +470,14 @@ $25.00 / 1k 次调用 + 搜索内容令牌免费。
 
 
     
-每 1M tokens 的价格。
+每 100 万 token 的价格。
 
   
 
 
   
 
-Standard
+标准
 
 
       
@@ -486,21 +487,21 @@ Standard
 | --- | --- | --- | --- | --- |
 | ChatGPT | chat-latest | $5.00 | $0.50 | $30.00 |
 | Codex | gpt-5.3-codex | $1.75 | $0.175 | $14.00 |
-| 生命科学 | gpt-rosalind-research | $5.00 | $0.50 | $25.00 |
+| Life Sciences | gpt-rosalind-research | $5.00 | $0.50 | $25.00 |
 | 搜索 | gpt-5-search-api | $1.25 | $0.125 | $10.00 |
-| 嵌入 | text-embedding-3-small | $0.02 | - | - |
-| 嵌入 | text-embedding-3-large | $0.13 | - | - |
-| 嵌入 | text-embedding-ada-002 | $0.10 | - | - |
-| 审核 | omni-moderation-latest | 免费 | - | - |
+| Embedding | text-embedding-3-small | $0.02 | - | - |
+| Embedding | text-embedding-3-large | $0.13 | - | - |
+| Embedding | text-embedding-ada-002 | $0.10 | - | - |
+| Moderation | omni-moderation-latest | 免费 | - | - |
 
-计费自 `gpt-rosalind-research` 2026 年 10 月 5 日起生效。该模型不适用缓存写入定价。访问权限仅通过 [trusted-access program](https://help.openai.com/en/articles/20001193-gpt-rosalind-for-life-sciences-research)。向经批准的内部研究开放。所有符合条件的组织都将在 GPT-Rosalind 模型发布后持续获得访问权限。对于在 2026 年 3 月 5 日及之后发布且符合数据驻留条件的模型，区域处理（数据驻留）端点将被收取 10% 的附加费用。请参阅我们的 [Your data](https://developers.openai.com/api/docs/guides/your-data) 指南了解支持的区域和处理详情。
+计费将于 `gpt-rosalind-research` 2026 年 10 月 5 日开始。缓存写入定价不适用于此模型。访问权限仅限于通过 [可信访问计划](https://help.openai.com/en/articles/20001193-gpt-rosalind-for-life-sciences-research)。获准进行的内部研究。所有符合条件的组织都将在最新 GPT-Rosalind 模型发布后继续获得访问权限。对于 2026 年 3 月 5 日或之后发布且符合数据驻留要求的模型，区域处理（数据驻留）端点收取 10% 的加价。请参阅我们的 [数据](https://developers.openai.com/api/docs/guides/your-data) 指南，了解支持的区域和处理详情。
 
     
 
     
 
       
-Fast
+快速
 
 
       
@@ -510,7 +511,7 @@ Fast
 | --- | --- | --- | --- | --- |
 | Codex | gpt-5.3-codex | $3.50 | $0.35 | $28.00 |
 
-对于在 2026 年 3 月 5 日及之后发布且符合数据驻留条件的模型，区域处理（数据驻留）端点将被收取 10% 的附加费用。请参阅我们的 [Your data](https://developers.openai.com/api/docs/guides/your-data) 指南了解支持的区域和处理详情。
+对于 2026 年 3 月 5 日或之后发布且符合数据驻留要求的模型，区域处理（数据驻留）端点收取 10% 的加价。请参阅我们的 [数据](https://developers.openai.com/api/docs/guides/your-data) 指南，了解支持的区域和处理详情。
 
 
 
@@ -525,7 +526,7 @@ Fast
 
 
     
-每 1M tokens 的价格。
+每 100 万 token 的价格。
 
   
 
@@ -544,7 +545,7 @@ Fast
 
   
 
-Standard
+标准
 
 
       
@@ -568,7 +569,7 @@ Standard
     
 
       
-Batch
+批处理
 
 
       
@@ -590,7 +591,7 @@ Batch
 
 
 
-用于强化微调中模型评分的 token 按该模型的每 token 费率计费。如果在创建微调任务时启用了数据共享，可享受推理折扣。了解详情。
+用于强化微调中模型评分的 token 按该模型的单 token 费率计费。如果在创建微调任务时启用数据共享，可获得推理折扣。了解详情。
 
 
   
@@ -601,8 +602,8 @@ Batch
 
 
 
-在 Amazon Bedrock 和 Microsoft Azure 上的OpenAI模型通过这些
+OpenAI 模型在 Amazon Bedrock 和 Microsoft Azure 上由这些
 服务计费。
 
-- 参见 [Amazon Bedrock 价格](https://aws.amazon.com/bedrock/pricing/).
-- 参见 [Microsoft Azure 价格](https://azure.microsoft.com/en-us/pricing/details/azure-openai/).
+- 请参阅 [Amazon Bedrock 定价](https://aws.amazon.com/bedrock/pricing/).
+- 请参阅 [Microsoft Azure 定价](https://azure.microsoft.com/en-us/pricing/details/azure-openai/).
