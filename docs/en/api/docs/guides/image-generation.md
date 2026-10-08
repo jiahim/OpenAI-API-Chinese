@@ -1604,6 +1604,34 @@ func saveImage(filename, encoded string) {
 }
 ```
 
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.images.ImageGenerateParams;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+var params =
+    ImageGenerateParams.builder()
+        .prompt(
+            "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape")
+        .model("gpt-image-2.5-sunburst")
+        .partialImages(2)
+        .build();
+try (var stream = client.images().generateStreaming(params)) {
+  var events = stream.stream().iterator();
+  while (events.hasNext()) {
+    var event = events.next();
+    if (event.generationPartialImage().isPresent()) {
+      var partial = event.generationPartialImage().orElseThrow();
+      Files.write(
+          Path.of("river" + partial.partialImageIndex() + ".png"),
+          Base64.getDecoder().decode(partial.b64Json()));
+    }
+  }
+}
+```
+
 ```ruby
 require "base64"
 require "openai"
@@ -1823,6 +1851,26 @@ func main() {
 	}
 	fmt.Println(base64.StdEncoding.EncodeToString(image))
 }
+```
+
+```java
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Base64;
+
+System.out.println(encodeImage(Path.of("example.png")));
+
+private static String encodeImage(Path path) throws java.io.IOException {
+  return Base64.getEncoder().encodeToString(Files.readAllBytes(path));
+}
+```
+
+```csharp
+using System;
+
+Console.WriteLine(EncodeImage("example.png"));
+
+static string EncodeImage(string filePath) => Convert.ToBase64String(File.ReadAllBytes(filePath));
 ```
 
 ```ruby
@@ -3346,6 +3394,12 @@ Responses API requests include the mainline model's token usage in addition to i
 Both GPT Image 2.5 models use the same token rates: $8 per million image input tokens, $2 per million cached image input tokens, $30 per million image output tokens, $5 per million text input tokens, and $1.25 per million cached text input tokens. See [pricing](https://developers.openai.com/api/docs/pricing#image-generation).
 
 Use the response's `usage` to measure token consumption for your prompts, sizes, and quality settings. Equal token rates don't mean equal cost per image: token consumption can differ by model and quality setting. For older-model pricing examples, see [Earlier GPT Image models](#earlier-gpt-image-models).
+
+### Cached input pricing
+
+For GPT Image 2 and GPT Image 2.5, cached input pricing applies only to the image generation tool in the Responses API. It doesn't apply to direct Images API requests, including `/v1/images/edits`.
+
+Cached image generation inputs are reflected in billing, but their cached token counts aren't included in the Responses API output. The response's `usage` can't verify these cache hits.
 
 
 

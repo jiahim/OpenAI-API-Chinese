@@ -1,6 +1,6 @@
 # 音频
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt). 可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
+> 有关完整的文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
 ## Domain Types
 
@@ -24,7 +24,7 @@
 
 - `AudioResponseFormat = "json" or "text" or "srt" or 3 more`
 
-  输出格式，可选以下选项之一： `json`, `text`, `srt`, `verbose_json`, `vtt`，或 `diarized_json`。对于 `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe`，唯一支持的格式是 `json`。对于 `gpt-4o-transcribe-diarize`，支持的格式包括 `json`, `text`，以及 `diarized_json`，其中 `diarized_json` 是接收说话人标注所必需的。
+  输出格式，可选以下之一： `json`, `text`, `srt`, `verbose_json`, `vtt`，或者 `diarized_json`。对于 `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe`，唯一支持的格式是 `json`。对于 `gpt-4o-transcribe-diarize`，支持的格式包括 `json`, `text`，和 `diarized_json`，其中 `diarized_json` 是接收说话人标注所必需的。
 
   - `"json"`
 
@@ -48,15 +48,15 @@
 
 返回音频文件内容，或音频事件流。
 
-### 正文参数
+### Body 参数
 
 - `input: string`
 
-  要生成音频的文本。最大长度为 4096 个字符。
+  用于生成音频的文本。最大长度为 4096 个字符。
 
 - `model: string or SpeechModel`
 
-  以下可用模型之一 [TTS 模型](/api/docs/guides/text-to-speech): `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`，或 `gpt-4o-mini-tts-2025-12-15`.
+  可选的其中一种 [TTS 模型](/api/docs/guides/text-to-speech): `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`，或者 `gpt-4o-mini-tts-2025-12-15`.
 
   - `string`
 
@@ -70,13 +70,15 @@
 
     - `"gpt-4o-mini-tts-2025-12-15"`
 
-- `voice: string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
+- `voice: string or "alloy" or "ash" or "ballad" or 10 more or ID { id }`
 
-  生成音频时使用的语音。支持的内置语音包括 `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`，以及 `cedar`。你也可以提供一个包含 `id`，的自定义语音对象，例如 `{ "id": "voice_1234" }`。语音预览可在 [文本转语音指南](/api/docs/guides/text-to-speech#voice-options).
+  生成音频时使用的声音。支持的内置声音包括 `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`，和 `cedar`。你也可以提供一个自定义声音对象，并通过 `id`，指定，例如 `{ "id": "voice_1234" }`。声音预览可在 [Text to speech guide](/api/docs/guides/text-to-speech#voice-options)。中找到。自定义声音必须通过音频样本创建。
 
   - `string`
 
-  - `"alloy" or "ash" or "ballad" or 7 more`
+  - `"alloy" or "ash" or "ballad" or 10 more`
+
+    生成音频时使用的声音。支持的内置声音包括 `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`，和 `cedar`。你也可以提供一个自定义声音对象，并通过 `id`，指定，例如 `{ "id": "voice_1234" }`。声音预览可在 [Text to speech guide](/api/docs/guides/text-to-speech#voice-options)。中找到。自定义声音必须通过音频样本创建。
 
     - `"alloy"`
 
@@ -98,21 +100,27 @@
 
     - `"cedar"`
 
+    - `"fable"`
+
+    - `"onyx"`
+
+    - `"nova"`
+
   - `ID object { id }`
 
-    自定义语音参考。
+    自定义声音引用。
 
     - `id: string`
 
-      自定义语音 ID，例如 `voice_1234`.
+      自定义声音 ID，例如 `voice_1234`.
 
 - `instructions: optional string`
 
-  使用附加指令控制生成音频的语音。不适用于 `tts-1` 或 `tts-1-hd`.
+  通过附加指令控制生成音频的声音。不适用于 `tts-1` 或 `tts-1-hd`.
 
 - `response_format: optional "mp3" or "opus" or "aac" or 3 more`
 
-  音频的输出格式。支持格式包括 `mp3`, `opus`, `aac`, `flac`, `wav`，以及 `pcm`.
+  音频输出格式。支持的格式包括 `mp3`, `opus`, `aac`, `flac`, `wav`，和 `pcm`.
 
   - `"mp3"`
 
@@ -128,11 +136,11 @@
 
 - `speed: optional number`
 
-  生成音频的速度。选择范围从 `0.25` 到 `4.0`. `1.0` 为默认值。
+  生成音频的速度。取值范围为 `0.25` 至 `4.0`. `1.0` 为默认值。
 
 - `stream_format: optional "sse" or "audio"`
 
-  流式传输音频的格式。支持格式包括 `sse` 和 `audio`. `sse` 不支持 `tts-1` 或 `tts-1-hd`.
+  音频流式输出格式。支持的格式包括 `sse` 和 `audio`. `sse` 不支持 `tts-1` 或 `tts-1-hd`.
 
   - `"sse"`
 
@@ -147,7 +155,7 @@ curl https://api.openai.com/v1/audio/speech \
     -d '{
           "input": "input",
           "model": "tts-1",
-          "voice": "alloy"
+          "voice": "ash"
         }'
 ```
 
@@ -201,18 +209,19 @@ curl https://api.openai.com/v1/audio/speech \
 
 将音频转写为输入语言。
 
-以 `json`, `diarized_json`，格式返回一个转写对象，或 `verbose_json`
-格式返回转写事件流。
+以 `json`, `diarized_json`、 `verbose_json`
+格式返回转写对象，以 `text`, `srt`、 `vtt` 格式返回纯文本，或返回
+转写事件流。支持哪些格式取决于模型。
 
-### Returns
+### 返回
 
 - `Transcription object { text, languages, logprobs, usage }`
 
-  表示模型根据提供的输入返回的转录响应。
+  表示模型根据所提供的输入返回的转录响应。
 
   - `text: string`
 
-    转录后的文本。
+    转录得到的文本。
 
   - `languages: optional array of TranscriptionLanguage`
 
@@ -224,49 +233,49 @@ curl https://api.openai.com/v1/audio/speech \
 
   - `logprobs: optional array of object { token, bytes, logprob }`
 
-    转录中词元的对数概率。仅在使用以下模型时返回 `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 如果 `logprobs` 被添加到 `include` 数组。
+    转录中各 token 的对数概率。仅在使用以下模型 `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 时返回， `logprobs` 前提是 `include` 数组中。
 
     - `token: optional string`
 
-      转录中的词元。
+      转录中的 token。
 
     - `bytes: optional array of number`
 
-      词元的字节。
+      该 token 的字节。
 
     - `logprob: optional number`
 
-      词元的对数概率。
+      该 token 的对数概率。
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
-    本次请求的词元使用统计信息。
+    本次请求的 token 使用统计信息。
 
     - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-      按词元使用量计费的模型的使用统计信息。
+      按 token 使用量计费的模型的使用情况统计。
 
       - `input_tokens: number`
 
-        本次请求计费的输入词元数。
+        本次请求计费的输入 token 数。
 
       - `output_tokens: number`
 
-        生成的输出词元数。
+        生成的输出 token 数。
 
       - `total_tokens: number`
 
-        使用的词元总数（输入 + 输出）。
+        使用的 token 总数（输入 + 输出）。
 
       - `type: "tokens"`
 
-        usage 对象的类型。对于此变体始终为 `tokens` 。
+        使用情况对象的类型。对于此变体始终为 `tokens` 。
 
         - `"tokens"`
 
       - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-        本次请求计费的输入词元的详细信息。
+        本次请求计费的输入 token 的详细信息。
 
         - `audio_tokens: optional number`
 
@@ -278,7 +287,7 @@ curl https://api.openai.com/v1/audio/speech \
 
     - `Duration object { seconds, type }`
 
-      按音频输入时长计费的模型的使用情况统计。
+      按音频输入时长计费的模型的用量统计。
 
       - `seconds: number`
 
@@ -286,13 +295,13 @@ curl https://api.openai.com/v1/audio/speech \
 
       - `type: "duration"`
 
-        usage 对象的类型。对于此变体始终为 `duration` 。
+        使用情况对象的类型。对于此变体始终为 `duration` 。
 
         - `"duration"`
 
 - `TranscriptionDiarized object { duration, segments, task, 2 more }`
 
-  表示模型返回的说话人分离转录响应，包括合并后的转录文本和说话人分段标注。
+  表示模型返回的说话人分离转录响应，包含合并后的转录文本和说话人分段标注。
 
   - `duration: number`
 
@@ -304,27 +313,27 @@ curl https://api.openai.com/v1/audio/speech \
 
     - `id: string`
 
-      该分段的唯一标识符。
+      该段的唯一标识符。
 
     - `end: number`
 
-      分段的结束时间戳（以秒为单位）。
+      该段的结束时间戳（以秒为单位）。
 
     - `speaker: string`
 
-      此分段的说话人标签。当提供已知说话人时，该标签匹配 `known_speaker_names[]`；否则，说话人将按顺序使用大写字母标记（如（`A`, `B`, ...).
+      该段的说话人标签。当提供了已知说话人时，标签匹配 `known_speaker_names[]`。否则将按顺序使用大写字母为说话人标记（`A`, `B`, ...).
 
     - `start: number`
 
-      分段的开始时间戳（以秒为单位）。
+      该段的起始时间戳（以秒为单位）。
 
     - `text: string`
 
-      此分段的转录文本。
+      该段的转录文本。
 
     - `type: "transcript.text.segment"`
 
-      分段的类型。始终为 `transcript.text.segment`.
+      该段的类型。始终为 `transcript.text.segment`.
 
       - `"transcript.text.segment"`
 
@@ -336,37 +345,37 @@ curl https://api.openai.com/v1/audio/speech \
 
   - `text: string`
 
-    整个音频输入的拼接转录文本。
+    整个音频输入拼接后的转录文本。
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
-    本次请求的 token 或时长使用情况统计。
+    本次请求的 token 或时长用量统计。
 
     - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-      按词元使用量计费的模型的使用统计信息。
+      按 token 使用量计费的模型的使用情况统计。
 
       - `input_tokens: number`
 
-        本次请求计费的输入词元数。
+        本次请求计费的输入 token 数。
 
       - `output_tokens: number`
 
-        生成的输出词元数。
+        生成的输出 token 数。
 
       - `total_tokens: number`
 
-        使用的词元总数（输入 + 输出）。
+        使用的 token 总数（输入 + 输出）。
 
       - `type: "tokens"`
 
-        usage 对象的类型。对于此变体始终为 `tokens` 。
+        使用情况对象的类型。对于此变体始终为 `tokens` 。
 
         - `"tokens"`
 
       - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-        本次请求计费的输入词元的详细信息。
+        本次请求计费的输入 token 的详细信息。
 
         - `audio_tokens: optional number`
 
@@ -378,7 +387,7 @@ curl https://api.openai.com/v1/audio/speech \
 
     - `Duration object { seconds, type }`
 
-      按音频输入时长计费的模型的使用情况统计。
+      按音频输入时长计费的模型的用量统计。
 
       - `seconds: number`
 
@@ -386,13 +395,13 @@ curl https://api.openai.com/v1/audio/speech \
 
       - `type: "duration"`
 
-        usage 对象的类型。对于此变体始终为 `duration` 。
+        使用情况对象的类型。对于此变体始终为 `duration` 。
 
         - `"duration"`
 
 - `TranscriptionVerbose object { duration, language, text, 3 more }`
 
-  表示模型基于所提供的输入返回的详细 JSON 转录响应。
+  表示根据所提供的输入，模型返回的详细 JSON 转录响应。
 
   - `duration: number`
 
@@ -404,7 +413,7 @@ curl https://api.openai.com/v1/audio/speech \
 
   - `text: string`
 
-    转录后的文本。
+    转录得到的文本。
 
   - `segments: optional array of TranscriptionSegment`
 
@@ -416,19 +425,19 @@ curl https://api.openai.com/v1/audio/speech \
 
     - `avg_logprob: number`
 
-      片段的平均 logprob。如果该值低于 -1，则认为 logprobs 失败。
+      片段的平均 logprob。如果该值低于 -1，则视为 logprobs 失败。
 
     - `compression_ratio: number`
 
-      片段的压缩率。如果该值大于 2.4，则认为压缩失败。
+      片段的压缩率。如果该值大于 2.4，则视为压缩失败。
 
     - `end: number`
 
-      片段的结束时间（秒）。
+      片段的结束时间，单位为秒。
 
     - `no_speech_prob: number`
 
-      片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则认为此片段为静音。
+      片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则视为该片段为静音。
 
     - `seek: number`
 
@@ -436,11 +445,11 @@ curl https://api.openai.com/v1/audio/speech \
 
     - `start: number`
 
-      片段的开始时间（秒）。
+      片段的开始时间，单位为秒。
 
     - `temperature: number`
 
-      用于生成该片段的温度参数。
+      用于生成片段的温度参数。
 
     - `text: string`
 
@@ -452,7 +461,7 @@ curl https://api.openai.com/v1/audio/speech \
 
   - `usage: optional object { seconds, type }`
 
-    按音频输入时长计费的模型的使用情况统计。
+    按音频输入时长计费的模型的用量统计。
 
     - `seconds: number`
 
@@ -460,25 +469,25 @@ curl https://api.openai.com/v1/audio/speech \
 
     - `type: "duration"`
 
-      usage 对象的类型。对于此变体始终为 `duration` 。
+      使用情况对象的类型。对于此变体始终为 `duration` 。
 
       - `"duration"`
 
   - `words: optional array of TranscriptionWord`
 
-    提取的单词及其对应的时间戳。
+    提取出的单词及其对应的时间戳。
 
     - `end: number`
 
-      单词的结束时间（秒）。
+      该单词的结束时间，单位为秒。
 
     - `start: number`
 
-      单词的开始时间（秒）。
+      该单词的开始时间，单位为秒。
 
     - `word: string`
 
-      单词的文本内容。
+      该单词的文本内容。
 
 ### 示例
 
@@ -490,7 +499,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
     -F model=gpt-4o-transcribe
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -532,7 +541,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
   -F model="gpt-4o-transcribe"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -550,7 +559,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 }
 ```
 
-### Diarization
+### 说话人分离
 
 ```http
 curl https://api.openai.com/v1/audio/transcriptions \
@@ -564,7 +573,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
   -F 'known_speaker_references[]=data:audio/wav;base64,AAA...'
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -604,7 +613,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 }
 ```
 
-### Logprobs
+### 对数概率
 
 ```http
 curl https://api.openai.com/v1/audio/transcriptions \
@@ -616,7 +625,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
   -F response_format="json"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -676,7 +685,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 }
 ```
 
-### Segment timestamps
+### 分段时间戳
 
 ```http
 curl https://api.openai.com/v1/audio/transcriptions \
@@ -688,14 +697,14 @@ curl https://api.openai.com/v1/audio/transcriptions \
   -F response_format="verbose_json"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
   "task": "transcribe",
   "language": "english",
-  "duration": 8.470000267028809,
-  "text": "The beach was a popular spot on a hot summer day. People were swimming in the ocean, building sandcastles, and playing beach volleyball.",
+  "duration": 3.32,
+  "text": "The beach was a popular spot on a hot summer day.",
   "segments": [
     {
       "id": 0,
@@ -710,17 +719,16 @@ curl https://api.openai.com/v1/audio/transcriptions \
       "avg_logprob": -0.2860786020755768,
       "compression_ratio": 1.2363636493682861,
       "no_speech_prob": 0.00985979475080967
-    },
-    ...
+    }
   ],
   "usage": {
     "type": "duration",
-    "seconds": 9
+    "seconds": 4
   }
 }
 ```
 
-### Streaming
+### 流式传输
 
 ```http
 curl https://api.openai.com/v1/audio/transcriptions \
@@ -731,7 +739,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
   -F stream=true
 ```
 
-#### Response
+#### 响应
 
 ```json
 data: {"type":"transcript.text.delta","delta":"I","logprobs":[{"token":"I","logprob":-0.00007588794,"bytes":[73]}]}
@@ -799,7 +807,7 @@ data: {"type":"transcript.text.delta","delta":".","logprobs":[{"token":".","logp
 data: {"type":"transcript.text.done","text":"I see skies of blue and clouds of white, the bright blessed days, the dark sacred nights, and I think to myself, what a wonderful world.","logprobs":[{"token":"I","logprob":-0.00007588794,"bytes":[73]},{"token":" see","logprob":-3.1281633e-7,"bytes":[32,115,101,101]},{"token":" skies","logprob":-2.3392786e-6,"bytes":[32,115,107,105,101,115]},{"token":" of","logprob":-3.1281633e-7,"bytes":[32,111,102]},{"token":" blue","logprob":-1.0280384e-6,"bytes":[32,98,108,117,101]},{"token":" and","logprob":-0.0005108566,"bytes":[32,97,110,100]},{"token":" clouds","logprob":-1.9361265e-7,"bytes":[32,99,108,111,117,100,115]},{"token":" of","logprob":-1.9361265e-7,"bytes":[32,111,102]},{"token":" white","logprob":-7.89631e-7,"bytes":[32,119,104,105,116,101]},{"token":",","logprob":-0.0014890312,"bytes":[44]},{"token":" the","logprob":-0.0110956915,"bytes":[32,116,104,101]},{"token":" bright","logprob":0.0,"bytes":[32,98,114,105,103,104,116]},{"token":" blessed","logprob":-0.000045848617,"bytes":[32,98,108,101,115,115,101,100]},{"token":" days","logprob":-0.000010802739,"bytes":[32,100,97,121,115]},{"token":",","logprob":-0.00001700133,"bytes":[44]},{"token":" the","logprob":-0.0000118755715,"bytes":[32,116,104,101]},{"token":" dark","logprob":-5.5122365e-7,"bytes":[32,100,97,114,107]},{"token":" sacred","logprob":-5.4385737e-6,"bytes":[32,115,97,99,114,101,100]},{"token":" nights","logprob":-4.00813e-6,"bytes":[32,110,105,103,104,116,115]},{"token":",","logprob":-0.0036910512,"bytes":[44]},{"token":" and","logprob":-0.0031903093,"bytes":[32,97,110,100]},{"token":" I","logprob":-1.504853e-6,"bytes":[32,73]},{"token":" think","logprob":-4.3202e-7,"bytes":[32,116,104,105,110,107]},{"token":" to","logprob":-1.9361265e-7,"bytes":[32,116,111]},{"token":" myself","logprob":-1.7432603e-6,"bytes":[32,109,121,115,101,108,102]},{"token":",","logprob":-0.29254505,"bytes":[44]},{"token":" what","logprob":-0.016815351,"bytes":[32,119,104,97,116]},{"token":" a","logprob":-3.1281633e-7,"bytes":[32,97]},{"token":" wonderful","logprob":-2.1008714e-6,"bytes":[32,119,111,110,100,101,114,102,117,108]},{"token":" world","logprob":-8.180258e-6,"bytes":[32,119,111,114,108,100]},{"token":".","logprob":-0.014231676,"bytes":[46]}],"usage":{"input_tokens":14,"input_token_details":{"text_tokens":0,"audio_tokens":14},"output_tokens":45,"total_tokens":59}}
 ```
 
-### Word timestamps
+### 单词时间戳
 
 ```http
 curl https://api.openai.com/v1/audio/transcriptions \
@@ -811,45 +819,39 @@ curl https://api.openai.com/v1/audio/transcriptions \
   -F response_format="verbose_json"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
   "task": "transcribe",
   "language": "english",
-  "duration": 8.470000267028809,
-  "text": "The beach was a popular spot on a hot summer day. People were swimming in the ocean, building sandcastles, and playing beach volleyball.",
+  "duration": 0.5,
+  "text": "Hello.",
   "words": [
     {
-      "word": "The",
+      "word": "Hello",
       "start": 0.0,
-      "end": 0.23999999463558197
-    },
-    ...
-    {
-      "word": "volleyball",
-      "start": 7.400000095367432,
-      "end": 7.900000095367432
+      "end": 0.5
     }
   ],
   "usage": {
     "type": "duration",
-    "seconds": 9
+    "seconds": 1
   }
 }
 ```
 
 ## Domain Types
 
-### Transcription
+### 转录
 
 - `Transcription object { text, languages, logprobs, usage }`
 
-  表示模型根据提供的输入返回的转录响应。
+  表示模型根据所提供的输入返回的转录响应。
 
   - `text: string`
 
-    转录后的文本。
+    转录得到的文本。
 
   - `languages: optional array of TranscriptionLanguage`
 
@@ -861,49 +863,49 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `logprobs: optional array of object { token, bytes, logprob }`
 
-    转录中词元的对数概率。仅在使用以下模型时返回 `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 如果 `logprobs` 被添加到 `include` 数组。
+    转录中各 token 的对数概率。仅在使用以下模型 `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 时返回， `logprobs` 前提是 `include` 数组中。
 
     - `token: optional string`
 
-      转录中的词元。
+      转录中的 token。
 
     - `bytes: optional array of number`
 
-      词元的字节。
+      该 token 的字节。
 
     - `logprob: optional number`
 
-      词元的对数概率。
+      该 token 的对数概率。
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
-    本次请求的词元使用统计信息。
+    本次请求的 token 使用统计信息。
 
     - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-      按词元使用量计费的模型的使用统计信息。
+      按 token 使用量计费的模型的使用情况统计。
 
       - `input_tokens: number`
 
-        本次请求计费的输入词元数。
+        本次请求计费的输入 token 数。
 
       - `output_tokens: number`
 
-        生成的输出词元数。
+        生成的输出 token 数。
 
       - `total_tokens: number`
 
-        使用的词元总数（输入 + 输出）。
+        使用的 token 总数（输入 + 输出）。
 
       - `type: "tokens"`
 
-        usage 对象的类型。对于此变体始终为 `tokens` 。
+        使用情况对象的类型。对于此变体始终为 `tokens` 。
 
         - `"tokens"`
 
       - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-        本次请求计费的输入词元的详细信息。
+        本次请求计费的输入 token 的详细信息。
 
         - `audio_tokens: optional number`
 
@@ -915,7 +917,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `Duration object { seconds, type }`
 
-      按音频输入时长计费的模型的使用情况统计。
+      按音频输入时长计费的模型的用量统计。
 
       - `seconds: number`
 
@@ -923,23 +925,23 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       - `type: "duration"`
 
-        usage 对象的类型。对于此变体始终为 `duration` 。
+        使用情况对象的类型。对于此变体始终为 `duration` 。
 
         - `"duration"`
 
-### Transcription Create Response
+### 创建转录响应
 
 - `TranscriptionCreateResponse = Transcription or TranscriptionDiarized or TranscriptionVerbose`
 
-  表示模型根据提供的输入返回的转录响应。
+  表示模型根据所提供的输入返回的转录响应。
 
   - `Transcription object { text, languages, logprobs, usage }`
 
-    表示模型根据提供的输入返回的转录响应。
+    表示模型根据所提供的输入返回的转录响应。
 
     - `text: string`
 
-      转录后的文本。
+      转录得到的文本。
 
     - `languages: optional array of TranscriptionLanguage`
 
@@ -951,49 +953,49 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `logprobs: optional array of object { token, bytes, logprob }`
 
-      转录中词元的对数概率。仅在使用以下模型时返回 `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 如果 `logprobs` 被添加到 `include` 数组。
+      转录中各 token 的对数概率。仅在使用以下模型 `gpt-4o-transcribe` 和 `gpt-4o-mini-transcribe` 时返回， `logprobs` 前提是 `include` 数组中。
 
       - `token: optional string`
 
-        转录中的词元。
+        转录中的 token。
 
       - `bytes: optional array of number`
 
-        词元的字节。
+        该 token 的字节。
 
       - `logprob: optional number`
 
-        词元的对数概率。
+        该 token 的对数概率。
 
-    - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+    - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
-      本次请求的词元使用统计信息。
+      本次请求的 token 使用统计信息。
 
       - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-        按词元使用量计费的模型的使用统计信息。
+        按 token 使用量计费的模型的使用情况统计。
 
         - `input_tokens: number`
 
-          本次请求计费的输入词元数。
+          本次请求计费的输入 token 数。
 
         - `output_tokens: number`
 
-          生成的输出词元数。
+          生成的输出 token 数。
 
         - `total_tokens: number`
 
-          使用的词元总数（输入 + 输出）。
+          使用的 token 总数（输入 + 输出）。
 
         - `type: "tokens"`
 
-          usage 对象的类型。对于此变体始终为 `tokens` 。
+          使用情况对象的类型。对于此变体始终为 `tokens` 。
 
           - `"tokens"`
 
         - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-          本次请求计费的输入词元的详细信息。
+          本次请求计费的输入 token 的详细信息。
 
           - `audio_tokens: optional number`
 
@@ -1005,7 +1007,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       - `Duration object { seconds, type }`
 
-        按音频输入时长计费的模型的使用情况统计。
+        按音频输入时长计费的模型的用量统计。
 
         - `seconds: number`
 
@@ -1013,13 +1015,13 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
         - `type: "duration"`
 
-          usage 对象的类型。对于此变体始终为 `duration` 。
+          使用情况对象的类型。对于此变体始终为 `duration` 。
 
           - `"duration"`
 
   - `TranscriptionDiarized object { duration, segments, task, 2 more }`
 
-    表示模型返回的说话人分离转录响应，包括合并后的转录文本和说话人分段标注。
+    表示模型返回的说话人分离转录响应，包含合并后的转录文本和说话人分段标注。
 
     - `duration: number`
 
@@ -1031,27 +1033,27 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       - `id: string`
 
-        该分段的唯一标识符。
+        该段的唯一标识符。
 
       - `end: number`
 
-        分段的结束时间戳（以秒为单位）。
+        该段的结束时间戳（以秒为单位）。
 
       - `speaker: string`
 
-        此分段的说话人标签。当提供已知说话人时，该标签匹配 `known_speaker_names[]`；否则，说话人将按顺序使用大写字母标记（如（`A`, `B`, ...).
+        该段的说话人标签。当提供了已知说话人时，标签匹配 `known_speaker_names[]`。否则将按顺序使用大写字母为说话人标记（`A`, `B`, ...).
 
       - `start: number`
 
-        分段的开始时间戳（以秒为单位）。
+        该段的起始时间戳（以秒为单位）。
 
       - `text: string`
 
-        此分段的转录文本。
+        该段的转录文本。
 
       - `type: "transcript.text.segment"`
 
-        分段的类型。始终为 `transcript.text.segment`.
+        该段的类型。始终为 `transcript.text.segment`.
 
         - `"transcript.text.segment"`
 
@@ -1063,37 +1065,37 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `text: string`
 
-      整个音频输入的拼接转录文本。
+      整个音频输入拼接后的转录文本。
 
-    - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+    - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
-      本次请求的 token 或时长使用情况统计。
+      本次请求的 token 或时长用量统计。
 
       - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-        按词元使用量计费的模型的使用统计信息。
+        按 token 使用量计费的模型的使用情况统计。
 
         - `input_tokens: number`
 
-          本次请求计费的输入词元数。
+          本次请求计费的输入 token 数。
 
         - `output_tokens: number`
 
-          生成的输出词元数。
+          生成的输出 token 数。
 
         - `total_tokens: number`
 
-          使用的词元总数（输入 + 输出）。
+          使用的 token 总数（输入 + 输出）。
 
         - `type: "tokens"`
 
-          usage 对象的类型。对于此变体始终为 `tokens` 。
+          使用情况对象的类型。对于此变体始终为 `tokens` 。
 
           - `"tokens"`
 
         - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-          本次请求计费的输入词元的详细信息。
+          本次请求计费的输入 token 的详细信息。
 
           - `audio_tokens: optional number`
 
@@ -1105,7 +1107,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       - `Duration object { seconds, type }`
 
-        按音频输入时长计费的模型的使用情况统计。
+        按音频输入时长计费的模型的用量统计。
 
         - `seconds: number`
 
@@ -1113,13 +1115,13 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
         - `type: "duration"`
 
-          usage 对象的类型。对于此变体始终为 `duration` 。
+          使用情况对象的类型。对于此变体始终为 `duration` 。
 
           - `"duration"`
 
   - `TranscriptionVerbose object { duration, language, text, 3 more }`
 
-    表示模型基于所提供的输入返回的详细 JSON 转录响应。
+    表示根据所提供的输入，模型返回的详细 JSON 转录响应。
 
     - `duration: number`
 
@@ -1131,7 +1133,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `text: string`
 
-      转录后的文本。
+      转录得到的文本。
 
     - `segments: optional array of TranscriptionSegment`
 
@@ -1143,19 +1145,19 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       - `avg_logprob: number`
 
-        片段的平均 logprob。如果该值低于 -1，则认为 logprobs 失败。
+        片段的平均 logprob。如果该值低于 -1，则视为 logprobs 失败。
 
       - `compression_ratio: number`
 
-        片段的压缩率。如果该值大于 2.4，则认为压缩失败。
+        片段的压缩率。如果该值大于 2.4，则视为压缩失败。
 
       - `end: number`
 
-        片段的结束时间（秒）。
+        片段的结束时间，单位为秒。
 
       - `no_speech_prob: number`
 
-        片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则认为此片段为静音。
+        片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则视为该片段为静音。
 
       - `seek: number`
 
@@ -1163,11 +1165,11 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       - `start: number`
 
-        片段的开始时间（秒）。
+        片段的开始时间，单位为秒。
 
       - `temperature: number`
 
-        用于生成该片段的温度参数。
+        用于生成片段的温度参数。
 
       - `text: string`
 
@@ -1179,7 +1181,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `usage: optional object { seconds, type }`
 
-      按音频输入时长计费的模型的使用情况统计。
+      按音频输入时长计费的模型的用量统计。
 
       - `seconds: number`
 
@@ -1187,31 +1189,31 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       - `type: "duration"`
 
-        usage 对象的类型。对于此变体始终为 `duration` 。
+        使用情况对象的类型。对于此变体始终为 `duration` 。
 
         - `"duration"`
 
     - `words: optional array of TranscriptionWord`
 
-      提取的单词及其对应的时间戳。
+      提取出的单词及其对应的时间戳。
 
       - `end: number`
 
-        单词的结束时间（秒）。
+        该单词的结束时间，单位为秒。
 
       - `start: number`
 
-        单词的开始时间（秒）。
+        该单词的开始时间，单位为秒。
 
       - `word: string`
 
-        单词的文本内容。
+        该单词的文本内容。
 
-### Transcription Diarized
+### 转录说话人分离
 
 - `TranscriptionDiarized object { duration, segments, task, 2 more }`
 
-  表示模型返回的说话人分离转录响应，包括合并后的转录文本和说话人分段标注。
+  表示模型返回的说话人分离转录响应，包含合并后的转录文本和说话人分段标注。
 
   - `duration: number`
 
@@ -1223,27 +1225,27 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `id: string`
 
-      该分段的唯一标识符。
+      该段的唯一标识符。
 
     - `end: number`
 
-      分段的结束时间戳（以秒为单位）。
+      该段的结束时间戳（以秒为单位）。
 
     - `speaker: string`
 
-      此分段的说话人标签。当提供已知说话人时，该标签匹配 `known_speaker_names[]`；否则，说话人将按顺序使用大写字母标记（如（`A`, `B`, ...).
+      该段的说话人标签。当提供了已知说话人时，标签匹配 `known_speaker_names[]`。否则将按顺序使用大写字母为说话人标记（`A`, `B`, ...).
 
     - `start: number`
 
-      分段的开始时间戳（以秒为单位）。
+      该段的起始时间戳（以秒为单位）。
 
     - `text: string`
 
-      此分段的转录文本。
+      该段的转录文本。
 
     - `type: "transcript.text.segment"`
 
-      分段的类型。始终为 `transcript.text.segment`.
+      该段的类型。始终为 `transcript.text.segment`.
 
       - `"transcript.text.segment"`
 
@@ -1255,37 +1257,37 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `text: string`
 
-    整个音频输入的拼接转录文本。
+    整个音频输入拼接后的转录文本。
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
-    本次请求的 token 或时长使用情况统计。
+    本次请求的 token 或时长用量统计。
 
     - `Tokens object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-      按词元使用量计费的模型的使用统计信息。
+      按 token 使用量计费的模型的使用情况统计。
 
       - `input_tokens: number`
 
-        本次请求计费的输入词元数。
+        本次请求计费的输入 token 数。
 
       - `output_tokens: number`
 
-        生成的输出词元数。
+        生成的输出 token 数。
 
       - `total_tokens: number`
 
-        使用的词元总数（输入 + 输出）。
+        使用的 token 总数（输入 + 输出）。
 
       - `type: "tokens"`
 
-        usage 对象的类型。对于此变体始终为 `tokens` 。
+        使用情况对象的类型。对于此变体始终为 `tokens` 。
 
         - `"tokens"`
 
       - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-        本次请求计费的输入词元的详细信息。
+        本次请求计费的输入 token 的详细信息。
 
         - `audio_tokens: optional number`
 
@@ -1297,7 +1299,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `Duration object { seconds, type }`
 
-      按音频输入时长计费的模型的使用情况统计。
+      按音频输入时长计费的模型的用量统计。
 
       - `seconds: number`
 
@@ -1305,49 +1307,49 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       - `type: "duration"`
 
-        usage 对象的类型。对于此变体始终为 `duration` 。
+        使用情况对象的类型。对于此变体始终为 `duration` 。
 
         - `"duration"`
 
-### Transcription Diarized Segment
+### 转录说话人分离分段
 
 - `TranscriptionDiarizedSegment object { id, end, speaker, 3 more }`
 
-  一段带有说话人元数据的说话人分离转录文本。
+  一段带有说话人元数据的分段转录文本。
 
   - `id: string`
 
-    该分段的唯一标识符。
+    该段的唯一标识符。
 
   - `end: number`
 
-    分段的结束时间戳（以秒为单位）。
+    该段的结束时间戳（以秒为单位）。
 
   - `speaker: string`
 
-    此分段的说话人标签。当提供已知说话人时，该标签匹配 `known_speaker_names[]`；否则，说话人将按顺序使用大写字母标记（如（`A`, `B`, ...).
+    该段的说话人标签。当提供了已知说话人时，标签匹配 `known_speaker_names[]`。否则将按顺序使用大写字母为说话人标记（`A`, `B`, ...).
 
   - `start: number`
 
-    分段的开始时间戳（以秒为单位）。
+    该段的起始时间戳（以秒为单位）。
 
   - `text: string`
 
-    此分段的转录文本。
+    该段的转录文本。
 
   - `type: "transcript.text.segment"`
 
-    分段的类型。始终为 `transcript.text.segment`.
+    该段的类型。始终为 `transcript.text.segment`.
 
     - `"transcript.text.segment"`
 
-### Transcription Include
+### 转录包含
 
 - `TranscriptionInclude = "logprobs"`
 
   - `"logprobs"`
 
-### Transcription Language
+### 转录语言
 
 - `TranscriptionLanguage object { code }`
 
@@ -1357,7 +1359,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     音频中检测到的语言代码。
 
-### 转写片段
+### 转录片段
 
 - `TranscriptionSegment object { id, avg_logprob, compression_ratio, 7 more }`
 
@@ -1367,19 +1369,19 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `avg_logprob: number`
 
-    片段的平均 logprob。如果该值低于 -1，则认为 logprobs 失败。
+    片段的平均 logprob。如果该值低于 -1，则视为 logprobs 失败。
 
   - `compression_ratio: number`
 
-    片段的压缩率。如果该值大于 2.4，则认为压缩失败。
+    片段的压缩率。如果该值大于 2.4，则视为压缩失败。
 
   - `end: number`
 
-    片段的结束时间（秒）。
+    片段的结束时间，单位为秒。
 
   - `no_speech_prob: number`
 
-    片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则认为此片段为静音。
+    片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则视为该片段为静音。
 
   - `seek: number`
 
@@ -1387,11 +1389,11 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `start: number`
 
-    片段的开始时间（秒）。
+    片段的开始时间，单位为秒。
 
   - `temperature: number`
 
-    用于生成该片段的温度参数。
+    用于生成片段的温度参数。
 
   - `text: string`
 
@@ -1401,35 +1403,35 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     文本内容的 token ID 数组。
 
-### 转写流事件
+### 转录流事件
 
 - `TranscriptionStreamEvent = TranscriptionTextSegmentEvent or TranscriptionTextDeltaEvent or TranscriptionTextDoneEvent`
 
-  当说话人分离转写返回带有说话人信息的已完成片段时发出。仅当你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时 `stream` 设置为 `true` 和 `response_format` 设置为 `diarized_json`.
+  当说话人分离转写返回带有说话人信息的已完成片段时发出。仅当你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 并将 `stream` 设置为 `true` 和 `response_format` 设置为 `diarized_json`.
 
   - `TranscriptionTextSegmentEvent object { id, end, speaker, 3 more }`
 
-    当说话人分离转写返回带有说话人信息的已完成片段时发出。仅当你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时 `stream` 设置为 `true` 和 `response_format` 设置为 `diarized_json`.
+    当说话人分离转写返回带有说话人信息的已完成片段时发出。仅当你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 并将 `stream` 设置为 `true` 和 `response_format` 设置为 `diarized_json`.
 
     - `id: string`
 
-      该分段的唯一标识符。
+      该段的唯一标识符。
 
     - `end: number`
 
-      分段的结束时间戳（以秒为单位）。
+      该段的结束时间戳（以秒为单位）。
 
     - `speaker: string`
 
-      该片段的说话人标签。
+      此片段的说话人标签。
 
     - `start: number`
 
-      分段的开始时间戳（以秒为单位）。
+      该段的起始时间戳（以秒为单位）。
 
     - `text: string`
 
-      此分段的转录文本。
+      该段的转录文本。
 
     - `type: "transcript.text.segment"`
 
@@ -1439,7 +1441,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `TranscriptionTextDeltaEvent object { delta, type, logprobs, segment_id }`
 
-    当存在额外的文本增量时发出。这也是转写开始时发出的第一个事件。仅当你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 且 `Stream` 参数设置为 `true`.
+    当存在额外的文本增量时发出。这也是转写开始时发出的第一个事件。仅当你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时随 `Stream` 参数设置为 `true`.
 
     - `delta: string`
 
@@ -1453,19 +1455,19 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `logprobs: optional array of object { token, bytes, logprob }`
 
-      该增量的对数概率。仅在你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 且 `include[]` 参数设置为 `logprobs`.
+      该增量的对数概率。仅在你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时随 `include[]` 参数设置为 `logprobs`.
 
       - `token: optional string`
 
-        用于生成对数概率的 token。
+        用于生成该对数概率的 token。
 
       - `bytes: optional array of number`
 
-        用于生成对数概率的字节。
+        用于生成该对数概率的字节。
 
       - `logprob: optional number`
 
-        词元的对数概率。
+        该 token 的对数概率。
 
     - `segment_id: optional string`
 
@@ -1473,7 +1475,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `TranscriptionTextDoneEvent object { text, type, languages, 2 more }`
 
-    当转写完成时发出。包含完整的转写文本。仅在你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 且 `Stream` 参数设置为 `true`.
+    当转写完成时发出。包含完整的转写文本。仅当你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时随 `Stream` 参数设置为 `true`.
 
     - `text: string`
 
@@ -1495,45 +1497,45 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `logprobs: optional array of object { token, bytes, logprob }`
 
-      转写中各个 token 的对数概率。仅在你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 且 `include[]` 参数设置为 `logprobs`.
+      转写中各个 token 的对数概率。仅在你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时随 `include[]` 参数设置为 `logprobs`.
 
       - `token: optional string`
 
-        用于生成对数概率的 token。
+        用于生成该对数概率的 token。
 
       - `bytes: optional array of number`
 
-        用于生成对数概率的字节。
+        用于生成该对数概率的字节。
 
       - `logprob: optional number`
 
-        词元的对数概率。
+        该 token 的对数概率。
 
     - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-      按词元使用量计费的模型的使用统计信息。
+      按 token 使用量计费的模型的使用情况统计。
 
       - `input_tokens: number`
 
-        本次请求计费的输入词元数。
+        本次请求计费的输入 token 数。
 
       - `output_tokens: number`
 
-        生成的输出词元数。
+        生成的输出 token 数。
 
       - `total_tokens: number`
 
-        使用的词元总数（输入 + 输出）。
+        使用的 token 总数（输入 + 输出）。
 
       - `type: "tokens"`
 
-        usage 对象的类型。对于此变体始终为 `tokens` 。
+        使用情况对象的类型。对于此变体始终为 `tokens` 。
 
         - `"tokens"`
 
       - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-        本次请求计费的输入词元的详细信息。
+        本次请求计费的输入 token 的详细信息。
 
         - `audio_tokens: optional number`
 
@@ -1547,7 +1549,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
 - `TranscriptionTextDeltaEvent object { delta, type, logprobs, segment_id }`
 
-  当存在额外的文本增量时发出。这也是转写开始时发出的第一个事件。仅当你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 且 `Stream` 参数设置为 `true`.
+  当存在额外的文本增量时发出。这也是转写开始时发出的第一个事件。仅当你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时随 `Stream` 参数设置为 `true`.
 
   - `delta: string`
 
@@ -1561,19 +1563,19 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `logprobs: optional array of object { token, bytes, logprob }`
 
-    该增量的对数概率。仅在你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 且 `include[]` 参数设置为 `logprobs`.
+    该增量的对数概率。仅在你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时随 `include[]` 参数设置为 `logprobs`.
 
     - `token: optional string`
 
-      用于生成对数概率的 token。
+      用于生成该对数概率的 token。
 
     - `bytes: optional array of number`
 
-      用于生成对数概率的字节。
+      用于生成该对数概率的字节。
 
     - `logprob: optional number`
 
-      词元的对数概率。
+      该 token 的对数概率。
 
   - `segment_id: optional string`
 
@@ -1583,7 +1585,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
 - `TranscriptionTextDoneEvent object { text, type, languages, 2 more }`
 
-  当转写完成时发出。包含完整的转写文本。仅在你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 且 `Stream` 参数设置为 `true`.
+  当转写完成时发出。包含完整的转写文本。仅当你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时随 `Stream` 参数设置为 `true`.
 
   - `text: string`
 
@@ -1605,45 +1607,45 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `logprobs: optional array of object { token, bytes, logprob }`
 
-    转写中各个 token 的对数概率。仅在你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 且 `include[]` 参数设置为 `logprobs`.
+    转写中各个 token 的对数概率。仅在你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时随 `include[]` 参数设置为 `logprobs`.
 
     - `token: optional string`
 
-      用于生成对数概率的 token。
+      用于生成该对数概率的 token。
 
     - `bytes: optional array of number`
 
-      用于生成对数概率的字节。
+      用于生成该对数概率的字节。
 
     - `logprob: optional number`
 
-      词元的对数概率。
+      该 token 的对数概率。
 
   - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }`
 
-    按词元使用量计费的模型的使用统计信息。
+    按 token 使用量计费的模型的使用情况统计。
 
     - `input_tokens: number`
 
-      本次请求计费的输入词元数。
+      本次请求计费的输入 token 数。
 
     - `output_tokens: number`
 
-      生成的输出词元数。
+      生成的输出 token 数。
 
     - `total_tokens: number`
 
-      使用的词元总数（输入 + 输出）。
+      使用的 token 总数（输入 + 输出）。
 
     - `type: "tokens"`
 
-      usage 对象的类型。对于此变体始终为 `tokens` 。
+      使用情况对象的类型。对于此变体始终为 `tokens` 。
 
       - `"tokens"`
 
     - `input_token_details: optional object { audio_tokens, text_tokens }`
 
-      本次请求计费的输入词元的详细信息。
+      本次请求计费的输入 token 的详细信息。
 
       - `audio_tokens: optional number`
 
@@ -1653,31 +1655,31 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
         本次请求计费的文本 token 数量。
 
-### 转录文本片段事件
+### 转录文本分段事件
 
 - `TranscriptionTextSegmentEvent object { id, end, speaker, 3 more }`
 
-  当说话人分离转写返回带有说话人信息的已完成片段时发出。仅当你 [创建转写](/api/reference/resources/audio/subresources/transcriptions/methods/create) 时 `stream` 设置为 `true` 和 `response_format` 设置为 `diarized_json`.
+  当说话人分离转写返回带有说话人信息的已完成片段时发出。仅当你 [创建转写请求](/api/reference/resources/audio/subresources/transcriptions/methods/create) 并将 `stream` 设置为 `true` 和 `response_format` 设置为 `diarized_json`.
 
   - `id: string`
 
-    该分段的唯一标识符。
+    该段的唯一标识符。
 
   - `end: number`
 
-    分段的结束时间戳（以秒为单位）。
+    该段的结束时间戳（以秒为单位）。
 
   - `speaker: string`
 
-    该片段的说话人标签。
+    此片段的说话人标签。
 
   - `start: number`
 
-    分段的开始时间戳（以秒为单位）。
+    该段的起始时间戳（以秒为单位）。
 
   - `text: string`
 
-    此分段的转录文本。
+    该段的转录文本。
 
   - `type: "transcript.text.segment"`
 
@@ -1689,7 +1691,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
 - `TranscriptionVerbose object { duration, language, text, 3 more }`
 
-  表示模型基于所提供的输入返回的详细 JSON 转录响应。
+  表示根据所提供的输入，模型返回的详细 JSON 转录响应。
 
   - `duration: number`
 
@@ -1701,7 +1703,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `text: string`
 
-    转录后的文本。
+    转录得到的文本。
 
   - `segments: optional array of TranscriptionSegment`
 
@@ -1713,19 +1715,19 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `avg_logprob: number`
 
-      片段的平均 logprob。如果该值低于 -1，则认为 logprobs 失败。
+      片段的平均 logprob。如果该值低于 -1，则视为 logprobs 失败。
 
     - `compression_ratio: number`
 
-      片段的压缩率。如果该值大于 2.4，则认为压缩失败。
+      片段的压缩率。如果该值大于 2.4，则视为压缩失败。
 
     - `end: number`
 
-      片段的结束时间（秒）。
+      片段的结束时间，单位为秒。
 
     - `no_speech_prob: number`
 
-      片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则认为此片段为静音。
+      片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则视为该片段为静音。
 
     - `seek: number`
 
@@ -1733,11 +1735,11 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `start: number`
 
-      片段的开始时间（秒）。
+      片段的开始时间，单位为秒。
 
     - `temperature: number`
 
-      用于生成该片段的温度参数。
+      用于生成片段的温度参数。
 
     - `text: string`
 
@@ -1749,7 +1751,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `usage: optional object { seconds, type }`
 
-    按音频输入时长计费的模型的使用情况统计。
+    按音频输入时长计费的模型的用量统计。
 
     - `seconds: number`
 
@@ -1757,41 +1759,41 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `type: "duration"`
 
-      usage 对象的类型。对于此变体始终为 `duration` 。
+      使用情况对象的类型。对于此变体始终为 `duration` 。
 
       - `"duration"`
 
   - `words: optional array of TranscriptionWord`
 
-    提取的单词及其对应的时间戳。
+    提取出的单词及其对应的时间戳。
 
     - `end: number`
 
-      单词的结束时间（秒）。
+      该单词的结束时间，单位为秒。
 
     - `start: number`
 
-      单词的开始时间（秒）。
+      该单词的开始时间，单位为秒。
 
     - `word: string`
 
-      单词的文本内容。
+      该单词的文本内容。
 
-### 转录词
+### 转录词语
 
 - `TranscriptionWord object { end, start, word }`
 
   - `end: number`
 
-    单词的结束时间（秒）。
+    该单词的结束时间，单位为秒。
 
   - `start: number`
 
-    单词的开始时间（秒）。
+    该单词的开始时间，单位为秒。
 
   - `word: string`
 
-    单词的文本内容。
+    该单词的文本内容。
 
 # 翻译
 
@@ -1799,9 +1801,9 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
 **post** `/audio/translations`
 
-将音频转录为英文。
+将音频翻译为英文。
 
-### Returns
+### 返回
 
 - `Translation object { text }`
 
@@ -1815,15 +1817,15 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
   - `language: string`
 
-    输出翻译的语言（始终 `english`).
+    输出翻译所用的语言（始终 `english`).
 
   - `text: string`
 
-    翻译后的文本。
+    已翻译的文本。
 
   - `segments: optional array of TranscriptionSegment`
 
-    翻译文本的各个片段及其对应详情。
+    已翻译文本的各个片段及其对应的详细信息。
 
     - `id: number`
 
@@ -1831,19 +1833,19 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `avg_logprob: number`
 
-      片段的平均 logprob。如果该值低于 -1，则认为 logprobs 失败。
+      片段的平均 logprob。如果该值低于 -1，则视为 logprobs 失败。
 
     - `compression_ratio: number`
 
-      片段的压缩率。如果该值大于 2.4，则认为压缩失败。
+      片段的压缩率。如果该值大于 2.4，则视为压缩失败。
 
     - `end: number`
 
-      片段的结束时间（秒）。
+      片段的结束时间，单位为秒。
 
     - `no_speech_prob: number`
 
-      片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则认为此片段为静音。
+      片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则视为该片段为静音。
 
     - `seek: number`
 
@@ -1851,11 +1853,11 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     - `start: number`
 
-      片段的开始时间（秒）。
+      片段的开始时间，单位为秒。
 
     - `temperature: number`
 
-      用于生成该片段的温度参数。
+      用于生成片段的温度参数。
 
     - `text: string`
 
@@ -1875,7 +1877,7 @@ curl https://api.openai.com/v1/audio/translations \
     -F model=whisper-1
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -1893,7 +1895,7 @@ curl https://api.openai.com/v1/audio/translations \
   -F model="whisper-1"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -1903,13 +1905,13 @@ curl https://api.openai.com/v1/audio/translations \
 
 ## Domain Types
 
-### Translation
+### 翻译
 
 - `Translation object { text }`
 
   - `text: string`
 
-### Translation 创建响应
+### 翻译创建响应
 
 - `TranslationCreateResponse = Translation or TranslationVerbose`
 
@@ -1925,15 +1927,15 @@ curl https://api.openai.com/v1/audio/translations \
 
     - `language: string`
 
-      输出翻译的语言（始终 `english`).
+      输出翻译所用的语言（始终 `english`).
 
     - `text: string`
 
-      翻译后的文本。
+      已翻译的文本。
 
     - `segments: optional array of TranscriptionSegment`
 
-      翻译文本的各个片段及其对应详情。
+      已翻译文本的各个片段及其对应的详细信息。
 
       - `id: number`
 
@@ -1941,19 +1943,19 @@ curl https://api.openai.com/v1/audio/translations \
 
       - `avg_logprob: number`
 
-        片段的平均 logprob。如果该值低于 -1，则认为 logprobs 失败。
+        片段的平均 logprob。如果该值低于 -1，则视为 logprobs 失败。
 
       - `compression_ratio: number`
 
-        片段的压缩率。如果该值大于 2.4，则认为压缩失败。
+        片段的压缩率。如果该值大于 2.4，则视为压缩失败。
 
       - `end: number`
 
-        片段的结束时间（秒）。
+        片段的结束时间，单位为秒。
 
       - `no_speech_prob: number`
 
-        片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则认为此片段为静音。
+        片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则视为该片段为静音。
 
       - `seek: number`
 
@@ -1961,11 +1963,11 @@ curl https://api.openai.com/v1/audio/translations \
 
       - `start: number`
 
-        片段的开始时间（秒）。
+        片段的开始时间，单位为秒。
 
       - `temperature: number`
 
-        用于生成该片段的温度参数。
+        用于生成片段的温度参数。
 
       - `text: string`
 
@@ -1975,7 +1977,7 @@ curl https://api.openai.com/v1/audio/translations \
 
         文本内容的 token ID 数组。
 
-### Translation 详细
+### 翻译详细
 
 - `TranslationVerbose object { duration, language, text, segments }`
 
@@ -1985,15 +1987,15 @@ curl https://api.openai.com/v1/audio/translations \
 
   - `language: string`
 
-    输出翻译的语言（始终 `english`).
+    输出翻译所用的语言（始终 `english`).
 
   - `text: string`
 
-    翻译后的文本。
+    已翻译的文本。
 
   - `segments: optional array of TranscriptionSegment`
 
-    翻译文本的各个片段及其对应详情。
+    已翻译文本的各个片段及其对应的详细信息。
 
     - `id: number`
 
@@ -2001,19 +2003,19 @@ curl https://api.openai.com/v1/audio/translations \
 
     - `avg_logprob: number`
 
-      片段的平均 logprob。如果该值低于 -1，则认为 logprobs 失败。
+      片段的平均 logprob。如果该值低于 -1，则视为 logprobs 失败。
 
     - `compression_ratio: number`
 
-      片段的压缩率。如果该值大于 2.4，则认为压缩失败。
+      片段的压缩率。如果该值大于 2.4，则视为压缩失败。
 
     - `end: number`
 
-      片段的结束时间（秒）。
+      片段的结束时间，单位为秒。
 
     - `no_speech_prob: number`
 
-      片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则认为此片段为静音。
+      片段中无语音的概率。如果该值高于 1.0 且 `avg_logprob` 低于 -1，则视为该片段为静音。
 
     - `seek: number`
 
@@ -2021,11 +2023,11 @@ curl https://api.openai.com/v1/audio/translations \
 
     - `start: number`
 
-      片段的开始时间（秒）。
+      片段的开始时间，单位为秒。
 
     - `temperature: number`
 
-      用于生成该片段的温度参数。
+      用于生成片段的温度参数。
 
     - `text: string`
 
@@ -2041,17 +2043,17 @@ curl https://api.openai.com/v1/audio/translations \
 
 **post** `/audio/voice_consents`
 
-上传语音同意录音。
+上传一段语音同意录音。
 
-### Returns
+### 返回
 
 - `id: string`
 
-  同意录制记录的标识符。
+  同意录音的标识符。
 
 - `created_at: number`
 
-  同意录制创建时的 Unix 时间戳（以秒为单位）。
+  同意录音创建时的 Unix 时间戳（以秒为单位）。
 
 - `language: string`
 
@@ -2059,7 +2061,7 @@ curl https://api.openai.com/v1/audio/translations \
 
 - `name: string`
 
-  上传同意录制时提供的标签。
+  上传同意录音时提供的标签。
 
 - `object: "audio.voice_consent"`
 
@@ -2078,7 +2080,7 @@ curl https://api.openai.com/v1/audio/voice_consents \
     -F 'recording=@/path/to/recording'
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -2103,7 +2105,7 @@ curl https://api.openai.com/v1/audio/voice_consents \
 
 ## 删除语音同意
 
-**delete** `/audio/voice_consents/{consent_id}`
+**删除** `/audio/voice_consents/{consent_id}`
 
 删除语音同意录音。
 
@@ -2111,11 +2113,11 @@ curl https://api.openai.com/v1/audio/voice_consents \
 
 - `consent_id: string`
 
-### Returns
+### 返回
 
 - `id: string`
 
-  同意录制记录的标识符。
+  同意录音的标识符。
 
 - `deleted: boolean`
 
@@ -2131,7 +2133,7 @@ curl https://api.openai.com/v1/audio/voice_consents/$CONSENT_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -2159,23 +2161,23 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，则你后续的调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的光标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的下一次调用可以在 after=obj_foo 中传入，以便获取列表的下一页。
 
 - `limit: optional number`
 
-  返回对象数量的上限。Limit 范围在 1 到 100 之间，默认值为 20。
+  要返回的对象数量的上限。Limit 的取值范围为 1 到 100，默认值为 20。
 
-### Returns
+### 返回
 
 - `data: array of object { id, created_at, language, 2 more }`
 
   - `id: string`
 
-    同意录制记录的标识符。
+    同意录音的标识符。
 
   - `created_at: number`
 
-    同意录制创建时的 Unix 时间戳（以秒为单位）。
+    同意录音创建时的 Unix 时间戳（以秒为单位）。
 
   - `language: string`
 
@@ -2183,7 +2185,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
   - `name: string`
 
-    上传同意录制时提供的标签。
+    上传同意录音时提供的标签。
 
   - `object: "audio.voice_consent"`
 
@@ -2208,7 +2210,7 @@ curl https://api.openai.com/v1/audio/voice_consents \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -2235,7 +2237,7 @@ curl https://api.openai.com/v1/audio/voice_consents?limit=20 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-## 获取语音同意
+## 获取语音授权
 
 **get** `/audio/voice_consents/{consent_id}`
 
@@ -2245,15 +2247,15 @@ curl https://api.openai.com/v1/audio/voice_consents?limit=20 \
 
 - `consent_id: string`
 
-### Returns
+### 返回
 
 - `id: string`
 
-  同意录制记录的标识符。
+  同意录音的标识符。
 
 - `created_at: number`
 
-  同意录制创建时的 Unix 时间戳（以秒为单位）。
+  同意录音创建时的 Unix 时间戳（以秒为单位）。
 
 - `language: string`
 
@@ -2261,7 +2263,7 @@ curl https://api.openai.com/v1/audio/voice_consents?limit=20 \
 
 - `name: string`
 
-  上传同意录制时提供的标签。
+  上传同意录音时提供的标签。
 
 - `object: "audio.voice_consent"`
 
@@ -2276,7 +2278,7 @@ curl https://api.openai.com/v1/audio/voice_consents/$CONSENT_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -2295,7 +2297,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-## 更新语音同意
+## Update voice consent
 
 **post** `/audio/voice_consents/{consent_id}`
 
@@ -2305,21 +2307,21 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
 - `consent_id: string`
 
-### 正文参数
+### Body 参数
 
 - `name: string`
 
-  此同意记录的更新标签。
+  此同意记录更新后的标签。
 
-### Returns
+### 返回
 
 - `id: string`
 
-  同意录制记录的标识符。
+  同意录音的标识符。
 
 - `created_at: number`
 
-  同意录制创建时的 Unix 时间戳（以秒为单位）。
+  同意录音创建时的 Unix 时间戳（以秒为单位）。
 
 - `language: string`
 
@@ -2327,7 +2329,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
 - `name: string`
 
-  上传同意录制时提供的标签。
+  上传同意录音时提供的标签。
 
 - `object: "audio.voice_consent"`
 
@@ -2346,7 +2348,7 @@ curl https://api.openai.com/v1/audio/voice_consents/$CONSENT_ID \
         }'
 ```
 
-#### Response
+#### 响应
 
 ```json
 {
@@ -2380,11 +2382,11 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
   - `id: string`
 
-    同意录制记录的标识符。
+    同意录音的标识符。
 
   - `created_at: number`
 
-    同意录制创建时的 Unix 时间戳（以秒为单位）。
+    同意录音创建时的 Unix 时间戳（以秒为单位）。
 
   - `language: string`
 
@@ -2392,7 +2394,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
   - `name: string`
 
-    上传同意录制时提供的标签。
+    上传同意录音时提供的标签。
 
   - `object: "audio.voice_consent"`
 
@@ -2400,13 +2402,13 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
     - `"audio.voice_consent"`
 
-### Voice Consent Delete Response
+### 语音同意删除响应
 
 - `VoiceConsentDeleteResponse object { id, deleted, object }`
 
   - `id: string`
 
-    同意录制记录的标识符。
+    同意录音的标识符。
 
   - `deleted: boolean`
 
@@ -2414,7 +2416,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
     - `"audio.voice_consent"`
 
-### Voice Consent List Response
+### 语音同意列表响应
 
 - `VoiceConsentListResponse object { id, created_at, language, 2 more }`
 
@@ -2422,11 +2424,11 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
   - `id: string`
 
-    同意录制记录的标识符。
+    同意录音的标识符。
 
   - `created_at: number`
 
-    同意录制创建时的 Unix 时间戳（以秒为单位）。
+    同意录音创建时的 Unix 时间戳（以秒为单位）。
 
   - `language: string`
 
@@ -2434,7 +2436,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
   - `name: string`
 
-    上传同意录制时提供的标签。
+    上传同意录音时提供的标签。
 
   - `object: "audio.voice_consent"`
 
@@ -2442,7 +2444,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
     - `"audio.voice_consent"`
 
-### Voice Consent Retrieve Response
+### 语音同意检索响应
 
 - `VoiceConsentRetrieveResponse object { id, created_at, language, 2 more }`
 
@@ -2450,11 +2452,11 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
   - `id: string`
 
-    同意录制记录的标识符。
+    同意录音的标识符。
 
   - `created_at: number`
 
-    同意录制创建时的 Unix 时间戳（以秒为单位）。
+    同意录音创建时的 Unix 时间戳（以秒为单位）。
 
   - `language: string`
 
@@ -2462,7 +2464,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
   - `name: string`
 
-    上传同意录制时提供的标签。
+    上传同意录音时提供的标签。
 
   - `object: "audio.voice_consent"`
 
@@ -2470,7 +2472,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
     - `"audio.voice_consent"`
 
-### Voice Consent Update Response
+### 语音同意更新响应
 
 - `VoiceConsentUpdateResponse object { id, created_at, language, 2 more }`
 
@@ -2478,11 +2480,11 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
   - `id: string`
 
-    同意录制记录的标识符。
+    同意录音的标识符。
 
   - `created_at: number`
 
-    同意录制创建时的 Unix 时间戳（以秒为单位）。
+    同意录音创建时的 Unix 时间戳（以秒为单位）。
 
   - `language: string`
 
@@ -2490,7 +2492,7 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
   - `name: string`
 
-    上传同意录制时提供的标签。
+    上传同意录音时提供的标签。
 
   - `object: "audio.voice_consent"`
 
@@ -2498,72 +2500,21 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
     - `"audio.voice_consent"`
 
-# Voices
+# 语音
 
-## Create voice
+## 创建语音
 
 **post** `/audio/voices`
 
-创建自定义语音。
+创建一个可用于音频输出的自定义语音（例如在 Text-to-Speech 和 Realtime API 中使用）。这需要一个音频样本和先前上传的同意录音。
 
-### Returns
+发送 `name`, `audio_sample`，以及 `consent` 录音 ID 作为 multipart 表单数据。可选参数 `type` 默认为 `audio_sample`.
 
-- `id: string`
+返回已保存语音的元数据。请参阅 [自定义语音指南](/api/docs/guides/text-to-speech#custom-voices) 了解要求和最佳实践。自定义语音仅限符合条件的客户使用。
 
-  语音标识符，可在 API 端点中引用。
+### 返回
 
-- `created_at: number`
-
-  语音创建时的 Unix 时间戳（以秒为单位）。
-
-- `name: string`
-
-  语音的名称。
-
-- `object: "audio.voice"`
-
-  对象类型，始终为 `audio.voice`.
-
-  - `"audio.voice"`
-
-### 示例
-
-```http
-curl https://api.openai.com/v1/audio/voices \
-    -H 'Content-Type: multipart/form-data' \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -F 'audio_sample=@/path/to/audio_sample' \
-    -F consent=consent \
-    -F name=name
-```
-
-#### Response
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "name": "name",
-  "object": "audio.voice"
-}
-```
-
-### 示例
-
-```http
-curl https://api.openai.com/v1/audio/voices \
-  -X POST \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F "name=My new voice" \
-  -F "consent=cons_1234" \
-  -F "audio_sample=@$HOME/audio_sample.wav;type=audio/x-wav"
-```
-
-## Domain Types
-
-### 语音创建响应
-
-- `VoiceCreateResponse object { id, created_at, name, object }`
+- `Voice object { id, created_at, name, 2 more }`
 
   可用于音频输出的自定义语音。
 
@@ -2584,3 +2535,75 @@ curl https://api.openai.com/v1/audio/voices \
     对象类型，始终为 `audio.voice`.
 
     - `"audio.voice"`
+
+  - `type: "audio_sample"`
+
+    语音的创建方式。
+
+    - `"audio_sample"`
+
+### 示例
+
+```http
+curl https://api.openai.com/v1/audio/voices \
+    -H 'Content-Type: multipart/form-data' \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -F 'audio_sample=@/path/to/audio_sample' \
+    -F consent=consent \
+    -F name=x
+```
+
+#### 响应
+
+```json
+{
+  "id": "id",
+  "created_at": 0,
+  "name": "name",
+  "object": "audio.voice",
+  "type": "audio_sample"
+}
+```
+
+### 示例
+
+```http
+curl https://api.openai.com/v1/audio/voices \
+  -X POST \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -F "name=My new voice" \
+  -F "consent=cons_1234" \
+  -F "audio_sample=@audio_sample.wav;type=audio/x-wav"
+```
+
+## Domain Types
+
+### Voice
+
+- `Voice object { id, created_at, name, 2 more }`
+
+  可用于音频输出的自定义语音。
+
+  - `id: string`
+
+    语音标识符，可在 API 端点中引用。
+
+  - `created_at: number`
+
+    语音创建时的 Unix 时间戳（以秒为单位）。
+
+  - `name: string`
+
+    语音的名称。
+
+  - `object: "audio.voice"`
+
+    对象类型，始终为 `audio.voice`.
+
+    - `"audio.voice"`
+
+  - `type: "audio_sample"`
+
+    语音的创建方式。
+
+    - `"audio_sample"`

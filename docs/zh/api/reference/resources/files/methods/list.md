@@ -1,4 +1,4 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 获取。
+> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 列出文件
 
@@ -10,11 +10,11 @@
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么你的下一次调用可以包含 after=obj_foo，以便获取列表的下一页。
+  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起一个列表请求并收到 100 个对象，以 obj_foo 结尾，则你的后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  返回对象的数量上限。Limit 的取值范围为 1 到 10,000，默认值为 10,000。
+  要返回的对象数量上限。Limit 的范围介于 1 到 10,000 之间，默认为 10,000。
 
 - `order: optional "asc" or "desc"`
 
@@ -36,9 +36,10 @@
 
     文件标识符，可在 API 端点中引用。
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    文件大小，以字节为单位。
+    文件的字节大小。在已完成的文件上传响应中，当文件大小尚不可用时，此项可为 null。
+    可为空。
 
   - `created_at: number`
 
@@ -46,7 +47,7 @@
 
   - `filename: string`
 
-    文件名称。
+    文件的名称。
 
   - `object: "file"`
 
@@ -86,11 +87,12 @@
 
   - `expires_at: optional number`
 
-    文件过期时的 Unix 时间戳（以秒为单位）。
+    文件过期时的 Unix 时间戳（以秒为单位）。在已完成的文件上传响应中，当未设置过期时间时，此项可为
+    null。
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段，位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败的原因，请参阅 `error` 字段，位于 `fine_tuning.job`。当这些详细信息未设置时，已完成的文件上传响应可返回 null。
 
 - `first_id: string`
 
@@ -152,6 +154,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "salesOverview.pdf",
       "purpose": "assistants",
+      "status": "processed"
     },
     {
       "id": "file-abc456",
@@ -161,6 +164,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "puppy.jsonl",
       "purpose": "fine-tune",
+      "status": "processed"
     }
   ],
   "first_id": "file-abc123",

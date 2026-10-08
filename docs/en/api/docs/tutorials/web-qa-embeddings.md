@@ -2,7 +2,15 @@
 
 > For the complete documentation index, see [llms.txt](/llms.txt). Markdown versions of documentation pages are available by appending `.md` to the page URL.
 
-This tutorial walks through a simple example of crawling a website (in this example, the OpenAI website), turning the crawled pages into embeddings using the [Embeddings API](https://developers.openai.com/api/docs/guides/embeddings), and then creating a basic search functionality that allows a user to ask questions about the embedded information. This is intended to be a starting point for more sophisticated applications that make use of custom knowledge bases.
+This tutorial uses the legacy Completions endpoint with
+  `gpt-3.5-turbo-instruct`, which has a scheduled shutdown date of September 28,
+  2026. Its answer-generation example retains the legacy request format for
+  reference. For a current approach, use [file
+  search](https://developers.openai.com/api/docs/guides/tools-file-search) with the Responses API. See the
+  [deprecation
+  notice](https://developers.openai.com/api/docs/deprecations#2025-09-26-legacy-gpt-model-snapshots).
+
+This tutorial walks through an example of crawling a website (in this example, the OpenAI website), turning the crawled pages into embeddings using the [Embeddings API](https://developers.openai.com/api/docs/guides/embeddings), and then creating a basic search functionality that allows a user to ask questions about the embedded information. This is intended to be a starting point for more sophisticated applications that make use of custom knowledge bases.
 
 # Getting started
 
@@ -300,7 +308,7 @@ df.head()
 ```
 
 
-Tokenization is the next step after saving the raw text into a CSV file. This process splits the input text into tokens by breaking down the sentences and words. A visual demonstration of this can be seen by [checking out our Tokenizer](https://platform.openai.com/tokenizer) in the docs.
+The next step is tokenization after saving the raw text into a CSV file. This process splits the input text into tokens by breaking down the sentences and words. A visual demonstration of this can be seen by [checking out our tokenizer](https://platform.openai.com/tokenizer) in the docs.
 
 > A helpful rule of thumb is that one token generally corresponds to ~4 characters of text for common English text. This translates to roughly ¾ of a word (so 100 tokens ~= 75 words).
 
@@ -337,7 +345,7 @@ df.n_tokens.hist()
 
 
 
-The newest embeddings model can handle inputs with up to 8191 input tokens so most of the rows would not need any chunking, but this may not be the case for every subpage scraped so the next code chunk will split the longer lines into smaller chunks.
+The newest embeddings model can handle inputs with up to 8191 input tokens so most of the rows would not need any chunking, but this may not be the case for every page scraped so the next code chunk will split the longer lines into smaller chunks.
 
 ```python
 max_tokens = 500
@@ -419,7 +427,7 @@ df.n_tokens.hist()
 
 
 
-The content is now broken down into smaller chunks and a simple request can be sent to the OpenAI API specifying the use of the new text-embedding-ada-002 model to create the embeddings:
+The content is now broken down into smaller chunks and a request can be sent to the OpenAI API specifying the use of the new text-embedding-ada-002 model to create the embeddings:
 
 ```python
 from openai import OpenAI
@@ -472,7 +480,7 @@ df.head()
 ```
 
 
-The question needs to be converted to an embedding with a simple function, now that the data is ready. This is important because the search with embeddings compares the vector of numbers (which was the conversion of the raw text) using cosine distance. The vectors are likely related and might be the answer to the question if they are close in cosine distance. The OpenAI python package has a built in `distances_from_embeddings` function which is useful here.
+The question needs to be converted to an embedding with a function, now that the data is ready. This is important because the search with embeddings compares the vector of numbers (which was the conversion of the raw text) using cosine distance. The vectors are likely related and might be the answer to the question if they are close in cosine distance. The OpenAI python package has a built in `distances_from_embeddings` function which is useful here.
 
 ```python
 def create_context(question, df, max_len=1800, size="ada"):
@@ -512,11 +520,11 @@ def create_context(question, df, max_len=1800, size="ada"):
 ```
 
 
-The text was broken up into smaller sets of tokens, so looping through in ascending order and continuing to add the text is a critical step to ensure a full answer. The max_len can also be modified to something smaller, if more content than desired is returned.
+The text was broken up into smaller sets of tokens, so looping through in ascending order and continuing to add the text is a critical step to ensure a full answer. The `max_len` can also be modified to something smaller, if more content than desired is returned.
 
 The previous step only retrieved chunks of texts that are semantically related to the question, so they might contain the answer, but there's no guarantee of it. The chance of finding an answer can be further increased by returning the top 5 most likely results.
 
-The answering prompt will then try to extract the relevant facts from the retrieved contexts, in order to formulate a coherent answer. If there is no relevant answer, the prompt will return “I don’t know”.
+The answering prompt will then try to extract the relevant facts from the retrieved contexts, in order to formulate a coherent answer. If there is no relevant answer, the prompt will return “I don’t know.”
 
 A realistic sounding answer to the question can be created with the completion endpoint using `gpt-3.5-turbo-instruct`.
 
@@ -592,4 +600,4 @@ The responses will look something like the following:
 
 If the system is not able to answer a question that is expected, it is worth searching through the raw text files to see if the information that is expected to be known actually ended up being embedded or not. The crawling process that was done initially was setup to skip sites outside the original domain that was provided, so it might not have that knowledge if there was a subdomain setup.
 
-Currently, the dataframe is being passed in each time to answer a question. For more production workflows, a [vector database solution](https://developers.openai.com/api/docs/guides/embeddings#how-can-i-retrieve-k-nearest-embedding-vectors-quickly) should be used instead of storing the embeddings in a CSV file, but the current approach is a great option for prototyping.
+Currently, the data frame is being passed in each time to answer a question. For more production workflows, a [vector database solution](https://developers.openai.com/api/docs/guides/embeddings#how-can-i-retrieve-k-nearest-embedding-vectors-quickly) should be used instead of storing the embeddings in a CSV file, but the current approach is a great option for prototyping.

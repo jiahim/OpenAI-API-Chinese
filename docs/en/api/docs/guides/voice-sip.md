@@ -25,7 +25,7 @@ Direct SIP keeps call audio on the provider-to-OpenAI media path. SIP signaling 
 
 Use a [sideband connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) when your backend needs to receive session events or send commands. It attaches to the existing conversation while SIP carries the audio. Assign one handler to each action so that duplicate webhook deliveries or events observed on multiple connections don't execute tools twice.
 
-### Handle the call lifecycle
+### Handle an inbound call
 
 Confirm that GPT-Live SIP support is enabled for your project and that your
   provider's SIP trunk is routed to that project before using this flow.
@@ -76,7 +76,100 @@ To [transfer the call](https://developers.openai.com/api/reference/resources/liv
 
 Keep the sideband open until `session.closed` supplies final usage, then release application resources. If the connection drops first, record finalization as incomplete. See [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close) for finalization and close reasons.
 
-This flow accepts inbound calls. Creating an outbound SIP call through `POST /v1/live/sessions` is not supported; use the relevant [partner integration](https://developers.openai.com/api/docs/guides/live-partner-integrations) for provider-owned outbound calling.
+### Place an outbound call
+
+Call a phone number through your SIP provider with [Create session](https://developers.openai.com/api/reference/resources/live/methods/create). Your provider handles the phone network connection while GPT-Live carries the conversation.
+
+Outbound SIP calling must be enabled for your organization. It is available
+  through the Live API, not the Realtime API call-creation endpoint.
+
+#### Configure your trunk
+
+Use a trunk that supports TLS signaling, Opus audio, and SDES-SRTP media. Enable Opus and SRTP in your provider's settings before placing a call.
+
+Supply the trunk configuration with each request:
+
+| Field                           | Value                                                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `transport.destination`         | The phone number to call, in E.164 format, such as `+14155550123`. SIP URI destinations aren't supported.          |
+| `transport.trunk.provider_url`  | A provider endpoint such as `sips:sip.example.com:5061`. The default port is `5061`; `;transport=tcp` is optional. |
+| `transport.trunk.auth.type`     | `digest` for SIP Digest authentication.                                                                            |
+| `transport.trunk.auth.username` | Your provider's SIP username.                                                                                      |
+| `transport.trunk.auth.password` | Your provider's SIP password.                                                                                      |
+| `transport.trunk.caller_number` | The caller phone number to send to your provider, in E.164 format.                                                 |
+
+The provider endpoint must use `sips:` for TLS signaling. Don't include credentials, paths, URI headers, or other URI parameters in the URL. Local hostnames and literal private or local IP addresses are rejected. Keep your OpenAI API key and SIP credentials on your server.
+
+#### Create the session
+
+Send `POST /v1/live/sessions` with your session configuration and `transport.type: "sip"`. Choose the voice and delegation mode when creating the session. Omit `audio.format` because SIP negotiates the audio format.
+
+This example uses `curl` and `jq`. Set `OPENAI_API_KEY`, `SIP_USERNAME`, and `SIP_PASSWORD` in your server environment, and replace the example provider endpoint and phone numbers with your own values. The example selects client delegation; your backend must handle [delegated work](https://developers.openai.com/api/docs/guides/live-delegation).
+
+```bash
+jq -n \
+  --arg username "$SIP_USERNAME" \
+  --arg password "$SIP_PASSWORD" \
+  '{
+    "session": {
+      "model": "gpt-live-1",
+      "instructions": "Help the user schedule an appointment.",
+      "audio": { "output": { "voice": "marin" } },
+      "delegation": { "type": "client" }
+    },
+    "transport": {
+      "type": "sip",
+      "destination": "+14155550123",
+      "trunk": {
+        "provider_url": "sips:sip.example.com:5061",
+        "auth": {
+          "type": "digest",
+          "username": $username,
+          "password": $password
+        },
+        "caller_number": "+14155550100"
+      }
+    }
+  }' | curl https://api.openai.com/v1/live/sessions \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -H "Content-Type: application/json" \
+    --data-binary @-
+```
+
+The request returns `200 OK` after the session initializes:
+
+```json
+{
+  "session": { "id": "live_123" },
+  "transport": { "type": "sip" }
+}
+```
+
+This response doesn't mean the call has been answered. It contains no SDP or trunk credentials. Preserve `session.id` unchanged for the sideband connection and call controls. You don't need an incoming-call webhook or an accept request for an outbound call.
+
+#### Monitor and end the call
+
+Attach your backend to `wss://api.openai.com/v1/live/sessions/{session_id}/attach` using your OpenAI API key. Don't send `session.start` again. The [sideband connection](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live) carries conversation events, delegated work, and call progress while SIP carries the audio.
+
+| Event                | Meaning                                                                                   |
+| -------------------- | ----------------------------------------------------------------------------------------- |
+| `transport.ringing`  | The provider reports ringing or early media.                                              |
+| `transport.answered` | The call has been answered and media is established.                                      |
+| `transport.failed`   | Call setup failed after session initialization. Inspect `error.code` and `error.message`. |
+
+Each call-progress event includes `event_id` and `session_id`. Attach immediately after creation: the sideband only replays events from the preceding 3 seconds, so a later attachment can miss earlier call progress. Replayed events retain their original event IDs. Deduplicate events by `event_id`.
+
+Use the same [transfer](#transfer-or-end-the-call) and [hangup](https://developers.openai.com/api/reference/resources/live/subresources/sessions/methods/hangup) actions as for inbound calls. Keep the sideband open for `session.closed` and final usage as described in [Usage and graceful close](https://developers.openai.com/api/docs/guides/live-conversations#usage-and-graceful-close).
+
+#### Handle limits and errors
+
+Outbound SIP requests have a 1 MiB body limit. Ringing is limited to 3 minutes, and a connected call is limited to 2 hours. These limits aren't configurable in the creation request.
+
+A `403` response with `outbound_sip_not_enabled` means outbound calling isn't enabled for your organization. Invalid session configuration is returned on the creation request. Transport setup failures can return `502`, and initialization timeouts return `504`. After creation succeeds, monitor `transport.failed` for asynchronous setup failures.
+
+Each creation request places a new call. `X-Client-Request-Id` doesn't
+  deduplicate requests. Don't automatically retry after an ambiguous timeout or
+  connection failure: a retry can place another call.
 
 ### Server audio bridges
 

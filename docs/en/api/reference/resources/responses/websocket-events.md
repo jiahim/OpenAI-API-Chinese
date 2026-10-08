@@ -33,6 +33,20 @@ Schema name: `ResponsesClientEventResponseCreate`
 
   - `"response.create"`
 
+- `access_programs: optional object { cyber }`
+
+  Domain-specific access programs to use for this request.
+
+  - `cyber: optional "standard" or "daybreak_blue" or "daybreak_red"`
+
+    The Cyber access program to use for this request. Supported values are `standard`, `daybreak_blue`, and `daybreak_red`. If omitted, the API resolves the program from the model's Cyber tier and your organization and project access, subject to model-specific eligibility restrictions. By default, models without a Cyber tier use Standard. Blue-tier models use Daybreak Blue when authorized; otherwise they fall back to Standard unless the model requires Daybreak access. Red-tier models use Daybreak Red and require authorization. Requests that require unavailable Daybreak access return 403. An implicit Standard fallback is represented by null in the response's access_programs field, rather than an explicit Standard selection.
+
+    - `"standard"`
+
+    - `"daybreak_blue"`
+
+    - `"daybreak_red"`
+
 - `background: optional boolean or null`
 
   Whether to run the model response in the background.
@@ -95,7 +109,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
   - `"message.output_text.logprobs"`
 
-- `input: optional string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+- `input: optional string or array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
   Text, image, or file inputs to the model, used to generate a response.
 
@@ -112,7 +126,7 @@ Schema name: `ResponsesClientEventResponseCreate`
     A text input to the model, equivalent to a text input with the
     `user` role.
 
-  - `InputItemList = array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+  - `InputItemList = array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
     A list of one or many input items to the model, containing
     different content types.
@@ -332,7 +346,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           A text output from the model.
 
-          - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+          - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
             The annotations of the text output.
 
@@ -350,7 +364,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
               - `index: number`
 
-                The index of the file in the list of files.
+                The index in the output text at which to insert the file citation.
 
               - `type: "file_citation"`
 
@@ -918,7 +932,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         - `"incomplete"`
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -927,7 +941,27 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -996,26 +1030,6 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
-
     - `FunctionCall object { arguments, call_id, name, 6 more }`
 
       A tool call to run a function. See the
@@ -1047,7 +1061,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -1214,7 +1228,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -1296,7 +1310,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
     - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by the tool search output.
 
@@ -1419,7 +1433,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
               Combine multiple filters using `and` or `or`.
 
-              - `filters: array of ComparisonFilter or unknown`
+              - `filters: array of ComparisonFilter or CompoundFilter`
 
                 Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -1427,7 +1441,9 @@ Schema name: `ResponsesClientEventResponseCreate`
 
                   A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                - `unknown`
+                - `CompoundFilter object { filters, type }`
+
+                  Combine multiple filters using `and` or `or`.
 
               - `type: "and" or "or"`
 
@@ -1551,7 +1567,9 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -1598,7 +1616,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -1672,7 +1690,7 @@ Schema name: `ResponsesClientEventResponseCreate`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -1738,7 +1756,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -1874,7 +1892,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -1979,13 +1997,13 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -2219,7 +2237,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
                 - `"grammar"`
 
-        - `Namespace object { description, name, tools, type }`
+        - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
           Groups function/custom tools under a shared namespace.
 
@@ -2231,13 +2249,15 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-            The function/custom tools available inside this namespace.
+            The function/custom tools loaded inside this namespace.
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
+
+                The name of the loaded function tool.
 
               - `type: "function"`
 
@@ -2371,7 +2391,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -2453,7 +2473,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         - `"developer"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         A list of additional tools made available at this item.
 
@@ -2641,7 +2661,9 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -2688,7 +2710,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -2762,7 +2784,7 @@ Schema name: `ResponsesClientEventResponseCreate`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -2828,7 +2850,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -2932,7 +2954,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -3037,13 +3059,13 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -3139,7 +3161,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -3279,7 +3301,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -3568,7 +3590,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -3741,7 +3763,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The unique ID of the shell tool call. Populated when this item is returned via API.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -3795,7 +3817,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           The exit or timeout outcome associated with this shell call.
 
@@ -3841,7 +3863,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The unique ID of the shell tool call output. Populated when this item is returned via API.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -3887,7 +3909,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -3959,7 +3981,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The unique ID of the apply patch tool call. Populated when this item is returned via API.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4009,7 +4031,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The unique ID of the apply patch tool call output. Populated when this item is returned via API.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4255,7 +4277,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         The unique ID of the custom tool call output in the OpenAI platform.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4309,7 +4331,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4447,9 +4469,11 @@ Schema name: `ResponsesClientEventResponseCreate`
 
   - `string`
 
-  - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+  - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
     - `"gpt-6-astra"`
+
+    - `"gpt-6.1-sol"`
 
     - `"gpt-6-sol"`
 
@@ -4871,7 +4895,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 - `safety_identifier: optional string or null`
 
   A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-  The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+  The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 - `service_tier: optional ServiceTier or null`
 
@@ -5207,7 +5231,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
       - `"shell"`
 
-- `tools: optional array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+- `tools: optional array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
   An array of tools the model may call while generating a response. You
   can specify which tool to use by setting the `tool_choice` parameter.
@@ -5411,7 +5435,9 @@ Schema name: `ResponsesClientEventResponseCreate`
 
     - `user_location: optional object { city, country, region, 2 more }  or null`
 
-      The approximate location of the user.
+      The approximate location of the user. If omitted or null, defaults to the
+      United States. To avoid this fallback, pass `{"type": "approximate"}` without
+      location fields. To localize results, provide the relevant location fields.
 
       - `city: optional string or null`
 
@@ -5458,7 +5484,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
       - `"programmatic"`
 
-    - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+    - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
       List of allowed tool names or a filter object.
 
@@ -5532,7 +5558,7 @@ Schema name: `ResponsesClientEventResponseCreate`
       Optional HTTP headers to send to the MCP server. Use for authentication
       or other purposes.
 
-    - `require_approval: optional object { always, never }  or "always" or "never" or null`
+    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
       Specify which of the MCP server's tools require approval.
 
@@ -5598,7 +5624,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
     A tool that runs Python code to help generate a response to a prompt.
 
-    - `container: string or object { type, file_ids, memory_limit, network_policy }`
+    - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
       The code interpreter container. Can be a container ID or an object that
       specifies uploaded file IDs to make available to your code, along with an
@@ -5702,7 +5728,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
     - `input_fidelity: optional "high" or "low" or null`
 
-      Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+      Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
       - `"high"`
 
@@ -5807,13 +5833,13 @@ Schema name: `ResponsesClientEventResponseCreate`
 
     - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-      The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+      The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
       - `string`
 
       - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `"1024x1024"`
 
@@ -5909,7 +5935,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
       The namespace name used in tool calls (for example, `crm`).
 
-    - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+    - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
       The function/custom tools available inside this namespace.
 
@@ -6049,7 +6075,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
     - `user_location: optional object { type, city, country, 2 more }  or null`
 
-      The user's location.
+      The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
       - `type: "approximate"`
 
@@ -6121,7 +6147,7 @@ Schema name: `ResponsesClientEventResponseCreate`
 
   - `"disabled"`
 
-- `user: optional string`
+- `user: optional string or null`
 
   This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
   A stable identifier for your end-users.
@@ -6191,7 +6217,7 @@ Schema name: `ResponseSteerEvent`
 
     A text input, equivalent to a message with the `user` role.
 
-  - `ResponseSteerInputItemList = array of object { content, role, type, 2 more }  or object { output, type, id, 5 more }`
+  - `ResponseSteerInputItemList = array of Message { content, role, type, 2 more }  or FunctionCallOutput { output, type, id, 5 more }`
 
     A non-empty list of message inputs to queue for the response.
 
@@ -6379,7 +6405,7 @@ Schema name: `ResponseSteerEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -6796,7 +6822,7 @@ Schema name: `ResponseSteerFailedEvent`
 
       A text input, equivalent to a message with the `user` role.
 
-    - `ResponseSteerInputItemList = array of object { content, role, type, 2 more }  or object { output, type, id, 5 more }`
+    - `ResponseSteerInputItemList = array of Message { content, role, type, 2 more }  or FunctionCallOutput { output, type, id, 5 more }`
 
       A non-empty list of message inputs to queue for the response.
 
@@ -6984,7 +7010,7 @@ Schema name: `ResponseSteerFailedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -7109,7 +7135,7 @@ Schema name: `ResponseWsError`
 
     The response headers that were emitted with the error, if any.
 
-  - `misalignment: optional object { detailed_explanation, error_type, steer }`
+  - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
     - `detailed_explanation: optional string`
 
@@ -7132,6 +7158,10 @@ Schema name: `ResponseWsError`
         - `"potentially_unintended_destructive_activity"`
 
         - `"other"`
+
+    - `review_target: optional string or null`
+
+      An opaque target for explicitly continuing this review, or null when unavailable.
 
     - `steer: optional object { message }`
 
@@ -7203,6 +7233,18 @@ Schema name: `ResponseCreatedEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -7261,7 +7303,7 @@ Schema name: `ResponseCreatedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -7284,6 +7326,10 @@ Schema name: `ResponseCreatedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -7312,7 +7358,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
+  - `instructions: string or array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -7325,7 +7371,7 @@ Schema name: `ResponseCreatedEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+    - `InputItemList = array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -7545,7 +7591,7 @@ Schema name: `ResponseCreatedEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -7563,7 +7609,7 @@ Schema name: `ResponseCreatedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -8131,7 +8177,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -8140,7 +8186,27 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -8209,26 +8275,6 @@ Schema name: `ResponseCreatedEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
         A tool call to run a function. See the
@@ -8260,7 +8306,7 @@ Schema name: `ResponseCreatedEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -8427,7 +8473,7 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -8509,7 +8555,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -8632,7 +8678,7 @@ Schema name: `ResponseCreatedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -8640,7 +8686,9 @@ Schema name: `ResponseCreatedEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -8764,7 +8812,9 @@ Schema name: `ResponseCreatedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -8811,7 +8861,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -8885,7 +8935,7 @@ Schema name: `ResponseCreatedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -8951,7 +9001,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -9087,7 +9137,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -9192,13 +9242,13 @@ Schema name: `ResponseCreatedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -9432,7 +9482,7 @@ Schema name: `ResponseCreatedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -9444,13 +9494,15 @@ Schema name: `ResponseCreatedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -9584,7 +9636,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -9666,7 +9718,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -9854,7 +9906,9 @@ Schema name: `ResponseCreatedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -9901,7 +9955,7 @@ Schema name: `ResponseCreatedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -9975,7 +10029,7 @@ Schema name: `ResponseCreatedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -10041,7 +10095,7 @@ Schema name: `ResponseCreatedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -10145,7 +10199,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -10250,13 +10304,13 @@ Schema name: `ResponseCreatedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -10352,7 +10406,7 @@ Schema name: `ResponseCreatedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -10492,7 +10546,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -10781,7 +10835,7 @@ Schema name: `ResponseCreatedEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -10954,7 +11008,7 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the shell tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -11008,7 +11062,7 @@ Schema name: `ResponseCreatedEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -11054,7 +11108,7 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the shell tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -11100,7 +11154,7 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -11172,7 +11226,7 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the apply patch tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -11222,7 +11276,7 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the apply patch tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -11468,7 +11522,7 @@ Schema name: `ResponseCreatedEvent`
 
           The unique ID of the custom tool call output in the OpenAI platform.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -11522,7 +11576,7 @@ Schema name: `ResponseCreatedEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -11644,9 +11698,11 @@ Schema name: `ResponseCreatedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -11984,7 +12040,7 @@ Schema name: `ResponseCreatedEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -12071,7 +12127,7 @@ Schema name: `ResponseCreatedEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -12107,7 +12163,7 @@ Schema name: `ResponseCreatedEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -12116,7 +12172,27 @@ Schema name: `ResponseCreatedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -12185,26 +12261,6 @@ Schema name: `ResponseCreatedEvent`
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
-
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
@@ -12264,7 +12320,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -12502,7 +12558,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -12690,7 +12746,9 @@ Schema name: `ResponseCreatedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -12737,7 +12795,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -12811,7 +12869,7 @@ Schema name: `ResponseCreatedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -12877,7 +12935,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -12981,7 +13039,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -13086,13 +13144,13 @@ Schema name: `ResponseCreatedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -13188,7 +13246,7 @@ Schema name: `ResponseCreatedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -13328,7 +13386,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -13406,7 +13464,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -13594,7 +13652,9 @@ Schema name: `ResponseCreatedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -13641,7 +13701,7 @@ Schema name: `ResponseCreatedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -13715,7 +13775,7 @@ Schema name: `ResponseCreatedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -13781,7 +13841,7 @@ Schema name: `ResponseCreatedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -13885,7 +13945,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -13990,13 +14050,13 @@ Schema name: `ResponseCreatedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -14092,7 +14152,7 @@ Schema name: `ResponseCreatedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -14232,7 +14292,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -14414,7 +14474,7 @@ Schema name: `ResponseCreatedEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -14621,7 +14681,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"shell_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -14665,7 +14725,7 @@ Schema name: `ResponseCreatedEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -14721,7 +14781,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"shell_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -14757,7 +14817,7 @@ Schema name: `ResponseCreatedEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -14825,7 +14885,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"apply_patch_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -14875,7 +14935,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"apply_patch_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -15080,7 +15140,7 @@ Schema name: `ResponseCreatedEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -15156,7 +15216,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"custom_tool_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -15363,7 +15423,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -15567,7 +15627,9 @@ Schema name: `ResponseCreatedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -15614,7 +15676,7 @@ Schema name: `ResponseCreatedEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -15688,7 +15750,7 @@ Schema name: `ResponseCreatedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -15754,7 +15816,7 @@ Schema name: `ResponseCreatedEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -15858,7 +15920,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -15963,13 +16025,13 @@ Schema name: `ResponseCreatedEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -16065,7 +16127,7 @@ Schema name: `ResponseCreatedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -16205,7 +16267,7 @@ Schema name: `ResponseCreatedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -16286,7 +16348,7 @@ Schema name: `ResponseCreatedEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -16342,7 +16404,7 @@ Schema name: `ResponseCreatedEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -16443,7 +16505,7 @@ Schema name: `ResponseCreatedEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -16626,7 +16688,7 @@ Schema name: `ResponseCreatedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -16787,7 +16849,7 @@ Schema name: `ResponseCreatedEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -16825,7 +16887,7 @@ Schema name: `ResponseCreatedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -16855,6 +16917,7 @@ Schema name: `ResponseCreatedEvent`
   "response": {
     "id": "resp_67ccfcdd16748190a91872c75d38539e09e4d4aac714747c",
     "object": "response",
+    "access_programs": null,
     "created_at": 1741487325,
     "status": "in_progress",
     "completed_at": null,
@@ -16907,6 +16970,18 @@ Schema name: `ResponseInProgressEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -16965,7 +17040,7 @@ Schema name: `ResponseInProgressEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -16988,6 +17063,10 @@ Schema name: `ResponseInProgressEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -17016,7 +17095,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
+  - `instructions: string or array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -17029,7 +17108,7 @@ Schema name: `ResponseInProgressEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+    - `InputItemList = array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -17249,7 +17328,7 @@ Schema name: `ResponseInProgressEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -17267,7 +17346,7 @@ Schema name: `ResponseInProgressEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -17835,7 +17914,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -17844,7 +17923,27 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -17913,26 +18012,6 @@ Schema name: `ResponseInProgressEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
         A tool call to run a function. See the
@@ -17964,7 +18043,7 @@ Schema name: `ResponseInProgressEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -18131,7 +18210,7 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -18213,7 +18292,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -18336,7 +18415,7 @@ Schema name: `ResponseInProgressEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -18344,7 +18423,9 @@ Schema name: `ResponseInProgressEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -18468,7 +18549,9 @@ Schema name: `ResponseInProgressEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -18515,7 +18598,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -18589,7 +18672,7 @@ Schema name: `ResponseInProgressEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -18655,7 +18738,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -18791,7 +18874,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -18896,13 +18979,13 @@ Schema name: `ResponseInProgressEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -19136,7 +19219,7 @@ Schema name: `ResponseInProgressEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -19148,13 +19231,15 @@ Schema name: `ResponseInProgressEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -19288,7 +19373,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -19370,7 +19455,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -19558,7 +19643,9 @@ Schema name: `ResponseInProgressEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -19605,7 +19692,7 @@ Schema name: `ResponseInProgressEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -19679,7 +19766,7 @@ Schema name: `ResponseInProgressEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -19745,7 +19832,7 @@ Schema name: `ResponseInProgressEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -19849,7 +19936,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -19954,13 +20041,13 @@ Schema name: `ResponseInProgressEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -20056,7 +20143,7 @@ Schema name: `ResponseInProgressEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -20196,7 +20283,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -20485,7 +20572,7 @@ Schema name: `ResponseInProgressEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -20658,7 +20745,7 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the shell tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -20712,7 +20799,7 @@ Schema name: `ResponseInProgressEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -20758,7 +20845,7 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the shell tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -20804,7 +20891,7 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -20876,7 +20963,7 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the apply patch tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -20926,7 +21013,7 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the apply patch tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -21172,7 +21259,7 @@ Schema name: `ResponseInProgressEvent`
 
           The unique ID of the custom tool call output in the OpenAI platform.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -21226,7 +21313,7 @@ Schema name: `ResponseInProgressEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -21348,9 +21435,11 @@ Schema name: `ResponseInProgressEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -21688,7 +21777,7 @@ Schema name: `ResponseInProgressEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -21775,7 +21864,7 @@ Schema name: `ResponseInProgressEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -21811,7 +21900,7 @@ Schema name: `ResponseInProgressEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -21820,7 +21909,27 @@ Schema name: `ResponseInProgressEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -21889,26 +21998,6 @@ Schema name: `ResponseInProgressEvent`
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
-
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
@@ -21968,7 +22057,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -22206,7 +22295,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -22394,7 +22483,9 @@ Schema name: `ResponseInProgressEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -22441,7 +22532,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -22515,7 +22606,7 @@ Schema name: `ResponseInProgressEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -22581,7 +22672,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -22685,7 +22776,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -22790,13 +22881,13 @@ Schema name: `ResponseInProgressEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -22892,7 +22983,7 @@ Schema name: `ResponseInProgressEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -23032,7 +23123,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -23110,7 +23201,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -23298,7 +23389,9 @@ Schema name: `ResponseInProgressEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -23345,7 +23438,7 @@ Schema name: `ResponseInProgressEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -23419,7 +23512,7 @@ Schema name: `ResponseInProgressEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -23485,7 +23578,7 @@ Schema name: `ResponseInProgressEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -23589,7 +23682,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -23694,13 +23787,13 @@ Schema name: `ResponseInProgressEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -23796,7 +23889,7 @@ Schema name: `ResponseInProgressEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -23936,7 +24029,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -24118,7 +24211,7 @@ Schema name: `ResponseInProgressEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -24325,7 +24418,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"shell_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -24369,7 +24462,7 @@ Schema name: `ResponseInProgressEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -24425,7 +24518,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"shell_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -24461,7 +24554,7 @@ Schema name: `ResponseInProgressEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -24529,7 +24622,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"apply_patch_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -24579,7 +24672,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"apply_patch_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -24784,7 +24877,7 @@ Schema name: `ResponseInProgressEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -24860,7 +24953,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"custom_tool_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -25067,7 +25160,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -25271,7 +25364,9 @@ Schema name: `ResponseInProgressEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -25318,7 +25413,7 @@ Schema name: `ResponseInProgressEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -25392,7 +25487,7 @@ Schema name: `ResponseInProgressEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -25458,7 +25553,7 @@ Schema name: `ResponseInProgressEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -25562,7 +25657,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -25667,13 +25762,13 @@ Schema name: `ResponseInProgressEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -25769,7 +25864,7 @@ Schema name: `ResponseInProgressEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -25909,7 +26004,7 @@ Schema name: `ResponseInProgressEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -25990,7 +26085,7 @@ Schema name: `ResponseInProgressEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -26046,7 +26141,7 @@ Schema name: `ResponseInProgressEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -26147,7 +26242,7 @@ Schema name: `ResponseInProgressEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -26330,7 +26425,7 @@ Schema name: `ResponseInProgressEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -26491,7 +26586,7 @@ Schema name: `ResponseInProgressEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -26529,7 +26624,7 @@ Schema name: `ResponseInProgressEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -26559,6 +26654,7 @@ Schema name: `ResponseInProgressEvent`
   "response": {
     "id": "resp_67ccfcdd16748190a91872c75d38539e09e4d4aac714747c",
     "object": "response",
+    "access_programs": null,
     "created_at": 1741487325,
     "status": "in_progress",
     "completed_at": null,
@@ -26611,6 +26707,18 @@ Schema name: `ResponseCompletedEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -26669,7 +26777,7 @@ Schema name: `ResponseCompletedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -26692,6 +26800,10 @@ Schema name: `ResponseCompletedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -26720,7 +26832,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
+  - `instructions: string or array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -26733,7 +26845,7 @@ Schema name: `ResponseCompletedEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+    - `InputItemList = array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -26953,7 +27065,7 @@ Schema name: `ResponseCompletedEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -26971,7 +27083,7 @@ Schema name: `ResponseCompletedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -27539,7 +27651,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -27548,7 +27660,27 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -27617,26 +27749,6 @@ Schema name: `ResponseCompletedEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
         A tool call to run a function. See the
@@ -27668,7 +27780,7 @@ Schema name: `ResponseCompletedEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -27835,7 +27947,7 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -27917,7 +28029,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -28040,7 +28152,7 @@ Schema name: `ResponseCompletedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -28048,7 +28160,9 @@ Schema name: `ResponseCompletedEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -28172,7 +28286,9 @@ Schema name: `ResponseCompletedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -28219,7 +28335,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -28293,7 +28409,7 @@ Schema name: `ResponseCompletedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -28359,7 +28475,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -28495,7 +28611,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -28600,13 +28716,13 @@ Schema name: `ResponseCompletedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -28840,7 +28956,7 @@ Schema name: `ResponseCompletedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -28852,13 +28968,15 @@ Schema name: `ResponseCompletedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -28992,7 +29110,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -29074,7 +29192,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -29262,7 +29380,9 @@ Schema name: `ResponseCompletedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -29309,7 +29429,7 @@ Schema name: `ResponseCompletedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -29383,7 +29503,7 @@ Schema name: `ResponseCompletedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -29449,7 +29569,7 @@ Schema name: `ResponseCompletedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -29553,7 +29673,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -29658,13 +29778,13 @@ Schema name: `ResponseCompletedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -29760,7 +29880,7 @@ Schema name: `ResponseCompletedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -29900,7 +30020,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -30189,7 +30309,7 @@ Schema name: `ResponseCompletedEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -30362,7 +30482,7 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the shell tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -30416,7 +30536,7 @@ Schema name: `ResponseCompletedEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -30462,7 +30582,7 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the shell tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -30508,7 +30628,7 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -30580,7 +30700,7 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the apply patch tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -30630,7 +30750,7 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the apply patch tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -30876,7 +30996,7 @@ Schema name: `ResponseCompletedEvent`
 
           The unique ID of the custom tool call output in the OpenAI platform.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -30930,7 +31050,7 @@ Schema name: `ResponseCompletedEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -31052,9 +31172,11 @@ Schema name: `ResponseCompletedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -31392,7 +31514,7 @@ Schema name: `ResponseCompletedEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -31479,7 +31601,7 @@ Schema name: `ResponseCompletedEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -31515,7 +31637,7 @@ Schema name: `ResponseCompletedEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -31524,7 +31646,27 @@ Schema name: `ResponseCompletedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -31593,26 +31735,6 @@ Schema name: `ResponseCompletedEvent`
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
-
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
@@ -31672,7 +31794,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -31910,7 +32032,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -32098,7 +32220,9 @@ Schema name: `ResponseCompletedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -32145,7 +32269,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -32219,7 +32343,7 @@ Schema name: `ResponseCompletedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -32285,7 +32409,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -32389,7 +32513,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -32494,13 +32618,13 @@ Schema name: `ResponseCompletedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -32596,7 +32720,7 @@ Schema name: `ResponseCompletedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -32736,7 +32860,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -32814,7 +32938,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -33002,7 +33126,9 @@ Schema name: `ResponseCompletedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -33049,7 +33175,7 @@ Schema name: `ResponseCompletedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -33123,7 +33249,7 @@ Schema name: `ResponseCompletedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -33189,7 +33315,7 @@ Schema name: `ResponseCompletedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -33293,7 +33419,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -33398,13 +33524,13 @@ Schema name: `ResponseCompletedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -33500,7 +33626,7 @@ Schema name: `ResponseCompletedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -33640,7 +33766,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -33822,7 +33948,7 @@ Schema name: `ResponseCompletedEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -34029,7 +34155,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"shell_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -34073,7 +34199,7 @@ Schema name: `ResponseCompletedEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -34129,7 +34255,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"shell_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -34165,7 +34291,7 @@ Schema name: `ResponseCompletedEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -34233,7 +34359,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"apply_patch_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -34283,7 +34409,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"apply_patch_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -34488,7 +34614,7 @@ Schema name: `ResponseCompletedEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -34564,7 +34690,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"custom_tool_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -34771,7 +34897,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -34975,7 +35101,9 @@ Schema name: `ResponseCompletedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -35022,7 +35150,7 @@ Schema name: `ResponseCompletedEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -35096,7 +35224,7 @@ Schema name: `ResponseCompletedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -35162,7 +35290,7 @@ Schema name: `ResponseCompletedEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -35266,7 +35394,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -35371,13 +35499,13 @@ Schema name: `ResponseCompletedEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -35473,7 +35601,7 @@ Schema name: `ResponseCompletedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -35613,7 +35741,7 @@ Schema name: `ResponseCompletedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -35694,7 +35822,7 @@ Schema name: `ResponseCompletedEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -35750,7 +35878,7 @@ Schema name: `ResponseCompletedEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -35851,7 +35979,7 @@ Schema name: `ResponseCompletedEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -36034,7 +36162,7 @@ Schema name: `ResponseCompletedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -36195,7 +36323,7 @@ Schema name: `ResponseCompletedEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -36233,7 +36361,7 @@ Schema name: `ResponseCompletedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -36263,6 +36391,7 @@ Schema name: `ResponseCompletedEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "completed",
     "completed_at": 1740855870,
@@ -36281,9 +36410,11 @@ Schema name: `ResponseCompletedEvent`
           {
             "type": "output_text",
             "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-            "annotations": []
+            "annotations": [],
+            "logprobs": []
           }
-        ]
+        ],
+        "status": "completed"
       }
     ],
     "previous_response_id": null,
@@ -36305,10 +36436,15 @@ Schema name: `ResponseCompletedEvent`
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 0
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      }
     },
     "user": null,
-    "metadata": {}
+    "metadata": {},
+    "parallel_tool_calls": true
   },
   "sequence_number": 1
 }
@@ -36331,6 +36467,18 @@ Schema name: `ResponseFailedEvent`
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -36390,7 +36538,7 @@ Schema name: `ResponseFailedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -36413,6 +36561,10 @@ Schema name: `ResponseFailedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -36441,7 +36593,7 @@ Schema name: `ResponseFailedEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
+  - `instructions: string or array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -36454,7 +36606,7 @@ Schema name: `ResponseFailedEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+    - `InputItemList = array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -36674,7 +36826,7 @@ Schema name: `ResponseFailedEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -36692,7 +36844,7 @@ Schema name: `ResponseFailedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -37260,7 +37412,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -37269,7 +37421,27 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -37338,26 +37510,6 @@ Schema name: `ResponseFailedEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
         A tool call to run a function. See the
@@ -37389,7 +37541,7 @@ Schema name: `ResponseFailedEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -37556,7 +37708,7 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -37638,7 +37790,7 @@ Schema name: `ResponseFailedEvent`
 
       - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -37761,7 +37913,7 @@ Schema name: `ResponseFailedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -37769,7 +37921,9 @@ Schema name: `ResponseFailedEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -37893,7 +38047,9 @@ Schema name: `ResponseFailedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -37940,7 +38096,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -38014,7 +38170,7 @@ Schema name: `ResponseFailedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -38080,7 +38236,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -38216,7 +38372,7 @@ Schema name: `ResponseFailedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -38321,13 +38477,13 @@ Schema name: `ResponseFailedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -38561,7 +38717,7 @@ Schema name: `ResponseFailedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -38573,13 +38729,15 @@ Schema name: `ResponseFailedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -38713,7 +38871,7 @@ Schema name: `ResponseFailedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -38795,7 +38953,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -38983,7 +39141,9 @@ Schema name: `ResponseFailedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -39030,7 +39190,7 @@ Schema name: `ResponseFailedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -39104,7 +39264,7 @@ Schema name: `ResponseFailedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -39170,7 +39330,7 @@ Schema name: `ResponseFailedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -39274,7 +39434,7 @@ Schema name: `ResponseFailedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -39379,13 +39539,13 @@ Schema name: `ResponseFailedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -39481,7 +39641,7 @@ Schema name: `ResponseFailedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -39621,7 +39781,7 @@ Schema name: `ResponseFailedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -39910,7 +40070,7 @@ Schema name: `ResponseFailedEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -40083,7 +40243,7 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the shell tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -40137,7 +40297,7 @@ Schema name: `ResponseFailedEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -40183,7 +40343,7 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the shell tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -40229,7 +40389,7 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -40301,7 +40461,7 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the apply patch tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -40351,7 +40511,7 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the apply patch tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -40597,7 +40757,7 @@ Schema name: `ResponseFailedEvent`
 
           The unique ID of the custom tool call output in the OpenAI platform.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -40651,7 +40811,7 @@ Schema name: `ResponseFailedEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -40773,9 +40933,11 @@ Schema name: `ResponseFailedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -41113,7 +41275,7 @@ Schema name: `ResponseFailedEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -41200,7 +41362,7 @@ Schema name: `ResponseFailedEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -41236,7 +41398,7 @@ Schema name: `ResponseFailedEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -41245,7 +41407,27 @@ Schema name: `ResponseFailedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -41314,26 +41496,6 @@ Schema name: `ResponseFailedEvent`
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
-
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
@@ -41393,7 +41555,7 @@ Schema name: `ResponseFailedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -41631,7 +41793,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -41819,7 +41981,9 @@ Schema name: `ResponseFailedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -41866,7 +42030,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -41940,7 +42104,7 @@ Schema name: `ResponseFailedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -42006,7 +42170,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -42110,7 +42274,7 @@ Schema name: `ResponseFailedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -42215,13 +42379,13 @@ Schema name: `ResponseFailedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -42317,7 +42481,7 @@ Schema name: `ResponseFailedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -42457,7 +42621,7 @@ Schema name: `ResponseFailedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -42535,7 +42699,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -42723,7 +42887,9 @@ Schema name: `ResponseFailedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -42770,7 +42936,7 @@ Schema name: `ResponseFailedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -42844,7 +43010,7 @@ Schema name: `ResponseFailedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -42910,7 +43076,7 @@ Schema name: `ResponseFailedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -43014,7 +43180,7 @@ Schema name: `ResponseFailedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -43119,13 +43285,13 @@ Schema name: `ResponseFailedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -43221,7 +43387,7 @@ Schema name: `ResponseFailedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -43361,7 +43527,7 @@ Schema name: `ResponseFailedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -43543,7 +43709,7 @@ Schema name: `ResponseFailedEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -43750,7 +43916,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"shell_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -43794,7 +43960,7 @@ Schema name: `ResponseFailedEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -43850,7 +44016,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"shell_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -43886,7 +44052,7 @@ Schema name: `ResponseFailedEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -43954,7 +44120,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"apply_patch_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -44004,7 +44170,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"apply_patch_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -44209,7 +44375,7 @@ Schema name: `ResponseFailedEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -44285,7 +44451,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"custom_tool_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -44492,7 +44658,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -44696,7 +44862,9 @@ Schema name: `ResponseFailedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -44743,7 +44911,7 @@ Schema name: `ResponseFailedEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -44817,7 +44985,7 @@ Schema name: `ResponseFailedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -44883,7 +45051,7 @@ Schema name: `ResponseFailedEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -44987,7 +45155,7 @@ Schema name: `ResponseFailedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -45092,13 +45260,13 @@ Schema name: `ResponseFailedEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -45194,7 +45362,7 @@ Schema name: `ResponseFailedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -45334,7 +45502,7 @@ Schema name: `ResponseFailedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -45415,7 +45583,7 @@ Schema name: `ResponseFailedEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -45471,7 +45639,7 @@ Schema name: `ResponseFailedEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -45572,7 +45740,7 @@ Schema name: `ResponseFailedEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -45755,7 +45923,7 @@ Schema name: `ResponseFailedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -45916,7 +46084,7 @@ Schema name: `ResponseFailedEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -45954,7 +46122,7 @@ Schema name: `ResponseFailedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -45984,6 +46152,7 @@ Schema name: `ResponseFailedEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "failed",
     "completed_at": null,
@@ -46011,8 +46180,10 @@ Schema name: `ResponseFailedEvent`
     "truncation": "disabled",
     "usage": null,
     "user": null,
-    "metadata": {}
-  }
+    "metadata": {},
+    "parallel_tool_calls": true
+  },
+  "sequence_number": 1
 }
 ```
 
@@ -46037,6 +46208,18 @@ Schema name: `ResponseIncompleteEvent`
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -46096,7 +46279,7 @@ Schema name: `ResponseIncompleteEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -46119,6 +46302,10 @@ Schema name: `ResponseIncompleteEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -46147,7 +46334,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
+  - `instructions: string or array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -46160,7 +46347,7 @@ Schema name: `ResponseIncompleteEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+    - `InputItemList = array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -46380,7 +46567,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -46398,7 +46585,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -46966,7 +47153,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -46975,7 +47162,27 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -47044,26 +47251,6 @@ Schema name: `ResponseIncompleteEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
         A tool call to run a function. See the
@@ -47095,7 +47282,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -47262,7 +47449,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -47344,7 +47531,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -47467,7 +47654,7 @@ Schema name: `ResponseIncompleteEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -47475,7 +47662,9 @@ Schema name: `ResponseIncompleteEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -47599,7 +47788,9 @@ Schema name: `ResponseIncompleteEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -47646,7 +47837,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -47720,7 +47911,7 @@ Schema name: `ResponseIncompleteEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -47786,7 +47977,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -47922,7 +48113,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -48027,13 +48218,13 @@ Schema name: `ResponseIncompleteEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -48267,7 +48458,7 @@ Schema name: `ResponseIncompleteEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -48279,13 +48470,15 @@ Schema name: `ResponseIncompleteEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -48419,7 +48612,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -48501,7 +48694,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -48689,7 +48882,9 @@ Schema name: `ResponseIncompleteEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -48736,7 +48931,7 @@ Schema name: `ResponseIncompleteEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -48810,7 +49005,7 @@ Schema name: `ResponseIncompleteEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -48876,7 +49071,7 @@ Schema name: `ResponseIncompleteEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -48980,7 +49175,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -49085,13 +49280,13 @@ Schema name: `ResponseIncompleteEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -49187,7 +49382,7 @@ Schema name: `ResponseIncompleteEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -49327,7 +49522,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -49616,7 +49811,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -49789,7 +49984,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the shell tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -49843,7 +50038,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -49889,7 +50084,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the shell tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -49935,7 +50130,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -50007,7 +50202,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the apply patch tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -50057,7 +50252,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the apply patch tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -50303,7 +50498,7 @@ Schema name: `ResponseIncompleteEvent`
 
           The unique ID of the custom tool call output in the OpenAI platform.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -50357,7 +50552,7 @@ Schema name: `ResponseIncompleteEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -50479,9 +50674,11 @@ Schema name: `ResponseIncompleteEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -50819,7 +51016,7 @@ Schema name: `ResponseIncompleteEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -50906,7 +51103,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -50942,7 +51139,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -50951,7 +51148,27 @@ Schema name: `ResponseIncompleteEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -51020,26 +51237,6 @@ Schema name: `ResponseIncompleteEvent`
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
-
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
@@ -51099,7 +51296,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -51337,7 +51534,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -51525,7 +51722,9 @@ Schema name: `ResponseIncompleteEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -51572,7 +51771,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -51646,7 +51845,7 @@ Schema name: `ResponseIncompleteEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -51712,7 +51911,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -51816,7 +52015,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -51921,13 +52120,13 @@ Schema name: `ResponseIncompleteEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -52023,7 +52222,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -52163,7 +52362,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -52241,7 +52440,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -52429,7 +52628,9 @@ Schema name: `ResponseIncompleteEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -52476,7 +52677,7 @@ Schema name: `ResponseIncompleteEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -52550,7 +52751,7 @@ Schema name: `ResponseIncompleteEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -52616,7 +52817,7 @@ Schema name: `ResponseIncompleteEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -52720,7 +52921,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -52825,13 +53026,13 @@ Schema name: `ResponseIncompleteEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -52927,7 +53128,7 @@ Schema name: `ResponseIncompleteEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -53067,7 +53268,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -53249,7 +53450,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -53456,7 +53657,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"shell_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -53500,7 +53701,7 @@ Schema name: `ResponseIncompleteEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -53556,7 +53757,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"shell_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -53592,7 +53793,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -53660,7 +53861,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"apply_patch_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -53710,7 +53911,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"apply_patch_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -53915,7 +54116,7 @@ Schema name: `ResponseIncompleteEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -53991,7 +54192,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"custom_tool_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -54198,7 +54399,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -54402,7 +54603,9 @@ Schema name: `ResponseIncompleteEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -54449,7 +54652,7 @@ Schema name: `ResponseIncompleteEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -54523,7 +54726,7 @@ Schema name: `ResponseIncompleteEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -54589,7 +54792,7 @@ Schema name: `ResponseIncompleteEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -54693,7 +54896,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -54798,13 +55001,13 @@ Schema name: `ResponseIncompleteEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -54900,7 +55103,7 @@ Schema name: `ResponseIncompleteEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -55040,7 +55243,7 @@ Schema name: `ResponseIncompleteEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -55121,7 +55324,7 @@ Schema name: `ResponseIncompleteEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -55177,7 +55380,7 @@ Schema name: `ResponseIncompleteEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -55278,7 +55481,7 @@ Schema name: `ResponseIncompleteEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -55461,7 +55664,7 @@ Schema name: `ResponseIncompleteEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -55622,7 +55825,7 @@ Schema name: `ResponseIncompleteEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -55660,7 +55863,7 @@ Schema name: `ResponseIncompleteEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -55690,12 +55893,13 @@ Schema name: `ResponseIncompleteEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "incomplete",
     "completed_at": null,
     "error": null,
     "incomplete_details": {
-      "reason": "max_tokens"
+      "reason": "max_output_tokens"
     },
     "instructions": null,
     "max_output_tokens": null,
@@ -55716,7 +55920,8 @@ Schema name: `ResponseIncompleteEvent`
     "truncation": "disabled",
     "usage": null,
     "user": null,
-    "metadata": {}
+    "metadata": {},
+    "parallel_tool_calls": true
   },
   "sequence_number": 1
 }
@@ -55755,7 +55960,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A text output from the model.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -55773,7 +55978,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -56027,7 +56232,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       Whether the function tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -56212,7 +56417,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The unique ID of the function tool call generated by the model.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -56248,7 +56453,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The namespace of the tool that produced the output.
 
-  - `WebSearchCall object { id, action, status, type }`
+  - `WebSearchCall object { id, status, type, action }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -56257,7 +56462,27 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -56325,26 +56550,6 @@ Schema name: `ResponseOutputItemAddedEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -56632,7 +56837,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -56887,7 +57092,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"incomplete"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The loaded tool definitions returned by tool search.
 
@@ -57010,7 +57215,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
             Combine multiple filters using `and` or `or`.
 
-            - `filters: array of ComparisonFilter or unknown`
+            - `filters: array of ComparisonFilter or CompoundFilter`
 
               Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -57018,7 +57223,9 @@ Schema name: `ResponseOutputItemAddedEvent`
 
                 A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-              - `unknown`
+              - `CompoundFilter object { filters, type }`
+
+                Combine multiple filters using `and` or `or`.
 
             - `type: "and" or "or"`
 
@@ -57142,7 +57349,9 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -57189,7 +57398,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -57263,7 +57472,7 @@ Schema name: `ResponseOutputItemAddedEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -57329,7 +57538,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -57465,7 +57674,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -57570,13 +57779,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -57822,7 +58031,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -57962,7 +58171,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -58040,7 +58249,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"tool"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The additional tool definitions made available at this item.
 
@@ -58228,7 +58437,9 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -58275,7 +58486,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -58349,7 +58560,7 @@ Schema name: `ResponseOutputItemAddedEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -58415,7 +58626,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -58519,7 +58730,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -58624,13 +58835,13 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -58726,7 +58937,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -58866,7 +59077,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -59048,7 +59259,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The ID of the container used to run the code.
 
-    - `outputs: array of object { logs, type }  or object { type, url }  or null`
+    - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
       The outputs generated by the code interpreter, such as logs or images.
       Can be null if no outputs are available.
@@ -59255,7 +59466,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"shell_call"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -59299,7 +59510,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       An array of shell call output contents
 
-      - `outcome: object { type }  or object { exit_code, type }`
+      - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
         Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -59355,7 +59566,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"shell_call_output"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -59391,7 +59602,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       The unique ID of the apply patch tool call generated by the model.
 
-    - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+    - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -59459,7 +59670,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"apply_patch_call"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -59509,7 +59720,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"apply_patch_call_output"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -59742,7 +59953,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       Whether the custom tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -59818,7 +60029,7 @@ Schema name: `ResponseOutputItemAddedEvent`
 
       - `"custom_tool_call_output"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -59913,7 +60124,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A text output from the model.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -59931,7 +60142,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -60185,7 +60396,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       Whether the function tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -60370,7 +60581,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The unique ID of the function tool call generated by the model.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -60406,7 +60617,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The namespace of the tool that produced the output.
 
-  - `WebSearchCall object { id, action, status, type }`
+  - `WebSearchCall object { id, status, type, action }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -60415,7 +60626,27 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -60483,26 +60714,6 @@ Schema name: `ResponseOutputItemDoneEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
   - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
@@ -60790,7 +61001,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -61045,7 +61256,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"incomplete"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The loaded tool definitions returned by tool search.
 
@@ -61168,7 +61379,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
             Combine multiple filters using `and` or `or`.
 
-            - `filters: array of ComparisonFilter or unknown`
+            - `filters: array of ComparisonFilter or CompoundFilter`
 
               Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -61176,7 +61387,9 @@ Schema name: `ResponseOutputItemDoneEvent`
 
                 A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-              - `unknown`
+              - `CompoundFilter object { filters, type }`
+
+                Combine multiple filters using `and` or `or`.
 
             - `type: "and" or "or"`
 
@@ -61300,7 +61513,9 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -61347,7 +61562,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -61421,7 +61636,7 @@ Schema name: `ResponseOutputItemDoneEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -61487,7 +61702,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -61623,7 +61838,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -61728,13 +61943,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -61980,7 +62195,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -62120,7 +62335,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -62198,7 +62413,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"tool"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The additional tool definitions made available at this item.
 
@@ -62386,7 +62601,9 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -62433,7 +62650,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -62507,7 +62724,7 @@ Schema name: `ResponseOutputItemDoneEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -62573,7 +62790,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -62677,7 +62894,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -62782,13 +62999,13 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -62884,7 +63101,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -63024,7 +63241,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -63206,7 +63423,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The ID of the container used to run the code.
 
-    - `outputs: array of object { logs, type }  or object { type, url }  or null`
+    - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
       The outputs generated by the code interpreter, such as logs or images.
       Can be null if no outputs are available.
@@ -63413,7 +63630,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"shell_call"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -63457,7 +63674,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       An array of shell call output contents
 
-      - `outcome: object { type }  or object { exit_code, type }`
+      - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
         Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -63513,7 +63730,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"shell_call_output"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -63549,7 +63766,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       The unique ID of the apply patch tool call generated by the model.
 
-    - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+    - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -63617,7 +63834,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"apply_patch_call"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -63667,7 +63884,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"apply_patch_call_output"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -63900,7 +64117,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       Whether the custom tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -63976,7 +64193,7 @@ Schema name: `ResponseOutputItemDoneEvent`
 
       - `"custom_tool_call_output"`
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -64039,7 +64256,8 @@ Schema name: `ResponseOutputItemDoneEvent`
       {
         "type": "output_text",
         "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-        "annotations": []
+        "annotations": [],
+        "logprobs": []
       }
     ]
   },
@@ -64069,7 +64287,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
   The index of the output item that the content part was added to.
 
-- `part: ResponseOutputText or ResponseOutputRefusal or object { text, type }`
+- `part: ResponseOutputText or ResponseOutputRefusal or ReasoningText { text, type }`
 
   The content part that was added.
 
@@ -64077,7 +64295,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
     A text output from the model.
 
-    - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+    - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
       The annotations of the text output.
 
@@ -64095,7 +64313,7 @@ Schema name: `ResponseContentPartAddedEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -64258,7 +64476,8 @@ Schema name: `ResponseContentPartAddedEvent`
   "part": {
     "type": "output_text",
     "text": "",
-    "annotations": []
+    "annotations": [],
+    "logprobs": []
   },
   "sequence_number": 1
 }
@@ -64286,7 +64505,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
   The index of the output item that the content part was added to.
 
-- `part: ResponseOutputText or ResponseOutputRefusal or object { text, type }`
+- `part: ResponseOutputText or ResponseOutputRefusal or ReasoningText { text, type }`
 
   The content part that is done.
 
@@ -64294,7 +64513,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
     A text output from the model.
 
-    - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+    - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
       The annotations of the text output.
 
@@ -64312,7 +64531,7 @@ Schema name: `ResponseContentPartDoneEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -64476,7 +64695,8 @@ Schema name: `ResponseContentPartDoneEvent`
   "part": {
     "type": "output_text",
     "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-    "annotations": []
+    "annotations": [],
+    "logprobs": []
   }
 }
 ```
@@ -64556,7 +64776,8 @@ Schema name: `ResponseTextDeltaEvent`
   "output_index": 0,
   "content_index": 0,
   "delta": "In",
-  "sequence_number": 1
+  "sequence_number": 1,
+  "logprobs": []
 }
 ```
 
@@ -64635,7 +64856,8 @@ Schema name: `ResponseTextDoneEvent`
   "output_index": 0,
   "content_index": 0,
   "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-  "sequence_number": 1
+  "sequence_number": 1,
+  "logprobs": []
 }
 ```
 
@@ -64794,7 +65016,7 @@ Schema name: `ResponseFunctionCallArgumentsDeltaEvent`
   "type": "response.function_call_arguments.delta",
   "item_id": "item-abc",
   "output_index": 0,
-  "delta": "{ \"arg\":"
+  "delta": "{ \"arg\":",
   "sequence_number": 1
 }
 ```
@@ -66301,7 +66523,7 @@ Emitted when an annotation is added to output text content.
 
 Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
-- `annotation: object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }  or null`
+- `annotation: FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }  or null`
 
   The annotation object being added. (See annotation schema for details.)
 
@@ -66319,7 +66541,7 @@ Schema name: `ResponseOutputTextAnnotationAddedEvent`
 
     - `index: number`
 
-      The index of the file in the list of files.
+      The index in the output text at which to insert the file citation.
 
     - `type: "file_citation"`
 
@@ -66470,6 +66692,18 @@ Schema name: `ResponseQueuedEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -66528,7 +66762,7 @@ Schema name: `ResponseQueuedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -66551,6 +66785,10 @@ Schema name: `ResponseQueuedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -66579,7 +66817,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
+  - `instructions: string or array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -66592,7 +66830,7 @@ Schema name: `ResponseQueuedEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of EasyInputMessage or object { content, role, status, type }  or ResponseOutputMessage or 30 more`
+    - `InputItemList = array of EasyInputMessage or Message { content, role, status, type }  or ResponseOutputMessage or 30 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -66812,7 +67050,7 @@ Schema name: `ResponseQueuedEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -66830,7 +67068,7 @@ Schema name: `ResponseQueuedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -67398,7 +67636,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, type }`
+      - `WebSearchCall object { id, status, type, action }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -67407,7 +67645,27 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -67476,26 +67734,6 @@ Schema name: `ResponseQueuedEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
       - `FunctionCall object { arguments, call_id, name, 6 more }`
 
         A tool call to run a function. See the
@@ -67527,7 +67765,7 @@ Schema name: `ResponseQueuedEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -67694,7 +67932,7 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -67776,7 +68014,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `ToolSearchOutput object { tools, type, id, 3 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -67899,7 +68137,7 @@ Schema name: `ResponseQueuedEvent`
 
                 Combine multiple filters using `and` or `or`.
 
-                - `filters: array of ComparisonFilter or unknown`
+                - `filters: array of ComparisonFilter or CompoundFilter`
 
                   Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -67907,7 +68145,9 @@ Schema name: `ResponseQueuedEvent`
 
                     A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-                  - `unknown`
+                  - `CompoundFilter object { filters, type }`
+
+                    Combine multiple filters using `and` or `or`.
 
                 - `type: "and" or "or"`
 
@@ -68031,7 +68271,9 @@ Schema name: `ResponseQueuedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -68078,7 +68320,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -68152,7 +68394,7 @@ Schema name: `ResponseQueuedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -68218,7 +68460,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -68354,7 +68596,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -68459,13 +68701,13 @@ Schema name: `ResponseQueuedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -68699,7 +68941,7 @@ Schema name: `ResponseQueuedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `ToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -68711,13 +68953,15 @@ Schema name: `ResponseQueuedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -68851,7 +69095,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -68933,7 +69177,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -69121,7 +69365,9 @@ Schema name: `ResponseQueuedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -69168,7 +69414,7 @@ Schema name: `ResponseQueuedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -69242,7 +69488,7 @@ Schema name: `ResponseQueuedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -69308,7 +69554,7 @@ Schema name: `ResponseQueuedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -69412,7 +69658,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -69517,13 +69763,13 @@ Schema name: `ResponseQueuedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -69619,7 +69865,7 @@ Schema name: `ResponseQueuedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -69759,7 +70005,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -70048,7 +70294,7 @@ Schema name: `ResponseQueuedEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -70221,7 +70467,7 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the shell tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -70275,7 +70521,7 @@ Schema name: `ResponseQueuedEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -70321,7 +70567,7 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the shell tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -70367,7 +70613,7 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -70439,7 +70685,7 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the apply patch tool call. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -70489,7 +70735,7 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the apply patch tool call output. Populated when this item is returned via API.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -70735,7 +70981,7 @@ Schema name: `ResponseQueuedEvent`
 
           The unique ID of the custom tool call output in the OpenAI platform.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -70789,7 +71035,7 @@ Schema name: `ResponseQueuedEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -70911,9 +71157,11 @@ Schema name: `ResponseQueuedEvent`
 
     - `string`
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 85 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 86 more`
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -71251,7 +71499,7 @@ Schema name: `ResponseQueuedEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -71338,7 +71586,7 @@ Schema name: `ResponseQueuedEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -71374,7 +71622,7 @@ Schema name: `ResponseQueuedEvent`
 
         The namespace of the tool that produced the output.
 
-    - `WebSearchCall object { id, action, status, type }`
+    - `WebSearchCall object { id, status, type, action }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -71383,7 +71631,27 @@ Schema name: `ResponseQueuedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -71452,26 +71720,6 @@ Schema name: `ResponseQueuedEvent`
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
-
     - `ComputerCall object { id, call_id, pending_safety_checks, 4 more }`
 
       A tool call to a computer use tool. See the
@@ -71531,7 +71779,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -71769,7 +72017,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -71957,7 +72205,9 @@ Schema name: `ResponseQueuedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -72004,7 +72254,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -72078,7 +72328,7 @@ Schema name: `ResponseQueuedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -72144,7 +72394,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -72248,7 +72498,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -72353,13 +72603,13 @@ Schema name: `ResponseQueuedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -72455,7 +72705,7 @@ Schema name: `ResponseQueuedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -72595,7 +72845,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -72673,7 +72923,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -72861,7 +73111,9 @@ Schema name: `ResponseQueuedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -72908,7 +73160,7 @@ Schema name: `ResponseQueuedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -72982,7 +73234,7 @@ Schema name: `ResponseQueuedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -73048,7 +73300,7 @@ Schema name: `ResponseQueuedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -73152,7 +73404,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -73257,13 +73509,13 @@ Schema name: `ResponseQueuedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -73359,7 +73611,7 @@ Schema name: `ResponseQueuedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -73499,7 +73751,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -73681,7 +73933,7 @@ Schema name: `ResponseQueuedEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -73888,7 +74140,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"shell_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -73932,7 +74184,7 @@ Schema name: `ResponseQueuedEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -73988,7 +74240,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"shell_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -74024,7 +74276,7 @@ Schema name: `ResponseQueuedEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -74092,7 +74344,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"apply_patch_call"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -74142,7 +74394,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"apply_patch_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -74347,7 +74599,7 @@ Schema name: `ResponseQueuedEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -74423,7 +74675,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"custom_tool_call_output"`
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -74630,7 +74882,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -74834,7 +75086,9 @@ Schema name: `ResponseQueuedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -74881,7 +75135,7 @@ Schema name: `ResponseQueuedEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -74955,7 +75209,7 @@ Schema name: `ResponseQueuedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -75021,7 +75275,7 @@ Schema name: `ResponseQueuedEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -75125,7 +75379,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -75230,13 +75484,13 @@ Schema name: `ResponseQueuedEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -75332,7 +75586,7 @@ Schema name: `ResponseQueuedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -75472,7 +75726,7 @@ Schema name: `ResponseQueuedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -75553,7 +75807,7 @@ Schema name: `ResponseQueuedEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -75609,7 +75863,7 @@ Schema name: `ResponseQueuedEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -75710,7 +75964,7 @@ Schema name: `ResponseQueuedEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -75893,7 +76147,7 @@ Schema name: `ResponseQueuedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional ServiceTier or null`
 
@@ -76054,7 +76308,7 @@ Schema name: `ResponseQueuedEvent`
 
     - `"disabled"`
 
-  - `usage: optional ResponseUsage`
+  - `usage: optional ResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -76092,7 +76346,7 @@ Schema name: `ResponseQueuedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -76120,10 +76374,22 @@ Schema name: `ResponseQueuedEvent`
 {
   "type": "response.queued",
   "response": {
-    "id": "res_123",
+    "id": "resp_123",
+    "object": "response",
+    "access_programs": null,
+    "created_at": 1609459200,
     "status": "queued",
-    "created_at": "2021-01-01T00:00:00Z",
-    "updated_at": "2021-01-01T00:00:00Z"
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "model": "gpt-6-astra",
+    "output": [],
+    "parallel_tool_calls": true,
+    "temperature": 1,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1,
+    "metadata": {}
   },
   "sequence_number": 1
 }
@@ -76172,6 +76438,7 @@ Schema name: `ResponseCustomToolCallInputDeltaEvent`
 ```json
 {
   "type": "response.custom_tool_call_input.delta",
+  "sequence_number": 1,
   "output_index": 0,
   "item_id": "ctc_1234567890abcdef",
   "delta": "partial input text"
@@ -76221,6 +76488,7 @@ Schema name: `ResponseCustomToolCallInputDoneEvent`
 ```json
 {
   "type": "response.custom_tool_call_input.done",
+  "sequence_number": 1,
   "output_index": 0,
   "item_id": "ctc_1234567890abcdef",
   "input": "final complete input text"
@@ -76669,7 +76937,7 @@ Schema name: `ResponseShellCallOutputContentDoneStreamingEvent`
 
   The output contents emitted for the shell command.
 
-  - `outcome: object { type }  or object { exit_code, type }`
+  - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
     Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 

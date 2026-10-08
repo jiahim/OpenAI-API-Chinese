@@ -1,4 +1,4 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取该页面的 Markdown 版本。
 
 ## 取消向量存储文件批处理
 
@@ -20,17 +20,17 @@
 
   - `id: string`
 
-    可在 API 端点中引用的标识符。
+    该标识符，可在 API 端点中引用。
 
   - `created_at: number`
 
-    向量存储文件批次的创建时间（Unix 时间戳，以秒为单位）。
+    向量存储文件批次的创建时间的 Unix 时间戳（以秒为单位）。
 
   - `file_counts: object { cancelled, completed, failed, 2 more }`
 
     - `cancelled: number`
 
-      已被取消的文件数量。
+      已取消的文件数量。
 
     - `completed: number`
 
@@ -38,21 +38,21 @@
 
     - `failed: number`
 
-      处理失败的的文件数量。
+      处理失败的文件数量。
 
     - `in_progress: number`
 
-      当前正在处理中的文件数量。
+      当前正在处理的文件数量。
 
     - `total: number`
 
       文件的总数。
 
-  - `object: "vector_store.files_batch"`
+  - `object: "vector_store.file_batch"`
 
     对象类型，始终为 `vector_store.file_batch`.
 
-    - `"vector_store.files_batch"`
+    - `"vector_store.file_batch"`
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
@@ -68,7 +68,7 @@
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 [文件](/api/reference/resources/files) 的 ID。
+    所属的 [vector store](/api/reference/resources/vector_stores) 的 ID。 [File](/api/reference/resources/files) 所附加到的。
 
 ### 示例
 
@@ -92,7 +92,7 @@ curl https://api.openai.com/v1/vector_stores/$VECTOR_STORE_ID/file_batches/$BATC
     "in_progress": 0,
     "total": 0
   },
-  "object": "vector_store.files_batch",
+  "object": "vector_store.file_batch",
   "status": "in_progress",
   "vector_store_id": "vector_store_id"
 }
@@ -122,7 +122,7 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files_batches/vsfb_abc123
     "completed": 3,
     "failed": 0,
     "cancelled": 0,
-    "total": 15,
+    "total": 15
   }
 }
 ```

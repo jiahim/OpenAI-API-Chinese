@@ -1,57 +1,57 @@
 # ChatKit
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt).可通过在页面 URL 末尾附加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取对应页面的 Markdown 版本。
 
-ChatKit 是构建智能体式聊天体验的最佳方式。无论你是在构建内部知识库助手、人力资源入职助手、研究伙伴、购物或日程安排助手、故障排查机器人、财务规划顾问，还是支持智能体，ChatKit 都提供了一个可自定义的聊天嵌入组件来处理所有用户体验细节。
+ChatKit 是构建智能体聊天体验的最佳方式。无论你是在构建内部知识库助手、入职助手、研究伙伴、购物或日程安排助手、故障排查机器人、财务规划顾问，还是支持类智能体，ChatKit 都提供了一个可定制的聊天嵌入组件，用于处理所有用户体验细节。
 
-借助 ChatKit 的可嵌入 UI 组件、可自定义提示、工具调用支持、文件附件以及思维链可视化，你可以在无需重新构建聊天界面的情况下构建智能体。
+使用 ChatKit 的可嵌入 UI 组件、可定制提示、工具调用支持、文件附件和思维链可视化来构建智能体，而无需重新发明聊天 UI。
 
 ## 概述
 
 在两条 ChatKit 路径之间选择：
 
-- **自定义服务端集成**。在你自己的基础设施上运行 ChatKit。使用 ChatKit Python SDK，并连接到任何智能体服务，包括使用 [Agents SDK](https://developers.openai.com/api/docs/guides/agents)。构建的服务。使用 widget 构建前端。
-- **现有的 智能体 Builder 托管集成**。如果你已经在 ChatKit 中使用 智能体 Builder 工作流，可以在 智能体 Builder 过渡期内继续使用该托管 工作流。
+- **自定义服务端集成**. 在你自己的基础设施上运行 ChatKit。使用 ChatKit Python SDK 并连接到任何智能体服务，包括使用 [Agents SDK](https://developers.openai.com/api/docs/guides/agents). 使用 widgets 构建前端。
+- **现有的 智能体 Builder 托管集成**. 如果你已经在使用带有 智能体 Builder 工作流 的 ChatKit，你可以在 智能体 Builder 过渡期内继续使用该托管 工作流。
 
-OpenAI 正在弃用 智能体 Builder。现有用户可以继续使用它
-  在过渡期内使用，该产品计划于
-  2026 年 11 月 30 日停用。ChatKit 仍可使用。对于新工作或迁移
+OpenAI 正在弃用 智能体 Builder。现有用户在过渡期内可以继续使用它
+  ，该产品计划于
+  2026 年 11 月 30 日停用。ChatKit 仍可使用。对于新项目或迁移
   规划，请使用 [高级 ChatKit 集成](https://developers.openai.com/api/docs/guides/custom-chatkit)
-  搭配你自己的 服务端 智能体 实现，并参阅 [从 智能体
-  Builder 迁移](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder) ，获取 智能体
+  结合你自己的 服务端 智能体 实现，并参阅 [从 智能体
+  Builder 迁移](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder) 获取 智能体
   Builder 过渡指引。
 
 ## ChatKit 入门
 
-- **[自定义服务器集成](https://developers.openai.com/api/docs/guides/custom-chatkit)**: 使用任意服务器和 ChatKit SDK 来构建你自己的自定义 ChatKit 用户体验
-- **[现有的托管工作流](#embed-chatkit-in-your-frontend)**: 在过渡窗口期间，将 ChatKit 连接到现有的智能体 Builder 工作流
+- **[自定义服务端集成](https://developers.openai.com/api/docs/guides/custom-chatkit)**: 使用任意服务端以及 ChatKit SDK 构建你自己的 ChatKit 用户体验
+- **[现有托管工作流](#embed-chatkit-in-your-frontend)**: 在过渡期内将 ChatKit 接入现有的智能体 Builder 工作流
 
 ## 在你的前端中嵌入 ChatKit
 
-仅当您已有支持 ChatKit 实现的智能体 Builder 工作流 时，才使用此路径。对于新的 ChatKit 应用，或在智能体 Builder 关闭前进行迁移时，请使用 [进阶集成](https://developers.openai.com/api/docs/guides/custom-chatkit) 将 ChatKit 连接到您自己的服务端 智能体 实现。
+仅当你的 ChatKit 实现已经由一个智能体 Builder工作流支撑时，才使用此路径。对于新的 ChatKit 应用，或在智能体 Builder 关闭前进行迁移时，请使用 [高级集成](https://developers.openai.com/api/docs/guides/custom-chatkit) 将 ChatKit 连接到你自己服务端的智能体实现。
 
-从总体上看，使用现有的托管工作流 设置 ChatKit 分为三步。在智能体 Builder 仍可用的期间，打开您现有的工作流。然后设置 ChatKit 并添加功能以构建您的聊天体验。
+从高层次来看，使用现有的托管工作流设置 ChatKit 是一个三步流程。在智能体 Builder 仍然可用时，打开你现有的工作流。然后设置 ChatKit 并添加功能以构建你的聊天体验。
 
 
 
 ![OpenAI-hosted ChatKit](https://cdn.openai.com/API/docs/images/openai-hosted.png)
 
-### 1. 使用现有的托管 工作流
+### 1. 使用现有的托管工作流
 
-在 工作流 中打开你现有的 [智能体 Builder](https://developers.openai.com/api/docs/guides/agent-builder)。你将获得一个 工作流 ID。有关过渡规划，请参阅 [从 智能体 Builder 迁移](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder).
+在 工作流 中打开现有的 [智能体 Builder](https://developers.openai.com/api/docs/guides/agent-builder)。你会获得一个 工作流 ID。有关迁移规划，请参阅 [从 智能体 Builder 迁移](https://developers.openai.com/api/docs/guides/agent-builder/migrate-from-agent-builder).
 
-你前端中嵌入的聊天将指向你选择的 工作流。
+你前端中嵌入的聊天界面将指向你所选择的 工作流。
 
 ### 2. 在你的产品中设置 ChatKit
 
-要设置 ChatKit，你需要创建一个 ChatKit 会话和一个服务端端点，传入你的工作流 ID，交换客户端密钥，并添加一个脚本以在网站上嵌入 ChatKit。
+要设置 ChatKit，你需要创建一个 ChatKit 会话和一个服务端端点，传入你的 工作流 ID，交换客户端密钥，并向你的网站添加一段脚本来嵌入 ChatKit。
 
-**重要安全提示：** 创建 ChatKit 会话时，你必须传入一个 `user` 参数，该参数对于每个最终用户都应是唯一的。你的服务器必须
-对应用的用户进行身份验证，并在该参数中为他们传入一个唯一的标识符。
+**重要安全提示：** 创建 ChatKit 会话时，你必须传入一个 `user` 参数，该参数应对每个最终用户唯一。你的服务端必须
+对应用的用户进行身份验证，并在该参数中为每个用户传入一个唯一标识符。
 
-1. 在你的服务端生成一个客户端令牌。
+1. 在你的服务器上生成客户端令牌。
 
-   以下示例启动一个服务，该服务通过 OpenAI API 创建一个 ChatKit 会话，并返回该会话的客户端密钥：
+   下面的示例启动一个服务，通过 OpenAI API 创建 ChatKit 会话并返回该会话的客户端密钥：
 
 ```python
 # Replace the illustrative IDs and URLs below with your own resource values.
@@ -179,15 +179,17 @@ server.start
 
    对于 Ruby，使用以下命令安装 WEBrick `gem install webrick`.
 
-   在启动服务之前，替换 `wf_123` 为你自己的 工作流 ID，并设置 `OPENAI_API_KEY` 和 `CHATKIT_AUTHENTICATED_USERS`。后者是一个 JSON 映射，将你应用的 bearer token 映射到稳定的用户 ID。在生产环境中，将这个基于环境变量的映射替换为你应用的身份验证或会话查询逻辑。
+   在启动服务之前，替换 `wf_123` 为你的 工作流 ID 并设置 `OPENAI_API_KEY` 和 `CHATKIT_AUTHENTICATED_USERS`。后者的值是一个 JSON 映射，将你应用的持有者令牌映射到稳定的用户 ID。在生产环境中，请将此由环境变量支持的映射替换为你应用的身份验证或会话查询逻辑。
 
-2. 在你的服务端代码中，将你的工作流 ID 和密钥传递给会话端点。
+2. 在你的服务端代码中，将你的工作流 ID 和密钥传递到会话端点。
 
-   客户端密钥是你的 ChatKit 前端用于打开或刷新聊天会话的凭证。你不需要存储它，而是会立即将其移交给 ChatKit 客户端库。
+   客户端密钥是你的 ChatKit 前端用于打开或刷新聊天会话的凭证。你不需要存储它；而是立即将其交接给 ChatKit 客户端库。
 
-   请参阅 [chatkit-js 仓库](https://github.com/openai/chatkit-js) （位于 GitHub）。
+   请参阅 [chatkit-js 仓库](https://github.com/openai/chatkit-js) ，位于 GitHub。
 
-   chatkit.js
+   对于 Go，运行 `go get github.com/openai/openai-go/v3@v3.70.0`。对于 Java，添加 Maven 依赖 `com.openai:openai-java:4.75.1`.
+
+   创建 ChatKit 会话令牌
 
 ```javascript
 export default async function getChatKitSessionToken(deviceId) {
@@ -225,14 +227,58 @@ export default async function getChatKitSessionToken(deviceId) {
 }
 ```
 
+```go
+// Call after authenticating the request. Pass the user's stable ID from your
+// server-side authentication context, never a client-supplied device ID.
+func getChatKitSessionToken(ctx context.Context, client openai.Client, authenticatedUserID string) (string, error) {
+	// Replace this illustrative workflow ID with your published workflow.
+	session, err := client.Beta.ChatKit.Sessions.New(ctx, openai.BetaChatKitSessionNewParams{
+		User: authenticatedUserID,
+		Workflow: openai.ChatSessionWorkflowParam{
+			ID: "wf_68df4b13b3588190a09d19288d4610ec0df388c3983f58d1",
+		},
+	})
+	if err != nil {
+		return "", err
+	}
+	return session.ClientSecret, nil
+}
+```
 
-3. 在你的项目目录中，安装 ChatKit React 绑定：
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.chatkit.sessions.*;
+import com.openai.models.beta.chatkit.threads.ChatSessionWorkflowParam;
+
+// Call after authenticating the request. Pass the user's stable ID from your
+// server-side authentication context, never a client-supplied device ID.
+static String getChatKitSessionToken(OpenAIClient client, String authenticatedUserId) {
+  // Replace this illustrative workflow ID with your published workflow.
+  return client
+      .beta()
+      .chatkit()
+      .sessions()
+      .create(
+          SessionCreateParams.builder()
+              .user(authenticatedUserId)
+              .workflow(
+                  ChatSessionWorkflowParam.builder()
+                      .id("wf_68df4b13b3588190a09d19288d4610ec0df388c3983f58d1")
+                      .build())
+              .build())
+      .clientSecret();
+}
+```
+
+
+3. 在项目目录中，安装 ChatKit React 绑定：
 
 ```bash
    npm install @openai/chatkit-react
 ```
 
-4. 将 ChatKit JS 脚本添加到你的页面。把以下代码片段放入你页面的 `<head>` 或你加载脚本的任何位置，浏览器将为你获取并运行 ChatKit。
+4. 将 ChatKit JS 脚本添加到你的页面中。将以下代码片段放入你的页面的 `<head>` 或你加载脚本的任何位置，浏览器将为你获取并运行 ChatKit。
 
    index.html
 
@@ -244,7 +290,7 @@ async
 ```
 
 
-5. 在你的界面中渲染 ChatKit。向 React 的 `MyChat` 组件传入一个 `getAppAuthToken` 函数，该函数返回当前用户的 bearer token。如果你使用 JavaScript 选项卡，请在代码片段的作用域中提供相同的函数。此代码将该凭证发送到你的服务器，获取客户端密钥，并挂载一个连接到你工作流的实时聊天组件。
+5. 在 UI 中渲染 ChatKit。将 React `MyChat` 组件传入一个 `getAppAuthToken` 函数，该函数返回当前用户的 bearer 令牌。如果你使用 JavaScript 选项卡，请在代码片段的作用域中提供相同的函数。此代码将该凭证发送到你的服务器，获取客户端密钥，并挂载一个连接到你的工作流的实时聊天组件。
 
    你的前端代码
 
@@ -311,7 +357,7 @@ import { ChatKit, useChatKit } from '@openai/chatkit-react';
 
 ### 3. 构建并迭代
 
-查看 [自定义主题](https://developers.openai.com/api/docs/guides/chatkit-themes), [widget](https://developers.openai.com/api/docs/guides/chatkit-widgets)，以及 [操作](https://developers.openai.com/api/docs/guides/chatkit-actions) 文档，详细了解 ChatKit 的工作原理。或者参考以下资源，测试你的聊天功能、迭代提示词，并添加 widget 和工具。
+请参阅 [自定义主题](https://developers.openai.com/api/docs/guides/chatkit-themes), [小部件](https://developers.openai.com/api/docs/guides/chatkit-widgets)，以及 [操作](https://developers.openai.com/api/docs/guides/chatkit-actions) 文档以了解更多关于 ChatKit 的工作原理。或者浏览以下资源，以测试你的聊天、优化提示，并添加小组件和工具。
 
 #### 构建你的实现
 
@@ -353,7 +399,7 @@ import { ChatKit, useChatKit } from '@openai/chatkit-react';
 
       Play with an interactive demo to learn by doing.](https://chatkit.studio/playground)
 
-#### 查看可运行示例
+#### 查看实际示例
 
 [GitHub 上的示例
 
@@ -361,7 +407,7 @@ import { ChatKit, useChatKit } from '@openai/chatkit-react';
 
       See working examples of ChatKit and get inspired.](https://github.com/openai/openai-chatkit-advanced-samples)
 
-[入门应用代码仓库
+[入门应用仓库
 
 
 
@@ -369,4 +415,4 @@ import { ChatKit, useChatKit } from '@openai/chatkit-react';
 
 ## 后续步骤
 
-当你对 ChatKit 实现满意后，了解如何通过 [评估](https://developers.openai.com/api/docs/guides/agent-evals). 对于新的 ChatKit 应用，或者要将现有的 ChatKit 应用从 智能体 Builder 托管的 智能体 中移出，请参阅 [高级集成文档](https://developers.openai.com/api/docs/guides/custom-chatkit).
+当你对 ChatKit 实现满意后，可以学习如何通过以下方式对其进行优化 [evals](https://developers.openai.com/api/docs/guides/agent-evals)。对于新的 ChatKit 应用，或要将现有 ChatKit 应用从 智能体 Builder 托管的 工作流 中迁移出来，请参阅 [advanced integration docs](https://developers.openai.com/api/docs/guides/custom-chatkit).

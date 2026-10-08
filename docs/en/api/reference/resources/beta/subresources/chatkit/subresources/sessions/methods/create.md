@@ -243,39 +243,39 @@ curl https://api.openai.com/v1/chatkit/sessions \
 
 ```json
 {
-  "id": "id",
+  "id": "cksess_123",
   "chatkit_configuration": {
     "automatic_thread_titling": {
       "enabled": true
     },
     "file_upload": {
       "enabled": true,
-      "max_file_size": 0,
-      "max_files": 0
+      "max_file_size": 16,
+      "max_files": 20
     },
     "history": {
       "enabled": true,
-      "recent_threads": 0
+      "recent_threads": 10
     }
   },
-  "client_secret": "client_secret",
-  "expires_at": 0,
-  "max_requests_per_1_minute": 0,
+  "client_secret": "ek_token_123",
+  "expires_at": 1712349876,
+  "max_requests_per_1_minute": 60,
   "object": "chatkit.session",
   "rate_limits": {
-    "max_requests_per_1_minute": 0
+    "max_requests_per_1_minute": 60
   },
   "status": "active",
-  "user": "user",
+  "user": "user_789",
   "workflow": {
-    "id": "id",
+    "id": "workflow_alpha",
     "state_variables": {
-      "foo": "string"
+      "message": "hello"
     },
     "tracing": {
       "enabled": true
     },
-    "version": "version"
+    "version": "2024-10-01"
   }
 }
 ```
@@ -288,17 +288,8 @@ curl https://api.openai.com/v1/chatkit/sessions \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "OpenAI-Beta: chatkit_beta=v1" \
   -d '{
-    "workflow": {
-      "id": "workflow_alpha",
-      "version": "2024-10-01"
-    },
-    "scope": {
-      "project": "alpha",
-      "environment": "staging"
-    },
-    "expires_after": 1800,
-    "max_requests_per_1_minute": 60,
-    "max_requests_per_session": 500
+    "user": "user_123",
+    "workflow": {"id": "workflow_alpha"}
   }'
 ```
 
@@ -306,18 +297,37 @@ curl https://api.openai.com/v1/chatkit/sessions \
 
 ```json
 {
-  "client_secret": "chatkit_token_123",
+  "id": "cksess_123",
+  "object": "chatkit.session",
+  "client_secret": "ek_example_00eyJleHBpcmVzX2F0IjogMTczNTY4OTYwMH0=",
   "expires_at": 1735689600,
   "workflow": {
     "id": "workflow_alpha",
-    "version": "2024-10-01"
+    "version": null,
+    "state_variables": null,
+    "tracing": {
+      "enabled": true
+    }
   },
-  "scope": {
-    "project": "alpha",
-    "environment": "staging"
+  "user": "user_123",
+  "rate_limits": {
+    "max_requests_per_1_minute": 10
   },
-  "max_requests_per_1_minute": 60,
-  "max_requests_per_session": 500,
-  "status": "active"
+  "max_requests_per_1_minute": 10,
+  "status": "active",
+  "chatkit_configuration": {
+    "automatic_thread_titling": {
+      "enabled": true
+    },
+    "file_upload": {
+      "enabled": false,
+      "max_file_size": 512,
+      "max_files": 10
+    },
+    "history": {
+      "enabled": true,
+      "recent_threads": null
+    }
+  }
 }
 ```

@@ -11,7 +11,7 @@ Thank you to everyone who used the Assistants API. We appreciate everything you 
 
 Use this guide to migrate your integration to the [Responses API](https://developers.openai.com/api/docs/guides/migrate-to-responses).
 
-Responses are simpler—send input items and get output items back. With the Responses API, you also get better performance and new features like [deep research](https://developers.openai.com/api/docs/guides/deep-research), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), and [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use). This change also lets you manage conversations instead of passing back `previous_response_id`.
+Responses are simpler—send input items and get output items back. With the Responses API, you also get better performance and new features like [web search](https://developers.openai.com/api/docs/guides/tools-web-search), [MCP](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), and [computer use](https://developers.openai.com/api/docs/guides/tools-computer-use). This change also lets you manage conversations instead of passing back `previous_response_id`.
 
 ### What's changed?
 
@@ -85,7 +85,98 @@ A thread was a collection of messages stored server-side. Threads could _only_ s
 
 #### Python
 
+
+
+#### Thread object
+
+```python
+thread = openai.beta.threads.create(
+    messages=[{"role": "user", "content": "what are the 5 Ds of dodgeball?"}],
+    metadata={"user_id": "peter_le_fleur"},
+)
+```
+
+#### Conversation object
+
+```python
+conversation = openai.conversations.create(
+    items=[{"role": "user", "content": "what are the 5 Ds of dodgeball?"}],
+    metadata={"user_id": "peter_le_fleur"},
+)
+```
+
+
+
 #### Go
+
+
+
+#### Thread object (Go)
+
+```go
+thread, err := client.Beta.Threads.New(context.Background(), openai.BetaThreadNewParams{
+	Messages: []openai.BetaThreadNewParamsMessage{{
+		Role: "user",
+		Content: openai.BetaThreadNewParamsMessageContentUnion{
+			OfString: openai.String("what are the 5 Ds of dodgeball?"),
+		},
+	}},
+	Metadata: shared.Metadata{"user_id": "peter_le_fleur"},
+})
+if err != nil {
+	panic(err)
+}
+```
+
+#### Conversation object (Go)
+
+```go
+conversation, err := client.Conversations.New(context.Background(), conversations.ConversationNewParams{
+	Items: []responses.ResponseInputItemUnionParam{
+		responses.ResponseInputItemParamOfMessage("what are the 5 Ds of dodgeball?", responses.EasyInputMessageRoleUser),
+	},
+	Metadata: shared.Metadata{"user_id": "peter_le_fleur"},
+})
+if err != nil {
+	panic(err)
+}
+```
+
+
+
+#### JavaScript
+
+
+
+#### Thread object (JavaScript)
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const thread = await client.beta.threads.create({
+  messages: [{ role: "user", content: "what are the 5 Ds of dodgeball?" }],
+  metadata: { user_id: "peter_le_fleur" },
+});
+console.log(thread.id);
+```
+
+#### Conversation object (JavaScript)
+
+```javascript
+import OpenAI from "openai";
+
+const client = new OpenAI();
+
+const conversation = await client.conversations.create({
+  items: [{ role: "user", content: "What are the five Ds of dodgeball?" }],
+  metadata: { user_id: "peter_le_fleur" },
+});
+
+console.log(conversation.id);
+```
+
+
 
 ### Response example
 
@@ -132,7 +223,133 @@ Responses are designed to be used alone, but you can also use them with prompt a
 
 #### Python
 
+
+
+#### Run object
+
+```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+import time
+
+from openai import OpenAI
+
+openai = OpenAI()
+thread_id = "thread_123"
+assistant_id = "asst_123"
+
+run = openai.beta.threads.runs.create(
+    thread_id=thread_id,
+    assistant_id=assistant_id,
+)
+
+while run.status in ("queued", "in_progress"):
+    time.sleep(1)
+    run = openai.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
+```
+
+#### Response object
+
+```python
+# Replace the illustrative IDs and URLs below with your own resource values.
+
+from openai import OpenAI
+
+openai = OpenAI()
+conversation_id = "conv_123"
+
+response = openai.responses.create(
+    model="gpt-6-astra",
+    input=[{"role": "user", "content": "What are the 5 Ds of dodgeball?"}],
+    conversation=conversation_id,
+)
+```
+
+
+
 #### Go
+
+
+
+#### Run object (Go)
+
+```go
+run, err := client.Beta.Threads.Runs.New(context.Background(), "thread_abc123", openai.BetaThreadRunNewParams{
+	AssistantID: "asst_abc123",
+})
+if err != nil {
+	panic(err)
+}
+for run.Status == openai.RunStatusQueued || run.Status == openai.RunStatusInProgress {
+	time.Sleep(time.Second)
+	run, err = client.Beta.Threads.Runs.Get(context.Background(), "thread_abc123", run.ID)
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+#### Response object (Go)
+
+```go
+_, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model: "gpt-6-astra",
+	Input: responses.ResponseNewParamsInputUnion{OfInputItemList: responses.ResponseInputParam{
+		responses.ResponseInputItemParamOfMessage("What are the 5 Ds of dodgeball?", responses.EasyInputMessageRoleUser),
+	}},
+	Conversation: responses.ResponseNewParamsConversationUnion{OfString: openai.String("conv_abc123")},
+})
+if err != nil {
+	panic(err)
+}
+```
+
+
+
+#### JavaScript
+
+
+
+#### Run object (JavaScript)
+
+```javascript
+import { setTimeout } from "node:timers/promises";
+import OpenAI from "openai";
+
+const client = new OpenAI();
+// Replace these illustrative IDs with your own resources.
+const threadId = "thread_123";
+const assistantId = "asst_123";
+let run = await client.beta.threads.runs.create(threadId, {
+  assistant_id: assistantId,
+});
+while (run.status === "queued" || run.status === "in_progress") {
+  await setTimeout(1000);
+  run = await client.beta.threads.runs.retrieve(run.id, {
+    thread_id: threadId,
+  });
+}
+console.log(run.status);
+```
+
+#### Response object (JavaScript)
+
+```javascript
+// Replace the illustrative IDs and URLs below with your own resource values.
+import OpenAI from "openai";
+
+const client = new OpenAI();
+const conversationId = "conv_123";
+
+const response = await client.responses.create({
+  model: "gpt-6-astra",
+  input: [{ role: "user", content: "What are the five Ds of dodgeball?" }],
+  conversation: conversationId,
+});
+
+console.log(response.output_text);
+```
+
+
 
 ### Response example
 
@@ -541,6 +758,111 @@ async def message(message: Message):
     )
 
     return {"content": response.output_text}
+```
+
+```go
+func main() {
+	client := openai.NewClient()
+	server := &http.Server{
+		Addr:              "127.0.0.1:8000",
+		Handler:           newChatHandler(client),
+		ReadHeaderTimeout: 5 * time.Second,
+	}
+	log.Fatal(server.ListenAndServe())
+}
+
+func newChatHandler(client openai.Client) http.Handler {
+	var mutex sync.Mutex
+	type sessionConversation struct {
+		ready        chan struct{}
+		id           string
+		err          error
+		responseSlot chan struct{}
+	}
+	conversationsBySession := map[string]*sessionConversation{}
+	mux := http.NewServeMux()
+	mux.HandleFunc("POST /messages", func(w http.ResponseWriter, r *http.Request) {
+		var message struct {
+			Content   string `json:"content"`
+			SessionID string `json:"session_id"`
+		}
+		if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 1<<20)).Decode(&message); err != nil || strings.TrimSpace(message.Content) == "" || strings.TrimSpace(message.SessionID) == "" {
+			http.Error(w, "content and session_id must be non-empty strings", 400)
+			return
+		}
+		// A demo session map. Bind session IDs to authenticated users in your application.
+		mutex.Lock()
+		session, exists := conversationsBySession[message.SessionID]
+		if !exists {
+			session = &sessionConversation{ready: make(chan struct{}), responseSlot: make(chan struct{}, 1)}
+			conversationsBySession[message.SessionID] = session
+		}
+		mutex.Unlock()
+		if !exists {
+			go func() {
+				// Creation belongs to the shared session, not the first HTTP request.
+				ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+				defer cancel()
+				conversation, err := client.Conversations.New(ctx, conversations.ConversationNewParams{})
+				session.err = err
+				if err == nil {
+					session.id = conversation.ID
+				}
+				mutex.Lock()
+				if err != nil {
+					delete(conversationsBySession, message.SessionID)
+				}
+				close(session.ready)
+				mutex.Unlock()
+			}()
+		}
+		select {
+		case <-r.Context().Done():
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		case <-session.ready:
+		}
+		if session.err != nil {
+			http.Error(w, "Could not create conversation", http.StatusInternalServerError)
+			return
+		}
+		// Serialize responses within this conversation; waiting requests can cancel.
+		select {
+		case session.responseSlot <- struct{}{}:
+			defer func() { <-session.responseSlot }()
+		case <-r.Context().Done():
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		}
+		if r.Context().Err() != nil {
+			http.Error(w, "Request cancelled", http.StatusRequestTimeout)
+			return
+		}
+		// Replace this illustrative stored prompt ID with your prompt.
+		result, err := client.Responses.New(r.Context(), responses.ResponseNewParams{
+			Prompt: responses.ResponsePromptParam{
+				ID: "pmpt_123",
+			},
+			Input: responses.ResponseNewParamsInputUnion{
+				OfString: openai.String(message.Content),
+			},
+			Conversation: responses.ResponseNewParamsConversationUnion{
+				OfString: openai.String(session.id),
+			},
+		})
+		if err != nil || result.Status != responses.ResponseStatusCompleted {
+			http.Error(w, "Could not create response", 500)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(map[string]string{
+			"content": result.OutputText(),
+		}); err != nil {
+			log.Print(err)
+		}
+	})
+	return mux
+}
 ```
 
 ```ruby

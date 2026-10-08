@@ -1,12 +1,12 @@
-# 检索
+# Retrieval
 
-> 完整文档索引请参阅 [llms.txt](/llms.txt). 你也可以通过在页面 URL 末尾追加 `.md` 来获取该页面对应的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 后追加 `.md` 来获取文档页面的 Markdown 版本。
 
-该 **Retrieval API** 允许你执行 [**语义搜索**](#semantic-search) ，对数据采用一种能够返回语义相似结果的技术——即使查询与结果之间几乎没有或完全没有关键词重叠。检索本身已经很有用，但当与我们的模型结合以综合生成回答时尤为强大。
+该 **检索 API** 允许你执行 [**语义搜索**](#semantic-search) 来检索你的数据，这是一种即使在关键词匹配很少或没有的情况下，也能返回语义相似结果的技术。检索本身已很有用，但与我们的模型结合以综合生成回答时尤为强大。
 
 ![检索示意图](https://cdn.openai.com/API/docs/images/retrieval-depiction.png)
 
-Retrieval API 由 [**向量存储**](#vector-stores)，提供支持，向量存储充当数据的索引。本指南将介绍如何执行语义搜索，并深入讲解向量存储的细节。
+检索 API 由 [**向量存储**](#vector-stores)，提供支持，它充当数据的索引。本指南将介绍如何执行语义搜索，并详细说明向量存储的相关细节。
 
 ## 快速入门
 
@@ -208,30 +208,30 @@ puts(results.data&.first&.content)
 ```
 
 
-要了解如何将结果与我们的模型配合使用，请参阅 [合成
-  响应](#synthesizing-responses) 部分。
+要了解如何在我们的模型中使用这些结果，请参阅 [synthesizing
+  responses](#synthesizing-responses) 部分。
 
-## 语义搜索
+## Semantic search
 
-**语义搜索** 是一种利用 [向量嵌入](https://developers.openai.com/api/docs/guides/embeddings) 来呈现语义相关结果的技术。重要的是，这包括几乎没有或没有共同关键词的结果，而这些结果可能被传统搜索技术遗漏。
+**语义搜索** 是一种利用 [向量嵌入](https://developers.openai.com/api/docs/guides/embeddings) 来召回语义相关结果的技术。重要的是，这其中也包括关键词重叠很少甚至没有重叠的结果——而这正是传统搜索技术可能遗漏的部分。
 
-例如，让我们看看以下查询可能返回的结果： `"When did we go to the moon?"`:
+例如，我们来看一下针对 `"When did we go to the moon?"`:
 
 | 文本                                              | 关键词相似度 | 语义相似度 |
 | ------------------------------------------------- | ------------------ | ------------------- |
-| 首次登月发生在 1969 年 7 月。 | 0%                 | 65%                 |
+| 第一次登月发生在 1969 年 7 月。 | 0%                 | 65%                 |
 | 首位登上月球的人是尼尔·阿姆斯特朗。     | 27%                | 43%                 |
-| 我吃月饼时，味道很美味。       | 40%                | 28%                 |
+| 当我吃月饼时，味道很好。       | 40%                | 28%                 |
 
-_(关键词相似度使用 [交并比](https://en.wikipedia.org/wiki/Jaccard_index);语义相似度使用 [余弦相似度](https://en.wikipedia.org/wiki/Cosine_similarity) 实现 `text-embedding-3-small`.)_
+_(关键词相似度使用 [交并比](https://en.wikipedia.org/wiki/Jaccard_index);语义相似度使用 [余弦相似度](https://en.wikipedia.org/wiki/Cosine_similarity) 使用 `text-embedding-3-small`.)_
 
-注意，最相关的结果中并不包含搜索查询里的任何词语。这种灵活性使语义搜索成为查询任意规模知识库的强大技术。
+注意，最相关的结果中并不包含搜索查询里的任何词汇。这种灵活性使得语义搜索成为查询任意规模知识库的强大技术。
 
-语义搜索由 [向量存储](#vector-stores)，驱动,我们将在本指南后文详细介绍。本节将重点讲解语义搜索的工作机制。
+语义搜索由 [向量存储](#vector-stores)，驱动,我们将在本指南后面详细讨论。本节将聚焦于语义搜索的运行机制。
 
 ### 执行语义搜索
 
-你可以使用以下方式查询向量存储 `search` 函数并指定一个 `query` 以自然语言形式进行查询。该接口会返回一个结果列表，每个结果都包含相关的文本片段、相似度分数以及来源文件。
+你可以使用 `search` 函数并通过自然语言指定 `query` 来查询向量存储。结果将返回一个列表，其中每项包含相关的分块、相似度分数以及来源文件。
 
 搜索查询
 
@@ -349,25 +349,25 @@ puts(results.data&.first&.content)
 ```
 
 
-响应默认最多包含 10 条结果，但你可以通过设置最多 50 条 `max_num_results` 参数。
+默认情况下，响应最多包含 10 个结果，但你可以使用 `max_num_results` 参数将其设置为最多 50 个。
 
-### 查询改写
+### Query rewriting
 
-某些查询方式能得到更好的效果，因此我们提供了一个设置项，可以自动改写你的查询以获得最佳性能。设置以下字段即可启用该功能： `rewrite_query=true` 在执行 `search`.
+某些查询风格能带来更好的效果，因此我们提供了一个设置，可以自动改写你的查询以获得最佳性能。通过设置来启用此功能 `rewrite_query=true` 在执行 `search`.
 
 改写后的查询将可在结果的 `search_query` 字段中获取。
 
-| **原始**                                                          | **改写后**                              |
+| **Original**                                                          | **Rewritten**                              |
 | --------------------------------------------------------------------- | ------------------------------------------ |
-| 我想知道主办公楼的高度。              | 主办公楼高度             |
-| 运输危险品有哪些安全规定？ | 危险品安全规定 |
-| 我该如何就服务问题提交投诉？                      | 服务投诉提交流程           |
+| 我想知道主办公楼的高度。              | primary office building height             |
+| 运输危险品的安全规定有哪些？ | safety regulations for hazardous materials |
+| 我该如何就服务问题提交投诉？                      | service complaint filing process           |
 
-### 属性过滤
+### 属性筛选
 
-属性过滤通过应用条件（例如将搜索限制在特定日期范围内）来缩小结果范围。你可以定义条件并在 `attribute_filter` 中组合它们，以便在执行语义搜索之前根据文件属性定位目标文件。
+属性过滤可以通过应用条件（例如将搜索限制在特定日期范围内）来缩小结果范围。你可以在 `attribute_filter` 中根据文件的属性来定位文件，然后再执行语义搜索。
 
-使用 **比较过滤器** 将文件中某个特定的 `key` 与给定的 `attributes` 进行比较，以及使用 `value`，进行 **复合过滤器** 使用 `and` 和 `or`.
+使用 **比较过滤器** 将文件中的某个 `key` 与给定的 `attributes` 进行比较，使用 `value`，以及 **复合过滤器** 使用 `and` 和 `or`.
 
 比较过滤器
 
@@ -518,36 +518,36 @@ puts(results.data&.first&.content)
 
 ### Ranking
 
-如果你发现你的文件搜索结果相关性不足，可以调整 `ranking_options` 以提升响应质量。其中包括指定一个 `ranker`，例如 `auto` 或 `default-2024-08-21`，并设置一个 `score_threshold` ，取值范围为 0.0 到 1.0。较高的 `score_threshold` 会将结果限制为更相关的片段，但可能会排除一些潜在有用的片段。当提供 `ranking_options.hybrid_search` 时，你还可以调整 `hybrid_search.embedding_weight` (`rrf_embedding_weight`）以及 `hybrid_search.text_weight` (`rrf_text_weight`），以控制倒数排名融合在语义嵌入匹配与稀疏关键词匹配之间的平衡。增大前者可强调语义相似度，增大后者可强调文本重合度，并确保至少有一个权重大于零。
+如果你发现 文件搜索 的结果不够相关，可以调整 `ranking_options` 以提升响应质量，包括指定一个 `ranker`，例如 `auto` 或 `default-2024-08-21`，以及设置一个 `score_threshold` ，取值范围在 0.0 到 1.0 之间。较高的 `score_threshold` 会限制结果只包含更相关的片段，虽然这可能会排除一些可能有用的片段。当提供 `ranking_options.hybrid_search` 时，你还可以调整 `hybrid_search.embedding_weight` (`rrf_embedding_weight`）和 `hybrid_search.text_weight` (`rrf_text_weight`），用于控制倒数排名融合在语义嵌入匹配与稀疏关键词匹配之间的平衡。增大前者可强调语义相似度，增大后者可强调文本重叠度，并确保至少有一个权重大于零。
 
-## Vector stores
+## 向量存储
 
-向量存储是为 Retrieval API 和以下对象提供语义搜索功能的容器： [文件搜索](https://developers.openai.com/api/docs/guides/tools-file-search) 工具。当你向向量存储中添加文件时，它会自动被分块、嵌入并建立索引。
+向量存储是为 Retrieval API 和下面的 [文件搜索](https://developers.openai.com/api/docs/guides/tools-file-search) 工具提供语义搜索能力的容器。当你向向量存储中添加文件时，它会自动被分块、嵌入并建立索引。
 
-向量存储包含 `vector_store_file` 对象，这些对象由 `file` 对象提供支持。
+向量存储包含 `vector_store_file` 个由 `file` 对象支持的对象。
 
-| 对象类型 | 描述                                                                                                                                                                           |
+| 对象类型 | 说明                                                                                                                                                                           |
 | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `file`                                                                     | 表示通过 [Files API](https://developers.openai.com/api/reference/resources/files)。上传的内容。常与向量存储配合使用，但也可用于微调及其他用例。                      |
-| `vector_store`                                                             | 用于存储可搜索文件的容器。                                                                                                                                                       |
-| `vector_store.file`                                                        | 专门表示已分块并嵌入且已关联到某个 `file` 的包装类型。 `vector_store`. <br />包含用于 `attributes` 筛选的元数据映射。 |
+| `file`                                                                     | 表示通过 [Files API](https://developers.openai.com/api/reference/resources/files)。上传的内容。常与向量存储配合使用，但也用于微调和其他用途。                      |
+| `vector_store`                                                             | 可搜索文件的容器。                                                                                                                                                       |
+| `vector_store.file`                                                        | 一种包装类型，专门表示已分块并嵌入的 `file` ，并已关联到 `vector_store`. <br />包含 `attributes` 用于过滤的映射。 |
 
 ### 定价
 
-你将根据所有向量存储中使用的总存储量计费，该存储量由已解析分块及其对应嵌入的大小决定。
+你将根据所有向量存储中使用的总存储量计费，该存储量根据已解析分块的大小及其对应的嵌入向量确定。
 
 | 存储                        | 费用         |
 | ------------------------------ | ------------ |
-| 最高 1 GB（所有存储库合计） | 免费         |
+| 高达 1 GB（所有存储合计） | 免费         |
 | 超过 1 GB                    | $0.10/GB/天 |
 
-请参阅 [过期策略](#expiration-policies) 了解用于降低成本的选项。
+请参阅 [过期策略](#expiration-policies) 以了解可降低成本的选项。
 
 ### 向量存储操作
 
 
 
-创建
+Create
 
     Create vector store
 
@@ -620,7 +620,7 @@ puts(store.id)
   
 
     
-检索
+Retrieve
 
     Retrieve vector store
 
@@ -676,7 +676,7 @@ puts(store.id)
   
 
     
-更新
+Update
 
     Update vector store
 
@@ -745,7 +745,7 @@ puts(store.name)
   
 
     
-删除
+Delete
 
     Delete vector store
 
@@ -801,7 +801,7 @@ puts(deleted.deleted)
   
 
     
-列出
+List
 
     List vector stores
 
@@ -852,13 +852,13 @@ puts((stores.data || []).length)
 
 ### 向量存储文件操作
 
-某些操作（例如 `create` 用于 `vector_store.file`）是异步的，可能需要一些时间才能完成——可以使用我们的辅助函数（例如 `create_and_poll` ）阻塞等待完成。否则，你可以检查状态。从向量存储中删除文件最终是一致的，搜索结果在短时间内仍可能包含已删除文件中的内容。
+某些操作，例如 `create` ， `vector_store.file`，是异步的，可能需要一些时间才能完成——可以使用我们的辅助函数，例如 `create_and_poll` 来阻塞等待完成。否则，你可以检查状态。从向量存储中删除文件是最终一致的，搜索结果在短时间内可能仍会包含已删除文件的内容。
 
-添加文件按向量存储 ID 进行速率限制。对 [`/vector_stores/{vector_store_id}/files`](https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/create) 和 [`/vector_stores/{vector_store_id}/file_batches`](https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/create) 共享每个向量存储 300 次/分钟的限制。
+添加文件按每个向量存储 ID 单独进行速率限制。针对 [`/vector_stores/{vector_store_id}/files`](https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/create) 和 [`/vector_stores/{vector_store_id}/file_batches`](https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/create) 的请求共享每个向量存储每分钟 300 次的限制。
 
 
 
-创建
+Create
 
     Create vector store file
 
@@ -1034,7 +1034,7 @@ puts(vector_store_file.id)
   
 
     
-检索
+Retrieve
 
     Retrieve vector store file
 
@@ -1104,7 +1104,7 @@ puts(file.id)
   
 
     
-更新
+Update
 
     Update vector store file
 
@@ -1187,7 +1187,7 @@ puts(file.id)
   
 
     
-删除
+Delete
 
     Delete vector store file
 
@@ -1257,7 +1257,7 @@ puts(deleted.deleted)
   
 
     
-列出
+List
 
     List vector store files
 
@@ -1314,7 +1314,7 @@ puts((files.data || []).length)
 
 
 
-创建
+Create
 
     Batch create operation
 
@@ -1489,7 +1489,7 @@ puts(batch.status)
   
 
     
-检索
+Retrieve
 
     Batch retrieve operation
 
@@ -1635,7 +1635,7 @@ puts(batch.status)
   
 
     
-列出
+List
 
     List files in a batch
 
@@ -1705,13 +1705,13 @@ puts((files.data || []).length)
 
 
 
-创建批次时，你可以提供 `file_ids` 以及可选的 `attributes` 和/或 `chunking_strategy`，也可以使用 `files` 数组传入包含 `file_id` 以及可选的 `attributes` 和 `chunking_strategy` 的对象来为每个文件进行设置。两种方式互斥，因此你可以清晰地控制是让所有文件共享相同的设置，还是需要对单个文件进行覆盖。
+创建批处理时，你可以选择提供 `file_ids` 以及可选的 `attributes` 和/或 `chunking_strategy`，或者使用 `files` array to pass objects that include a `file_id` plus optional `attributes` 和 `chunking_strategy` for each file. The two options are mutually exclusive so that you can cleanly control whether every file shares the same settings or you need per-file overrides.
 
-为了在单个向量存储中获得更高的写入吞吐，我们建议尽可能采用批量创建。单个请求中批量最多可包含 500 个文件，相比发送大量单文件创建请求，这通常能减少资源争用并改善端到端延迟。
+For higher-throughput ingestion into a single vector store, we recommend batch creation whenever possible. Batches can include up to 500 files in one request, which usually reduces contention and improves end-to-end latency versus sending many single-file create requests.
 
 ### 属性
 
-每个 `vector_store.file` 可以拥有关联的 `attributes`，这是一组字典形式的值，可在执行 [语义搜索](#semantic-search) 实现 [属性筛选](#attribute-filtering)。时引用。字典最多包含 16 个键，每个键的长度上限为 256 个字符。
+每个 `vector_store.file` 都可以关联 `attributes`，这是一个在执行 [语义搜索](#semantic-search) 使用 [属性筛选](#attribute-filtering)。时可以引用的字典。该字典最多可以有 16 个键，每个键的长度限制为 256 个字符。
 
 使用属性创建向量存储文件
 
@@ -1803,9 +1803,9 @@ puts(file.id)
 
 ### 过期策略
 
-你可以在 `vector_store` 对象上设置过期策略， `expires_after`。一旦向量存储过期，所有关联的 `vector_store.file` 对象都将被删除，你也不再需要为它们付费。
+你可以为对象设置过期策略 `vector_store` 设置过期策略, `expires_after`.一旦某个 vector store 过期,所有关联的 `vector_store.file` 对象都将被删除,并且你将不再为它们付费。
 
-为向量存储设置过期策略
+为 vector store 设置过期策略
 
 ```javascript
 await client.vectorStores.update("vs_123", {
@@ -1889,15 +1889,15 @@ puts(store.expires_after)
 
 ### 限制
 
-最大文件大小为 512 MB。每个文件包含的令牌数不应超过 5,000,000 个（在你附加文件时自动计算）。
+最大文件大小为 512 MB。每个文件包含的 token 数不应超过 5,000,000（在你附加文件时会自动计算）。
 
-### Chunking
+### 分块
 
-默认情况下， `max_chunk_size_tokens` 设置为 `800` 和 `chunk_overlap_tokens` 设置为 `400`，这意味着每个文件都会被拆分为 800 个 token 的块进行索引，相邻块之间有 400 个 token 的重叠。
+默认情况下， `max_chunk_size_tokens` 设置为 `800` 和 `chunk_overlap_tokens` 设置为 `400`，这意味着每个文件都会被拆分为 800 个 token 的块进行索引，并且相邻块之间有 400 个 token 的重叠。
 
-你可以通过设置 [`chunking_strategy`](https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/create#vector-stores-files-createfile-chunking_strategy) 来调整这一点，当将文件添加到向量存储时。该策略存在某些限制：
+你可以在向向量存储添加文件时通过设置 [`chunking_strategy`](https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/create#vector-stores-files-createfile-chunking_strategy) 来调整此设置。该策略存在一些限制：
 
-- `max_chunk_size_tokens` 必须介于 100 和 4096 之间（含两端值）。
+- `max_chunk_size_tokens` 必须介于 100 到 4096 之间（含两端）。
 - `chunk_overlap_tokens` 必须为非负值，且不应超过 `max_chunk_size_tokens / 2`.
 
 
@@ -1937,9 +1937,9 @@ _对于 `text/` MIME 类型，编码必须是 `utf-8`, `utf-16`，或 `ascii`._
 
 
 
-## 合成响应
+## Synthesizing responses
 
-执行查询后，你可能希望根据结果合成响应。你可以利用我们的模型，将结果和原始查询一起传入，从而获得基于事实的响应。
+在执行查询后，你可能希望根据结果合成一个响应。你可以通过提供结果和原始查询，利用我们的模型来获得一个基于事实的响应。
 
 执行搜索查询以获取结果
 
@@ -2197,7 +2197,7 @@ puts(completion.choices.fetch(0).message.content)
 "Our return policy allows returns within 30 days of purchase."
 ```
 
-这里使用一个示例 `format_results` 函数，其实现方式类似
+这里使用了一个示例 `format_results` 函数，其实现方式可以
 如下：
 
 示例结果格式化函数
@@ -2260,6 +2260,30 @@ func formatResults(results []openai.VectorStoreSearchResponse) string {
 	}
 	sources.WriteString("</sources>")
 	return sources.String()
+}
+```
+
+```java
+import com.openai.models.vectorstores.VectorStoreSearchResponse;
+import java.util.List;
+
+System.out.println(formatResults(results.data()));
+
+static String formatResults(List<VectorStoreSearchResponse> results) {
+  var formatted = new StringBuilder("<sources>");
+  for (var result : results) {
+    formatted
+        .append("<result file_id='")
+        .append(result.fileId())
+        .append("' file_name='")
+        .append(result.filename())
+        .append("'>");
+    for (var part : result.content()) {
+      formatted.append("<content>").append(part.text()).append("</content>");
+    }
+    formatted.append("</result>");
+  }
+  return formatted.append("</sources>").toString();
 }
 ```
 

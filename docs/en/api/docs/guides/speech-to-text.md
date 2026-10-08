@@ -121,6 +121,8 @@ transcript = client.audio.transcriptions.create(
   file: audio,
   model: "gpt-transcribe"
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 puts(transcript.text)
 ```
 
@@ -273,6 +275,8 @@ transcript = client.audio.transcriptions.create(
   model: "gpt-transcribe",
   keywords: ["OpenAI", "Responses API", "Codex"]
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 puts(transcript.text)
 ```
 
@@ -626,6 +630,8 @@ require "pathname"
 client = OpenAI::Client.new
 audio = Pathname("german.wav")
 translation = client.audio.translations.create(file: audio, model: "whisper-1")
+raise "Expected a JSON translation response" if translation.is_a?(StringIO)
+
 puts(translation.text)
 ```
 
@@ -796,6 +802,8 @@ transcript = client.audio.transcriptions.create(
   response_format: :verbose_json,
   timestamp_granularities: [:word]
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 pp(transcript[:words])
 ```
 
@@ -934,6 +942,39 @@ func main() {
 		panic(err)
 	}
 }
+```
+
+```java
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams;
+import java.nio.file.Path;
+
+var params =
+    TranscriptionCreateParams.builder()
+        .model("gpt-transcribe")
+        .file(Path.of("speech.wav"))
+        .build();
+try (var stream = client.audio().transcriptions().createStreaming(params)) {
+  stream.stream().forEach(event -> System.out.println(event));
+}
+```
+
+```csharp
+using OpenAI.Audio;
+#pragma warning disable OPENAI001
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-transcribe";
+AudioClient client = new(model, key);
+
+await foreach (StreamingAudioTranscriptionUpdate update in client.TranscribeAudioStreamingAsync("speech.wav"))
+{
+    if (update is StreamingAudioTranscriptionTextDeltaUpdate delta)
+    {
+        Console.Write(delta.Delta);
+    }
+}
+Console.WriteLine();
 ```
 
 ```ruby
@@ -1126,6 +1167,8 @@ transcript = client.audio.transcriptions.create(
   model: "whisper-1",
   prompt: "The speaker says OpenAI and Responses API"
 )
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
+
 puts(transcript.text)
 ```
 
@@ -1358,6 +1401,8 @@ transcript = client.audio.transcriptions.create(
   file: audio,
   model: "gpt-4o-mini-transcribe"
 )
+
+raise "Expected a JSON transcript response" if transcript.is_a?(StringIO)
 
 response = client.responses.create(
   model: "gpt-4.1",

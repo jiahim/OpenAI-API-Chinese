@@ -2,9 +2,9 @@
 
 > 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾追加 `.md` 即可获取文档页面的 Markdown 版本。
 
-## Create container file
+## 创建容器文件
 
-**发布** `/containers/{container_id}/files`
+**post** `/containers/{container_id}/files`
 
 创建容器文件
 
@@ -14,7 +14,7 @@
 
 - `container_id: string`
 
-### 请求体参数
+### 正文参数
 
 - `file: optional string`
 
@@ -48,7 +48,7 @@
 
 - `path: string`
 
-  容器中文件的路径。
+  文件在容器中的路径。
 
 - `source: string`
 
@@ -111,12 +111,32 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 
 - `file_id: string`
 
+### Returns
+
+- `id: string`
+
+- `deleted: boolean`
+
+- `object: "container.file.deleted"`
+
+  - `"container.file.deleted"`
+
 ### 示例
 
 ```http
 curl https://api.openai.com/v1/containers/$CONTAINER_ID/files/$FILE_ID \
     -X DELETE \
     -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+#### 响应
+
+```json
+{
+  "id": "id",
+  "deleted": true,
+  "object": "container.file.deleted"
+}
 ```
 
 ### 示例
@@ -150,15 +170,15 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
 - `after: optional string`
 
-  用于分页查询的游标。 `after` 是一个对象 ID，用于标识你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，最后一个为 obj_foo，那么后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  要返回的对象数量的上限。Limit 范围介于 1 到 100 之间，默认为 20。
+  返回对象数量的限制。限制范围为 1 到 100，默认为 20。
 
 - `order: optional "asc" or "desc"`
 
-  按对象的 `created_at` 时间戳排序。 `asc` 表示升序排列， `desc` 表示降序排列。
+  按对象的 `created_at` 时间戳排序。 `asc` 表示升序， `desc` 表示降序。
 
   - `"asc"`
 
@@ -192,7 +212,7 @@ curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2
 
   - `path: string`
 
-    容器中文件的路径。
+    文件在容器中的路径。
 
   - `source: string`
 
@@ -274,11 +294,11 @@ curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e0
 }
 ```
 
-## Retrieve container file
+## 获取容器文件
 
 **get** `/containers/{container_id}/files/{file_id}`
 
-Retrieve Container File
+检索容器文件
 
 ### 路径参数
 
@@ -310,7 +330,7 @@ Retrieve Container File
 
 - `path: string`
 
-  容器中文件的路径。
+  文件在容器中的路径。
 
 - `source: string`
 
@@ -358,9 +378,9 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 }
 ```
 
-## 域名类型
+## Domain Types
 
-### 文件创建响应
+### File Create Response
 
 - `FileCreateResponse object { id, bytes, container_id, 4 more }`
 
@@ -386,13 +406,25 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `path: string`
 
-    容器中文件的路径。
+    文件在容器中的路径。
 
   - `source: string`
 
     文件的来源（例如， `user`, `assistant`).
 
-### 文件列表响应
+### File Delete Response
+
+- `FileDeleteResponse object { id, deleted, object }`
+
+  - `id: string`
+
+  - `deleted: boolean`
+
+  - `object: "container.file.deleted"`
+
+    - `"container.file.deleted"`
+
+### File List Response
 
 - `FileListResponse object { id, bytes, container_id, 4 more }`
 
@@ -418,13 +450,13 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `path: string`
 
-    容器中文件的路径。
+    文件在容器中的路径。
 
   - `source: string`
 
     文件的来源（例如， `user`, `assistant`).
 
-### 文件检索响应
+### File Retrieve Response
 
 - `FileRetrieveResponse object { id, bytes, container_id, 4 more }`
 
@@ -450,19 +482,19 @@ curl https://api.openai.com/v1/containers/container_123/files/file_456 \
 
   - `path: string`
 
-    容器中文件的路径。
+    文件在容器中的路径。
 
   - `source: string`
 
     文件的来源（例如， `user`, `assistant`).
 
-# 内容
+# Content
 
-## 检索容器文件内容
+## Retrieve container file content
 
 **get** `/containers/{container_id}/files/{file_id}/content`
 
-Retrieve Container File Content
+检索容器文件内容
 
 ### 路径参数
 

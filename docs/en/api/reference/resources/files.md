@@ -66,9 +66,10 @@ storage limits.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    The size of the file, in bytes.
+    The size of the file, in bytes. In a completed file upload response, this can
+    be null when the file size is not yet available.
 
   - `created_at: number`
 
@@ -116,11 +117,12 @@ storage limits.
 
   - `expires_at: optional number`
 
-    The Unix timestamp (in seconds) for when the file will expire.
+    The Unix timestamp (in seconds) for when the file will expire. In a
+    completed file upload response, this can be null when no expiry is set.
 
   - `status_details: optional string`
 
-    Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
+    Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`. Completed file upload responses can return null when these details are unset.
 
 ### Example
 
@@ -154,9 +156,9 @@ curl https://api.openai.com/v1/files \
 curl https://api.openai.com/v1/files \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -F purpose="fine-tune" \
-  -F file="@mydata.jsonl"
-  -F expires_after[anchor]="created_at"
-  -F expires_after[seconds]=2592000
+  -F file="@mydata.jsonl" \
+  -F 'expires_after[anchor]=created_at' \
+  -F 'expires_after[seconds]=2592000'
 ```
 
 #### Response
@@ -167,9 +169,10 @@ curl https://api.openai.com/v1/files \
   "object": "file",
   "bytes": 120000,
   "created_at": 1677610602,
-  "expires_at": 1677614202,
+  "expires_at": 1680202602,
   "filename": "mydata.jsonl",
   "purpose": "fine-tune",
+  "status": "processed"
 }
 ```
 
@@ -267,9 +270,10 @@ Returns a list of files.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    The size of the file, in bytes.
+    The size of the file, in bytes. In a completed file upload response, this can
+    be null when the file size is not yet available.
 
   - `created_at: number`
 
@@ -317,11 +321,12 @@ Returns a list of files.
 
   - `expires_at: optional number`
 
-    The Unix timestamp (in seconds) for when the file will expire.
+    The Unix timestamp (in seconds) for when the file will expire. In a
+    completed file upload response, this can be null when no expiry is set.
 
   - `status_details: optional string`
 
-    Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
+    Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`. Completed file upload responses can return null when these details are unset.
 
 - `first_id: string`
 
@@ -383,6 +388,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "salesOverview.pdf",
       "purpose": "assistants",
+      "status": "processed"
     },
     {
       "id": "file-abc456",
@@ -392,6 +398,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "puppy.jsonl",
       "purpose": "fine-tune",
+      "status": "processed"
     }
   ],
   "first_id": "file-abc123",
@@ -420,9 +427,10 @@ Returns information about a specific file.
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    The size of the file, in bytes.
+    The size of the file, in bytes. In a completed file upload response, this can
+    be null when the file size is not yet available.
 
   - `created_at: number`
 
@@ -470,11 +478,12 @@ Returns information about a specific file.
 
   - `expires_at: optional number`
 
-    The Unix timestamp (in seconds) for when the file will expire.
+    The Unix timestamp (in seconds) for when the file will expire. In a
+    completed file upload response, this can be null when no expiry is set.
 
   - `status_details: optional string`
 
-    Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
+    Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`. Completed file upload responses can return null when these details are unset.
 
 ### Example
 
@@ -514,9 +523,10 @@ curl https://api.openai.com/v1/files/file-abc123 \
   "object": "file",
   "bytes": 120000,
   "created_at": 1677610602,
-  "expires_at": 1677614202,
+  "expires_at": 1680202602,
   "filename": "mydata.jsonl",
   "purpose": "fine-tune",
+  "status": "processed"
 }
 ```
 
@@ -548,9 +558,10 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
     The file identifier, which can be referenced in the API endpoints.
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    The size of the file, in bytes.
+    The size of the file, in bytes. In a completed file upload response, this can
+    be null when the file size is not yet available.
 
   - `created_at: number`
 
@@ -598,8 +609,9 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
   - `expires_at: optional number`
 
-    The Unix timestamp (in seconds) for when the file will expire.
+    The Unix timestamp (in seconds) for when the file will expire. In a
+    completed file upload response, this can be null when no expiry is set.
 
   - `status_details: optional string`
 
-    Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
+    Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`. Completed file upload responses can return null when these details are unset.

@@ -1,81 +1,115 @@
 # 使用 GPT-4.1
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取相应文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
 
 ## 简介
 
-GPT-4.1 系列模型相较于 GPT-4o 在编码、指令遵循和长上下文等能力上实现了显著跃升。在本提示工程指南中，我们汇总了一系列源自大量内部测试的重要提示技巧，帮助开发者充分发挥这一新模型系列的增强能力。
+GPT-4.1 系列模型在编码、指令遵循和长上下文等能力上相较 GPT-4o 有了显著提升。在本提示工程指南中，我们汇总了一系列源自大量内部测试的重要提示技巧，帮助开发者充分发挥这一全新模型系列所提升的能力。
 
-许多通用的最佳实践同样适用于 GPT-4.1，例如提供上下文示例、尽可能让指令具体明确，以及通过提示引导规划以最大化模型智能。然而，我们预计要充分发挥该模型的能力需要进行一定的提示迁移。GPT-4.1 经过训练，能够比其前代模型更严格、更字面化地遵循指令，而前代模型往往更倾向于从用户提示和系统提示中较为宽松地推断意图。不过，这也意味着 GPT-4.1 对明确指定的提示具有高度的可引导性和响应性——如果模型行为与你的预期不符，几乎只需用一句话坚定而明确地阐明你期望的行为，就足以将模型引导回正轨。
+许多常规的最佳实践仍然适用于 GPT-4.1，例如提供上下文示例、让指令尽可能具体清晰，以及通过提示引导规划以最大化模型的智能表现。然而，我们预期要充分发挥该模型的潜力，仍需对部分提示进行迁移。GPT-4.1 在训练中会比其前身更紧密、更字面化地遵循指令，而其前身往往更倾向于从用户和系统提示中较为自由地推断意图。不过，这也意味着 GPT-4.1 具有高度的可控性，能够很好地响应明确具体的提示——如果模型行为与你预期不符，几乎只需用一句话坚定且明确地澄清你期望的行为，就足以将模型引导回正轨。
 
-请继续阅读下文，获取可用作参考的提示示例。请记住，虽然这些指导广泛适用，但没有任何建议能放之四海而皆准。AI 工程本质上是一门经验性的学科，大语言模型本质上也是非确定性的；除遵循本指南外，我们还建议你构建信息丰富的评估，并经常迭代，以确保你的提示工程改动能够为你的使用场景带来收益。
+请继续阅读下文，获取可供参考的提示示例，并请记住：虽然这些指导具有广泛的适用性，但没有任何建议是万能的。AI 工程本质上是一门经验性学科，大语言模型本质上也是非确定性的；除了参考本指南外，我们还建议你构建信息丰富的评估，并经常迭代，以确保你的提示工程改动切实为你的用例带来收益。
 
-## 新增内容
+## 最新动态
 
-- 比之前的 GPT 模型更贴近原文、更忠实的指令遵循
-- 更强的编码和长上下文表现
-- 通过 API 原生调用工具时表现更佳，尤其是传入 `tools` 字段时
-- 面向智能体工作流的提示词迁移指引与差异生成
+- 相比之前的 GPT 模型，指令遵循更贴近原文且更准确
+- 更强的代码能力与长上下文表现
+- 当通过 `tools` 字段传入架构时，更好的原生 API 工具使用能力
+- 面向智能体工作流的提示词迁移指引
 
 ## 迁移快速入门
 
-- 将模型标识符更新为 `gpt-4.1`.
-- 根据你的集成方式，使用Responses API或Chat Completions API。
+- 将模型 slug 更新为 `gpt-4.1`.
+- 根据你的集成方式，使用 Responses API 或 Chat Completions API。
 - 移除与推理相关的参数；GPT-4.1 是非推理模型。
-- 通过API传递工具架构 `tools` 字段，而不是将工具定义注入到提示中。
-- 审阅提示中是否需要严格遵循字面指令，必要时添加明确的持久性和工具使用规则，并通过评估验证更改。
+- 通过 API 传递工具 schema `tools` 字段，而不是将工具定义注入到提示中。
+- 审查提示是否严格遵循字面指令，必要时添加明确的持久化和工具使用规则，并使用评估验证更改。
 
-## 模型、API 和功能更新
+## 模型、API 与功能更新
 
-- GPT-4.1 系列包含 `gpt-4.1`, `gpt-4.1-mini`，以及 `gpt-4.1-nano`.
-- GPT-4.1 拥有 1M token 的上下文窗口，且无需推理步骤即可实现低延迟。
+- GPT-4.1 系列包括 `gpt-4.1`, `gpt-4.1-mini`，以及 `gpt-4.1-nano`.
+- GPT-4.1 拥有 1M token 的上下文窗口，并且在无需推理步骤的情况下保持低延迟。
 - 该系列支持 Responses API 和 Chat Completions API。
 - GPT-4.1 和 GPT-4.1 mini 支持监督微调。
-- 支持的工具包括函数调用、网页搜索、文件搜索、图像生成、代码解释器以及远程 MCP。
+- 支持的工具包括函数调用、网页搜索、文件搜索、图像生成、代码解释器和远程 MCP。
 
 ## 提示最佳实践
 
 ### 1. 智能体工作流
 
-GPT-4.1 是构建智能体工作流的理想起点。在模型训练中，我们着重提供了多样化的智能体问题求解轨迹，并且该模型的智能体评测框架在 SWE-bench Verified 上为非推理模型达到了业界领先水平，解决了 55% 的问题。
+GPT-4.1 是构建智能体工作流的理想起点。在模型训练中，我们重点引入了多样化的智能体问题求解轨迹，并且该模型的智能体执行框架在 SWE-bench Verified 上达到了非推理模型中的领先最佳水平，解决了 55% 的问题。
 
 ### 系统提示提醒
 
-为了充分利用 GPT-4.1 的智能体能力，我们建议在所有 智能体 提示中包含三种关键类型的提醒。以下提示专为智能体编码 工作流 进行了优化，但可以轻松修改以适用于一般的智能体用例。
+为了充分发挥 GPT-4.1 的智能体能力，我们建议在所有 智能体 提示中加入三种关键的提醒类型。以下提示针对智能体编码 工作流 进行了专门优化，但也可以轻松修改以适用于一般的智能体用例。
 
-1. 持久化：用于确保模型理解自身正在进入多消息轮次，并防止它过早地将控制权交还给用户。示例如下：
+1. Persistence（持久性）：确保模型理解自己正在进入一个多消息轮次，避免过早将控制权交回给用户。示例如下：
 
 ```text
 You are an agent - please keep going until the user’s query is completely resolved, before ending your turn and yielding back to the user. Only terminate your turn when you are sure that the problem is solved.
 ```
 
-2. 工具调用：用于鼓励模型充分利用其工具，并降低其产生幻觉或猜测答案的可能性。示例如下：
+2. Tool-calling（工具调用）：鼓励模型充分利用其工具，降低幻觉或猜测答案的可能性。示例如下：
 
 ```text
 If you are not sure about file content or codebase structure pertaining to the user’s request, use your tools to read files and gather the relevant information: do NOT guess or make up an answer.
 ```
 
-3. 规划 \[可选\]: 如有需要，这会确保模型在文本中明确规划并反思每一次工具调用，而不是通过串联一系列仅有工具调用的方式完成任务。示例如下：
+3. Planning \[optional\]: 如果需要，可确保模型在文本中显式地规划并反思每一次工具调用，而不是仅通过串联一系列工具调用来完成整个任务。示例如下：
 
 ```text
 You MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.
 ```
 
-GPT-4.1 在智能体场景中经过训练，能够非常紧密地遵循用户指令和系统提示。该模型严格遵循这三条简单指令，并将我们内部的 SWE-bench Verified 分数提升了近 20%。 \- 因此，我们强烈建议在任何 智能体 提示的开头加入涵盖上述三个类别的明确提醒。总体而言，我们发现这三条指令会将模型从类似聊天机器人的状态转变为更加“积极主动”的 智能体，自主且独立地推进交互。
+GPT-4.1 在智能体场景下经过训练，能够非常贴近用户指令和系统提示进行响应。该模型严格遵循这三条简单指令，使我们内部 SWE-bench Verified 分数提升了近 20%。 \- 因此，我们强烈建议在任何 智能体 提示的开头加入清晰提醒，覆盖上述三个类别。总体而言，我们发现这三条指令能将模型从类似聊天机器人的状态转变为更加“主动”的 智能体，自主且独立地推动交互向前进行。
 
 ### 工具调用
 
-与之前的模型相比，GPT-4.1 接受了更多训练，能够更有效地利用作为参数传入 OpenAI API 请求的工具。我们建议开发者仅使用 tools 字段来传入工具，而不是手动将工具描述注入到你的提示中并为工具调用编写单独的解析器，正如过去一些人所做的那样。这是最大限度减少错误并确保模型在工具调用轨迹中保持分布内的最佳方式 \- 在我们自己的实验中，我们观察到使用 API 解析的工具描述相比手动将架构注入系统提示，SWE-bench Verified 通过率提升了 2%。
+与之前的模型相比，GPT-4.1 在如何有效利用作为参数传入 OpenAI API 请求中的工具方面接受了更多训练。我们建议开发者仅使用 tools 字段来传入工具，而不是手动将工具描述注入到提示中并为工具调用编写单独的解析器（过去有开发者报告曾这样做过）。这是最大限度减少错误并确保模型在工具调用轨迹中保持分布内的最佳方式 \- 在我们自己的实验中，我们观察到使用 API 解析的工具描述比手动将 schema 注入到系统提示中，SWE-bench Verified 通过率提高了 2%。
 
-开发者应当清晰地命名工具以表明其用途，并在工具的 "description" 字段中添加清晰、详尽的描述。同样，对于每个工具参数，也要注重良好的命名和描述，以确保正确使用。如果你的工具特别复杂，并且你希望提供工具使用示例，我们建议你创建一个 `# Examples` 章节放在你的系统提示中，并将示例放在那里，而不是将它们添加到 "description" 字段中；该字段应保持详尽但相对简洁。提供示例有助于说明何时使用工具、是否在工具调用中附带用户文本，以及针对不同输入应使用哪些参数。请记住，你可以在 [Prompt Playground](https://platform.openai.com/playground) 中为你的新工具定义获取一个良好的起点。
+开发者应为工具起一个能清晰表明其用途的名称，并在工具的 "description" 字段中添加清晰、详细的描述。同样，对于每个工具参数，也应借助良好的命名和描述来确保正确使用。如果你的工具特别复杂，并且你希望提供工具使用示例，我们建议你创建一个 `# Examples` 部分放在系统提示中，将示例放在那里，而不是将它们添加到 "description" 字段中，该字段应保持详尽但相对简洁。提供示例有助于指明何时使用工具、是否在工具调用时附带用户文本，以及针对不同输入应使用哪些参数。请记住，你可以使用“Generate Anything”在 [Prompt Playground](https://platform.openai.com/playground) 中为你的新工具定义获得一个良好的起点。
 
-### 由提示引导的计划与思维链
+### 提示引导的规划与思维链
 
-如前所述，开发者可以选择性地提示使用 GPT-4.1 构建的智能体在工具调用之间进行规划和反思，而不是以不间断的顺序静默调用工具。GPT-4.1 不是推理模型 \- 这意味着它在回答之前不会生成内部思维链 \- 但在提示中，开发者可以通过使用上述规划提示组件的任意变体来引导模型生成显式的、逐步的计划。这可以被视为模型的“大声思考”。在我们使用 SWE-bench Verified 智能体任务进行的实验中，引入显式规划使通过率提高了 4%。
+如前所述，开发者可以选择提示使用 GPT-4.1 构建的智能体在工具调用之间进行规划和反思，而不是在连续不间断的流程中静默调用工具。GPT-4.1 不是推理模型 \- 也就是说，它在回答之前不会生成内部的思维链 \- 但是在提示中，开发者可以通过使用上文 Planning 提示组件的任意变体来引导模型生成显式的逐步规划。这可以理解为模型在“放声思考”。在我们使用 SWE-bench Verified 智能体任务的实验中，引导显式规划使通过率提高了 4%。
 
 ### 示例提示：SWE-bench Verified
 
-下面，我们分享用于在 SWE-bench Verified 上取得最高分的智能体提示，其中包含关于工作流和问题解决策略的详细说明。这种通用模式可用于任何智能体任务。
+下面，我们分享用于在 SWE-bench Verified 上取得最高分的智能体提示，其中包含关于 工作流 和问题解决策略的详细说明。这种通用模式可用于任何智能体任务。
+
+```javascript
+const response = await client.responses.create({
+  instructions:
+    "\nYou will be tasked to fix an issue from an open-source repository.\n\nYour thinking should be thorough and so it's fine if it's very long. You can think step by step before and after each action you decide to take.\n\nYou MUST iterate and keep going until the problem is solved.\n\nYou already have everything you need to solve this problem in the /testbed folder, even without internet connection. I want you to fully solve this autonomously before coming back to me.\n\nOnly terminate your turn when you are sure that the problem is solved. Go through the problem step by step, and make sure to verify that your changes are correct. NEVER end your turn without having solved the problem, and when you say you are going to make a tool call, make sure you ACTUALLY make the tool call, instead of ending your turn.\n\nTHE PROBLEM CAN DEFINITELY BE SOLVED WITHOUT THE INTERNET.\n\nTake your time and think through every step - remember to check your solution rigorously and watch out for boundary cases, especially with the changes you made. Your solution must be perfect. If not, continue working on it. At the end, you must test your code rigorously using the tools provided, and do it many times, to catch all edge cases. If it is not robust, iterate more and make it perfect. Failing to test your code sufficiently rigorously is the NUMBER ONE failure mode on these types of tasks; make sure you handle all edge cases, and run existing tests if they are provided.\n\nYou MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.\n\n# Workflow\n\n## High-Level Problem Solving Strategy\n\n1. Understand the problem deeply. Carefully read the issue and think critically about what is required.\n2. Investigate the codebase. Explore relevant files, search for key functions, and gather context.\n3. Develop a clear, step-by-step plan. Break down the fix into manageable, incremental steps.\n4. Implement the fix incrementally. Make small, testable code changes.\n5. Debug as needed. Use debugging techniques to isolate and resolve issues.\n6. Test frequently. Run tests after each change to verify correctness.\n7. Iterate until the root cause is fixed and all tests pass.\n8. Reflect and validate comprehensively. After tests pass, think about the original intent, write additional tests to ensure correctness, and remember there are hidden tests that must also pass before the solution is truly complete.\n\nRefer to the detailed sections below for more information on each step.\n\n## 1. Deeply Understand the Problem\nCarefully read the issue and think hard about a plan to solve it before coding.\n\n## 2. Codebase Investigation\n- Explore relevant files and directories.\n- Search for key functions, classes, or variables related to the issue.\n- Read and understand relevant code snippets.\n- Identify the root cause of the problem.\n- Validate and update your understanding continuously as you gather more context.\n\n## 3. Develop a Detailed Plan\n- Outline a specific, simple, and verifiable sequence of steps to fix the problem.\n- Break down the fix into small, incremental changes.\n\n## 4. Making Code Changes\n- Before editing, always read the relevant file contents or section to ensure complete context.\n- If a patch is not applied correctly, attempt to reapply it.\n- Make small, testable, incremental changes that logically follow from your investigation and plan.\n\n## 5. Debugging\n- Make code changes only if you have high confidence they can solve the problem\n- When debugging, try to determine the root cause rather than addressing symptoms\n- Debug for as long as needed to identify the root cause and identify a fix\n- Use print statements, logs, or temporary code to inspect program state, including descriptive statements or error messages to understand what's happening\n- To test hypotheses, you can also add test statements or functions\n- Revisit your assumptions if unexpected behavior occurs.\n\n## 6. Testing\n- Run tests frequently using `!python3 run_tests.py` (or equivalent).\n- After each change, verify correctness by running relevant tests.\n- If tests fail, analyze failures and revise your patch.\n- Write additional tests if needed to capture important behaviors or edge cases.\n- Ensure all tests pass before finalizing.\n\n## 7. Final Verification\n- Confirm the root cause is fixed.\n- Review your solution for logic correctness and robustness.\n- Iterate until you are extremely confident the fix is complete and all tests pass.\n\n## 8. Final Reflection and Additional Testing\n- Reflect carefully on the original intent of the user and the problem statement.\n- Think about potential edge cases or scenarios that may not be covered by existing tests.\n- Write additional tests that would need to pass to fully validate the correctness of your solution.\n- Run these new tests and ensure they all pass.\n- Be aware that there are additional hidden tests that must also pass for the solution to be successful.\n- Do not assume the task is complete just because the visible tests pass; continue refining until you are confident the fix is robust and comprehensive.\n",
+  model: "gpt-4.1-2025-04-14",
+  tools: [
+    {
+      type: "function",
+      name: "python",
+      description:
+        'This function is used to execute Python code or terminal commands in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after 60.0 seconds. Internet access for this session is disabled. Do not make external web requests or API calls as they will fail. Just as in a Jupyter notebook, you may also execute terminal commands by calling this function with a terminal command, prefaced with an exclamation mark.\n\nIn addition, for the purposes of this task, you can call this function with an `apply_patch` command as input.  `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as "input":\n\n%%bash\napply_patch <<"EOF"\n*** Begin Patch\n[YOUR_PATCH]\n*** End Patch\nEOF\n\nWhere [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.\n\n*** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.\nFor each snippet of code that needs to be changed, repeat the following:\n[context_before] -> See below for further instructions on context.\n- [old_code] -> Precede the old code with a minus sign.\n+ [new_code] -> Precede the new, replacement code with a plus sign.\n[context_after] -> See below for further instructions on context.\n\nFor instructions on [context_before] and [context_after]:\n- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change\'s [context_after] lines in the second change\'s [context_before] lines.\n- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:\n@@ class BaseClass\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\n- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:\n\n@@ class BaseClass\n@@ \tdef method():\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\nNote, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as "input" to this function, in order to apply a patch, is shown below.\n\n%%bash\napply_patch <<"EOF"\n*** Begin Patch\n*** Update File: pygorithm/searching/binary_search.py\n@@ class BaseClass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n@@ class Subclass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n*** End Patch\nEOF\n\nFile references can only be relative, NEVER ABSOLUTE. After the apply_patch command is run, Python will always say "Done!", regardless of whether the patch was successfully applied or not. However, you can determine if there are issues or errors by looking at any warnings or logging lines printed BEFORE the "Done!" is output.\n',
+      parameters: {
+        type: "object",
+        properties: {
+          input: {
+            type: "string",
+            description:
+              " The Python code, terminal command (prefaced by exclamation mark), or apply_patch command that you wish to execute.",
+          },
+        },
+        required: ["input"],
+        additionalProperties: false,
+      },
+      strict: true,
+    },
+  ],
+  input: "Please answer the following question:\nBug: Typerror...",
+});
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+console.log(JSON.stringify(response.output, null, 2));
+```
 
 ```python
 from openai import OpenAI
@@ -252,6 +286,51 @@ response = client.responses.create(
 )
 
 response.to_dict()["output"]
+```
+
+```go
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model:        "gpt-4.1-2025-04-14",
+	Instructions: openai.String("\nYou will be tasked to fix an issue from an open-source repository.\n\nYour thinking should be thorough and so it's fine if it's very long. You can think step by step before and after each action you decide to take.\n\nYou MUST iterate and keep going until the problem is solved.\n\nYou already have everything you need to solve this problem in the /testbed folder, even without internet connection. I want you to fully solve this autonomously before coming back to me.\n\nOnly terminate your turn when you are sure that the problem is solved. Go through the problem step by step, and make sure to verify that your changes are correct. NEVER end your turn without having solved the problem, and when you say you are going to make a tool call, make sure you ACTUALLY make the tool call, instead of ending your turn.\n\nTHE PROBLEM CAN DEFINITELY BE SOLVED WITHOUT THE INTERNET.\n\nTake your time and think through every step - remember to check your solution rigorously and watch out for boundary cases, especially with the changes you made. Your solution must be perfect. If not, continue working on it. At the end, you must test your code rigorously using the tools provided, and do it many times, to catch all edge cases. If it is not robust, iterate more and make it perfect. Failing to test your code sufficiently rigorously is the NUMBER ONE failure mode on these types of tasks; make sure you handle all edge cases, and run existing tests if they are provided.\n\nYou MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.\n\n# Workflow\n\n## High-Level Problem Solving Strategy\n\n1. Understand the problem deeply. Carefully read the issue and think critically about what is required.\n2. Investigate the codebase. Explore relevant files, search for key functions, and gather context.\n3. Develop a clear, step-by-step plan. Break down the fix into manageable, incremental steps.\n4. Implement the fix incrementally. Make small, testable code changes.\n5. Debug as needed. Use debugging techniques to isolate and resolve issues.\n6. Test frequently. Run tests after each change to verify correctness.\n7. Iterate until the root cause is fixed and all tests pass.\n8. Reflect and validate comprehensively. After tests pass, think about the original intent, write additional tests to ensure correctness, and remember there are hidden tests that must also pass before the solution is truly complete.\n\nRefer to the detailed sections below for more information on each step.\n\n## 1. Deeply Understand the Problem\nCarefully read the issue and think hard about a plan to solve it before coding.\n\n## 2. Codebase Investigation\n- Explore relevant files and directories.\n- Search for key functions, classes, or variables related to the issue.\n- Read and understand relevant code snippets.\n- Identify the root cause of the problem.\n- Validate and update your understanding continuously as you gather more context.\n\n## 3. Develop a Detailed Plan\n- Outline a specific, simple, and verifiable sequence of steps to fix the problem.\n- Break down the fix into small, incremental changes.\n\n## 4. Making Code Changes\n- Before editing, always read the relevant file contents or section to ensure complete context.\n- If a patch is not applied correctly, attempt to reapply it.\n- Make small, testable, incremental changes that logically follow from your investigation and plan.\n\n## 5. Debugging\n- Make code changes only if you have high confidence they can solve the problem\n- When debugging, try to determine the root cause rather than addressing symptoms\n- Debug for as long as needed to identify the root cause and identify a fix\n- Use print statements, logs, or temporary code to inspect program state, including descriptive statements or error messages to understand what's happening\n- To test hypotheses, you can also add test statements or functions\n- Revisit your assumptions if unexpected behavior occurs.\n\n## 6. Testing\n- Run tests frequently using `!python3 run_tests.py` (or equivalent).\n- After each change, verify correctness by running relevant tests.\n- If tests fail, analyze failures and revise your patch.\n- Write additional tests if needed to capture important behaviors or edge cases.\n- Ensure all tests pass before finalizing.\n\n## 7. Final Verification\n- Confirm the root cause is fixed.\n- Review your solution for logic correctness and robustness.\n- Iterate until you are extremely confident the fix is complete and all tests pass.\n\n## 8. Final Reflection and Additional Testing\n- Reflect carefully on the original intent of the user and the problem statement.\n- Think about potential edge cases or scenarios that may not be covered by existing tests.\n- Write additional tests that would need to pass to fully validate the correctness of your solution.\n- Run these new tests and ensure they all pass.\n- Be aware that there are additional hidden tests that must also pass for the solution to be successful.\n- Do not assume the task is complete just because the visible tests pass; continue refining until you are confident the fix is robust and comprehensive.\n"),
+	Input: responses.ResponseNewParamsInputUnion{
+		OfString: openai.String("Please answer the following question:\nBug: Typerror..."),
+	},
+	Tools: []responses.ToolUnionParam{
+		{
+			OfFunction: &responses.FunctionToolParam{
+				Name:        "python",
+				Description: openai.String("This function is used to execute Python code or terminal commands in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after 60.0 seconds. Internet access for this session is disabled. Do not make external web requests or API calls as they will fail. Just as in a Jupyter notebook, you may also execute terminal commands by calling this function with a terminal command, prefaced with an exclamation mark.\n\nIn addition, for the purposes of this task, you can call this function with an `apply_patch` command as input.  `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as \"input\":\n\n%%bash\napply_patch <<\"EOF\"\n*** Begin Patch\n[YOUR_PATCH]\n*** End Patch\nEOF\n\nWhere [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.\n\n*** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.\nFor each snippet of code that needs to be changed, repeat the following:\n[context_before] -> See below for further instructions on context.\n- [old_code] -> Precede the old code with a minus sign.\n+ [new_code] -> Precede the new, replacement code with a plus sign.\n[context_after] -> See below for further instructions on context.\n\nFor instructions on [context_before] and [context_after]:\n- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change's [context_after] lines in the second change's [context_before] lines.\n- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:\n@@ class BaseClass\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\n- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:\n\n@@ class BaseClass\n@@ \tdef method():\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\nNote, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as \"input\" to this function, in order to apply a patch, is shown below.\n\n%%bash\napply_patch <<\"EOF\"\n*** Begin Patch\n*** Update File: pygorithm/searching/binary_search.py\n@@ class BaseClass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n@@ class Subclass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n*** End Patch\nEOF\n\nFile references can only be relative, NEVER ABSOLUTE. After the apply_patch command is run, Python will always say \"Done!\", regardless of whether the patch was successfully applied or not. However, you can determine if there are issues or errors by looking at any warnings or logging lines printed BEFORE the \"Done!\" is output.\n"),
+				Parameters: map[string]any{
+					"type": "object",
+					"properties": map[string]any{
+						"input": map[string]any{
+							"type":        "string",
+							"description": " The Python code, terminal command (prefaced by exclamation mark), or apply_patch command that you wish to execute.",
+						},
+					},
+					"required": []any{
+						"input",
+					},
+					"additionalProperties": false,
+				},
+				Strict: openai.Bool(true),
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
 ```
 
 ```java
@@ -468,15 +547,15 @@ puts(response.output_text)
 
 ### 2. 长上下文
 
-GPT-4.1 拥有性能出色的 1M token 输入上下文窗口，适用于多种长上下文任务，包括结构化文档解析、重排序、在忽略无关上下文的同时选择相关信息，以及利用上下文进行多跳推理。
+GPT-4.1 拥有性能出色的 1M token 输入上下文窗口，可用于多种长上下文任务，包括结构化文档解析、重排序、在忽略无关上下文的同时选取相关信息，以及利用上下文进行多跳推理。
 
 ### 最佳上下文大小
 
-在我们完整的 1M token 上下文中，大海捞针评估表现非常出色，并且在由相关代码、其他文档以及不相关内容混合构成的复杂任务上也观察到了非常强劲的性能。但是，当需要检索的内容项更多，或者需要进行需要掌握整个上下文状态的复杂推理（例如执行图搜索）时，长上下文性能可能会下降。
+我们观察到，在最长达到完整 1M token 上下文的“大海捞针”评估中表现非常出色，并且在同时包含相关与不相关代码及其他文档的复杂任务上也表现出色。然而，当需要检索的项目数量增多，或者需要进行需要了解整个上下文状态的复杂推理（例如执行图搜索）时，长上下文性能可能会下降。
 
 ### 调优上下文依赖度
 
-考虑回答你的问题可能需要结合外部与内部世界知识。有时让模型运用自身知识来关联概念或进行逻辑跳跃是重要的，而在另一些情况下，则最好只使用所提供的上下文
+考虑回答你的问题可能需要的外部与内部世界知识的组合。有时让模型使用自身的部分知识来关联概念或进行逻辑跳跃是重要的，而在其他情况下，只使用提供的上下文才更理想
 
 ```text
 # Instructions
@@ -488,13 +567,13 @@ GPT-4.1 拥有性能出色的 1M token 输入上下文窗口，适用于多种�
 
 ### 提示词组织
 
-尤其在长上下文的使用场景中，指令和上下文的位置会影响性能。如果你的提示中包含长上下文，理想的做法是将指令同时放在所提供上下文的开头和结尾，因为我们发现这种做法比仅放在上方或下方效果更好。如果你只希望放置一次指令，那么放在所提供的上下文上方比放在下方效果更好。
+尤其是在长上下文使用场景中，指令与上下文的位置会影响性能。如果你的提示中包含长上下文，理想的做法是将指令分别放在所提供上下文的开头和结尾，因为我们发现这种做法的表现优于仅放在上文或下文。如果你希望指令只出现一次，那么放在所提供上下文的上方效果优于下方。
 
 ### 3. 思维链
 
-如上所述，GPT-4.1 并不是一个推理模型，但提示模型逐步思考（即所谓的“思维链”）是一种有效的方式，可以让模型将问题拆解成更易处理的各个部分加以解决，并提升整体输出质量，代价是会使用更多输出 token，从而带来更高的成本和延迟。该模型经过训练，在智能体推理和现实世界问题求解方面表现良好，因此你无需过多提示即可获得良好表现。
+如上所述，GPT-4.1 不是推理模型，但提示模型一步步思考（即“思维链”）可以有效地让模型将问题拆解为更易处理的部分、逐个求解并提升整体输出质量，代价是会使用更多的输出 token，从而带来更高的成本和延迟。该模型已针对智能体推理和现实世界问题求解进行了训练，因此无需过多提示即可表现良好。
 
-我们建议在提示末尾添加以下这条基础的思维链指令作为起点：
+建议在提示末尾从这条基础的思维链指令开始：
 
 ```text
 ...
@@ -502,9 +581,9 @@ GPT-4.1 拥有性能出色的 1M token 输入上下文窗口，适用于多种�
 First, think carefully step by step about what documents are needed to answer the query. Then, print out the TITLE and ID of each document. Then, format the IDs into a list.
 ```
 
-在此基础上，你应当通过审视你自己的具体示例和评估中的失败案例来改进你的思维链（CoT）提示，并通过更明确的指令来解决系统性的规划与推理错误。在不受约束的 CoT 提示中，它尝试的策略可能会有所差异；如果你观察到某种效果不错的方法，就可以把该策略固化到你的提示中。一般来说，错误往往源于误解用户意图、上下文收集或分析不足，以及逐步推理不充分或出错，因此请留意这些问题，并尝试通过更有针对性的指令加以解决。
+在此基础上，你应该通过审视具体示例和评测中的失败案例来改进你的思维链（CoT）提示，并通过更明确的指令来解决系统性的规划和推理错误。在不受约束的 CoT 提示中，模型尝试的策略可能存在差异；如果你观察到某种方法效果良好，可以将该策略固化到提示中。一般来说，错误往往源于误解用户意图、上下文收集或分析不足，以及分步思考不充分或不正确，因此需要注意这些问题，并通过更有针对性的指令加以改进。
 
-下面给出一个示例提示，指示模型在开始回答之前更有条理地分析用户意图并考虑相关上下文。
+下面是一个示例提示，它指示模型在进入回答之前，更有条理地聚焦于分析用户意图并考虑相关上下文。
 
 ```text
 # Reasoning Strategy
@@ -525,35 +604,87 @@ First, think carefully step by step about what documents are needed to answer th
 
 ### 4. 指令遵循
 
-GPT-4.1 表现出出色的指令遵循能力，开发者可以利用这一点来精确塑造和控制其特定用例的输出。开发者经常会针对智能体推理步骤、回复语气与口吻、工具调用信息、输出格式、需要避免的主题等大量编写提示。然而，由于该模型会更字面化地遵循指令，开发者可能需要就“应做什么”和“不应做什么”给出明确的规范。此外，针对其他模型优化的现有提示可能无法直接用于此模型，因为现有指令会被更严格地遵循，原本隐式推断的规则不再被强烈推断出来。
+GPT-4.1 表现出出色的指令遵循能力，开发者可以利用这一特性针对其特定用例精细地调整和控制模型输出。开发者通常会通过大量提示来指定智能体推理步骤、回复的语气与风格、工具调用相关信息、输出格式、需要避免的主题等。然而，由于该模型更倾向于严格按照字面意思遵循指令，开发者可能需要明确说明应该做什么或不应该做什么。此外，针对其他模型优化的现有提示可能无法直接用于该模型，因为现有指令会被更严格地遵循，而隐含规则不再被强烈推断出来。
 
 ### 推荐工作流
 
-下面是我们推荐的提示词中指令开发和调试工作流：
+以下是我们在提示词中开发和调试指令时推荐的工作流：
 
-1. 从一个总的“Response Rules”或“Instructions”部分开始，给出高层级指导和要点列表。
-2. 如果你想修改某个更具体的行为，可以新增一个部分来为该类别指定更多细节，例如 `# Sample Phrases`.
-3. 如果你希望模型在其工作流中遵循特定步骤，请添加有序列表，并指示模型按这些步骤操作。
-4. 如果行为仍不符合预期：
-   1. 检查是否存在冲突、不够具体或错误的指令和示例。如果存在冲突的指令，GPT-4.1 通常会遵循更靠近提示末尾的那一条。
-   2. 添加能展示期望行为的示例；确保示例中展示的任何重要行为也在规则中被明确引用。
-   3. 通常不需要使用全大写或其他诸如贿赂、小费等激励手段。建议先不使用这些技巧，只有在你的特定提示确实必要时再考虑使用。请注意，如果你的现有提示中包含这些技巧，可能导致 GPT-4.1 过于严格地关注它们。
+1. 从一个总的“回复规则”或“说明”部分开始，提供高层级的指引和要点列表。
+2. 如果你想更改更具体的行为，可以添加一个部分来指定该类别的更多细节，例如 `# Sample Phrases`.
+3. 如果你希望模型在其工作流中遵循特定步骤，可以添加一个有序列表并指示模型遵循这些步骤。
+4. 如果行为仍未按预期工作：
+   1. 检查是否存在冲突、不够明确或错误的说明和示例。如果存在冲突的说明，GPT-4.1 倾向于遵循更接近提示词末尾的那一条。
+   2. 添加示例来展示期望的行为；确保示例中展示的所有重要行为也在你的规则中被引用。
+   3. 通常没有必要使用全大写或其他类似贿赂或小费的激励手段。我们建议从不使用这些开始，仅在特定提示词确实必要时再考虑使用。请注意，如果你的现有提示词中包含了这些技巧，可能会导致 GPT-4.1 过于严格地关注它们。
 
-_请注意，使用你首选的 AI 辅助 IDE 对迭代提示非常有帮助，包括检查一致性或冲突、添加示例，或者进行连贯的更新，例如添加一条指令并更新相关指令以演示该指令。_
+_请注意，使用你常用的 AI 辅助 IDE 对迭代提示非常有帮助，包括检查一致性或冲突、添加示例，或者进行连贯性更新（例如添加一条指令并更新相关指令来展示该指令的效果）。_
 
 ### 常见失败模式
 
-这些失败模式并非 GPT-4.1 独有，但我们在此处分享它们，以便于大家了解并更轻松地进行调试。
+这些失效模式并非 GPT-4.1 所独有，但我们在此一并列出，以便于整体了解与调试。
 
-- 要求模型始终遵循某种特定行为，偶尔可能会引发负面效果。例如，如果告诉它“你必须在回复用户之前调用工具”，那么当模型没有足够信息时，可能会幻觉出工具输入，或以空值调用该工具。补充“如果信息不足以调用工具，请向用户询问所需信息”应能缓解这种情况。
-- 当提供示例短语时，模型可能会逐字使用这些引语，从而让用户感觉重复。务必指示模型根据需要变换这些表达。
-- 在缺乏明确指令的情况下，某些模型可能会主动追加解释决策的冗长文字，或在回复中输出过多格式。提供指令并辅以示例，有助于缓解此问题。
+- 指示模型始终遵循特定行为有时会产生不良影响。例如，如果告诉模型"在回复用户之前必须调用工具"，模型可能会在信息不足时幻觉出工具输入，或以 null 值调用工具。补充"如果没有足够的信息来调用工具，请向用户询问所需信息"可以缓解此问题。
+- 当提供示例短语时，模型可能逐字使用这些引语，导致对用户听起来重复。请确保指示模型根据需要变换措辞。
+- 在没有明确指示的情况下，一些模型可能会主动添加额外文本来解释其决策，或在响应中输出超出预期的格式。请提供指令，并酌情提供示例，以帮助缓解此问题。
 
 ### 示例提示：客户服务
 
-该示例展示了一个虚构客服智能体的最佳实践。请注意规则的多样性、具体性，以及使用额外章节提供更详尽说明的做法，还包含一个示例来展示如何结合所有先前的规则实现精确行为。
+该示例展示了一个虚构的客户服务智能体的最佳实践。请观察其中的规则多样性、具体性、为更详细说明所使用的额外章节，以及一个演示精确行为的示例，该示例结合了之前的所有规则。
 
-尝试运行下面的 notebook 单元格——你应该会看到一条用户消息和一个工具调用，用户消息应先以问候语开头，然后回显用户的回答，再提及即将调用工具。你可以尝试修改指令来调整模型行为，或使用其他用户消息进行测试，以评估指令遵循效果。
+尝试运行下面的 notebook 单元格 —— 你应该会看到一条用户消息和一次工具调用，且用户消息应以问候语开头，然后回显用户的回答，再提到即将调用工具。你可以尝试修改指令来塑造模型行为，或尝试其他用户消息，以测试指令遵循效果。
+
+```javascript
+const response = await client.responses.create({
+  instructions:
+    'You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.\n\n# Instructions\n- Always greet the user with "Hi, you\'ve reached NewTelco, how can I help you?"\n- Always call a tool before answering factual questions about the company, its offerings or products, or a user\'s account. Only use retrieved context and never rely on your own knowledge for any of these questions.\n    - However, if you don\'t have enough information to properly call the tool, ask the user for the information you need.\n- Escalate to a human if the user requests.\n- Do not discuss prohibited topics (politics, religion, controversial current events, medical, legal, or financial advice, personal conversations, internal company operations, or criticism of any people or company).\n- Rely on sample phrases whenever appropriate, but never repeat a sample phrase in the same conversation. Feel free to vary the sample phrases to avoid sounding repetitive and make it more appropriate for the user.\n- Always follow the provided output format for new messages, including citations for any factual statements from retrieved policy documents.\n- If you\'re going to call a tool, always message the user with an appropriate message before and after calling the tool.\n- Maintain a professional and concise tone in all responses, and use emojis between sentences.\n- If you\'ve resolved the user\'s request, ask if there\'s anything else you can help with\n\n# Precise Response Steps (for each response)\n1. If necessary, call tools to fulfill the user\'s desired action. Always message the user before and after calling a tool to keep them in the loop.\n2. In your response to the user\n    a. Use active listening and echo back what you heard the user ask for.\n    b. Respond appropriately given the above guidelines.\n\n# Sample Phrases\n## Deflecting a Prohibited Topic\n- "I\'m sorry, but I\'m unable to discuss that topic. Is there something else I can help you with?"\n- "That\'s not something I\'m able to provide information on, but I\'m happy to help with any other questions you may have."\n\n## Before calling a tool\n- "To help you with that, I\'ll just need to verify your information."\n- "Let me check that for you—one moment, please."\n- "I\'ll retrieve the latest details for you now."\n\n## After calling a tool\n- "Okay, here\'s what I found: [response]"\n- "So here\'s what I found: [response]"\n\n# Output Format\n- Always include your final response to the user.\n- When providing factual information from retrieved context, always include citations immediately after the relevant statement(s). Use the following citation format:\n    - For a single source: [NAME](ID)\n    - For multiple sources: [NAME](ID), [NAME](ID)\n- Only provide information about this company, its policies, its products, or the customer\'s account, and only if it is based on information provided in context. Do not answer questions outside this scope.\n\n# Example\n## User\nCan you tell me about your family plan options?\n\n## Assistant Response 1\n### Message\n"Hi, you\'ve reached NewTelco, how can I help you? 😊🎉\n\nYou\'d like to know about our family plan options. 🤝 Let me check that for you—one moment, please. 🚀"\n\n### Tool Calls\nlookup_policy_document(topic="family plan options")\n\n// After tool call, the assistant would follow up with:\n\n## Assistant Response 2 (after tool call)\n### Message\n"Okay, here\'s what I found: 🎉 Our family plan allows up to 5 lines with shared data and a 10% discount for each additional line [Family Plan Policy](ID-010). 📱 Is there anything else I can help you with today? 😊"\n',
+  model: "gpt-4.1-2025-04-14",
+  tools: [
+    {
+      type: "function",
+      name: "lookup_policy_document",
+      description:
+        "Tool to look up internal documents and policies by topic or keyword.",
+      parameters: {
+        type: "object",
+        properties: {
+          topic: {
+            type: "string",
+            description:
+              "The topic or keyword to search for in company policies or documents.",
+          },
+        },
+        required: ["topic"],
+        additionalProperties: false,
+      },
+      strict: true,
+    },
+    {
+      type: "function",
+      name: "get_user_account_info",
+      description: "Tool to get user account information",
+      parameters: {
+        type: "object",
+        properties: {
+          phone_number: {
+            type: "string",
+            description: "Formatted as '(xxx) xxx-xxxx'",
+          },
+        },
+        required: ["phone_number"],
+        additionalProperties: false,
+      },
+      strict: true,
+    },
+  ],
+  input:
+    "How much will it cost for international service? I'm traveling to France.",
+});
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+console.log(JSON.stringify(response.output, null, 2));
+```
 
 ```python
 SYS_PROMPT_CUSTOMER_SERVICE = """You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.
@@ -660,6 +791,71 @@ response = client.responses.create(
 )
 
 response.to_dict()["output"]
+```
+
+```go
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model:        "gpt-4.1-2025-04-14",
+	Instructions: openai.String("You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.\n\n# Instructions\n- Always greet the user with \"Hi, you've reached NewTelco, how can I help you?\"\n- Always call a tool before answering factual questions about the company, its offerings or products, or a user's account. Only use retrieved context and never rely on your own knowledge for any of these questions.\n    - However, if you don't have enough information to properly call the tool, ask the user for the information you need.\n- Escalate to a human if the user requests.\n- Do not discuss prohibited topics (politics, religion, controversial current events, medical, legal, or financial advice, personal conversations, internal company operations, or criticism of any people or company).\n- Rely on sample phrases whenever appropriate, but never repeat a sample phrase in the same conversation. Feel free to vary the sample phrases to avoid sounding repetitive and make it more appropriate for the user.\n- Always follow the provided output format for new messages, including citations for any factual statements from retrieved policy documents.\n- If you're going to call a tool, always message the user with an appropriate message before and after calling the tool.\n- Maintain a professional and concise tone in all responses, and use emojis between sentences.\n- If you've resolved the user's request, ask if there's anything else you can help with\n\n# Precise Response Steps (for each response)\n1. If necessary, call tools to fulfill the user's desired action. Always message the user before and after calling a tool to keep them in the loop.\n2. In your response to the user\n    a. Use active listening and echo back what you heard the user ask for.\n    b. Respond appropriately given the above guidelines.\n\n# Sample Phrases\n## Deflecting a Prohibited Topic\n- \"I'm sorry, but I'm unable to discuss that topic. Is there something else I can help you with?\"\n- \"That's not something I'm able to provide information on, but I'm happy to help with any other questions you may have.\"\n\n## Before calling a tool\n- \"To help you with that, I'll just need to verify your information.\"\n- \"Let me check that for you—one moment, please.\"\n- \"I'll retrieve the latest details for you now.\"\n\n## After calling a tool\n- \"Okay, here's what I found: [response]\"\n- \"So here's what I found: [response]\"\n\n# Output Format\n- Always include your final response to the user.\n- When providing factual information from retrieved context, always include citations immediately after the relevant statement(s). Use the following citation format:\n    - For a single source: [NAME](ID)\n    - For multiple sources: [NAME](ID), [NAME](ID)\n- Only provide information about this company, its policies, its products, or the customer's account, and only if it is based on information provided in context. Do not answer questions outside this scope.\n\n# Example\n## User\nCan you tell me about your family plan options?\n\n## Assistant Response 1\n### Message\n\"Hi, you've reached NewTelco, how can I help you? 😊🎉\n\nYou'd like to know about our family plan options. 🤝 Let me check that for you—one moment, please. 🚀\"\n\n### Tool Calls\nlookup_policy_document(topic=\"family plan options\")\n\n// After tool call, the assistant would follow up with:\n\n## Assistant Response 2 (after tool call)\n### Message\n\"Okay, here's what I found: 🎉 Our family plan allows up to 5 lines with shared data and a 10% discount for each additional line [Family Plan Policy](ID-010). 📱 Is there anything else I can help you with today? 😊\"\n"),
+	Input: responses.ResponseNewParamsInputUnion{
+		OfString: openai.String("How much will it cost for international service? I'm traveling to France."),
+	},
+	Tools: []responses.ToolUnionParam{
+		{
+			OfFunction: &responses.FunctionToolParam{
+				Name:        "lookup_policy_document",
+				Description: openai.String("Tool to look up internal documents and policies by topic or keyword."),
+				Parameters: map[string]any{
+					"type": "object",
+					"properties": map[string]any{
+						"topic": map[string]any{
+							"type":        "string",
+							"description": "The topic or keyword to search for in company policies or documents.",
+						},
+					},
+					"required": []any{
+						"topic",
+					},
+					"additionalProperties": false,
+				},
+				Strict: openai.Bool(true),
+			},
+		},
+		{
+			OfFunction: &responses.FunctionToolParam{
+				Name:        "get_user_account_info",
+				Description: openai.String("Tool to get user account information"),
+				Parameters: map[string]any{
+					"type": "object",
+					"properties": map[string]any{
+						"phone_number": map[string]any{
+							"type":        "string",
+							"description": "Formatted as '(xxx) xxx-xxxx'",
+						},
+					},
+					"required": []any{
+						"phone_number",
+					},
+					"additionalProperties": false,
+				},
+				Strict: openai.Bool(true),
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
 ```
 
 ```java
@@ -809,9 +1005,9 @@ puts(response.output_text)
 
 ### 5. 通用建议
 
-### 提示结构
+### 提示词结构
 
-作为参考，这里是一个良好的起点，可用于构建你的提示词结构。
+作为参考，这是一个用于构建提示词的良好起点。
 
 ```text
 # Role and Objective
@@ -832,14 +1028,14 @@ puts(response.output_text)
 # Final instructions and prompt to think step by step
 ```
 
-根据你的需要添加或删除各部分，并通过实验确定最适合你使用方式的做法。
+你可以根据需要添加或删除各个部分，并通过实验来确定最适合你的用法。
 
 ### 分隔符
 
-以下是一些关于如何为你的提示选择最佳分隔符的通用指南。有关该上下文类型的特殊注意事项，请参阅长上下文部分。
+以下是一些关于如何为你的提示选择最佳分隔符的通用指南。请参阅长上下文部分，了解针对该上下文类型的特殊注意事项。
 
-1. Markdown：我们建议从这里开始，并对主要章节和子章节（包括更深层级到 H4+）使用 markdown 标题。使用内联反引号或反引号代码块精确包裹代码，并根据需要使用标准的编号或项目符号列表。
-2. XML：这些格式的表现也很好，并且本模型在遵守 XML 中的信息方面有所改进。XML 便于精确包裹包含开始和结束的章节、为标签添加元数据以提供额外上下文，以及支持嵌套。以下是使用 XML 标签在示例部分中嵌套示例的示例，其中每个示例都包含输入和输出：
+1. Markdown：我们建议你从这里开始，并使用 Markdown 标题来组织主要章节和子章节（包括更深层的层级，直至 H4 及以上）。使用行内反引号或反引号代码块精确包裹代码，并根据需要使用标准的编号列表或项目符号列表。
+2. XML：这些标签的表现同样出色，而且此模型对 XML 中信息的遵循能力已得到改进。XML 便于精确地包裹一段内容（包括起始和结束），为标签添加元数据以提供额外上下文，并支持嵌套。下面是一个使用 XML 标签在示例章节中嵌套示例的示例，其中包含每个示例的输入和输出：
 
 ```text
 <examples>
@@ -850,31 +1046,31 @@ puts(response.output_text)
 </examples>
 ```
 
-3. JSON 高度结构化，并且模型对其理解良好，尤其是在编程场景中。不过它可能更冗长，并且需要进行字符转义，这会增加额外开销。
+3. JSON 结构化程度高，模型对其理解良好，尤其在编程相关场景中表现突出。不过它可能更为冗长，并且需要字符转义，这会增加一些额外开销。
 
-专门针对向输入上下文中添加大量文档或文件的指导：
+专门针对向输入上下文中添加大量文档或文件的指引：
 
 - XML 在我们的长上下文测试中表现良好。
   - 示例： `<doc id='1' title='The Fox'>The quick brown fox jumps over the lazy dog</doc>`
-- Lee 等人提出的该格式（[ref](https://arxiv.org/pdf/2406.13121)）在我们的长上下文测试中也表现良好。
+- 该格式由 Lee 等人提出（[ref](https://arxiv.org/pdf/2406.13121)），在我们的长上下文测试中同样表现良好。
   - 示例： `ID: 1 | TITLE: The Fox | CONTENT: The quick brown fox jumps over the lazy dog`
 - JSON 表现尤其不佳。
   - 示例： `[{'id': 1, 'title': 'The Fox', 'content': 'The quick brown fox jumped over the lazy dog'}]`
 
-该模型经过训练，能够稳健地理解多种格式的结构。通常，你可以根据判断来思考哪些方式能为模型提供清晰且“突出”的信息。例如，如果你检索的文档包含大量 XML，那么基于 XML 的分隔符可能效果较差。
+该模型经过训练，能够稳健地理解各种格式的结构。通常，请结合你的判断，考虑什么方式能够提供清晰的信息并对模型“突出”显示。例如，如果你要检索的文档包含大量 XML，基于 XML 的分隔符可能效果较差。
 
 ### 注意事项
 
-- 在某些孤立情况下，我们观察到模型在生成非常长且重复的输出时存在阻力，例如逐个分析数百个项目。如果你的用例确实需要这样做，请强烈指示模型完整输出这些信息，并考虑拆分问题或采用更简洁的方法。
-- 我们观察到在极少数情况下并行工具调用会出现错误。建议测试这一行为，如果遇到问题，可以考虑将 [parallel_tool_calls](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-parallel_tool_calls) 参数设置为 false。
+- 在某些少数情况下，我们观察到模型会抗拒生成非常长的、重复性的输出，例如逐个分析数百个项目。如果你的使用场景确实需要如此，请强烈指示模型完整输出这些信息，并考虑拆分问题或采用更简洁的方法。
+- 我们曾遇到过一些罕见的并行工具调用结果不正确的情况。建议对此进行测试，如果发现问题，可以考虑将 [parallel_tool_calls](https://developers.openai.com/api/reference/resources/responses/methods/create#responses-create-parallel_tool_calls) 参数设置为 false。
 
-### 附录：生成与应用文件差异 (File Diff)
+### 附录：生成与应用文件差异
 
-开发者向我们反馈，准确且格式规范的 diff 生成能力是支撑编码相关任务的关键能力。为此，GPT-4.1 系列相较之前的 GPT 模型大幅提升了 diff 生成能力。此外，GPT-4.1 在根据清晰指令和示例生成任意格式的 diff 方面都表现出色，我们在此开源一种推荐的 diff 格式，模型已基于该格式进行了大量训练。我们希望这尤其能帮助刚入门的开发者，减少自行创建 diff 时的大量试错工作。
+开发者向我们反馈，生成准确且格式规范的差异对比（diff）是驱动编码相关任务的关键能力。为此，GPT-4.1 系列相较于以往的 GPT 模型大幅提升了差异对比能力。此外，尽管 GPT-4.1 在给定清晰指令和示例的情况下，能够出色地生成各种格式的差异对比，但我们在此处开源了一种推荐的差异对比格式，模型已在该格式上进行了大量训练。我们希望，对于刚刚入门的开发者来说，这将大大省去自行创建差异对比时的大量猜测工作。
 
 ### Apply Patch
 
-请参阅下方示例，了解正确应用我们推荐的工具调用的提示示例。
+请参阅下面的示例，了解一个正确应用我们推荐的工具调用的提示。
 
 ```python
 APPLY_PATCH_TOOL_DESC = """This is a custom utility that makes it more convenient to add, remove, move, or edit code files. `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as "input":
@@ -1030,7 +1226,7 @@ puts(JSON.generate(tool))
 
 ### 参考实现：apply_patch.py
 
-这是我们在模型训练中使用的 apply_patch 工具的参考实现。你需要将其设为可执行文件并以 \`apply_patch\` 模型将在其中执行命令的 shell：
+以下是我们在模型训练中使用的 apply_patch 工具的参考实现。你需要将其设为可执行文件，并在模型将要执行命令的 shell 中以 apply_patch 形式可用： \`apply_patch\` from the shell where the model will execute commands:
 
 ```python
 #!/usr/bin/env python3
@@ -1561,11 +1757,11 @@ if __name__ == "__main__":
 ```
 
 
-### 其他有效的 Diff 格式
+### 其他有效的差异格式
 
-如果你想尝试使用不同的 diff 格式，我们在测试中发现 Aider polyglot 基准测试中使用的 SEARCH/REPLACE diff 格式，以及一种不带内部转义的伪 XML 格式，都有较高的成功率。
+如果你想尝试使用不同的 diff 格式，我们在测试中发现，Aider 的 polyglot 基准中使用的 SEARCH/REPLACE diff 格式，以及一种不带任何内部转义的伪 XML 格式，都具有较高的成功率。
 
-这些 diff 格式有两个共同的关键特征：(1) 它们不使用行号，(2) 它们同时提供了要被替换的确切代码以及用于替换的确切代码，并在两者之间使用清晰的分隔符。
+这些 diff 格式有两个共同的关键特征：(1) 不使用行号；(2) 同时提供要被替换的完整代码，以及用于替换的完整代码，并在两者之间使用清晰的分隔符。
 
 ````python
 SEARCH_REPLACE_DIFF_EXAMPLE = """

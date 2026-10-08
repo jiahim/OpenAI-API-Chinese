@@ -1,28 +1,28 @@
 # WebSockets
 
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 完整文档索引请参阅 [llms.txt](/llms.txt). 文档页面的 Markdown 版本可通过在页面 URL 后追加 `.md` 来获取。
 
 选择你的 API 以查看其连接步骤和会话事件。
 
 
 
-## 将服务器连接到 GPT-Live
+## 将服务端连接到 GPT-Live
 
-在你的服务器捕获音频或为客户端中继音频流时，使用主 WebSocket。它在两个方向上都承载音频和 JSON 事件。请将项目 API 密钥保存在该受信任的服务器上。针对浏览器和移动应用，请从 [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live).
+当你的服务器捕获音频或为客户端中转音频流时，使用主 WebSocket。它在两个方向上都传输音频和 JSON 事件。请将项目 API 密钥保存在该受信任的服务器上。对于浏览器和移动应用，请从 [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=live).
 
-本指南介绍如何将音频流式传输到 GPT-Live。若要监控或控制现有会话，请参阅 [服务端控制](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live)。若要将推理和工具后端连接到 Responses API,请参阅 [Responses WebSocket 模式](https://developers.openai.com/api/docs/guides/websocket-mode).
+本指南介绍如何向 GPT-Live 流式传输音频。若要监控或控制现有会话，请参阅 [服务端控制](https://developers.openai.com/api/docs/guides/voice-server-controls?api=live)。若要将推理与工具后端接入 Responses API，请参阅 [Responses WebSocket 模式](https://developers.openai.com/api/docs/guides/websocket-mode).
 
 ### 进行身份验证并开启会话
 
-1. 连接到 `wss://api.openai.com/v1/live/sessions` ，不使用任何查询参数。通过 `Authorization: Bearer $OPENAI_API_KEY` 进行身份验证，并在请求中附带示例所示的连接标头。
-2. 发送 `session.start` 作为第一条消息。将模型、会话指令、音频格式、语音以及委托配置放入 `session` 对象中。
+1. 连接到 `wss://api.openai.com/v1/live/sessions` ，不携带任何查询参数。使用 `Authorization: Bearer $OPENAI_API_KEY` 进行认证，并附带示例中展示的连接请求头。
+2. 发送 `session.start` 作为第一条消息。将模型、对话指令、音频格式、语音以及委托配置放入 `session` 对象中。
 3. 等待 `session.started` 后再发送音频或应用命令。它包含已解析的会话配置和会话 ID。
 
-下面的示例使用 Marin、PCM16 音频（24 kHz）以及带 网页搜索 的 Responses 后端。请保持对话指令简洁。通过以下方式配置后端指令、工具及工具权限： [委托与工具](https://developers.openai.com/api/docs/guides/live-delegation).
+下面的示例使用 Marin、PCM16 音频（24 kHz），以及带有 网页搜索 的 Responses 后端。请保持对话指令简洁。通过以下方式配置后端指令、工具和工具权限： [委派与工具](https://developers.openai.com/api/docs/guides/live-delegation).
 
 ### 使用 SDK 流式传输音频
 
-对于 Node.js，请安装 `openai` 并将 `ws` 与 `npm install openai ws` 并将 JavaScript 示例保存为 `client.mjs`。对于 macOS 或 Linux 上的 Python，请安装 `openai[realtime]` 并将 Python 示例保存为 `client.py`。设置 `OPENAI_API_KEY` 在服务端环境中运行。这些示例需要支持 Live 的 SDK 版本。示例从标准输入读取原始的单声道 PCM16 音频（采样率 24 kHz），并将返回的音频以相同格式写入标准输出。请将这些流连接到你的应用的音频采集与播放。日志和转写事件输出到标准错误，以免污染音频流。
+对于 Node.js，请安装 `openai` 并 `ws` 将 `npm install openai ws` 并将 JavaScript 示例保存为 `client.mjs`。对于 macOS 或 Linux 上的 Python，请安装 `openai[realtime]` 并将 Python 示例保存为 `client.py`。设置 `OPENAI_API_KEY` 在服务端环境中。这些示例需要支持 Live 的 SDK 版本。示例从标准输入读取原始的单声道 PCM16 音频（采样率 24 kHz），并以相同格式将返回的音频写入标准输出。将这些流连接到你的应用的音频采集和播放。日志和转写事件输出到标准错误，以避免污染音频流。
 
 ```javascript
 import OpenAI from "openai";
@@ -236,65 +236,65 @@ if __name__ == "__main__":
 ```
 
 
-运行 `node client.mjs` 或 `python client.py` 并连接你的音频源与播放器。出现 `Session ready` 时，提供一个按其录制采样率连续输入的麦克风流。一次管道传输整个文件并不能模拟实时麦克风。音频源上的 EOF 不会结束对话。请发送 `SIGINT` 给进程以请求优雅关闭。
+运行 `node client.mjs` 或 `python client.py` ，并附加你的音频源和播放器。出现 `Session ready` 后，提供按其录制采样率持续输入的麦克风流。一次性管道传输整个文件并不能模拟实时麦克风。音频源上的 EOF 不会结束对话。发送 `SIGINT` 到该进程以请求正常关闭。
 
-该示例仅连接音频流；采集、缓冲、播放以及必要的重采样由你的应用负责。在评估模型行为之前，请先结合你的设备和网络测试这些部分。
+该示例负责连接音频流；你的应用负责采集、缓冲、播放以及必要的重采样。在评估模型行为之前，请先用你的设备和网络测试这些部分。
 
 ### 选择音频格式
 
-设置 `session.audio.format` at startup. One format applies to both input and output and cannot change during the session.
+Set `session.audio.format` 在启动时设定。输入和输出使用同一格式，且在整个会话期间无法更改。
 
-- `{"type":"audio/pcm","rate":24000}`: 单声道有符号 16 位小端 PCM，采样率 24 kHz；默认值。
-- `{"type":"audio/pcm","rate":16000}`: 单声道有符号 16 位小端 PCM，采样率 16 kHz。
-- `{"type":"audio/pcmu","rate":8000}`: G.711 μ-law，采样率 8 kHz，每个样本一个字节。
-- `{"type":"audio/pcma","rate":8000}`: G.711 A-law，采样率 8 kHz，每个样本一个字节。
+- `{"type":"audio/pcm","rate":24000}`：单声道有符号 16 位小端 PCM，24 kHz；默认值。
+- `{"type":"audio/pcm","rate":16000}`：单声道有符号 16 位小端 PCM，16 kHz。
+- `{"type":"audio/pcmu","rate":8000}`：G.711 μ-law，8 kHz，每个样本一个字节。
+- `{"type":"audio/pcma","rate":8000}`：G.711 A-law，8 kHz，每个样本一个字节。
 
-对原始字节进行 Base64 编码，不要添加 WAV 或其他容器头。PCM 数据块必须包含完整的 16 位采样，因此其字节长度必须为偶数。示例会将一个尾部字节带入下一个输入分块。除分块边界之外的其他方面可以任意选择：保持一个连续且有序的流。
+对原始字节进行 Base64 编码，且不包含 WAV 或其他容器头。PCM 数据块必须包含完整的 16 位采样，因此其字节长度必须为偶数。示例中将一个尾部字节带入到下一个输入数据块中。除此之外，数据块的边界可以任意设置：保持一个连续的、有序的流。
 
-当音频采样率与配置的采样率不一致时，需要对音频进行重采样。更改格式设置不会转换你的输入字节。要使该示例适配 G.711，请转发每个分块的编解码器字节，去掉 PCM 特有的两字节对齐逻辑，并将输出播放器配置为使用相同的编解码器。匹配的 G.711 流可以不经转换直接以 PCM 形式传输。详见 [电话集成](https://developers.openai.com/api/docs/guides/voice-sip?api=live) ，了解如何接入电话呼叫。
+当音频的采样率与配置的速率不一致时，需要进行重采样。更改格式设置不会转换输入的字节。若要将示例适配 G.711，请直接转发每个数据块的编解码器字节，而不要使用 PCM 专用的两字节对齐逻辑，并将输出播放器配置为相同的编解码器。匹配的 G.711 流可以直接透传，无需转换为 PCM。详见 [电话集成](https://developers.openai.com/api/docs/guides/voice-sip?api=live) 以了解如何连接电话通话。
 
 ### 发送和接收事件
 
-将每个事件作为 JSON 文本消息发送。音频在这些消息中以 base64 形式传输。
+将每个事件作为 JSON 文本消息发送。音频以 base64 形式在这些消息中传输。
 
-- **发送音频：** send `session.input_audio.append` with raw, base64-encoded bytes in `audio`. Audio appends have no acknowledgment.
-- **接收音频：** decode `delta` from each `session.output_audio.delta` event and queue the audio for playback in order, using the configured format.
-- **接收转录：** append the text in `delta` from `session.input_transcript.delta` and `session.output_transcript.delta` to the corresponding transcript.
-- **接收后端事件：** when using Responses delegation, process the nested `event` in each `response.event` envelope.
-- **处理错误：** handle rejected commands and session errors from `error` events. Use `error.client_event_id`，用于在存在时识别该命令。
+- **发送音频：** send `session.input_audio.append` ，附带原始的 base64 编码字节。音频追加没有确认。 `audio`. Audio appends have no acknowledgment.
+- **接收音频：** decode `delta` 每个 `session.output_audio.delta` 事件，并按顺序将音频排队以使用所配置的格式进行播放。
+- **接收转录文本：** append the text in `delta` from `session.input_transcript.delta` and `session.output_transcript.delta` 到对应的转录文本。
+- **接收后端事件：** 在使用 Responses 委托时，处理每个 `event` 中的 `response.event` envelope。
+- **处理错误：** 处理来自 `error` 事件的被拒绝命令和会话错误。使用 `error.client_event_id`,当存在时,用于标识该命令。
 
-使用应用的音频队列跟踪播放。GPT-Live 的主 WebSocket 发送输出音频时不包含时间戳字段或 output-audio-done 事件。请使用转录时间戳来整理字幕，并结合后端事件来跟踪委托工作。
+使用应用的音频队列跟踪播放。GPT-Live 的主 WebSocket 发送的输出音频不包含时间字段或 output-audio-done 事件。请使用转写文本的时间戳来组织字幕，并使用后端事件来跟踪已交接的工作。
 
-GPT-Live 会持续管理音频流的听与说时机。请使用 `response.create` 来启动或继续委托的后端工作。详见 [委托与工具](https://developers.openai.com/api/docs/guides/live-delegation) 以了解该 工作流。
+GPT-Live 管理何时监听和发言，因为音频流是持续传输的。使用 `response.create` 来启动或继续交接的后端工作。参见 [委派与工具](https://developers.openai.com/api/docs/guides/live-delegation) 了解相关工作流。
 
-### 配置一个持续的会话
+### 配置持续进行的会话
 
-Live 模型、初始对话指令、音频格式、声音和委托模式在启动时即已固定。请使用 `session.update` 在现有委托模式支持的设置范围内进行调整；未指定的设置保持当前值。成功更新后会返回 `session.updated` ，其中包含已解析的会话配置。
+Live 模型、初始对话指令、音频格式、语音和委托模式在启动时固定。请使用 `session.update` 在现有委托模式下更新受支持的设置；未提供的设置保持其当前值。更新成功后会返回 `session.updated` 以及解析后的会话配置。
 
-使用 `session.instructions.append` 添加对话指令，使用 `session.input_audio.mute` 或 `session.input_audio.unmute` 控制传入的音频。静音输入不会取消后端工作，也不会停止已生成的语音。详见 [管理会话](https://developers.openai.com/api/docs/guides/live-conversations) 了解上下文更新、转录、输入控制和使用情况。
+使用 `session.instructions.append` 来添加对话指令，并使用 `session.input_audio.mute` 或 `session.input_audio.unmute` 来控制传入音频。静音输入不会取消后端工作，也不会停止已生成的语音。详见 [管理会话](https://developers.openai.com/api/docs/guides/live-conversations) 了解上下文更新、转录、输入控制和使用情况。
 
-### 关闭会话
+### Close the session
 
-发送 `session.close` 当会话结束时的消息。先安装 `session.closed` 监听器，持续接收直到该事件到达，然后释放连接。示例会等待最多 15 秒，若终止事件始终未到达则报告未完成。
+Send `session.close` 当会话结束时。先安装 `session.closed` 监听器，持续接收事件直到该事件到达，然后释放连接。示例最多等待 15 秒，如果始终未收到结束事件则报告未完成。
 
-保留来自 `session.closed` 的最终语音用量以及已收到的后端用量事件。语音时长更新是累计快照，不要将它们相加。在 `session.closed` 之前发生的传输失败或超时将导致最终用量无法确认。详见 [管理会话](https://developers.openai.com/api/docs/guides/live-conversations) 以了解完整生命周期。
-
-  
+保留来自 `session.closed` 的最终语音用量以及已收到的后端用量事件。语音时长更新是累计快照，请勿将它们相加。在 `session.closed` 之前的传输失败或超时会导致最终用量无法确认。详见 [管理会话](https://developers.openai.com/api/docs/guides/live-conversations) 了解完整生命周期。
 
   
 
+  
 
-[WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) 是一种广泛支持的 API，可用于实时数据传输，也是服务端到服务端应用中连接 OpenAI Realtime API 的理想选择。对于浏览器和移动客户端，我们建议通过 [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime).
 
-在服务端到服务端的 Realtime 集成中，你的后端系统将通过 WebSocket 直接连接到 Realtime API。你可以使用一个 [标准的 API 密钥](https://platform.openai.com/settings/organization/api-keys) 对该连接进行身份验证，因为该令牌仅在你安全的后端服务器上可用。
+[WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) 是一种广泛支持的 API，用于实时数据传输，是在服务端到服务端应用中连接 OpenAI Realtime API 的理想选择。对于浏览器和移动客户端，我们建议通过 [WebRTC](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime).
+
+在服务端到服务端的 Realtime 集成中，你的后端系统将通过 WebSocket 直接连接到 Realtime API。你可以使用 [标准的 API 密钥](https://platform.openai.com/settings/organization/api-keys) 对该连接进行身份验证，因为该令牌仅在你的安全后端服务器上可用。
 
 ![直接连接到 realtime API](https://openaidevs.retool.com/api/file/464d4334-c467-4862-901b-d0c6847f003a)
 
 ## 通过 WebSocket 连接
 
-下面是一些通过 WebSocket 连接到 Realtime API 的示例。除了使用下面的 WebSocket URL 之外，你还需要使用你的 OpenAI API 密钥传递身份验证标头。如果你的应用程序分配 [安全标识符](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)，请在 `OpenAI-Safety-Identifier` 标头中传递稳定的、保护隐私的最终用户标识符。
+以下是通过 WebSocket 连接到 Realtime API 的几个示例。除了使用下面的 WebSocket URL 外，还需要使用你的 OpenAI API 密钥传递身份验证头。如果你的应用分配了 [安全标识符](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers)，请在以下请求头中传递该终端用户对应的稳定且保护隐私的标识符： `OpenAI-Safety-Identifier` 请求头。
 
-如以下示例所示，可以在浏览器中使用临时 API 令牌来使用 WebSocket [WebRTC 连接指南](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime)，但如果你从浏览器或移动应用等客户端进行连接，在大多数情况下，WebRTC 会是更稳健的解决方案。
+如以下示例所示，可以在浏览器中使用临时 API 令牌来使用 WebSocket： [WebRTC 连接指南](https://developers.openai.com/api/docs/guides/voice-webrtc?api=realtime)，但如果你从浏览器或移动应用等客户端进行连接，在大多数情况下，WebRTC 会是更稳健的解决方案。
 
 <ContentSwitcher
   id="connection-example"
@@ -303,6 +303,8 @@ Live 模型、初始对话指令、音频格式、声音和委托模式在启动
     { value: "ws", label: "ws module (Node.js)" },
     { value: "python", label: "websocket-client (Python)" },
     { value: "ruby", label: "OpenAI SDK (Ruby)" },
+    { value: "java", label: "OpenAI SDK (Java)" },
+    { value: "csharp", label: "OpenAI SDK (.NET)" },
     { value: "websocket", label: "WebSocket (browsers)" },
   ]}
 >
@@ -404,6 +406,95 @@ client.realtime.connect(model: "gpt-realtime-2.1") do |connection|
   puts("Connected to the Realtime API: #{connection.url.host}")
   connection.each { |event| puts("Received event: #{event.type}") }
 end
+```
+
+  
+
+  
+
+    
+OpenAI SDK (Java)
+
+    
+
+      Use Java 17 or later with `com.openai:openai-java:4.75.1`.
+    
+
+    Connect with the OpenAI SDK (Java)
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+var http = OkHttpClient.builder().build();
+var options =
+    ClientOptions.builder()
+        .fromEnv()
+        .httpClient(http)
+        .putHeader("OpenAI-Safety-Identifier", "hashed-user-id")
+        .build();
+try (http;
+    var connection =
+        RealtimeConnection.connect(
+            options,
+            RealtimeWebSocketOptions.builder().model("gpt-realtime-2.1").build())) {
+  while (true) {
+    var event = connection.receive();
+    if (event.error().isPresent())
+      throw new IllegalStateException(event.error().orElseThrow().toString());
+    if (event.sessionCreated().isPresent()) {
+      System.out.println("Connected to server.");
+      System.out.println(event);
+      break;
+    }
+  }
+}
+```
+
+  
+
+  
+
+    
+OpenAI SDK (.NET)
+
+    
+
+      Install the SDK with 
+      `dotnet add package OpenAI --version 2.14.0`. The Realtime API
+      uses experimental SDK types; the example includes the required warning
+      directive.
+    
+
+    Connect with the OpenAI SDK (.NET)
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+RealtimeClient client = new(key);
+
+RealtimeSessionClientOptions options = new();
+options.Headers["OpenAI-Safety-Identifier"] = "hashed-user-id";
+using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(30));
+using RealtimeSessionClient session = await client.StartConversationSessionAsync("gpt-realtime-2.1", options, cancellationToken: timeout.Token);
+await foreach (RealtimeServerUpdate update in session.ReceiveUpdatesAsync(timeout.Token))
+{
+    if (update is RealtimeServerUpdateError error)
+        throw new InvalidOperationException(error.Error.Message);
+    if (update is RealtimeServerUpdateSessionCreated)
+    {
+        Console.WriteLine("Connected to server.");
+        Console.WriteLine(System.ClientModel.Primitives.ModelReaderWriter.Write(update));
+        return;
+    }
+}
+throw new InvalidOperationException("Connection closed before session creation.");
 ```
 
   

@@ -77,6 +77,40 @@ As mentioned already, developers can optionally prompt agents built with GPT-4.1
 
 Below, we share the agentic prompt that we used to achieve our highest score on SWE-bench Verified, which features detailed instructions about workflow and problem-solving strategy. This general pattern can be used for any agentic task.
 
+```javascript
+const response = await client.responses.create({
+  instructions:
+    "\nYou will be tasked to fix an issue from an open-source repository.\n\nYour thinking should be thorough and so it's fine if it's very long. You can think step by step before and after each action you decide to take.\n\nYou MUST iterate and keep going until the problem is solved.\n\nYou already have everything you need to solve this problem in the /testbed folder, even without internet connection. I want you to fully solve this autonomously before coming back to me.\n\nOnly terminate your turn when you are sure that the problem is solved. Go through the problem step by step, and make sure to verify that your changes are correct. NEVER end your turn without having solved the problem, and when you say you are going to make a tool call, make sure you ACTUALLY make the tool call, instead of ending your turn.\n\nTHE PROBLEM CAN DEFINITELY BE SOLVED WITHOUT THE INTERNET.\n\nTake your time and think through every step - remember to check your solution rigorously and watch out for boundary cases, especially with the changes you made. Your solution must be perfect. If not, continue working on it. At the end, you must test your code rigorously using the tools provided, and do it many times, to catch all edge cases. If it is not robust, iterate more and make it perfect. Failing to test your code sufficiently rigorously is the NUMBER ONE failure mode on these types of tasks; make sure you handle all edge cases, and run existing tests if they are provided.\n\nYou MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.\n\n# Workflow\n\n## High-Level Problem Solving Strategy\n\n1. Understand the problem deeply. Carefully read the issue and think critically about what is required.\n2. Investigate the codebase. Explore relevant files, search for key functions, and gather context.\n3. Develop a clear, step-by-step plan. Break down the fix into manageable, incremental steps.\n4. Implement the fix incrementally. Make small, testable code changes.\n5. Debug as needed. Use debugging techniques to isolate and resolve issues.\n6. Test frequently. Run tests after each change to verify correctness.\n7. Iterate until the root cause is fixed and all tests pass.\n8. Reflect and validate comprehensively. After tests pass, think about the original intent, write additional tests to ensure correctness, and remember there are hidden tests that must also pass before the solution is truly complete.\n\nRefer to the detailed sections below for more information on each step.\n\n## 1. Deeply Understand the Problem\nCarefully read the issue and think hard about a plan to solve it before coding.\n\n## 2. Codebase Investigation\n- Explore relevant files and directories.\n- Search for key functions, classes, or variables related to the issue.\n- Read and understand relevant code snippets.\n- Identify the root cause of the problem.\n- Validate and update your understanding continuously as you gather more context.\n\n## 3. Develop a Detailed Plan\n- Outline a specific, simple, and verifiable sequence of steps to fix the problem.\n- Break down the fix into small, incremental changes.\n\n## 4. Making Code Changes\n- Before editing, always read the relevant file contents or section to ensure complete context.\n- If a patch is not applied correctly, attempt to reapply it.\n- Make small, testable, incremental changes that logically follow from your investigation and plan.\n\n## 5. Debugging\n- Make code changes only if you have high confidence they can solve the problem\n- When debugging, try to determine the root cause rather than addressing symptoms\n- Debug for as long as needed to identify the root cause and identify a fix\n- Use print statements, logs, or temporary code to inspect program state, including descriptive statements or error messages to understand what's happening\n- To test hypotheses, you can also add test statements or functions\n- Revisit your assumptions if unexpected behavior occurs.\n\n## 6. Testing\n- Run tests frequently using `!python3 run_tests.py` (or equivalent).\n- After each change, verify correctness by running relevant tests.\n- If tests fail, analyze failures and revise your patch.\n- Write additional tests if needed to capture important behaviors or edge cases.\n- Ensure all tests pass before finalizing.\n\n## 7. Final Verification\n- Confirm the root cause is fixed.\n- Review your solution for logic correctness and robustness.\n- Iterate until you are extremely confident the fix is complete and all tests pass.\n\n## 8. Final Reflection and Additional Testing\n- Reflect carefully on the original intent of the user and the problem statement.\n- Think about potential edge cases or scenarios that may not be covered by existing tests.\n- Write additional tests that would need to pass to fully validate the correctness of your solution.\n- Run these new tests and ensure they all pass.\n- Be aware that there are additional hidden tests that must also pass for the solution to be successful.\n- Do not assume the task is complete just because the visible tests pass; continue refining until you are confident the fix is robust and comprehensive.\n",
+  model: "gpt-4.1-2025-04-14",
+  tools: [
+    {
+      type: "function",
+      name: "python",
+      description:
+        'This function is used to execute Python code or terminal commands in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after 60.0 seconds. Internet access for this session is disabled. Do not make external web requests or API calls as they will fail. Just as in a Jupyter notebook, you may also execute terminal commands by calling this function with a terminal command, prefaced with an exclamation mark.\n\nIn addition, for the purposes of this task, you can call this function with an `apply_patch` command as input.  `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as "input":\n\n%%bash\napply_patch <<"EOF"\n*** Begin Patch\n[YOUR_PATCH]\n*** End Patch\nEOF\n\nWhere [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.\n\n*** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.\nFor each snippet of code that needs to be changed, repeat the following:\n[context_before] -> See below for further instructions on context.\n- [old_code] -> Precede the old code with a minus sign.\n+ [new_code] -> Precede the new, replacement code with a plus sign.\n[context_after] -> See below for further instructions on context.\n\nFor instructions on [context_before] and [context_after]:\n- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change\'s [context_after] lines in the second change\'s [context_before] lines.\n- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:\n@@ class BaseClass\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\n- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:\n\n@@ class BaseClass\n@@ \tdef method():\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\nNote, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as "input" to this function, in order to apply a patch, is shown below.\n\n%%bash\napply_patch <<"EOF"\n*** Begin Patch\n*** Update File: pygorithm/searching/binary_search.py\n@@ class BaseClass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n@@ class Subclass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n*** End Patch\nEOF\n\nFile references can only be relative, NEVER ABSOLUTE. After the apply_patch command is run, Python will always say "Done!", regardless of whether the patch was successfully applied or not. However, you can determine if there are issues or errors by looking at any warnings or logging lines printed BEFORE the "Done!" is output.\n',
+      parameters: {
+        type: "object",
+        properties: {
+          input: {
+            type: "string",
+            description:
+              " The Python code, terminal command (prefaced by exclamation mark), or apply_patch command that you wish to execute.",
+          },
+        },
+        required: ["input"],
+        additionalProperties: false,
+      },
+      strict: true,
+    },
+  ],
+  input: "Please answer the following question:\nBug: Typerror...",
+});
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+console.log(JSON.stringify(response.output, null, 2));
+```
+
 ```python
 from openai import OpenAI
 
@@ -252,6 +286,51 @@ response = client.responses.create(
 )
 
 response.to_dict()["output"]
+```
+
+```go
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model:        "gpt-4.1-2025-04-14",
+	Instructions: openai.String("\nYou will be tasked to fix an issue from an open-source repository.\n\nYour thinking should be thorough and so it's fine if it's very long. You can think step by step before and after each action you decide to take.\n\nYou MUST iterate and keep going until the problem is solved.\n\nYou already have everything you need to solve this problem in the /testbed folder, even without internet connection. I want you to fully solve this autonomously before coming back to me.\n\nOnly terminate your turn when you are sure that the problem is solved. Go through the problem step by step, and make sure to verify that your changes are correct. NEVER end your turn without having solved the problem, and when you say you are going to make a tool call, make sure you ACTUALLY make the tool call, instead of ending your turn.\n\nTHE PROBLEM CAN DEFINITELY BE SOLVED WITHOUT THE INTERNET.\n\nTake your time and think through every step - remember to check your solution rigorously and watch out for boundary cases, especially with the changes you made. Your solution must be perfect. If not, continue working on it. At the end, you must test your code rigorously using the tools provided, and do it many times, to catch all edge cases. If it is not robust, iterate more and make it perfect. Failing to test your code sufficiently rigorously is the NUMBER ONE failure mode on these types of tasks; make sure you handle all edge cases, and run existing tests if they are provided.\n\nYou MUST plan extensively before each function call, and reflect extensively on the outcomes of the previous function calls. DO NOT do this entire process by making function calls only, as this can impair your ability to solve the problem and think insightfully.\n\n# Workflow\n\n## High-Level Problem Solving Strategy\n\n1. Understand the problem deeply. Carefully read the issue and think critically about what is required.\n2. Investigate the codebase. Explore relevant files, search for key functions, and gather context.\n3. Develop a clear, step-by-step plan. Break down the fix into manageable, incremental steps.\n4. Implement the fix incrementally. Make small, testable code changes.\n5. Debug as needed. Use debugging techniques to isolate and resolve issues.\n6. Test frequently. Run tests after each change to verify correctness.\n7. Iterate until the root cause is fixed and all tests pass.\n8. Reflect and validate comprehensively. After tests pass, think about the original intent, write additional tests to ensure correctness, and remember there are hidden tests that must also pass before the solution is truly complete.\n\nRefer to the detailed sections below for more information on each step.\n\n## 1. Deeply Understand the Problem\nCarefully read the issue and think hard about a plan to solve it before coding.\n\n## 2. Codebase Investigation\n- Explore relevant files and directories.\n- Search for key functions, classes, or variables related to the issue.\n- Read and understand relevant code snippets.\n- Identify the root cause of the problem.\n- Validate and update your understanding continuously as you gather more context.\n\n## 3. Develop a Detailed Plan\n- Outline a specific, simple, and verifiable sequence of steps to fix the problem.\n- Break down the fix into small, incremental changes.\n\n## 4. Making Code Changes\n- Before editing, always read the relevant file contents or section to ensure complete context.\n- If a patch is not applied correctly, attempt to reapply it.\n- Make small, testable, incremental changes that logically follow from your investigation and plan.\n\n## 5. Debugging\n- Make code changes only if you have high confidence they can solve the problem\n- When debugging, try to determine the root cause rather than addressing symptoms\n- Debug for as long as needed to identify the root cause and identify a fix\n- Use print statements, logs, or temporary code to inspect program state, including descriptive statements or error messages to understand what's happening\n- To test hypotheses, you can also add test statements or functions\n- Revisit your assumptions if unexpected behavior occurs.\n\n## 6. Testing\n- Run tests frequently using `!python3 run_tests.py` (or equivalent).\n- After each change, verify correctness by running relevant tests.\n- If tests fail, analyze failures and revise your patch.\n- Write additional tests if needed to capture important behaviors or edge cases.\n- Ensure all tests pass before finalizing.\n\n## 7. Final Verification\n- Confirm the root cause is fixed.\n- Review your solution for logic correctness and robustness.\n- Iterate until you are extremely confident the fix is complete and all tests pass.\n\n## 8. Final Reflection and Additional Testing\n- Reflect carefully on the original intent of the user and the problem statement.\n- Think about potential edge cases or scenarios that may not be covered by existing tests.\n- Write additional tests that would need to pass to fully validate the correctness of your solution.\n- Run these new tests and ensure they all pass.\n- Be aware that there are additional hidden tests that must also pass for the solution to be successful.\n- Do not assume the task is complete just because the visible tests pass; continue refining until you are confident the fix is robust and comprehensive.\n"),
+	Input: responses.ResponseNewParamsInputUnion{
+		OfString: openai.String("Please answer the following question:\nBug: Typerror..."),
+	},
+	Tools: []responses.ToolUnionParam{
+		{
+			OfFunction: &responses.FunctionToolParam{
+				Name:        "python",
+				Description: openai.String("This function is used to execute Python code or terminal commands in a stateful Jupyter notebook environment. python will respond with the output of the execution or time out after 60.0 seconds. Internet access for this session is disabled. Do not make external web requests or API calls as they will fail. Just as in a Jupyter notebook, you may also execute terminal commands by calling this function with a terminal command, prefaced with an exclamation mark.\n\nIn addition, for the purposes of this task, you can call this function with an `apply_patch` command as input.  `apply_patch` effectively allows you to execute a diff/patch against a file, but the format of the diff specification is unique to this task, so pay careful attention to these instructions. To use the `apply_patch` command, you should pass a message of the following structure as \"input\":\n\n%%bash\napply_patch <<\"EOF\"\n*** Begin Patch\n[YOUR_PATCH]\n*** End Patch\nEOF\n\nWhere [YOUR_PATCH] is the actual content of your patch, specified in the following V4A diff format.\n\n*** [ACTION] File: [path/to/file] -> ACTION can be one of Add, Update, or Delete.\nFor each snippet of code that needs to be changed, repeat the following:\n[context_before] -> See below for further instructions on context.\n- [old_code] -> Precede the old code with a minus sign.\n+ [new_code] -> Precede the new, replacement code with a plus sign.\n[context_after] -> See below for further instructions on context.\n\nFor instructions on [context_before] and [context_after]:\n- By default, show 3 lines of code immediately above and 3 lines immediately below each change. If a change is within 3 lines of a previous change, do NOT duplicate the first change's [context_after] lines in the second change's [context_before] lines.\n- If 3 lines of context is insufficient to uniquely identify the snippet of code within the file, use the @@ operator to indicate the class or function to which the snippet belongs. For instance, we might have:\n@@ class BaseClass\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\n- If a code block is repeated so many times in a class or function such that even a single @@ statement and 3 lines of context cannot uniquely identify the snippet of code, you can use multiple `@@` statements to jump to the right context. For instance:\n\n@@ class BaseClass\n@@ \tdef method():\n[3 lines of pre-context]\n- [old_code]\n+ [new_code]\n[3 lines of post-context]\n\nNote, then, that we do not use line numbers in this diff format, as the context is enough to uniquely identify code. An example of a message that you might pass as \"input\" to this function, in order to apply a patch, is shown below.\n\n%%bash\napply_patch <<\"EOF\"\n*** Begin Patch\n*** Update File: pygorithm/searching/binary_search.py\n@@ class BaseClass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n@@ class Subclass\n@@     def search():\n-        pass\n+        raise NotImplementedError()\n\n*** End Patch\nEOF\n\nFile references can only be relative, NEVER ABSOLUTE. After the apply_patch command is run, Python will always say \"Done!\", regardless of whether the patch was successfully applied or not. However, you can determine if there are issues or errors by looking at any warnings or logging lines printed BEFORE the \"Done!\" is output.\n"),
+				Parameters: map[string]any{
+					"type": "object",
+					"properties": map[string]any{
+						"input": map[string]any{
+							"type":        "string",
+							"description": " The Python code, terminal command (prefaced by exclamation mark), or apply_patch command that you wish to execute.",
+						},
+					},
+					"required": []any{
+						"input",
+					},
+					"additionalProperties": false,
+				},
+				Strict: openai.Bool(true),
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
 ```
 
 ```java
@@ -555,6 +634,58 @@ This demonstrates best practices for a fictional customer service agent. Observe
 
 Try running the following notebook cell - you should see both a user message and tool call, and the user message should start with a greeting, then echo back their answer, then mention they're about to call a tool. Try changing the instructions to shape the model behavior, or trying other user messages, to test instruction following performance.
 
+```javascript
+const response = await client.responses.create({
+  instructions:
+    'You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.\n\n# Instructions\n- Always greet the user with "Hi, you\'ve reached NewTelco, how can I help you?"\n- Always call a tool before answering factual questions about the company, its offerings or products, or a user\'s account. Only use retrieved context and never rely on your own knowledge for any of these questions.\n    - However, if you don\'t have enough information to properly call the tool, ask the user for the information you need.\n- Escalate to a human if the user requests.\n- Do not discuss prohibited topics (politics, religion, controversial current events, medical, legal, or financial advice, personal conversations, internal company operations, or criticism of any people or company).\n- Rely on sample phrases whenever appropriate, but never repeat a sample phrase in the same conversation. Feel free to vary the sample phrases to avoid sounding repetitive and make it more appropriate for the user.\n- Always follow the provided output format for new messages, including citations for any factual statements from retrieved policy documents.\n- If you\'re going to call a tool, always message the user with an appropriate message before and after calling the tool.\n- Maintain a professional and concise tone in all responses, and use emojis between sentences.\n- If you\'ve resolved the user\'s request, ask if there\'s anything else you can help with\n\n# Precise Response Steps (for each response)\n1. If necessary, call tools to fulfill the user\'s desired action. Always message the user before and after calling a tool to keep them in the loop.\n2. In your response to the user\n    a. Use active listening and echo back what you heard the user ask for.\n    b. Respond appropriately given the above guidelines.\n\n# Sample Phrases\n## Deflecting a Prohibited Topic\n- "I\'m sorry, but I\'m unable to discuss that topic. Is there something else I can help you with?"\n- "That\'s not something I\'m able to provide information on, but I\'m happy to help with any other questions you may have."\n\n## Before calling a tool\n- "To help you with that, I\'ll just need to verify your information."\n- "Let me check that for you—one moment, please."\n- "I\'ll retrieve the latest details for you now."\n\n## After calling a tool\n- "Okay, here\'s what I found: [response]"\n- "So here\'s what I found: [response]"\n\n# Output Format\n- Always include your final response to the user.\n- When providing factual information from retrieved context, always include citations immediately after the relevant statement(s). Use the following citation format:\n    - For a single source: [NAME](ID)\n    - For multiple sources: [NAME](ID), [NAME](ID)\n- Only provide information about this company, its policies, its products, or the customer\'s account, and only if it is based on information provided in context. Do not answer questions outside this scope.\n\n# Example\n## User\nCan you tell me about your family plan options?\n\n## Assistant Response 1\n### Message\n"Hi, you\'ve reached NewTelco, how can I help you? 😊🎉\n\nYou\'d like to know about our family plan options. 🤝 Let me check that for you—one moment, please. 🚀"\n\n### Tool Calls\nlookup_policy_document(topic="family plan options")\n\n// After tool call, the assistant would follow up with:\n\n## Assistant Response 2 (after tool call)\n### Message\n"Okay, here\'s what I found: 🎉 Our family plan allows up to 5 lines with shared data and a 10% discount for each additional line [Family Plan Policy](ID-010). 📱 Is there anything else I can help you with today? 😊"\n',
+  model: "gpt-4.1-2025-04-14",
+  tools: [
+    {
+      type: "function",
+      name: "lookup_policy_document",
+      description:
+        "Tool to look up internal documents and policies by topic or keyword.",
+      parameters: {
+        type: "object",
+        properties: {
+          topic: {
+            type: "string",
+            description:
+              "The topic or keyword to search for in company policies or documents.",
+          },
+        },
+        required: ["topic"],
+        additionalProperties: false,
+      },
+      strict: true,
+    },
+    {
+      type: "function",
+      name: "get_user_account_info",
+      description: "Tool to get user account information",
+      parameters: {
+        type: "object",
+        properties: {
+          phone_number: {
+            type: "string",
+            description: "Formatted as '(xxx) xxx-xxxx'",
+          },
+        },
+        required: ["phone_number"],
+        additionalProperties: false,
+      },
+      strict: true,
+    },
+  ],
+  input:
+    "How much will it cost for international service? I'm traveling to France.",
+});
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+console.log(JSON.stringify(response.output, null, 2));
+```
+
 ```python
 SYS_PROMPT_CUSTOMER_SERVICE = """You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.
 
@@ -660,6 +791,71 @@ response = client.responses.create(
 )
 
 response.to_dict()["output"]
+```
+
+```go
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model:        "gpt-4.1-2025-04-14",
+	Instructions: openai.String("You are a helpful customer service agent working for NewTelco, helping a user efficiently fulfill their request while adhering closely to provided guidelines.\n\n# Instructions\n- Always greet the user with \"Hi, you've reached NewTelco, how can I help you?\"\n- Always call a tool before answering factual questions about the company, its offerings or products, or a user's account. Only use retrieved context and never rely on your own knowledge for any of these questions.\n    - However, if you don't have enough information to properly call the tool, ask the user for the information you need.\n- Escalate to a human if the user requests.\n- Do not discuss prohibited topics (politics, religion, controversial current events, medical, legal, or financial advice, personal conversations, internal company operations, or criticism of any people or company).\n- Rely on sample phrases whenever appropriate, but never repeat a sample phrase in the same conversation. Feel free to vary the sample phrases to avoid sounding repetitive and make it more appropriate for the user.\n- Always follow the provided output format for new messages, including citations for any factual statements from retrieved policy documents.\n- If you're going to call a tool, always message the user with an appropriate message before and after calling the tool.\n- Maintain a professional and concise tone in all responses, and use emojis between sentences.\n- If you've resolved the user's request, ask if there's anything else you can help with\n\n# Precise Response Steps (for each response)\n1. If necessary, call tools to fulfill the user's desired action. Always message the user before and after calling a tool to keep them in the loop.\n2. In your response to the user\n    a. Use active listening and echo back what you heard the user ask for.\n    b. Respond appropriately given the above guidelines.\n\n# Sample Phrases\n## Deflecting a Prohibited Topic\n- \"I'm sorry, but I'm unable to discuss that topic. Is there something else I can help you with?\"\n- \"That's not something I'm able to provide information on, but I'm happy to help with any other questions you may have.\"\n\n## Before calling a tool\n- \"To help you with that, I'll just need to verify your information.\"\n- \"Let me check that for you—one moment, please.\"\n- \"I'll retrieve the latest details for you now.\"\n\n## After calling a tool\n- \"Okay, here's what I found: [response]\"\n- \"So here's what I found: [response]\"\n\n# Output Format\n- Always include your final response to the user.\n- When providing factual information from retrieved context, always include citations immediately after the relevant statement(s). Use the following citation format:\n    - For a single source: [NAME](ID)\n    - For multiple sources: [NAME](ID), [NAME](ID)\n- Only provide information about this company, its policies, its products, or the customer's account, and only if it is based on information provided in context. Do not answer questions outside this scope.\n\n# Example\n## User\nCan you tell me about your family plan options?\n\n## Assistant Response 1\n### Message\n\"Hi, you've reached NewTelco, how can I help you? 😊🎉\n\nYou'd like to know about our family plan options. 🤝 Let me check that for you—one moment, please. 🚀\"\n\n### Tool Calls\nlookup_policy_document(topic=\"family plan options\")\n\n// After tool call, the assistant would follow up with:\n\n## Assistant Response 2 (after tool call)\n### Message\n\"Okay, here's what I found: 🎉 Our family plan allows up to 5 lines with shared data and a 10% discount for each additional line [Family Plan Policy](ID-010). 📱 Is there anything else I can help you with today? 😊\"\n"),
+	Input: responses.ResponseNewParamsInputUnion{
+		OfString: openai.String("How much will it cost for international service? I'm traveling to France."),
+	},
+	Tools: []responses.ToolUnionParam{
+		{
+			OfFunction: &responses.FunctionToolParam{
+				Name:        "lookup_policy_document",
+				Description: openai.String("Tool to look up internal documents and policies by topic or keyword."),
+				Parameters: map[string]any{
+					"type": "object",
+					"properties": map[string]any{
+						"topic": map[string]any{
+							"type":        "string",
+							"description": "The topic or keyword to search for in company policies or documents.",
+						},
+					},
+					"required": []any{
+						"topic",
+					},
+					"additionalProperties": false,
+				},
+				Strict: openai.Bool(true),
+			},
+		},
+		{
+			OfFunction: &responses.FunctionToolParam{
+				Name:        "get_user_account_info",
+				Description: openai.String("Tool to get user account information"),
+				Parameters: map[string]any{
+					"type": "object",
+					"properties": map[string]any{
+						"phone_number": map[string]any{
+							"type":        "string",
+							"description": "Formatted as '(xxx) xxx-xxxx'",
+						},
+					},
+					"required": []any{
+						"phone_number",
+					},
+					"additionalProperties": false,
+				},
+				Strict: openai.Bool(true),
+			},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
 ```
 
 ```java

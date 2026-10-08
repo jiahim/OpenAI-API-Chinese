@@ -1,10 +1,10 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾添加 `.md` 即可获取该页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 末尾附加 `.md` 即可获取文档页面的 Markdown 版本。
 
 ## 检索向量存储文件
 
 **get** `/vector_stores/{vector_store_id}/files/{file_id}`
 
-检索向量存储文件。
+检索一个向量存储文件。
 
 ### 路径参数
 
@@ -24,7 +24,7 @@
 
   - `created_at: number`
 
-    向量存储文件创建时的 Unix 时间戳（以秒为单位）。
+    向量存储文件的创建时间的 Unix 时间戳（以秒为单位）。
 
   - `last_error: object { code, message }  or null`
 
@@ -42,7 +42,7 @@
 
     - `message: string`
 
-      错误的可读描述。
+      错误的人类可读描述。
 
   - `object: "vector_store.file"`
 
@@ -52,7 +52,7 @@
 
   - `status: "in_progress" or "completed" or "cancelled" or "failed"`
 
-    向量存储文件的状态，可能为 `in_progress`, `completed`, `cancelled`，或 `failed`。状态 `completed` 表示向量存储文件已可供使用。
+    向量存储文件的状态，可以是 `in_progress`, `completed`, `cancelled`，或 `failed`。状态 `completed` 表示该向量存储文件已可使用。
 
     - `"in_progress"`
 
@@ -64,19 +64,19 @@
 
   - `usage_bytes: number`
 
-    向量存储的总占用字节数。注意该值可能与原始文件大小不同。
+    向量存储的总使用量（以字节为单位）。请注意，这可能与原始文件大小不同。
 
   - `vector_store_id: string`
 
-    所附加到的 [向量存储](/api/reference/resources/vector_stores) 的 ID,该 [文件](/api/reference/resources/files) 被附加到该向量存储。
+    该 [向量存储](/api/reference/resources/vector_stores) 所附属的 [文件](/api/reference/resources/files) 的 ID。
 
   - `attributes: optional map[string or number or boolean] or null`
 
-    可附加到对象的 16 个键值对集合。可用于
-    以结构化形式存储有关对象的附加信息
-    格式，以及通过 API 或仪表板查询对象。键为字符串
-    ，最大长度为 64 个字符。值为最大长度
-    为 512 个字符的字符串、布尔值或数字。
+    可附加到对象的 16 组键值对。可用于
+    以结构化形式存储对象的附加信息。
+    format，以及通过 API 或控制面板查询对象。键是字符串
+    ，最大长度为 64 个字符。值是最大长度为 512 个字符的字符串、布尔值或数字。
+    最大长度为 512 个字符的字符串、布尔值或数字。
 
     - `string`
 
@@ -94,27 +94,27 @@
 
         - `chunk_overlap_tokens: number`
 
-          块之间重叠的 token 数。默认值为 `400`.
+          块之间重叠的 token 数量。默认值为 `400`.
 
-          请注意，重叠部分不得超过 `max_chunk_size_tokens`.
+          请注意，重叠长度不得超过 `max_chunk_size_tokens`.
 
         - `max_chunk_size_tokens: number`
 
-          每个块中最大的 token 数。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
+          每个块中 token 的最大数量。默认值为 `800`。最小值为 `100` ，最大值为 `4096`.
 
       - `type: "static"`
 
-        始终 `static`.
+        始终为 `static`.
 
         - `"static"`
 
     - `OtherFileChunkingStrategyObject object { type }`
 
-      当分块策略未知时返回此值。通常是因为文件在引入 `chunking_strategy` 概念之前已被索引到 API 中。
+      当分块策略未知时返回。通常，这是因为文件在引入该 `chunking_strategy` 概念之前就已建立索引，该概念是在 API 中引入的。
 
       - `type: "other"`
 
-        始终 `other`.
+        始终为 `other`.
 
         - `"other"`
 
@@ -169,8 +169,9 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123 \
   "id": "file-abc123",
   "object": "vector_store.file",
   "created_at": 1699061776,
-  "vector_store_id": "vs_abcd",
+  "vector_store_id": "vs_abc123",
   "status": "completed",
-  "last_error": null
+  "last_error": null,
+  "usage_bytes": 1234
 }
 ```

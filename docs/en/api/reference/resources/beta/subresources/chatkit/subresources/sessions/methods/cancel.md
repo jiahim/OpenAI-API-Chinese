@@ -145,39 +145,39 @@ curl https://api.openai.com/v1/chatkit/sessions/$SESSION_ID/cancel \
 
 ```json
 {
-  "id": "id",
+  "id": "cksess_123",
+  "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1712349876,
+  "workflow": {
+    "id": "workflow_alpha",
+    "version": "2024-10-01",
+    "state_variables": {
+      "message": "hello"
+    },
+    "tracing": {
+      "enabled": true
+    }
+  },
+  "user": "user_789",
+  "rate_limits": {
+    "max_requests_per_1_minute": 60
+  },
+  "max_requests_per_1_minute": 60,
+  "status": "cancelled",
   "chatkit_configuration": {
     "automatic_thread_titling": {
       "enabled": true
     },
     "file_upload": {
       "enabled": true,
-      "max_file_size": 0,
-      "max_files": 0
+      "max_file_size": 16,
+      "max_files": 20
     },
     "history": {
       "enabled": true,
-      "recent_threads": 0
+      "recent_threads": 10
     }
-  },
-  "client_secret": "client_secret",
-  "expires_at": 0,
-  "max_requests_per_1_minute": 0,
-  "object": "chatkit.session",
-  "rate_limits": {
-    "max_requests_per_1_minute": 0
-  },
-  "status": "active",
-  "user": "user",
-  "workflow": {
-    "id": "id",
-    "state_variables": {
-      "foo": "string"
-    },
-    "tracing": {
-      "enabled": true
-    },
-    "version": "version"
   }
 }
 ```
@@ -197,16 +197,35 @@ curl -X POST \
 {
   "id": "cksess_123",
   "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1735689600,
   "workflow": {
     "id": "workflow_alpha",
-    "version": "1"
+    "version": null,
+    "state_variables": null,
+    "tracing": {
+      "enabled": true
+    }
   },
-  "scope": {
-    "customer_id": "cust_456"
+  "user": "user_123",
+  "rate_limits": {
+    "max_requests_per_1_minute": 10
   },
-  "max_requests_per_1_minute": 30,
-  "ttl_seconds": 900,
+  "max_requests_per_1_minute": 10,
   "status": "cancelled",
-  "cancelled_at": 1712345678
+  "chatkit_configuration": {
+    "automatic_thread_titling": {
+      "enabled": true
+    },
+    "file_upload": {
+      "enabled": false,
+      "max_file_size": 512,
+      "max_files": 10
+    },
+    "history": {
+      "enabled": true,
+      "recent_threads": null
+    }
+  }
 }
 ```

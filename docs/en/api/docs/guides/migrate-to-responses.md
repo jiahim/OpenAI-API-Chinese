@@ -19,11 +19,11 @@ The Responses API is a unified interface for building powerful, agent-like appli
 The Responses API contains several benefits over Chat Completions:
 
 - **Better performance**: Using reasoning models, like GPT-5, with Responses will result in better model intelligence when compared to Chat Completions. Our internal evals reveal a 3% improvement in SWE-bench with same prompt and setup.
-- **Agentic by default**: The Responses API is an agentic loop, allowing the model to call multiple tools, like `web_search`, `image_generation`, `file_search`, `code_interpreter`, remote MCP servers, as well as your own custom functions, within the span of one API request.
+- **An agentic loop by default**: The model can call multiple tools, like `web_search`, `image_generation`, `file_search`, `code_interpreter`, remote MCP servers, as well as your own custom functions, within the span of one API request.
 - **Lower costs**: Results in lower costs due to improved cache utilization (40% to 80% improvement when compared to Chat Completions in internal tests).
 - **Stateful context**: Use `store: true` to maintain state from turn to turn, preserving reasoning and tool context from turn-to-turn.
 - **Flexible inputs**: Pass a string with input or a list of messages; use instructions for system-level guidance.
-- **Encrypted reasoning**: Opt-out of statefulness while still benefiting from advanced reasoning.
+- **Encrypted reasoning**: Use advanced reasoning without storing state.
 - **Future-proof**: Future-proofed for upcoming models.
 
 
@@ -53,12 +53,12 @@ See how the Responses API compares to the Chat Completions API in specific scena
 
 #### Messages vs. Items
 
-Both APIs make it easy to generate output from our models. The input to, and result of, a call to Chat completions is an array of _Messages_, while
+Both APIs can generate output from our models. The input to, and result of, a call to Chat Completions is an array of _Messages_, while
 the Responses API uses _Items_. An Item is a union of many types, representing the range of possibilities
 of model actions. A `message` is a type of Item, as is a `function_call` or `function_call_output`. Unlike a Chat Completions Message, where
 many concerns are glued together into one object, Items are distinct from one another and better represent the basic unit of model context.
 
-Additionally, Chat Completions can return multiple parallel generations as `choices`, using the `n` param. In Responses, we've removed this param, leaving only one generation.
+Additionally, Chat Completions can return multiple parallel generations as `choices`, using the `n` parameter. The Responses API omits this parameter and returns only one generation.
 
 
 
@@ -204,7 +204,7 @@ The objects you receive back from these APIs will differ slightly. In Chat Compl
 - Structured Outputs API shape is different. Instead of `response_format`, use `text.format` in Responses. Learn more in the [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) guide.
 - The function-calling API shape is different, both for the function config on the request, and function calls sent back in the response. See the full difference in the [function calling guide](https://developers.openai.com/api/docs/guides/function-calling).
 - The Responses SDK has an `output_text` helper, which the Chat Completions SDK does not have.
-- In Chat Completions, conversation state must be managed manually. The Responses API has compatibility with the [Conversations API](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#using-the-conversations-api) for persistent conversations, or the ability to pass a `previous_response_id` to easily chain Responses together.
+- In Chat Completions, conversation state must be managed manually. The Responses API supports the [Conversations API](https://developers.openai.com/api/docs/guides/conversation-state?api-mode=responses#using-the-conversations-api) for persistent conversations, or you can pass a `previous_response_id` to chain responses together.
 
 ## Migrating from Chat Completions
 
@@ -214,9 +214,9 @@ Treat migration as three related changes: send requests to `/v1/responses`, read
 
 Start by updating your generation endpoints from `post /v1/chat/completions` to `post /v1/responses`.
 
-If you are not using functions or multimodal inputs, simple message inputs are compatible from one API to the other:
+If you are not using functions or multimodal inputs, text-only message inputs are compatible from one API to the other:
 
-Reuse simple message input
+Reuse text-only message input
 
 ```javascript
 const context = [
@@ -1195,13 +1195,15 @@ puts(second.output_text)
 
 Even when using `previous_response_id`, all previous input tokens for responses in the chain are billed as input tokens in the API.
 
-### 4. Decide when to use statefulness
+<a id="4-decide-when-to-use-statefulness"></a>
+
+### 4. Decide when to store state
 
 Responses are stored by default. Chat Completions are stored by default for new accounts. To disable storage in either API, set `store: false`.
 
 Some organizations, such as those with Zero Data Retention (ZDR) requirements, cannot use the Responses API in a stateful way due to compliance or data retention policies. To support these cases, OpenAI offers encrypted reasoning items, allowing you to keep your workflow stateless while still benefiting from reasoning items.
 
-To disable statefulness but still take advantage of reasoning:
+To stop storing state while still using reasoning:
 
 - Set `store: false` in the [store field](https://developers.openai.com/api/reference/resources/responses/methods/create#responses_create-store).
 - Preserve and replay every returned reasoning item. Each item includes `encrypted_content` by default when you create a response.
@@ -1211,7 +1213,7 @@ For ZDR organizations, OpenAI enforces `store: false` automatically. When a requ
 
 ### 5. Update function definitions and outputs
 
-There are two minor, but notable, differences in how functions are defined between Chat Completions and Responses.
+Chat Completions and Responses define functions differently in two ways:
 
 1. In Chat Completions, function definitions are externally tagged. In Responses, they are internally tagged.
 2. In Chat Completions, functions are non-strict by default. In Responses, omitting `strict` attempts strict mode; if the schema cannot be made compatible, Responses falls back to non-strict, best-effort function calling and returns the resolved tool with `strict: false`. To keep non-strict behavior in Responses explicitly, set `strict: false`.
@@ -1853,8 +1855,9 @@ Chat Completions
 
     With Chat Completions, you cannot use OpenAI-hosted tools natively and have
     to write your own tool integration.
-    This example uses GPT-5.6 because GPT-6 Astra requires the Responses API
-    for tool calling.
+    This example uses GPT-5.6 Terra with reasoning disabled. GPT-6 Astra and
+    [GPT-6.1 Sol](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-sol)
+    require the Responses API for tool calling.
     Web search tool
 
 ```javascript
@@ -1865,7 +1868,8 @@ async function web_search(query) {
 }
 
 const completion = await client.chat.completions.create({
-  model: "gpt-5.6",
+  model: "gpt-5.6-terra",
+  reasoning_effort: "none",
   messages: [
     { role: "system", content: "You are a helpful assistant." },
     { role: "user", content: "Who is the current president of France?" },
@@ -1894,7 +1898,8 @@ def web_search(query):
 
 
 completion = client.chat.completions.create(
-    model="gpt-5.6",
+    model="gpt-5.6-terra",
+    reasoning_effort="none",
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Who is the current president of France?"},
@@ -1927,7 +1932,7 @@ import (
 func main() {
 	client := openai.NewClient()
 	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
-		Model: "gpt-5.6",
+		Model: "gpt-5.6-terra",
 		Messages: []openai.ChatCompletionMessageParamUnion{
 			openai.SystemMessage("You are a helpful assistant."),
 			openai.UserMessage("Who is the current president of France?"),
@@ -1962,7 +1967,7 @@ import java.util.Map;
 
 ChatCompletionCreateParams params =
     ChatCompletionCreateParams.builder()
-        .model("gpt-5.6")
+        .model("gpt-5.6-terra")
         .reasoningEffort(ReasoningEffort.NONE)
         .addSystemMessage("You are a helpful assistant.")
         .addUserMessage("Who is the current president of France?")
@@ -1992,7 +1997,7 @@ require "openai"
 client = OpenAI::Client.new
 
 completion = client.chat.completions.create(
-  model: "gpt-5.6",
+  model: "gpt-5.6-terra",
   reasoning_effort: :none,
   messages: [
     {
@@ -2164,7 +2169,7 @@ Watch for these issues when moving code from Chat Completions to Responses:
 
 Chat Completions remains supported, so you can migrate one user flow at a time.
 
-- [ ] Start with a simple text-generation flow.
+- [ ] Start with a text-generation flow.
 - [ ] Update the endpoint, request body, and output handling.
 - [ ] Decide whether the flow uses `previous_response_id`, manual Item replay, or the Conversations API.
 - [ ] If the flow is stateless or ZDR, add `store: false` and include encrypted reasoning items when reasoning context must continue across turns.

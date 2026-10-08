@@ -1036,15 +1036,11 @@ _For `text/` MIME types, the encoding must be one of `utf-8`, `utf-16`, or `asci
 
 </td>
 <td style={{"maxWidth": "150px"}}>
-**Tier 1**
-
-100 RPM
-
-**Tier 2 and 3**
+**Build**
 
 500 RPM
 
-**Tier 4 and 5**
+**Launch and Grow**
 
 1000 RPM
 

@@ -8,8 +8,10 @@ For Agents API sessions, use [Functions](https://developers.openai.com/api/docs/
 
 If your application has many functions or large schemas, you can pair function calling with [tool search](https://developers.openai.com/api/docs/guides/tools-tool-search) to defer rarely used tools and load them only when the model needs them. Only `gpt-5.4` and later models support `tool_search`.
 
-GPT-6 Astra requires the Responses API for tool calling. The Chat Completions
-  examples use GPT-5.6 for compatibility. See the [migration
+GPT-6 Astra and [GPT-6.1
+  Sol](https://developers.openai.com/api/docs/guides/latest-model?model=gpt-6-astra#gpt-61-sol) require the
+  Responses API for tool calling. The Chat Completions examples use GPT-5.6
+  Terra with reasoning disabled. See the [migration
   guide](https://developers.openai.com/api/docs/guides/migrate-to-responses) to update an existing
   integration.
 
@@ -64,7 +66,7 @@ To complete our weather example:
 
 - The model has access to a `get_weather` **tool** that takes `location` as an argument.
 - In response to a prompt like "what's the weather in Paris?" the model returns a **tool call** that contains a `location` argument with a value of `Paris`
-- The **tool call output** might return a JSON object (e.g., `{"temperature": "25", "unit": "C"}`, indicating a current temperature of 25 degrees), [Image contents](https://developers.openai.com/api/docs/guides/images-vision), or [File contents](https://developers.openai.com/api/docs/guides/file-inputs).
+- The **tool call output** might return a JSON object (for example, `{"temperature": "25", "unit": "C"}`, indicating a current temperature of 25 degrees), [Image contents](https://developers.openai.com/api/docs/guides/images-vision), or [File contents](https://developers.openai.com/api/docs/guides/file-inputs).
 
 We then send all of the tool definition, the original prompt, the model's tool call, and the tool call output back to the model to finally receive a text response like:
 
@@ -84,7 +86,7 @@ The weather in Paris today is 25C.
 
 - A function is a specific kind of tool, defined by a JSON schema. A function definition allows the model to pass data to your application, where your code can access data or take actions suggested by the model.
 - In addition to function tools, there are custom tools (described in this guide) that work with free text inputs and outputs.
-- There are also [built-in tools](https://developers.openai.com/api/docs/guides/tools) that are part of the OpenAI platform. These tools enable the model to [search the web](https://developers.openai.com/api/docs/guides/tools-web-search), [execute code](https://developers.openai.com/api/docs/guides/tools-code-interpreter), access the functionality of an [MCP server](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), and more.
+- The OpenAI platform also provides [built-in tools](https://developers.openai.com/api/docs/guides/tools). These tools enable the model to [search the web](https://developers.openai.com/api/docs/guides/tools-web-search), [run code](https://developers.openai.com/api/docs/guides/tools-code-interpreter), access the functionality of an [MCP server](https://developers.openai.com/api/docs/guides/tools-connectors-mcp), and more.
 
 
 
@@ -808,6 +810,65 @@ func callFunction(name string, arguments functionArguments) (string, error) {
 }
 ```
 
+```java
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+
+var argsJson = new ObjectMapper().readTree("{\"location\":\"Paris, France\"}");
+System.out.println(callFunction("get_weather", argsJson));
+
+// These local fixtures demonstrate dispatch; replace them with your application services.
+// The email fixture prints its inputs and does not send a message.
+static Map<String, Object> callFunction(String name, JsonNode arguments) {
+  return switch (name) {
+    case "get_weather" -> getWeather(arguments.get("location").asText());
+    case "send_email" -> sendEmail(arguments.get("to").asText(), arguments.get("body").asText());
+    default -> throw new IllegalArgumentException("Unknown function: " + name);
+  };
+}
+
+private static Map<String, Object> getWeather(String location) {
+  int temperature =
+      switch (location) {
+        case "Bogotá, Colombia" -> 18;
+        case "Paris, France" -> 15;
+        default -> 20;
+      };
+  return Map.of("location", location, "temperature_celsius", temperature);
+}
+
+private static Map<String, Object> sendEmail(String to, String body) {
+  System.out.println("Sending email to " + to + ": " + body);
+  return Map.of("status", "sent");
+}
+```
+
+```csharp
+using System.Text.Json;
+
+using JsonDocument arguments = JsonDocument.Parse("{\"location\":\"Paris, France\"}");
+Console.WriteLine(FunctionDispatcher.CallFunction("get_weather", arguments.RootElement));
+
+internal static class FunctionDispatcher
+{
+    // These local fixtures demonstrate dispatch; replace them with your application services.
+    // The email fixture prints its inputs and does not send a message.
+    internal static string CallFunction(string name, JsonElement arguments) => name switch
+    {
+        "get_weather" => GetWeather(arguments.GetProperty("location").GetString()!),
+        "send_email" => SendEmail(arguments.GetProperty("to").GetString()!, arguments.GetProperty("body").GetString()!),
+        _ => throw new ArgumentException($"Unknown function: {name}", nameof(name))
+    };
+    private static string GetWeather(string location) => JsonSerializer.Serialize(new { location, temperature_celsius = location switch { "Bogotá, Colombia" => 18, "Paris, France" => 15, _ => 20 } });
+    private static string SendEmail(string to, string body)
+    {
+        Console.WriteLine($"Sending email to {to}: {body}");
+        return "{\"status\":\"sent\"}";
+    }
+}
+```
+
 ```ruby
 def call_function(name, arguments)
   case name
@@ -1145,7 +1206,7 @@ Specifically for fine tuned models:
 
 Streaming can be used to surface progress by showing which function is called as the model fills its arguments, and even displaying the arguments in real time.
 
-Streaming function calls is very similar to streaming regular responses: you set `stream` to `true` and get different `event` objects.
+Streaming function calls works like streaming regular responses: you set `stream` to `true` and get different `event` objects.
 
 Streaming function calls
 

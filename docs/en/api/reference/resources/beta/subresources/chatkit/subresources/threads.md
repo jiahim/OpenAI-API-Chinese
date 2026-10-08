@@ -99,7 +99,7 @@ List ChatKit threads with optional pagination and user filters.
 
     - `"chatkit.thread"`
 
-  - `status: object { type }  or object { reason, type }  or object { reason, type }`
+  - `status: Active { type }  or Locked { reason, type }  or Closed { reason, type }`
 
     Current status for the thread. Defaults to `active` for newly created threads.
 
@@ -214,16 +214,28 @@ curl "https://api.openai.com/v1/chatkit/threads?limit=2&order=desc" \
     {
       "id": "cthr_abc123",
       "object": "chatkit.thread",
-      "title": "Customer escalation"
+      "title": "Customer escalation",
+      "created_at": 1712345600,
+      "status": {
+        "type": "active"
+      },
+      "user": "user_123"
     },
     {
       "id": "cthr_def456",
       "object": "chatkit.thread",
-      "title": "Demo feedback"
+      "title": "Demo feedback",
+      "created_at": 1712345600,
+      "status": {
+        "type": "active"
+      },
+      "user": "user_456"
     }
   ],
   "has_more": false,
-  "object": "list"
+  "object": "list",
+  "first_id": "cthr_abc123",
+  "last_id": "cthr_def456"
 }
 ```
 
@@ -305,7 +317,7 @@ List items that belong to a ChatKit thread.
 
           - `"file"`
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of InputText { text, type }  or QuotedText { text, type }`
 
         Ordered content elements supplied by the user.
 
@@ -383,7 +395,7 @@ List items that belong to a ChatKit thread.
 
         Ordered assistant response segments.
 
-        - `annotations: array of object { source, type }  or object { source, type }`
+        - `annotations: array of File { source, type }  or URL { source, type }`
 
           Ordered list of annotations attached to the response text.
 
@@ -724,29 +736,37 @@ curl "https://api.openai.com/v1/chatkit/threads/cthr_abc123/items?limit=3" \
     {
       "id": "cthi_user_001",
       "object": "chatkit.thread_item",
-      "type": "user_message",
+      "type": "chatkit.user_message",
       "content": [
         {
           "type": "input_text",
           "text": "I need help debugging an onboarding issue."
         }
       ],
-      "attachments": []
+      "attachments": [],
+      "created_at": 1712345600,
+      "thread_id": "cthr_abc123",
+      "inference_options": null
     },
     {
       "id": "cthi_assistant_002",
       "object": "chatkit.thread_item",
-      "type": "assistant_message",
+      "type": "chatkit.assistant_message",
       "content": [
         {
           "type": "output_text",
-          "text": "Let's start by confirming the workflow version you deployed."
+          "text": "Let's start by confirming the workflow version you deployed.",
+          "annotations": []
         }
-      ]
+      ],
+      "created_at": 1712345601,
+      "thread_id": "cthr_abc123"
     }
   ],
   "has_more": false,
-  "object": "list"
+  "object": "list",
+  "first_id": "cthi_user_001",
+  "last_id": "cthi_assistant_002"
 }
 ```
 
@@ -780,7 +800,7 @@ Retrieve a ChatKit thread by its identifier.
 
     - `"chatkit.thread"`
 
-  - `status: object { type }  or object { reason, type }  or object { reason, type }`
+  - `status: Active { type }  or Locked { reason, type }  or Closed { reason, type }`
 
     Current status for the thread. Defaults to `active` for newly created threads.
 
@@ -868,34 +888,11 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
   "id": "cthr_abc123",
   "object": "chatkit.thread",
   "title": "Customer escalation",
-  "items": {
-    "data": [
-      {
-        "id": "cthi_user_001",
-        "object": "chatkit.thread_item",
-        "type": "user_message",
-        "content": [
-          {
-            "type": "input_text",
-            "text": "I need help debugging an onboarding issue."
-          }
-        ],
-        "attachments": []
-      },
-      {
-        "id": "cthi_assistant_002",
-        "object": "chatkit.thread_item",
-        "type": "assistant_message",
-        "content": [
-          {
-            "type": "output_text",
-            "text": "Let's start by confirming the workflow version you deployed."
-          }
-        ]
-      }
-    ],
-    "has_more": false
-  }
+  "created_at": 1712345600,
+  "status": {
+    "type": "active"
+  },
+  "user": "user_123"
 }
 ```
 
@@ -1261,7 +1258,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
   Assistant response text accompanied by optional annotations.
 
-  - `annotations: array of object { source, type }  or object { source, type }`
+  - `annotations: array of File { source, type }  or URL { source, type }`
 
     Ordered list of annotations attached to the response text.
 
@@ -1343,7 +1340,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     - `"chatkit.thread"`
 
-  - `status: object { type }  or object { reason, type }  or object { reason, type }`
+  - `status: Active { type }  or Locked { reason, type }  or Closed { reason, type }`
 
     Current status for the thread. Defaults to `active` for newly created threads.
 
@@ -1407,7 +1404,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
     Ordered assistant response segments.
 
-    - `annotations: array of object { source, type }  or object { source, type }`
+    - `annotations: array of File { source, type }  or URL { source, type }`
 
       Ordered list of annotations attached to the response text.
 
@@ -1535,7 +1532,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
           - `"file"`
 
-      - `content: array of object { text, type }  or object { text, type }`
+      - `content: array of InputText { text, type }  or QuotedText { text, type }`
 
         Ordered content elements supplied by the user.
 
@@ -1613,7 +1610,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
         Ordered assistant response segments.
 
-        - `annotations: array of object { source, type }  or object { source, type }`
+        - `annotations: array of File { source, type }  or URL { source, type }`
 
           Ordered list of annotations attached to the response text.
 
@@ -1927,7 +1924,7 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
 
       - `"file"`
 
-  - `content: array of object { text, type }  or object { text, type }`
+  - `content: array of InputText { text, type }  or QuotedText { text, type }`
 
     Ordered content elements supplied by the user.
 

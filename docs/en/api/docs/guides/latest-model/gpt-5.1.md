@@ -313,10 +313,49 @@ The apply_patch tool lets GPT-5.1 create, update, and delete files in your codeb
 
 With GPT-5.1, you can use apply_patch as a new tool type without writing custom descriptions for the tool. The description and handling are managed via the Responses API. Under the hood, this implementation uses a freeform function call rather than a JSON format. In testing, the named function decreased apply_patch failure rates by 35%.
 
+```javascript
+const response = await client.responses.create({
+  model: "gpt-5.1",
+  input: "Update the README title and fix the failing test.",
+  tools: [{ type: "apply_patch" }],
+});
+if (response.status !== "completed") {
+  throw new Error(`Response ended with status ${response.status}`);
+}
+console.log(JSON.stringify(response.output, null, 2));
+```
+
 ```python
 response = client.responses.create(
     model="gpt-5.1", input=RESPONSE_INPUT, tools=[{"type": "apply_patch"}]
 )
+```
+
+```go
+response, err := client.Responses.New(context.Background(), responses.ResponseNewParams{
+	Model: "gpt-5.1",
+	Input: responses.ResponseNewParamsInputUnion{
+		OfString: openai.String("Update the README title and fix the failing test."),
+	},
+	Tools: []responses.ToolUnionParam{
+		{
+			OfApplyPatch: &responses.ApplyPatchToolParam{},
+		},
+	},
+})
+if err != nil {
+	log.Fatal(err)
+}
+if response.Status != responses.ResponseStatusCompleted {
+	log.Fatalf("Response ended with status %s", response.Status)
+}
+output := make([]json.RawMessage, 0, len(response.Output))
+for _, item := range response.Output {
+	output = append(output, json.RawMessage(item.RawJSON()))
+}
+if err := json.NewEncoder(os.Stdout).Encode(output); err != nil {
+	log.Fatal(err)
+}
 ```
 
 ```java
@@ -324,6 +363,7 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.responses.ApplyPatchTool;
 import com.openai.models.responses.ResponseCreateParams;
+import com.openai.models.responses.ResponseStatus;
 
 ResponseCreateParams params =
     ResponseCreateParams.builder()
@@ -332,11 +372,11 @@ ResponseCreateParams params =
         .addTool(ApplyPatchTool.builder().build())
         .build();
 
-client.responses().create(params).output().stream()
-    .flatMap(item -> item.message().stream())
-    .flatMap(message -> message.content().stream())
-    .flatMap(content -> content.outputText().stream())
-    .forEach(text -> System.out.println(text.text()));
+var response = client.responses().create(params);
+if (response.status().filter(ResponseStatus.COMPLETED::equals).isEmpty())
+  throw new IllegalStateException(
+      "Response ended with status " + response.status().orElse(null));
+System.out.println(response.output());
 ```
 
 ```ruby

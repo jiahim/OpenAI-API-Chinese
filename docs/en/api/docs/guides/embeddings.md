@@ -232,6 +232,77 @@ df["ada_embedding"] = df.combined.apply(
 df.to_csv("output/embedded_1k_reviews.csv", index=False)
 ```
 
+```go
+import (
+	"context"
+	"encoding/csv"
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	reviews := []string{"A rich cup of coffee.", "A bright herbal tea."}
+	if err := os.MkdirAll("output", 0755); err != nil {
+		return err
+	}
+	file, err := os.Create("output/embedded_1k_reviews.csv")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	writer := csv.NewWriter(file)
+	if err := writer.Write([]string{"combined", "ada_embedding"}); err != nil {
+		return err
+	}
+	for _, review := range reviews {
+		vector, err := embedding(ctx, &client, strings.ReplaceAll(review, "\n", " "))
+		if err != nil {
+			return err
+		}
+		encoded, err := json.Marshal(vector)
+		if err != nil {
+			return err
+		}
+		if err := writer.Write([]string{review, string(encoded)}); err != nil {
+			return err
+		}
+	}
+	writer.Flush()
+	if err := writer.Error(); err != nil {
+		return err
+	}
+	if err := file.Close(); err != nil {
+		return err
+	}
+	fmt.Println("Saved output/embedded_1k_reviews.csv")
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -266,6 +337,35 @@ try (var writer = Files.newBufferedWriter(output)) {
   }
 }
 System.out.println(output);
+```
+
+```csharp
+using System.Text.Json;
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] reviews = ["A rich cup of coffee.", "A bright herbal tea."];
+Directory.CreateDirectory("output");
+using StreamWriter writer = new("output/embedded_1k_reviews.csv");
+await writer.WriteLineAsync("combined,ada_embedding");
+foreach (string review in reviews)
+{
+    float[] vector = await EmbedAsync(client, review.Replace("\n", " ", StringComparison.Ordinal));
+    string encoded = JsonSerializer.Serialize(vector);
+    await writer.WriteLineAsync($"{CsvField(review)},{CsvField(encoded)}");
+}
+Console.WriteLine("Saved output/embedded_1k_reviews.csv");
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static string CsvField(string value) => "\"" + value.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
 ```
 
 ```ruby
@@ -502,6 +602,36 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	completion, err := client.Chat.Completions.New(context.Background(), openai.ChatCompletionNewParams{
+		Model: "gpt-4.1-mini", Temperature: openai.Float(0), Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage("You answer questions about the 2022 Winter Olympics."),
+			openai.UserMessage("Use the article to answer the question. If the answer cannot be found, write \"I don't know.\"\n\nArticle: At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling.\n\nQuestion: Which athletes won the gold medal in curling at the 2022 Winter Olympics?")},
+	})
+	if err != nil {
+		return err
+	}
+	fmt.Println(completion.Choices[0].Message.Content)
+	return nil
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -527,6 +657,21 @@ ChatCompletionCreateParams params =
 client.chat().completions().create(params).choices().stream()
     .flatMap(choice -> choice.message().content().stream())
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Chat;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "gpt-4.1-mini";
+ChatClient client = new(model, key);
+
+string article = "At the 2022 Winter Olympics, Great Britain won women's curling and Sweden won men's curling.";
+string query = $"Use the article to answer the question. If the answer cannot be found, write I don't know.\nArticle: {article}\nQuestion: Which athletes won the gold medal in curling at the 2022 Winter Olympics?";
+ChatCompletion result = await client.CompleteChatAsync(
+    [new SystemChatMessage("You answer questions about the 2022 Winter Olympics."), new UserChatMessage(query)],
+    new ChatCompletionOptions { Temperature = 0 });
+Console.WriteLine(result.Content[0].Text);
 ```
 
 ```ruby
@@ -627,6 +772,82 @@ def search_reviews(df, product_description, n=3, pprint=True):
 res = search_reviews(df, "delicious beans", n=3)
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+	"sort"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	texts := []string{"A rich cup of coffee.", "Crunchy crackers with sea salt.", "Dark chocolate with orange.", "A bright herbal tea.", "Smooth beans in tomato sauce.", "A mild cheese with herbs.", "Spicy roasted nuts.", "A crisp sparkling water."}
+	vectors := make([][]float64, len(texts))
+	for i, text := range texts {
+		vector, err := embedding(ctx, &client, text)
+		if err != nil {
+			return err
+		}
+		vectors[i] = vector
+	}
+	query, err := embedding(ctx, &client, "delicious beans")
+	if err != nil {
+		return err
+	}
+	matches := nearest(query, vectors)
+	for _, match := range matches[:min(3, len(matches))] {
+		fmt.Printf("%0.3f: %s\n", match.Similarity, texts[match.Index])
+	}
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+
+type match struct {
+	Index      int
+	Similarity float64
+}
+
+func nearest(query []float64, vectors [][]float64) []match {
+	matches := make([]match, len(vectors))
+	for i, vector := range vectors {
+		matches[i] = match{Index: i, Similarity: cosineSimilarity(query, vector)}
+	}
+	sort.SliceStable(matches, func(i, j int) bool { return matches[i].Similarity > matches[j].Similarity })
+	return matches
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -671,6 +892,42 @@ IntStream.range(0, reviews.size())
     .limit(3)
     .map(reviews::get)
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] texts = ["A rich cup of coffee.", "Crunchy crackers with sea salt.", "Dark chocolate with orange.", "A bright herbal tea.", "Smooth beans in tomato sauce.", "A mild cheese with herbs.", "Spicy roasted nuts.", "A crisp sparkling water."];
+OpenAIEmbeddingCollection batch = await client.GenerateEmbeddingsAsync(texts);
+float[][] vectors = batch.Select(item => item.ToFloats().ToArray()).ToArray();
+float[] query = await EmbedAsync(client, "delicious beans");
+var ranked = vectors.Select((vector, index) => new { Index = index, Similarity = CosineSimilarity(query, vector) }).OrderByDescending(match => match.Similarity);
+foreach (var match in ranked.Take(3))
+{
+    Console.WriteLine($"{match.Similarity:F3}: {texts[match.Index]}");
+}
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -778,6 +1035,82 @@ def search_functions(df, code_query, n=3, pprint=True, n_lines=7):
 res = search_functions(df, "Completions API tests", n=3)
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+	"sort"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	texts := []string{"def add(a, b): return a + b", "def complete(prompt): return prompt"}
+	vectors := make([][]float64, len(texts))
+	for i, text := range texts {
+		vector, err := embedding(ctx, &client, text)
+		if err != nil {
+			return err
+		}
+		vectors[i] = vector
+	}
+	query, err := embedding(ctx, &client, "Completions API tests")
+	if err != nil {
+		return err
+	}
+	matches := nearest(query, vectors)
+	for _, match := range matches[:min(3, len(matches))] {
+		fmt.Printf("%0.3f: %s\n", match.Similarity, texts[match.Index])
+	}
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+
+type match struct {
+	Index      int
+	Similarity float64
+}
+
+func nearest(query []float64, vectors [][]float64) []match {
+	matches := make([]match, len(vectors))
+	for i, vector := range vectors {
+		matches[i] = match{Index: i, Similarity: cosineSimilarity(query, vector)}
+	}
+	sort.SliceStable(matches, func(i, j int) bool { return matches[i].Similarity > matches[j].Similarity })
+	return matches
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -817,6 +1150,45 @@ IntStream.range(0, functions.size())
             .reversed())
     .map(functions::get)
     .forEach(System.out::println);
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] texts = ["def add(a, b): return a + b", "def complete(prompt): return prompt"];
+List<float[]> vectors = [];
+foreach (string text in texts)
+{
+    vectors.Add(await EmbedAsync(client, text));
+}
+float[] query = await EmbedAsync(client, "Completions API tests");
+var ranked = vectors.Select((vector, index) => new { Index = index, Similarity = CosineSimilarity(query, vector) }).OrderByDescending(match => match.Similarity);
+foreach (var match in ranked.Take(3))
+{
+    Console.WriteLine($"{match.Similarity:F3}: {texts[match.Index]}");
+}
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -928,6 +1300,79 @@ def recommendations_from_strings(
     return indices_of_nearest_neighbors
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+	"sort"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	texts := []string{"A cheetah is a fast land animal.", "A peregrine falcon is a fast bird.", "A tortoise moves slowly."}
+	vectors := make([][]float64, len(texts))
+	for i, text := range texts {
+		vector, err := embedding(ctx, &client, text)
+		if err != nil {
+			return err
+		}
+		vectors[i] = vector
+	}
+	query := vectors[0]
+	matches := nearest(query, vectors)
+	for _, match := range matches {
+		fmt.Println(match.Index)
+	}
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+
+type match struct {
+	Index      int
+	Similarity float64
+}
+
+func nearest(query []float64, vectors [][]float64) []match {
+	matches := make([]match, len(vectors))
+	for i, vector := range vectors {
+		matches[i] = match{Index: i, Similarity: cosineSimilarity(query, vector)}
+	}
+	sort.SliceStable(matches, func(i, j int) bool { return matches[i].Similarity > matches[j].Similarity })
+	return matches
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -973,6 +1418,45 @@ var nearestNeighbors =
         .toList();
 
 System.out.println(nearestNeighbors);
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+string[] texts = ["A cheetah is a fast land animal.", "A peregrine falcon is a fast bird.", "A tortoise moves slowly."];
+List<float[]> vectors = [];
+foreach (string text in texts)
+{
+    vectors.Add(await EmbedAsync(client, text));
+}
+float[] query = vectors[0];
+var ranked = vectors.Select((vector, index) => new { Index = index, Similarity = CosineSimilarity(query, vector) }).OrderByDescending(match => match.Similarity);
+foreach (var match in ranked)
+{
+    Console.WriteLine(match.Index);
+}
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby
@@ -1200,6 +1684,68 @@ prediction = (
 )
 ```
 
+```go
+import (
+	"context"
+	"fmt"
+	"log"
+	"math"
+
+	"github.com/openai/openai-go/v3"
+)
+
+func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	client := openai.NewClient()
+	ctx := context.Background()
+	negative, err := embedding(ctx, &client, "negative")
+	if err != nil {
+		return err
+	}
+	positive, err := embedding(ctx, &client, "positive")
+	if err != nil {
+		return err
+	}
+	review, err := embedding(ctx, &client, "Sample Review")
+	if err != nil {
+		return err
+	}
+	score := cosineSimilarity(review, positive) - cosineSimilarity(review, negative)
+	prediction := "negative"
+	if score > 0 {
+		prediction = "positive"
+	}
+	fmt.Println(prediction)
+	return nil
+}
+
+func embedding(ctx context.Context, client *openai.Client, text string) ([]float64, error) {
+	response, err := client.Embeddings.New(ctx, openai.EmbeddingNewParams{
+		Model: openai.EmbeddingModelTextEmbedding3Small,
+		Input: openai.EmbeddingNewParamsInputUnion{OfString: openai.String(text)},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return response.Data[0].Embedding, nil
+}
+
+func cosineSimilarity(a, b []float64) float64 {
+	var dot, left, right float64
+	for i := range a {
+		dot += a[i] * b[i]
+		left += a[i] * a[i]
+		right += b[i] * b[i]
+	}
+	return dot / math.Sqrt(left*right)
+}
+```
+
 ```java
 import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
@@ -1220,6 +1766,38 @@ List<Float> review = embeddings.get(2).embedding();
 double negative = cosineSimilarity(review, embeddings.get(0).embedding());
 double positive = cosineSimilarity(review, embeddings.get(1).embedding());
 System.out.println(positive > negative ? "positive" : "negative");
+```
+
+```csharp
+using OpenAI.Embeddings;
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+string model = "text-embedding-3-small";
+EmbeddingClient client = new(model, key);
+
+float[] negative = await EmbedAsync(client, "negative");
+float[] positive = await EmbedAsync(client, "positive");
+float[] review = await EmbedAsync(client, "Sample Review");
+double score = CosineSimilarity(review, positive) - CosineSimilarity(review, negative);
+Console.WriteLine(score > 0 ? "positive" : "negative");
+
+static async Task<float[]> EmbedAsync(EmbeddingClient client, string text)
+{
+    OpenAIEmbedding result = await client.GenerateEmbeddingAsync(text);
+    return result.ToFloats().ToArray();
+}
+
+static double CosineSimilarity(float[] left, float[] right)
+{
+    double dot = 0, leftNorm = 0, rightNorm = 0;
+    for (int i = 0; i < left.Length; i++)
+    {
+        dot += left[i] * right[i];
+        leftNorm += left[i] * left[i];
+        rightNorm += right[i] * right[i];
+    }
+    return dot / Math.Sqrt(leftNorm * rightNorm);
+}
 ```
 
 ```ruby

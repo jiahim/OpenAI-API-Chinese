@@ -1,10 +1,10 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。你可以通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 获取文档页面的 Markdown 版本。
 
 ## 检索 ChatKit 会话线程
 
 **get** `/chatkit/threads/{thread_id}`
 
-根据标识符获取 ChatKit 会话线程。
+根据标识符检索 ChatKit 会话线程。
 
 ### 路径参数
 
@@ -14,67 +14,67 @@
 
 - `ChatKitThread object { id, created_at, object, 3 more }`
 
-  表示一个 ChatKit 会话及其当前状态。
+  表示一个 ChatKit 会话线程及其当前状态。
 
   - `id: string`
 
-    会话的标识符。
+    该会话线程的标识符。
 
   - `created_at: number`
 
-    会话创建时的 Unix 时间戳（以秒为单位）。
+    会话线程创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: "chatkit.thread"`
 
-    始终为的类型判别符 `chatkit.thread`.
+    类型鉴别字段，始终为 `chatkit.thread`.
 
     - `"chatkit.thread"`
 
-  - `status: object { type }  or object { reason, type }  or object { reason, type }`
+  - `status: Active { type }  or Locked { reason, type }  or Closed { reason, type }`
 
-    会话的当前状态。默认为 `active` ，适用于新建会话。
+    会话线程的当前状态。新建会话线程默认为 `active` 。
 
     - `Active object { type }`
 
-      表示会话处于活动状态。
+      表示会话线程处于活动状态。
 
       - `type: "active"`
 
-        始终为的状态判别符 `active`.
+        始终为 `active`.
 
         - `"active"`
 
     - `Locked object { reason, type }`
 
-      表示会话已被锁定，无法接受新的输入。
+      表示该会话已锁定，无法接受新的输入。
 
       - `reason: string or null`
 
-        会话被锁定的原因。若未记录原因，则默认为 null。
+        会话被锁定的原因。未记录原因时默认为 null。
 
       - `type: "locked"`
 
-        始终为的状态判别符 `locked`.
+        始终为 `locked`.
 
         - `"locked"`
 
     - `Closed object { reason, type }`
 
-      表示会话已被关闭。
+      表示该会话已关闭。
 
       - `reason: string or null`
 
-        会话被关闭的原因。若未记录原因，则默认为 null。
+        会话被关闭的原因。未记录原因时默认为 null。
 
       - `type: "closed"`
 
-        始终为的状态判别符 `closed`.
+        始终为 `closed`.
 
         - `"closed"`
 
   - `title: string or null`
 
-    可选的人类可读会话标题。若尚未生成标题，则默认为 null。
+    会话的可选人类可读标题。未生成标题时默认为 null。
 
   - `user: string`
 
@@ -118,33 +118,10 @@ curl https://api.openai.com/v1/chatkit/threads/cthr_abc123 \
   "id": "cthr_abc123",
   "object": "chatkit.thread",
   "title": "Customer escalation",
-  "items": {
-    "data": [
-      {
-        "id": "cthi_user_001",
-        "object": "chatkit.thread_item",
-        "type": "user_message",
-        "content": [
-          {
-            "type": "input_text",
-            "text": "I need help debugging an onboarding issue."
-          }
-        ],
-        "attachments": []
-      },
-      {
-        "id": "cthi_assistant_002",
-        "object": "chatkit.thread_item",
-        "type": "assistant_message",
-        "content": [
-          {
-            "type": "output_text",
-            "text": "Let's start by confirming the workflow version you deployed."
-          }
-        ]
-      }
-    ],
-    "has_more": false
-  }
+  "created_at": 1712345600,
+  "status": {
+    "type": "active"
+  },
+  "user": "user_123"
 }
 ```

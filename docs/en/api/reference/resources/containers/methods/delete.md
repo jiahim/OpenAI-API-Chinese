@@ -10,12 +10,32 @@ Delete Container
 
 - `container_id: string`
 
+### Returns
+
+- `id: string`
+
+- `deleted: boolean`
+
+- `object: "container.deleted"`
+
+  - `"container.deleted"`
+
 ### Example
 
 ```http
 curl https://api.openai.com/v1/containers/$CONTAINER_ID \
     -X DELETE \
     -H "Authorization: Bearer $OPENAI_API_KEY"
+```
+
+#### Response
+
+```json
+{
+  "id": "id",
+  "deleted": true,
+  "object": "container.deleted"
+}
 ```
 
 ### Example

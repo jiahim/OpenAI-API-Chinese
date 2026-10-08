@@ -57,7 +57,7 @@ session: SessionConfigParam = {
     "delegation": {
         "type": "responses",
         "responses": {
-            "model": "gpt-5.6-terra",
+            "model": "gpt-6-luna",
             "instructions": "[Your backend prompt]",
         },
     },
@@ -65,7 +65,7 @@ session: SessionConfigParam = {
 ```
 
 
-Start with [GPT-5.6 Terra](https://developers.openai.com/api/docs/models/gpt-5.6-terra), or try [GPT-5.6 Luna](https://developers.openai.com/api/docs/models/gpt-5.6-luna) for cost-sensitive workloads. Compare answer quality and latency on your tasks before choosing a backend model.
+Start with [`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna), or try [`gpt-6-sol`](https://developers.openai.com/api/docs/models/gpt-6-sol) for more complex backend tasks. Compare answer quality and latency on your tasks before choosing a backend model.
 
 Register supported tools in `delegation.responses.tools`. Set `delegation.responses.tool_choice` to `"auto"` to let the backend choose a tool, `"required"` to require a tool call, or `"none"` to disable tool calls. You can also select a named function.
 

@@ -70,13 +70,15 @@ Returns the audio file content, or a stream of audio events.
 
     - `"gpt-4o-mini-tts-2025-12-15"`
 
-- `voice: string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
+- `voice: string or "alloy" or "ash" or "ballad" or 10 more or ID { id }`
 
-  The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options).
+  The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options). Custom voices must be created from audio samples.
 
   - `string`
 
-  - `"alloy" or "ash" or "ballad" or 7 more`
+  - `"alloy" or "ash" or "ballad" or 10 more`
+
+    The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](/api/docs/guides/text-to-speech#voice-options). Custom voices must be created from audio samples.
 
     - `"alloy"`
 
@@ -97,6 +99,12 @@ Returns the audio file content, or a stream of audio events.
     - `"marin"`
 
     - `"cedar"`
+
+    - `"fable"`
+
+    - `"onyx"`
+
+    - `"nova"`
 
   - `ID object { id }`
 
@@ -147,7 +155,7 @@ curl https://api.openai.com/v1/audio/speech \
     -d '{
           "input": "input",
           "model": "tts-1",
-          "voice": "alloy"
+          "voice": "ash"
         }'
 ```
 
@@ -202,7 +210,8 @@ curl https://api.openai.com/v1/audio/speech \
 Transcribes audio into the input language.
 
 Returns a transcription object in `json`, `diarized_json`, or `verbose_json`
-format, or a stream of transcript events.
+format, plain text in `text`, `srt`, or `vtt` format, or a stream of
+transcript events. Supported formats depend on the model.
 
 ### Returns
 
@@ -238,7 +247,7 @@ format, or a stream of transcript events.
 
       The log probability of the token.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token usage statistics for the request.
 
@@ -338,7 +347,7 @@ format, or a stream of transcript events.
 
     The concatenated transcript text for the entire audio input.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token or duration usage statistics for the request.
 
@@ -694,8 +703,8 @@ curl https://api.openai.com/v1/audio/transcriptions \
 {
   "task": "transcribe",
   "language": "english",
-  "duration": 8.470000267028809,
-  "text": "The beach was a popular spot on a hot summer day. People were swimming in the ocean, building sandcastles, and playing beach volleyball.",
+  "duration": 3.32,
+  "text": "The beach was a popular spot on a hot summer day.",
   "segments": [
     {
       "id": 0,
@@ -710,12 +719,11 @@ curl https://api.openai.com/v1/audio/transcriptions \
       "avg_logprob": -0.2860786020755768,
       "compression_ratio": 1.2363636493682861,
       "no_speech_prob": 0.00985979475080967
-    },
-    ...
+    }
   ],
   "usage": {
     "type": "duration",
-    "seconds": 9
+    "seconds": 4
   }
 }
 ```
@@ -817,24 +825,18 @@ curl https://api.openai.com/v1/audio/transcriptions \
 {
   "task": "transcribe",
   "language": "english",
-  "duration": 8.470000267028809,
-  "text": "The beach was a popular spot on a hot summer day. People were swimming in the ocean, building sandcastles, and playing beach volleyball.",
+  "duration": 0.5,
+  "text": "Hello.",
   "words": [
     {
-      "word": "The",
+      "word": "Hello",
       "start": 0.0,
-      "end": 0.23999999463558197
-    },
-    ...
-    {
-      "word": "volleyball",
-      "start": 7.400000095367432,
-      "end": 7.900000095367432
+      "end": 0.5
     }
   ],
   "usage": {
     "type": "duration",
-    "seconds": 9
+    "seconds": 1
   }
 }
 ```
@@ -875,7 +877,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       The log probability of the token.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token usage statistics for the request.
 
@@ -965,7 +967,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
         The log probability of the token.
 
-    - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+    - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
       Token usage statistics for the request.
 
@@ -1065,7 +1067,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
       The concatenated transcript text for the entire audio input.
 
-    - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+    - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
       Token or duration usage statistics for the request.
 
@@ -1257,7 +1259,7 @@ curl https://api.openai.com/v1/audio/transcriptions \
 
     The concatenated transcript text for the entire audio input.
 
-  - `usage: optional object { input_tokens, output_tokens, total_tokens, 2 more }  or object { seconds, type }`
+  - `usage: optional Tokens { input_tokens, output_tokens, total_tokens, 2 more }  or Duration { seconds, type }`
 
     Token or duration usage statistics for the request.
 
@@ -2504,66 +2506,15 @@ curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \
 
 **post** `/audio/voices`
 
-Creates a custom voice.
+Create a custom voice you can use for audio output (for example, in Text-to-Speech and the Realtime API). This requires an audio sample and a previously uploaded consent recording.
+
+Send `name`, `audio_sample`, and the `consent` recording ID as multipart form data. The optional `type` defaults to `audio_sample`.
+
+Returns the saved voice's metadata. See the [custom voices guide](/api/docs/guides/text-to-speech#custom-voices) for requirements and best practices. Custom voices are limited to eligible customers.
 
 ### Returns
 
-- `id: string`
-
-  The voice identifier, which can be referenced in API endpoints.
-
-- `created_at: number`
-
-  The Unix timestamp (in seconds) for when the voice was created.
-
-- `name: string`
-
-  The name of the voice.
-
-- `object: "audio.voice"`
-
-  The object type, which is always `audio.voice`.
-
-  - `"audio.voice"`
-
-### Example
-
-```http
-curl https://api.openai.com/v1/audio/voices \
-    -H 'Content-Type: multipart/form-data' \
-    -H "Authorization: Bearer $OPENAI_API_KEY" \
-    -F 'audio_sample=@/path/to/audio_sample' \
-    -F consent=consent \
-    -F name=name
-```
-
-#### Response
-
-```json
-{
-  "id": "id",
-  "created_at": 0,
-  "name": "name",
-  "object": "audio.voice"
-}
-```
-
-### Example
-
-```http
-curl https://api.openai.com/v1/audio/voices \
-  -X POST \
-  -H "Authorization: Bearer $OPENAI_API_KEY" \
-  -F "name=My new voice" \
-  -F "consent=cons_1234" \
-  -F "audio_sample=@$HOME/audio_sample.wav;type=audio/x-wav"
-```
-
-## Domain Types
-
-### Voice Create Response
-
-- `VoiceCreateResponse object { id, created_at, name, object }`
+- `Voice object { id, created_at, name, 2 more }`
 
   A custom voice that can be used for audio output.
 
@@ -2584,3 +2535,75 @@ curl https://api.openai.com/v1/audio/voices \
     The object type, which is always `audio.voice`.
 
     - `"audio.voice"`
+
+  - `type: "audio_sample"`
+
+    How the voice was created.
+
+    - `"audio_sample"`
+
+### Example
+
+```http
+curl https://api.openai.com/v1/audio/voices \
+    -H 'Content-Type: multipart/form-data' \
+    -H "Authorization: Bearer $OPENAI_API_KEY" \
+    -F 'audio_sample=@/path/to/audio_sample' \
+    -F consent=consent \
+    -F name=x
+```
+
+#### Response
+
+```json
+{
+  "id": "id",
+  "created_at": 0,
+  "name": "name",
+  "object": "audio.voice",
+  "type": "audio_sample"
+}
+```
+
+### Example
+
+```http
+curl https://api.openai.com/v1/audio/voices \
+  -X POST \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -F "name=My new voice" \
+  -F "consent=cons_1234" \
+  -F "audio_sample=@audio_sample.wav;type=audio/x-wav"
+```
+
+## Domain Types
+
+### Voice
+
+- `Voice object { id, created_at, name, 2 more }`
+
+  A custom voice that can be used for audio output.
+
+  - `id: string`
+
+    The voice identifier, which can be referenced in API endpoints.
+
+  - `created_at: number`
+
+    The Unix timestamp (in seconds) for when the voice was created.
+
+  - `name: string`
+
+    The name of the voice.
+
+  - `object: "audio.voice"`
+
+    The object type, which is always `audio.voice`.
+
+    - `"audio.voice"`
+
+  - `type: "audio_sample"`
+
+    How the voice was created.
+
+    - `"audio_sample"`

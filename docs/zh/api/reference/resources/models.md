@@ -1,18 +1,18 @@
 # 模型
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加以下内容获取文档页面的 Markdown 版本： `.md` ，即可获取该页面的 Markdown 版本。
+> 有关完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
 
 ## 删除微调模型
 
 **delete** `/models/{model}`
 
-删除一个微调模型。你必须在你的组织中拥有 Owner 角色才能删除模型。
+删除已微调的模型。你必须在组织中拥有 Owner 角色才能删除模型。
 
 ### 路径参数
 
 - `model: string`
 
-### 返回
+### 返回值
 
 - `ModelDeleted object { id, deleted, object }`
 
@@ -64,7 +64,7 @@ curl https://api.openai.com/v1/models/ft:gpt-4o-mini:acemeco:suffix:abc123 \
 
 列出当前可用的模型，并提供每个模型的基本信息，例如所有者和可用性。
 
-### 返回
+### 返回值
 
 - `data: array of Model`
 
@@ -74,7 +74,7 @@ curl https://api.openai.com/v1/models/ft:gpt-4o-mini:acemeco:suffix:abc123 \
 
   - `created: number`
 
-    模型创建时的 Unix 时间戳（单位为秒）。
+    模型创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: "model"`
 
@@ -151,26 +151,26 @@ curl https://api.openai.com/v1/models \
       "created": 1686935002,
       "owned_by": "openai",
       "shutdown_date": "2026-10-23"
-    },
+    }
   ]
 }
 ```
 
-## 检索模型
+## Retrieve model
 
 **get** `/models/{model}`
 
-检索模型实例，提供有关模型的基本信息，例如所有者和权限。
+检索模型实例，提供有关该模型的基本信息，例如所有者和权限设置。
 
 ### 路径参数
 
 - `model: string`
 
-### 返回
+### 返回值
 
 - `Model object { id, created, object, 2 more }`
 
-  描述可与 API 一起使用的 OpenAI 模型服务。
+  描述可与 API 配合使用的 OpenAI 模型产品。
 
   - `id: string`
 
@@ -178,7 +178,7 @@ curl https://api.openai.com/v1/models \
 
   - `created: number`
 
-    模型创建时的 Unix 时间戳（单位为秒）。
+    模型创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: "model"`
 
@@ -232,13 +232,13 @@ curl https://api.openai.com/v1/models/gpt-6-astra \
 }
 ```
 
-## 域类型
+## Domain Types
 
-### 模型
+### Model
 
 - `Model object { id, created, object, 2 more }`
 
-  描述可与 API 一起使用的 OpenAI 模型服务。
+  描述可与 API 配合使用的 OpenAI 模型产品。
 
   - `id: string`
 
@@ -246,7 +246,7 @@ curl https://api.openai.com/v1/models/gpt-6-astra \
 
   - `created: number`
 
-    模型创建时的 Unix 时间戳（单位为秒）。
+    模型创建时的 Unix 时间戳（以秒为单位）。
 
   - `object: "model"`
 
@@ -262,7 +262,7 @@ curl https://api.openai.com/v1/models/gpt-6-astra \
 
     模型将下线的日期，若未公布则为 null。
 
-### 模型已删除
+### Model Deleted
 
 - `ModelDeleted object { id, deleted, object }`
 

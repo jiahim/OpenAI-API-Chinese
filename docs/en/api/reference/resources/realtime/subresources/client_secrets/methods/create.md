@@ -290,13 +290,14 @@ Returns the created client secret and the effective session object. The client s
           This parameter is a post-processing adjustment to the audio after it is generated, it's
           also possible to prompt the model to speak faster or slower.
 
-        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
+        - `voice: optional string or "alloy" or "ash" or "ballad" or 7 more or ID { id }`
 
           The voice the model uses to respond. Supported built-in voices are
           `alloy`, `ash`, `ballad`, `coral`, `echo`, `sage`, `shimmer`, `verse`,
           `marin`, and `cedar`. You may also provide a custom voice object with
           an `id`, for example `{ "id": "voice_1234" }`. Voice cannot be changed
           during the session once the model has responded with audio at least once.
+          Custom voices must be created from audio samples.
           We recommend `marin` and `cedar` for best quality.
 
           - `string`
@@ -674,7 +675,7 @@ Returns the created client secret and the effective session object. The client s
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -748,7 +749,7 @@ Returns the created client secret and the effective session object. The client s
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -1097,7 +1098,7 @@ Returns the created client secret and the effective session object. The client s
 
               - `"audio/pcma"`
 
-        - `noise_reduction: optional object { type }`
+        - `noise_reduction: optional object { type }  or null`
 
           Configuration for input audio noise reduction. This can be set to `null` to turn off.
           Noise reduction filters audio added to the input audio buffer before it is sent to VAD and the model.
@@ -1111,11 +1112,11 @@ Returns the created client secret and the effective session object. The client s
 
             - `"far_field"`
 
-        - `transcription: optional object { language, languages, model, prompt }`
+        - `transcription: optional object { language, languages, model, prompt }  or null`
 
           Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.
 
-          - `language: optional string`
+          - `language: optional string or null`
 
             The language of the input audio.
 
@@ -1153,7 +1154,7 @@ Returns the created client secret and the effective session object. The client s
 
             The prompt configured for input audio transcription, when present.
 
-        - `turn_detection: optional object { type, create_response, idle_timeout_ms, 4 more }  or object { type, create_response, eagerness, interrupt_response }  or null`
+        - `turn_detection: optional ServerVad { type, create_response, idle_timeout_ms, 4 more }  or SemanticVad { type, create_response, eagerness, interrupt_response }  or null`
 
           Configuration for turn detection, ether Server VAD or Semantic VAD. This can be set to `null` to turn off, in which case the client must manually trigger model response.
 
@@ -1305,7 +1306,7 @@ Returns the created client secret and the effective session object. The client s
 
       Expiration timestamp for the session, in seconds since epoch.
 
-    - `include: optional array of "item.input_audio_transcription.logprobs"`
+    - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
       Additional fields to include in server outputs.
 
@@ -1594,7 +1595,7 @@ Returns the created client secret and the effective session object. The client s
 
           The name of the tool to call on the server.
 
-    - `tools: optional array of RealtimeFunctionTool or object { server_label, type, allowed_callers, 9 more }`
+    - `tools: optional array of RealtimeFunctionTool or McpTool { server_label, type, allowed_callers, 9 more }`
 
       Tools available to the model.
 
@@ -1643,7 +1644,7 @@ Returns the created client secret and the effective session object. The client s
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -1717,7 +1718,7 @@ Returns the created client secret and the effective session object. The client s
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -1779,7 +1780,7 @@ Returns the created client secret and the effective session object. The client s
           The Secure MCP Tunnel ID to use instead of a direct server URL. One of
           `server_url`, `connector_id`, or `tunnel_id` must be provided.
 
-    - `tracing: optional "auto" or object { group_id, metadata, workflow_name }  or null`
+    - `tracing: optional "auto" or TracingConfiguration { group_id, metadata, workflow_name }  or null`
 
       Realtime API can write session traces to the [Traces Dashboard](https://platform.openai.com/logs?api=traces). Set to null to disable tracing. Once
       tracing is enabled for a session, the configuration cannot be modified.
@@ -1880,7 +1881,7 @@ Returns the created client secret and the effective session object. The client s
 
           The PCM audio format. Only a 24kHz sample rate is supported.
 
-        - `noise_reduction: optional object { type }`
+        - `noise_reduction: optional object { type }  or null`
 
           Configuration for input audio noise reduction.
 
@@ -1888,11 +1889,11 @@ Returns the created client secret and the effective session object. The client s
 
             Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones.
 
-        - `transcription: optional object { language, languages, model, prompt }`
+        - `transcription: optional object { language, languages, model, prompt }  or null`
 
           Configuration of the transcription model.
 
-          - `language: optional string`
+          - `language: optional string or null`
 
             The language of the input audio.
 
@@ -1961,7 +1962,7 @@ Returns the created client secret and the effective session object. The client s
 
       Expiration timestamp for the session, in seconds since epoch.
 
-    - `include: optional array of "item.input_audio_transcription.logprobs"`
+    - `include: optional array of "item.input_audio_transcription.logprobs" or null`
 
       Additional fields to include in server outputs.
 
@@ -2113,7 +2114,7 @@ curl -X POST https://api.openai.com/v1/realtime/client_secrets \
         "transcription": null,
         "noise_reduction": null,
         "turn_detection": {
-          "type": "server_vad",
+          "type": "server_vad"
         }
       },
       "output": {

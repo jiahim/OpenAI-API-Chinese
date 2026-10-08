@@ -22,7 +22,7 @@ If your backend streams audio over the primary [WebSocket connection](https://de
 
 ### Attach to the existing session
 
-1. Save the ID of the session your backend will control. For WebRTC, use `session.id` from the JSON response to `POST /v1/live/sessions`. For SIP, [accept the incoming call](https://developers.openai.com/api/docs/guides/voice-sip?api=live#accept-or-reject-the-call) first, then use `data.session_id` from its webhook. Keep the ID alongside the application's user and conversation record.
+1. Save the ID of the session your backend will control. For WebRTC or an [outbound SIP call](https://developers.openai.com/api/docs/guides/voice-sip?api=live#place-an-outbound-call), use `session.id` from the JSON response to `POST /v1/live/sessions`. For inbound SIP, [accept the incoming call](https://developers.openai.com/api/docs/guides/voice-sip?api=live#accept-or-reject-the-call) first, then use `data.session_id` from its webhook. Keep the ID alongside the application's user and conversation record.
 2. Open a WebSocket from your server at the following URL, substituting the saved ID unchanged. Authenticate with `Authorization: Bearer $OPENAI_API_KEY` using the project authentication that created or accepted the session. Include the same connection headers required when creating the session.
 
 ```text

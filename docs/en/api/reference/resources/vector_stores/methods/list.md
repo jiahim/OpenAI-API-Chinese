@@ -191,29 +191,34 @@ curl https://api.openai.com/v1/vector_stores \
       "created_at": 1699061776,
       "name": "Support FAQ",
       "description": "Contains commonly asked questions and answers, organized by topic.",
-      "bytes": 139920,
       "file_counts": {
         "in_progress": 0,
         "completed": 3,
         "failed": 0,
         "cancelled": 0,
         "total": 3
-      }
+      },
+      "usage_bytes": 139920,
+      "status": "completed",
+      "last_active_at": null,
+      "metadata": {}
     },
     {
       "id": "vs_abc456",
       "object": "vector_store",
       "created_at": 1699061776,
       "name": "Support FAQ v2",
-      "description": null,
-      "bytes": 139920,
       "file_counts": {
         "in_progress": 0,
         "completed": 3,
         "failed": 0,
         "cancelled": 0,
         "total": 3
-      }
+      },
+      "usage_bytes": 139920,
+      "status": "completed",
+      "last_active_at": null,
+      "metadata": {}
     }
   ],
   "first_id": "vs_abc123",

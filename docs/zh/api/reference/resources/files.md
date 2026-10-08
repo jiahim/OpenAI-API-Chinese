@@ -1,12 +1,12 @@
 # Files
 
-> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。在页面 URL 后追加 `.md` 即可获取文档页面的 Markdown 版本。
+> 如需完整文档索引，请参阅 [llms.txt](/llms.txt)。通过在页面 URL 后追加 `.md` 即可获取 Markdown 版本的文档页面。
 
 ## 检索文件内容
 
 **get** `/files/{file_id}/content`
 
-返回包含指定文件内容的响应。
+返回一个包含指定文件内容的响应。
 
 ### 路径参数
 
@@ -30,45 +30,46 @@ curl https://api.openai.com/v1/files/file-abc123/content \
 
 **post** `/files`
 
-上传一个可在多个端点之间使用的文件。单个文件
-最大可达 512 MB，每个项目最多可存储 2.5 TB 的文件，
-总量上不受组织级存储限制。该端点的上传
-速率限制为每个已认证用户每分钟 1,000 次请求。
-user.
+上传可在各个端点使用的文件。单个文件
+最大可达 512 MB，每个项目最多可存储 2.5 TB 的文件
+总量。组织范围内没有存储上限。向此
+端点发起上传时，每个已认证
+用户的速率限制为每分钟 1,000 次请求。
 
-- Assistants API 支持最多 200 万个 token 的文件，且仅支持特定
-  的文件类型。详见 [Assistants 工具指南](/api/docs/guides/tools) 了解
+- Assistants API 支持最大 200 万 tokens 以及特定
+  的文件类型。请参阅 [Assistants 工具指南](/api/docs/guides/tools) 了解
   详情。
-- 微调 API 仅支持 `.jsonl` 文件。输入文件还需符合
-  微调所需的特定格式，例如
-  [chat](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 或
-  [completions](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 模型。
-- Batch API 仅支持 `.jsonl` 大小不超过 200 MB 的文件。输入
-  还需符合特定的
+- 微调 API 仅支持 `.jsonl` 文件。输入还需要满足微调
+  所要求的特定格式
+  [对话](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 或
+  [补全](/api/docs/guides/supervised-fine-tuning#formatting-your-data) 模型。
+- Batch API 仅支持 `.jsonl` 最大 200 MB 的文件。输入
+  也具有特定的必需
   [格式](/api/docs/guides/batch#1-prepare-your-batch-file).
-- 若用于检索或 `file_search` 导入，请先将文件上传到此处。如果
-  你需要将多个已上传的文件附加到同一个向量存储，请使用
+- 用于检索或 `file_search` 摄取时，请先在此处上传文件。如果你需要将多个已上传的文件附加到同一个向量存储，请使用
+  而不是逐个附加。向量存储附加具有单独的
   [`/vector_stores/{vector_store_id}/file_batches`](/api/reference/resources/vector_stores/subresources/file_batches/methods/create)
-  而不是逐个添加。向量存储的附加操作有单独的
-  文件上传相关限制，包括每个组织每分钟最多可附加 2,000 个文件，
-  organization.
+  方式，而不是逐个附加。向量存储附加具有单独的
+  文件上传的限制，包括每分钟每个组织最多 2,000 个附加文件，按
+  组织计。
 
-请 [联系我们](https://help.openai.com/) ，如果你需要提高这些
+请 [联系我们](https://help.openai.com/) 如果你需要提高这些
 存储限制。
 
 ### Returns
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
-  该 `File` object 表示已上传到 OpenAI 的文档。
+  该 `File` 对象，表示已上传到 OpenAI 的文档。
 
   - `id: string`
 
     文件标识符，可在 API 端点中引用。
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    文件大小，以字节为单位。
+    文件的大小（以字节为单位）。在已完成的文件上传响应中，当文件大小尚不可用时，此字段可能
+    为 null。
 
   - `created_at: number`
 
@@ -86,7 +87,7 @@ user.
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，和 `user_data`.
 
     - `"assistants"`
 
@@ -106,7 +107,7 @@ user.
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -116,11 +117,12 @@ user.
 
   - `expires_at: optional number`
 
-    文件过期时的 Unix 时间戳（以秒为单位）。
+    文件到期时的 Unix 时间戳（以秒为单位）。在已
+    完成的文件上传响应中，当未设置到期时间时，此字段可能为 null。
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`。当这些详细信息未设置时，已完成的文件上传响应可以返回 null。
 
 ### 示例
 
@@ -132,7 +134,7 @@ curl https://api.openai.com/v1/files \
     -F purpose=assistants
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -154,12 +156,12 @@ curl https://api.openai.com/v1/files \
 curl https://api.openai.com/v1/files \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -F purpose="fine-tune" \
-  -F file="@mydata.jsonl"
-  -F expires_after[anchor]="created_at"
-  -F expires_after[seconds]=2592000
+  -F file="@mydata.jsonl" \
+  -F 'expires_after[anchor]=created_at' \
+  -F 'expires_after[seconds]=2592000'
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -167,17 +169,18 @@ curl https://api.openai.com/v1/files \
   "object": "file",
   "bytes": 120000,
   "created_at": 1677610602,
-  "expires_at": 1677614202,
+  "expires_at": 1680202602,
   "filename": "mydata.jsonl",
   "purpose": "fine-tune",
+  "status": "processed"
 }
 ```
 
-## 删除文件
+## Delete file
 
 **delete** `/files/{file_id}`
 
-删除文件并将其从所有向量存储中移除。
+删除文件，并将其从所有向量库中移除。
 
 ### 路径参数
 
@@ -203,7 +206,7 @@ curl https://api.openai.com/v1/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -221,7 +224,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -231,21 +234,21 @@ curl https://api.openai.com/v1/files/file-abc123 \
 }
 ```
 
-## List files
+## 列出文件
 
 **get** `/files`
 
 返回文件列表。
 
-### 查询参数
+### Query Parameters
 
 - `after: optional string`
 
-  用于分页的游标。 `after` 是一个对象 ID，用于定义你在列表中的位置。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，则后续调用可以包含 after=obj_foo 以获取列表的下一页。
+  用于分页查询的游标。 `after` 是一个用于标识列表中位置的对象 ID。例如，如果你发起列表请求并收到 100 个对象，以 obj_foo 结尾，那么后续调用可以包含 after=obj_foo 以获取列表的下一页。
 
 - `limit: optional number`
 
-  要返回的对象数量的限制。Limit 范围在 1 到 10,000 之间，默认为 10,000。
+  返回对象数量的上限。Limit 的范围为 1 到 10,000，默认为 10,000。
 
 - `order: optional "asc" or "desc"`
 
@@ -267,9 +270,10 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
     文件标识符，可在 API 端点中引用。
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    文件大小，以字节为单位。
+    文件的大小（以字节为单位）。在已完成的文件上传响应中，当文件大小尚不可用时，此字段可能
+    为 null。
 
   - `created_at: number`
 
@@ -287,7 +291,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，和 `user_data`.
 
     - `"assistants"`
 
@@ -307,7 +311,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -317,11 +321,12 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
   - `expires_at: optional number`
 
-    文件过期时的 Unix 时间戳（以秒为单位）。
+    文件到期时的 Unix 时间戳（以秒为单位）。在已
+    完成的文件上传响应中，当未设置到期时间时，此字段可能为 null。
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`。当这些详细信息未设置时，已完成的文件上传响应可以返回 null。
 
 - `first_id: string`
 
@@ -338,7 +343,7 @@ curl https://api.openai.com/v1/files \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -369,7 +374,7 @@ curl https://api.openai.com/v1/files \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -383,6 +388,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "salesOverview.pdf",
       "purpose": "assistants",
+      "status": "processed"
     },
     {
       "id": "file-abc456",
@@ -392,6 +398,7 @@ curl https://api.openai.com/v1/files \
       "expires_at": 1677614202,
       "filename": "puppy.jsonl",
       "purpose": "fine-tune",
+      "status": "processed"
     }
   ],
   "first_id": "file-abc123",
@@ -400,7 +407,7 @@ curl https://api.openai.com/v1/files \
 }
 ```
 
-## 检索文件
+## Retrieve file
 
 **get** `/files/{file_id}`
 
@@ -414,15 +421,16 @@ curl https://api.openai.com/v1/files \
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
-  该 `File` object 表示已上传到 OpenAI 的文档。
+  该 `File` 对象，表示已上传到 OpenAI 的文档。
 
   - `id: string`
 
     文件标识符，可在 API 端点中引用。
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    文件大小，以字节为单位。
+    文件的大小（以字节为单位）。在已完成的文件上传响应中，当文件大小尚不可用时，此字段可能
+    为 null。
 
   - `created_at: number`
 
@@ -440,7 +448,7 @@ curl https://api.openai.com/v1/files \
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，和 `user_data`.
 
     - `"assistants"`
 
@@ -460,7 +468,7 @@ curl https://api.openai.com/v1/files \
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -470,11 +478,12 @@ curl https://api.openai.com/v1/files \
 
   - `expires_at: optional number`
 
-    文件过期时的 Unix 时间戳（以秒为单位）。
+    文件到期时的 Unix 时间戳（以秒为单位）。在已
+    完成的文件上传响应中，当未设置到期时间时，此字段可能为 null。
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`。当这些详细信息未设置时，已完成的文件上传响应可以返回 null。
 
 ### 示例
 
@@ -483,7 +492,7 @@ curl https://api.openai.com/v1/files/$FILE_ID \
     -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -506,7 +515,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
-#### 响应
+#### Response
 
 ```json
 {
@@ -514,9 +523,10 @@ curl https://api.openai.com/v1/files/file-abc123 \
   "object": "file",
   "bytes": 120000,
   "created_at": 1677610602,
-  "expires_at": 1677614202,
+  "expires_at": 1680202602,
   "filename": "mydata.jsonl",
   "purpose": "fine-tune",
+  "status": "processed"
 }
 ```
 
@@ -542,15 +552,16 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
 - `FileObject object { id, bytes, created_at, 6 more }`
 
-  该 `File` object 表示已上传到 OpenAI 的文档。
+  该 `File` 对象，表示已上传到 OpenAI 的文档。
 
   - `id: string`
 
     文件标识符，可在 API 端点中引用。
 
-  - `bytes: number`
+  - `bytes: number or null`
 
-    文件大小，以字节为单位。
+    文件的大小（以字节为单位）。在已完成的文件上传响应中，当文件大小尚不可用时，此字段可能
+    为 null。
 
   - `created_at: number`
 
@@ -568,7 +579,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
   - `purpose: "assistants" or "assistants_output" or "batch" or 5 more`
 
-    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，以及 `user_data`.
+    文件的预期用途。支持的值包括 `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`，和 `user_data`.
 
     - `"assistants"`
 
@@ -588,7 +599,7 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
   - `status: "uploaded" or "processed" or "error"`
 
-    已弃用。文件的当前状态，可为 `uploaded`, `processed`，或 `error`.
+    已弃用。文件的当前状态，可能为 `uploaded`, `processed`，或 `error`.
 
     - `"uploaded"`
 
@@ -598,8 +609,9 @@ curl https://api.openai.com/v1/files/file-abc123 \
 
   - `expires_at: optional number`
 
-    文件过期时的 Unix 时间戳（以秒为单位）。
+    文件到期时的 Unix 时间戳（以秒为单位）。在已
+    完成的文件上传响应中，当未设置到期时间时，此字段可能为 null。
 
   - `status_details: optional string`
 
-    已弃用。有关微调训练文件验证失败的原因详情，请参阅 `error` 字段位于 `fine_tuning.job`.
+    已弃用。有关微调训练文件验证失败原因的详细信息，请参阅 `error` 字段，位于 `fine_tuning.job`。当这些详细信息未设置时，已完成的文件上传响应可以返回 null。

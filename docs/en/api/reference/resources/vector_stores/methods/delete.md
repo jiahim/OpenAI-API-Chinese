@@ -55,8 +55,8 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 
 ```json
 {
-  id: "vs_abc123",
-  object: "vector_store.deleted",
-  deleted: true
+  "id": "vs_abc123",
+  "object": "vector_store.deleted",
+  "deleted": true
 }
 ```

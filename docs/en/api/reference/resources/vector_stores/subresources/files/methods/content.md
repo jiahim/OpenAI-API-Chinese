@@ -76,12 +76,11 @@ https://api.openai.com/v1/vector_stores/vs_abc123/files/file-abc123/content \
 
 ```json
 {
-  "file_id": "file-abc123",
-  "filename": "example.txt",
-  "attributes": {"key": "value"},
-  "content": [
-    {"type": "text", "text": "..."},
-    ...
-  ]
+  "object": "vector_store.file_content.page",
+  "data": [
+    {"type": "text", "text": "file content"}
+  ],
+  "has_more": false,
+  "next_page": null
 }
 ```

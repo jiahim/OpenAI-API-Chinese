@@ -1,4 +1,4 @@
-> 完整文档索引请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾附加 `.md` 获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 创建语音
 
@@ -8,15 +8,15 @@
 
 返回音频文件内容，或音频事件流。
 
-### 请求体参数
+### Body 参数
 
 - `input: string`
 
-  用于生成音频的文本。最大长度为 4096 个字符。
+  要生成音频的文本。最大长度为 4096 个字符。
 
 - `model: string or SpeechModel`
 
-  可用的 [TTS 模型](/api/docs/guides/text-to-speech): `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`，之一，或 `gpt-4o-mini-tts-2025-12-15`.
+  可用的 [TTS 模型](/api/docs/guides/text-to-speech): `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`，或 `gpt-4o-mini-tts-2025-12-15`.
 
   - `string`
 
@@ -30,13 +30,15 @@
 
     - `"gpt-4o-mini-tts-2025-12-15"`
 
-- `voice: string or "alloy" or "ash" or "ballad" or 7 more or object { id }`
+- `voice: string or "alloy" or "ash" or "ballad" or 10 more or ID { id }`
 
-  生成音频时使用的声音。支持的内置声音有 `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`，以及 `cedar`。你也可以提供一个带有 `id`，的自定义 voice 对象，例如 `{ "id": "voice_1234" }`。声音试听可在 [文本转语音指南](/api/docs/guides/text-to-speech#voice-options).
+  生成音频时使用的音色。支持的内置音色包括 `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`，以及 `cedar`。你也可以提供自定义音色对象，其中包含 `id`，例如 `{ "id": "voice_1234" }`。可在此处预览音色： [文本转语音指南](/api/docs/guides/text-to-speech#voice-options)。自定义音色必须基于音频样本创建。
 
   - `string`
 
-  - `"alloy" or "ash" or "ballad" or 7 more`
+  - `"alloy" or "ash" or "ballad" or 10 more`
+
+    生成音频时使用的音色。支持的内置音色包括 `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`，以及 `cedar`。你也可以提供自定义音色对象，其中包含 `id`，例如 `{ "id": "voice_1234" }`。可在此处预览音色： [文本转语音指南](/api/docs/guides/text-to-speech#voice-options)。自定义音色必须基于音频样本创建。
 
     - `"alloy"`
 
@@ -58,21 +60,27 @@
 
     - `"cedar"`
 
+    - `"fable"`
+
+    - `"onyx"`
+
+    - `"nova"`
+
   - `ID object { id }`
 
-    自定义声音参考。
+    自定义音色参考。
 
     - `id: string`
 
-      自定义声音 ID，例如 `voice_1234`.
+      自定义音色 ID，例如 `voice_1234`.
 
 - `instructions: optional string`
 
-  通过附加指令控制生成音频的声音。不适用于 `tts-1` 或 `tts-1-hd`.
+  使用附加指令控制生成音频的音色。不适用于 `tts-1` 或 `tts-1-hd`.
 
 - `response_format: optional "mp3" or "opus" or "aac" or 3 more`
 
-  输出的音频格式。支持的格式有 `mp3`, `opus`, `aac`, `flac`, `wav`，以及 `pcm`.
+  音频输出格式。支持的格式包括 `mp3`, `opus`, `aac`, `flac`, `wav`，以及 `pcm`.
 
   - `"mp3"`
 
@@ -88,11 +96,11 @@
 
 - `speed: optional number`
 
-  生成音频的速度。从 `0.25` 到 `4.0`. `1.0` 中选取，默认值为 1.0。
+  生成音频的速度。选择一个介于 `0.25` 至 `4.0`. `1.0` 之间的值。默认为。
 
 - `stream_format: optional "sse" or "audio"`
 
-  流式传输音频的格式。支持的格式有 `sse` 和 `audio`. `sse` 不支持 `tts-1` 或 `tts-1-hd`.
+  音频流式传输格式。支持的格式包括 `sse` 和 `audio`. `sse` 不支持 `tts-1` 或 `tts-1-hd`.
 
   - `"sse"`
 
@@ -107,7 +115,7 @@ curl https://api.openai.com/v1/audio/speech \
     -d '{
           "input": "input",
           "model": "tts-1",
-          "voice": "alloy"
+          "voice": "ash"
         }'
 ```
 

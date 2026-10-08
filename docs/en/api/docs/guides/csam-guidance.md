@@ -69,11 +69,7 @@ hearing from your users about their experiences.
   user and reduce the chance that one user's misuse disrupts access for your
   broader organization. Use a unique string to represent each user. To protect
   privacy, hash email addresses or usernames before sending them to avoid
-  disclosing personally identifiable information. The direct Images API uses a
-  different parameter for this purpose: Send the same stable identifier as
-  `user` for [image
-  generation](https://developers.openai.com/api/reference/resources/images/methods/generate) and [image
-  edits](https://developers.openai.com/api/reference/resources/images/methods/edit).
+  disclosing personally identifiable information.
 
 When you are ready to do more, consider other prevention measures:
 

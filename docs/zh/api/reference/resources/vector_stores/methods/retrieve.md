@@ -1,6 +1,6 @@
-> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。如需获取文档页面的 Markdown 版本，可在页面 URL 末尾追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
-## Retrieve vector store
+## 检索向量存储
 
 **get** `/vector_stores/{vector_store_id}`
 
@@ -14,11 +14,11 @@
 
 - `VectorStore object { id, created_at, file_counts, 8 more }`
 
-  向量存储是已处理文件的集合，可供 `file_search` 工具使用。
+  向量存储是可以被使用的已处理文件集合 `file_search` 工具。
 
   - `id: string`
 
-    可在 API 端点中引用的标识符。
+    该标识符可在 API 端点中引用。
 
   - `created_at: number`
 
@@ -44,20 +44,20 @@
 
     - `total: number`
 
-      文件的总数。
+      文件总数。
 
   - `last_active_at: number or null`
 
-    向量存储最近一次活跃时的 Unix 时间戳（以秒为单位）。
+    向量存储最后一次活跃时的 Unix 时间戳（以秒为单位）。
 
   - `metadata: Metadata or null`
 
-    可附加到对象的 16 个键值对集合。这可以
-    用于以结构化格式存储有关对象的附加信息，
-    并通过 API 或控制台查询对象。
+    一组 16 个键值对，可以附加到对象上。可用于
+    以结构化格式存储有关对象的附加信息，并通过 API 或仪表板查询对象。
+    格式，并通过 接口 或仪表板查询对象。
 
-    键为字符串，最长 64 个字符。值为字符串，
-    最长 512 个字符。
+    键为字符串，最大长度为 64 个字符。值为字符串，
+    最大长度为 512 个字符。
 
   - `name: string`
 
@@ -71,7 +71,7 @@
 
   - `status: "expired" or "in_progress" or "completed"`
 
-    向量存储的状态，可以是 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示该向量存储已可以使用。
+    向量存储的状态，可以是 `expired`, `in_progress`，或 `completed`。状态为 `completed` 表示该向量存储已可供使用。
 
     - `"expired"`
 
@@ -81,7 +81,7 @@
 
   - `usage_bytes: number`
 
-    向量存储中所有文件占用的字节总数。
+    向量存储中所有文件使用的总字节数。
 
   - `expires_after: optional object { anchor, days }`
 
@@ -89,13 +89,13 @@
 
     - `anchor: "last_active_at"`
 
-      过期策略生效的锚定时间戳。支持以下锚点： `last_active_at`.
+      应用过期策略的锚点时间戳。支持以下锚点： `last_active_at`.
 
       - `"last_active_at"`
 
     - `days: number`
 
-      从锚定时间起，向量存储过期的天数。
+      向量存储将在锚点时间之后过期的天数。
 
   - `expires_at: optional number or null`
 
@@ -153,6 +153,18 @@ curl https://api.openai.com/v1/vector_stores/vs_abc123 \
 {
   "id": "vs_abc123",
   "object": "vector_store",
-  "created_at": 1699061776
+  "created_at": 1699061776,
+  "name": "Support FAQ",
+  "file_counts": {
+    "in_progress": 0,
+    "completed": 3,
+    "failed": 0,
+    "cancelled": 0,
+    "total": 3
+  },
+  "usage_bytes": 139920,
+  "status": "completed",
+  "last_active_at": null,
+  "metadata": {}
 }
 ```

@@ -20,7 +20,7 @@ Get an evaluation by ID.
 
   The Unix timestamp (in seconds) for when the eval was created.
 
-- `data_source_config: EvalCustomDataSourceConfig or object { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
+- `data_source_config: EvalCustomDataSourceConfig or LogsDataSourceConfig { schema, type, metadata }  or EvalStoredCompletionsDataSourceConfig`
 
   Configuration of data sources used in runs of the evaluation.
 
@@ -124,7 +124,7 @@ Get an evaluation by ID.
 
     - `input: array of object { content, role, type }`
 
-      - `content: string or ResponseInputText or object { text, type }  or 3 more`
+      - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
         Inputs to the model - can contain template strings. Supports text, output text, input images, and input audio, either as a single item or an array of items.
 
@@ -213,7 +213,7 @@ Get an evaluation by ID.
 
             - `"input_audio"`
 
-        - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+        - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
           A list of inputs, each of which may be either an input text, output text, input
           image, or input audio object.
@@ -376,7 +376,23 @@ curl https://api.openai.com/v1/evals/$EVAL_ID \
   "created_at": 0,
   "data_source_config": {
     "schema": {
-      "foo": "bar"
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label"
+          ]
+        }
+      },
+      "required": [
+        "item"
+      ]
     },
     "type": "custom"
   },
@@ -460,6 +476,6 @@ curl https://api.openai.com/v1/evals/eval_67abd54d9b0081909a86353f6fb9317a \
   ],
   "name": "External Data Eval",
   "created_at": 1739314509,
-  "metadata": {},
+  "metadata": {}
 }
 ```

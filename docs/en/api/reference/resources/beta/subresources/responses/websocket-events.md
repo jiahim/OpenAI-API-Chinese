@@ -33,6 +33,20 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
   - `"response.create"`
 
+- `access_programs: optional object { cyber }`
+
+  Domain-specific access programs to use for this request.
+
+  - `cyber: optional "standard" or "daybreak_blue" or "daybreak_red"`
+
+    The Cyber access program to use for this request. Supported values are `standard`, `daybreak_blue`, and `daybreak_red`. If omitted, the API resolves the program from the model's Cyber tier and your organization and project access, subject to model-specific eligibility restrictions. By default, models without a Cyber tier use Standard. Blue-tier models use Daybreak Blue when authorized; otherwise they fall back to Standard unless the model requires Daybreak access. Red-tier models use Daybreak Red and require authorization. Requests that require unavailable Daybreak access return 403. An implicit Standard fallback is represented by null in the response's access_programs field, rather than an explicit Standard selection.
+
+    - `"standard"`
+
+    - `"daybreak_blue"`
+
+    - `"daybreak_red"`
+
 - `background: optional boolean or null`
 
   Whether to run the model response in the background.
@@ -95,7 +109,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
   - `"message.output_text.logprobs"`
 
-- `input: optional string or array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+- `input: optional string or array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
   Text, image, or file inputs to the model, used to generate a response.
 
@@ -112,7 +126,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
     A text input to the model, equivalent to a text input with the
     `user` role.
 
-  - `InputItemList = array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+  - `InputItemList = array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
     A list of one or many input items to the model, containing
     different content types.
@@ -340,7 +354,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           A text output from the model.
 
-          - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+          - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
             The annotations of the text output.
 
@@ -358,7 +372,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
               - `index: number`
 
-                The index of the file in the list of files.
+                The index in the output text at which to insert the file citation.
 
               - `type: "file_citation"`
 
@@ -958,7 +972,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         - `"incomplete"`
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -967,7 +981,27 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -1036,26 +1070,6 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             The URL of the page searched for the pattern.
 
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
-
       - `agent: optional object { agent_name }  or null`
 
         The agent that produced this item.
@@ -1103,7 +1117,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -1278,7 +1292,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -1328,7 +1342,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         The sending agent identity.
 
-      - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or object { encrypted_content, type }`
+      - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or EncryptedContent { encrypted_content, type }`
 
         Plaintext, image, or encrypted content sent between agents.
 
@@ -1456,7 +1470,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `"output_text"`
 
-        - `annotations: optional array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }`
+        - `annotations: optional array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }`
 
           Citations associated with the text content.
 
@@ -1598,7 +1612,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
     - `ToolSearchOutput object { tools, type, id, 4 more }`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by the tool search output.
 
@@ -1660,7 +1674,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -1717,76 +1731,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -1902,7 +1849,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -1949,7 +1898,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -2023,7 +1972,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -2089,7 +2038,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -2225,7 +2174,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -2330,13 +2279,13 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -2534,7 +2483,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -2570,7 +2519,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
                 - `"grammar"`
 
-        - `Namespace object { description, name, tools, type }`
+        - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
           Groups function/custom tools under a shared namespace.
 
@@ -2582,13 +2531,15 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-            The function/custom tools available inside this namespace.
+            The function/custom tools loaded inside this namespace.
 
             - `Function object { name, type, allowed_callers, 6 more }`
 
               - `name: string`
+
+                The name of the loaded function tool.
 
               - `type: "function"`
 
@@ -2656,7 +2607,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -2754,7 +2705,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -2844,7 +2795,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         - `"developer"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         A list of additional tools made available at this item.
 
@@ -2906,7 +2857,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -2963,76 +2914,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -3148,7 +3032,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -3195,7 +3081,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -3269,7 +3155,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -3335,7 +3221,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -3439,7 +3325,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -3544,13 +3430,13 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -3630,7 +3516,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -3678,7 +3564,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -3752,7 +3638,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -3850,7 +3736,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -4179,7 +4065,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -4384,7 +4270,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4438,7 +4324,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           The exit or timeout outcome associated with this shell call.
 
@@ -4492,7 +4378,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4538,7 +4424,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -4618,7 +4504,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4676,7 +4562,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -4962,7 +4848,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -5024,7 +4910,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -5185,14 +5071,14 @@ Schema name: `BetaResponsesClientEventResponseCreate`
   Keys are strings with a maximum length of 64 characters. Values are strings
   with a maximum length of 512 characters.
 
-- `model: optional "gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more or string`
+- `model: optional "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more or string`
 
   Model ID used to generate the response, like `gpt-6-astra`. OpenAI
   offers a wide range of models with different capabilities, performance
   characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
   to browse and compare available models.
 
-  - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more`
+  - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
@@ -5200,6 +5086,8 @@ Schema name: `BetaResponsesClientEventResponseCreate`
     to browse and compare available models.
 
     - `"gpt-6-astra"`
+
+    - `"gpt-6.1-sol"`
 
     - `"gpt-6-sol"`
 
@@ -5648,7 +5536,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 - `safety_identifier: optional string or null`
 
   A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-  The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+  The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
 - `service_tier: optional BetaServiceTier or null`
 
@@ -5984,7 +5872,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
       - `"shell"`
 
-- `tools: optional array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+- `tools: optional array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
   An array of tools the model may call while generating a response. You
   can specify which tool to use by setting the `tool_choice` parameter.
@@ -6062,7 +5950,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
       The IDs of the vector stores to search.
 
-    - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+    - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
       A filter to apply.
 
@@ -6119,76 +6007,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
             - `number`
 
-      - `CompoundFilter object { filters, type }`
+      - `BetaCompoundFilter = unknown`
 
         Combine multiple filters using `and` or `or`.
-
-        - `filters: array of object { key, type, value }  or unknown`
-
-          Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-          - `ComparisonFilter object { key, type, value }`
-
-            A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-            - `key: string`
-
-              The key to compare against the value.
-
-            - `type: "eq" or "ne" or "gt" or 5 more`
-
-              Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-              - `eq`: equals
-              - `ne`: not equal
-              - `gt`: greater than
-              - `gte`: greater than or equal
-              - `lt`: less than
-              - `lte`: less than or equal
-              - `in`: in
-              - `nin`: not in
-
-              - `"eq"`
-
-              - `"ne"`
-
-              - `"gt"`
-
-              - `"gte"`
-
-              - `"lt"`
-
-              - `"lte"`
-
-              - `"in"`
-
-              - `"nin"`
-
-            - `value: string or number or boolean or array of string or number`
-
-              The value to compare against the attribute key; supports string, number, or boolean types.
-
-              - `string`
-
-              - `number`
-
-              - `boolean`
-
-              - `array of string or number`
-
-                - `string`
-
-                - `number`
-
-          - `unknown`
-
-        - `type: "and" or "or"`
-
-          Type of operation: `and` or `or`.
-
-          - `"and"`
-
-          - `"or"`
 
     - `max_num_results: optional number`
 
@@ -6304,7 +6125,9 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
     - `user_location: optional object { city, country, region, 2 more }  or null`
 
-      The approximate location of the user.
+      The approximate location of the user. If omitted or null, defaults to the
+      United States. To avoid this fallback, pass `{"type": "approximate"}` without
+      location fields. To localize results, provide the relevant location fields.
 
       - `city: optional string or null`
 
@@ -6351,7 +6174,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
       - `"programmatic"`
 
-    - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+    - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
       List of allowed tool names or a filter object.
 
@@ -6425,7 +6248,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
       Optional HTTP headers to send to the MCP server. Use for authentication
       or other purposes.
 
-    - `require_approval: optional object { always, never }  or "always" or "never" or null`
+    - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
       Specify which of the MCP server's tools require approval.
 
@@ -6491,7 +6314,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
     A tool that runs Python code to help generate a response to a prompt.
 
-    - `container: string or object { type, file_ids, memory_limit, network_policy }`
+    - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
       The code interpreter container. Can be a container ID or an object that
       specifies uploaded file IDs to make available to your code, along with an
@@ -6595,7 +6418,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
     - `input_fidelity: optional "high" or "low" or null`
 
-      Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+      Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
       - `"high"`
 
@@ -6700,13 +6523,13 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
     - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-      The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+      The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
       - `string`
 
       - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `"1024x1024"`
 
@@ -6786,7 +6609,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
       Optional description of the custom tool, used to provide more context.
 
-    - `format: optional object { type }  or object { definition, syntax, type }`
+    - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
       The input format for the custom tool. Default is unconstrained text.
 
@@ -6834,7 +6657,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
       The namespace name used in tool calls (for example, `crm`).
 
-    - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+    - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
       The function/custom tools available inside this namespace.
 
@@ -6908,7 +6731,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
           Optional description of the custom tool, used to provide more context.
 
-        - `format: optional object { type }  or object { definition, syntax, type }`
+        - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
           The input format for the custom tool. Default is unconstrained text.
 
@@ -7006,7 +6829,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
     - `user_location: optional object { type, city, country, 2 more }  or null`
 
-      The user's location.
+      The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
       - `type: "approximate"`
 
@@ -7078,7 +6901,7 @@ Schema name: `BetaResponsesClientEventResponseCreate`
 
   - `"disabled"`
 
-- `user: optional string`
+- `user: optional string or null`
 
   This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
   A stable identifier for your end-users.
@@ -7148,7 +6971,7 @@ Schema name: `BetaResponseSteerEvent`
 
     A text input, equivalent to a message with the `user` role.
 
-  - `ResponseSteerInputItemList = array of object { content, role, type, 3 more }  or object { output, type, id, 6 more }`
+  - `ResponseSteerInputItemList = array of Message { content, role, type, 3 more }  or FunctionCallOutput { output, type, id, 6 more }`
 
     A non-empty list of message inputs to queue for the response.
 
@@ -7352,7 +7175,7 @@ Schema name: `BetaResponseSteerEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -7437,7 +7260,7 @@ accepts client-owned tool outputs that resume a waiting agent.
 
 Schema name: `BetaResponseInjectEvent`
 
-- `input: array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+- `input: array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
   Input items to inject into the active response.
 
@@ -7664,7 +7487,7 @@ Schema name: `BetaResponseInjectEvent`
 
         A text output from the model.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -7682,7 +7505,7 @@ Schema name: `BetaResponseInjectEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -8282,7 +8105,7 @@ Schema name: `BetaResponseInjectEvent`
 
       - `"incomplete"`
 
-  - `WebSearchCall object { id, action, status, 2 more }`
+  - `WebSearchCall object { id, status, type, 2 more }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -8291,7 +8114,27 @@ Schema name: `BetaResponseInjectEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -8360,26 +8203,6 @@ Schema name: `BetaResponseInjectEvent`
 
           The URL of the page searched for the pattern.
 
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
-
     - `agent: optional object { agent_name }  or null`
 
       The agent that produced this item.
@@ -8427,7 +8250,7 @@ Schema name: `BetaResponseInjectEvent`
 
       Whether the function tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -8602,7 +8425,7 @@ Schema name: `BetaResponseInjectEvent`
 
       The unique ID of the function tool call generated by the model.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -8652,7 +8475,7 @@ Schema name: `BetaResponseInjectEvent`
 
       The sending agent identity.
 
-    - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or object { encrypted_content, type }`
+    - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or EncryptedContent { encrypted_content, type }`
 
       Plaintext, image, or encrypted content sent between agents.
 
@@ -8780,7 +8603,7 @@ Schema name: `BetaResponseInjectEvent`
 
         - `"output_text"`
 
-      - `annotations: optional array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }`
+      - `annotations: optional array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }`
 
         Citations associated with the text content.
 
@@ -8922,7 +8745,7 @@ Schema name: `BetaResponseInjectEvent`
 
   - `ToolSearchOutput object { tools, type, id, 4 more }`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The loaded tool definitions returned by the tool search output.
 
@@ -8984,7 +8807,7 @@ Schema name: `BetaResponseInjectEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -9041,76 +8864,9 @@ Schema name: `BetaResponseInjectEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -9226,7 +8982,9 @@ Schema name: `BetaResponseInjectEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -9273,7 +9031,7 @@ Schema name: `BetaResponseInjectEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -9347,7 +9105,7 @@ Schema name: `BetaResponseInjectEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -9413,7 +9171,7 @@ Schema name: `BetaResponseInjectEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -9549,7 +9307,7 @@ Schema name: `BetaResponseInjectEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -9654,13 +9412,13 @@ Schema name: `BetaResponseInjectEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -9858,7 +9616,7 @@ Schema name: `BetaResponseInjectEvent`
 
           Optional description of the custom tool, used to provide more context.
 
-        - `format: optional object { type }  or object { definition, syntax, type }`
+        - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
           The input format for the custom tool. Default is unconstrained text.
 
@@ -9894,7 +9652,7 @@ Schema name: `BetaResponseInjectEvent`
 
               - `"grammar"`
 
-      - `Namespace object { description, name, tools, type }`
+      - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
         Groups function/custom tools under a shared namespace.
 
@@ -9906,13 +9664,15 @@ Schema name: `BetaResponseInjectEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-          The function/custom tools available inside this namespace.
+          The function/custom tools loaded inside this namespace.
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
+
+              The name of the loaded function tool.
 
             - `type: "function"`
 
@@ -9980,7 +9740,7 @@ Schema name: `BetaResponseInjectEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -10078,7 +9838,7 @@ Schema name: `BetaResponseInjectEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -10168,7 +9928,7 @@ Schema name: `BetaResponseInjectEvent`
 
       - `"developer"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       A list of additional tools made available at this item.
 
@@ -10230,7 +9990,7 @@ Schema name: `BetaResponseInjectEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -10287,76 +10047,9 @@ Schema name: `BetaResponseInjectEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -10472,7 +10165,9 @@ Schema name: `BetaResponseInjectEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -10519,7 +10214,7 @@ Schema name: `BetaResponseInjectEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -10593,7 +10288,7 @@ Schema name: `BetaResponseInjectEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -10659,7 +10354,7 @@ Schema name: `BetaResponseInjectEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -10763,7 +10458,7 @@ Schema name: `BetaResponseInjectEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -10868,13 +10563,13 @@ Schema name: `BetaResponseInjectEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -10954,7 +10649,7 @@ Schema name: `BetaResponseInjectEvent`
 
           Optional description of the custom tool, used to provide more context.
 
-        - `format: optional object { type }  or object { definition, syntax, type }`
+        - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
           The input format for the custom tool. Default is unconstrained text.
 
@@ -11002,7 +10697,7 @@ Schema name: `BetaResponseInjectEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -11076,7 +10771,7 @@ Schema name: `BetaResponseInjectEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -11174,7 +10869,7 @@ Schema name: `BetaResponseInjectEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -11503,7 +11198,7 @@ Schema name: `BetaResponseInjectEvent`
 
       The ID of the container used to run the code.
 
-    - `outputs: array of object { logs, type }  or object { type, url }  or null`
+    - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
       The outputs generated by the code interpreter, such as logs or images.
       Can be null if no outputs are available.
@@ -11708,7 +11403,7 @@ Schema name: `BetaResponseInjectEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -11762,7 +11457,7 @@ Schema name: `BetaResponseInjectEvent`
 
       Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-      - `outcome: object { type }  or object { exit_code, type }`
+      - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
         The exit or timeout outcome associated with this shell call.
 
@@ -11816,7 +11511,7 @@ Schema name: `BetaResponseInjectEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -11862,7 +11557,7 @@ Schema name: `BetaResponseInjectEvent`
 
       The unique ID of the apply patch tool call generated by the model.
 
-    - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+    - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -11942,7 +11637,7 @@ Schema name: `BetaResponseInjectEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -12000,7 +11695,7 @@ Schema name: `BetaResponseInjectEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -12286,7 +11981,7 @@ Schema name: `BetaResponseInjectEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -12348,7 +12043,7 @@ Schema name: `BetaResponseInjectEvent`
 
       Whether the custom tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -12854,7 +12549,7 @@ Schema name: `BetaResponseSteerFailedEvent`
 
       A text input, equivalent to a message with the `user` role.
 
-    - `ResponseSteerInputItemList = array of object { content, role, type, 3 more }  or object { output, type, id, 6 more }`
+    - `ResponseSteerInputItemList = array of Message { content, role, type, 3 more }  or FunctionCallOutput { output, type, id, 6 more }`
 
       A non-empty list of message inputs to queue for the response.
 
@@ -13058,7 +12753,7 @@ Schema name: `BetaResponseSteerFailedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -13183,7 +12878,7 @@ Schema name: `BetaResponseWsError`
 
     The response headers that were emitted with the error, if any.
 
-  - `misalignment: optional object { detailed_explanation, error_type, steer }`
+  - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
     - `detailed_explanation: optional string`
 
@@ -13206,6 +12901,10 @@ Schema name: `BetaResponseWsError`
         - `"potentially_unintended_destructive_activity"`
 
         - `"other"`
+
+    - `review_target: optional string or null`
+
+      An opaque target for explicitly continuing this review, or null when unavailable.
 
     - `steer: optional object { message }`
 
@@ -13326,7 +13025,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
     A human-readable description of the error.
 
-- `input: array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+- `input: array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
   The raw input items that were not committed.
 
@@ -13553,7 +13252,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         A text output from the model.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -13571,7 +13270,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -14171,7 +13870,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       - `"incomplete"`
 
-  - `WebSearchCall object { id, action, status, 2 more }`
+  - `WebSearchCall object { id, status, type, 2 more }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -14180,7 +13879,27 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -14249,26 +13968,6 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           The URL of the page searched for the pattern.
 
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
-
     - `agent: optional object { agent_name }  or null`
 
       The agent that produced this item.
@@ -14316,7 +14015,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       Whether the function tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -14491,7 +14190,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       The unique ID of the function tool call generated by the model.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -14541,7 +14240,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       The sending agent identity.
 
-    - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or object { encrypted_content, type }`
+    - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or EncryptedContent { encrypted_content, type }`
 
       Plaintext, image, or encrypted content sent between agents.
 
@@ -14669,7 +14368,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `"output_text"`
 
-      - `annotations: optional array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }`
+      - `annotations: optional array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }`
 
         Citations associated with the text content.
 
@@ -14811,7 +14510,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
   - `ToolSearchOutput object { tools, type, id, 4 more }`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The loaded tool definitions returned by the tool search output.
 
@@ -14873,7 +14572,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -14930,76 +14629,9 @@ Schema name: `BetaResponseInjectFailedEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -15115,7 +14747,9 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -15162,7 +14796,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -15236,7 +14870,7 @@ Schema name: `BetaResponseInjectFailedEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -15302,7 +14936,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -15438,7 +15072,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -15543,13 +15177,13 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -15747,7 +15381,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           Optional description of the custom tool, used to provide more context.
 
-        - `format: optional object { type }  or object { definition, syntax, type }`
+        - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
           The input format for the custom tool. Default is unconstrained text.
 
@@ -15783,7 +15417,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
               - `"grammar"`
 
-      - `Namespace object { description, name, tools, type }`
+      - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
         Groups function/custom tools under a shared namespace.
 
@@ -15795,13 +15429,15 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-          The function/custom tools available inside this namespace.
+          The function/custom tools loaded inside this namespace.
 
           - `Function object { name, type, allowed_callers, 6 more }`
 
             - `name: string`
+
+              The name of the loaded function tool.
 
             - `type: "function"`
 
@@ -15869,7 +15505,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -15967,7 +15603,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -16057,7 +15693,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       - `"developer"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       A list of additional tools made available at this item.
 
@@ -16119,7 +15755,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -16176,76 +15812,9 @@ Schema name: `BetaResponseInjectFailedEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -16361,7 +15930,9 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -16408,7 +15979,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -16482,7 +16053,7 @@ Schema name: `BetaResponseInjectFailedEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -16548,7 +16119,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -16652,7 +16223,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -16757,13 +16328,13 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -16843,7 +16414,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           Optional description of the custom tool, used to provide more context.
 
-        - `format: optional object { type }  or object { definition, syntax, type }`
+        - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
           The input format for the custom tool. Default is unconstrained text.
 
@@ -16891,7 +16462,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -16965,7 +16536,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -17063,7 +16634,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -17392,7 +16963,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       The ID of the container used to run the code.
 
-    - `outputs: array of object { logs, type }  or object { type, url }  or null`
+    - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
       The outputs generated by the code interpreter, such as logs or images.
       Can be null if no outputs are available.
@@ -17597,7 +17168,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -17651,7 +17222,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-      - `outcome: object { type }  or object { exit_code, type }`
+      - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
         The exit or timeout outcome associated with this shell call.
 
@@ -17705,7 +17276,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -17751,7 +17322,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       The unique ID of the apply patch tool call generated by the model.
 
-    - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+    - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -17831,7 +17402,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -17889,7 +17460,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -18175,7 +17746,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -18237,7 +17808,7 @@ Schema name: `BetaResponseInjectFailedEvent`
 
       Whether the custom tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -18440,6 +18011,18 @@ Schema name: `BetaResponseCreatedEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -18498,7 +18081,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -18521,6 +18104,10 @@ Schema name: `BetaResponseCreatedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -18549,7 +18136,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
+  - `instructions: string or array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -18562,7 +18149,7 @@ Schema name: `BetaResponseCreatedEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+    - `InputItemList = array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -18790,7 +18377,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -18808,7 +18395,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -19408,7 +18995,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -19417,7 +19004,27 @@ Schema name: `BetaResponseCreatedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -19486,26 +19093,6 @@ Schema name: `BetaResponseCreatedEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
         - `agent: optional object { agent_name }  or null`
 
           The agent that produced this item.
@@ -19553,7 +19140,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -19728,7 +19315,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -19778,7 +19365,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The sending agent identity.
 
-        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or object { encrypted_content, type }`
+        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or EncryptedContent { encrypted_content, type }`
 
           Plaintext, image, or encrypted content sent between agents.
 
@@ -19906,7 +19493,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `"output_text"`
 
-          - `annotations: optional array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }`
+          - `annotations: optional array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }`
 
             Citations associated with the text content.
 
@@ -20048,7 +19635,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `ToolSearchOutput object { tools, type, id, 4 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -20110,7 +19697,7 @@ Schema name: `BetaResponseCreatedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -20167,76 +19754,9 @@ Schema name: `BetaResponseCreatedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -20352,7 +19872,9 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -20399,7 +19921,7 @@ Schema name: `BetaResponseCreatedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -20473,7 +19995,7 @@ Schema name: `BetaResponseCreatedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -20539,7 +20061,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -20675,7 +20197,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -20780,13 +20302,13 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -20984,7 +20506,7 @@ Schema name: `BetaResponseCreatedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -21020,7 +20542,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -21032,13 +20554,15 @@ Schema name: `BetaResponseCreatedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -21106,7 +20630,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -21204,7 +20728,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -21294,7 +20818,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -21356,7 +20880,7 @@ Schema name: `BetaResponseCreatedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -21413,76 +20937,9 @@ Schema name: `BetaResponseCreatedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -21598,7 +21055,9 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -21645,7 +21104,7 @@ Schema name: `BetaResponseCreatedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -21719,7 +21178,7 @@ Schema name: `BetaResponseCreatedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -21785,7 +21244,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -21889,7 +21348,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -21994,13 +21453,13 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -22080,7 +21539,7 @@ Schema name: `BetaResponseCreatedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -22128,7 +21587,7 @@ Schema name: `BetaResponseCreatedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -22202,7 +21661,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -22300,7 +21759,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -22629,7 +22088,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -22834,7 +22293,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -22888,7 +22347,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -22942,7 +22401,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -22988,7 +22447,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -23068,7 +22527,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -23126,7 +22585,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -23412,7 +22871,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -23474,7 +22933,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -23619,14 +23078,14 @@ Schema name: `BetaResponseCreatedEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -23634,6 +23093,8 @@ Schema name: `BetaResponseCreatedEvent`
       to browse and compare available models.
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -23987,7 +23448,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -24082,7 +23543,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -24128,7 +23589,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         The sending agent identity.
 
-      - `content: array of BetaResponseInputText or BetaResponseOutputText or object { text, type }  or 7 more`
+      - `content: array of BetaResponseInputText or BetaResponseOutputText or Text { text, type }  or 7 more`
 
         Encrypted content sent between agents.
 
@@ -24328,7 +23789,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         Text output returned by the multi-agent action.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -24356,7 +23817,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -24365,7 +23826,27 @@ Schema name: `BetaResponseCreatedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -24433,26 +23914,6 @@ Schema name: `BetaResponseCreatedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -24529,7 +23990,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -24809,7 +24270,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -24871,7 +24332,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -24928,76 +24389,9 @@ Schema name: `BetaResponseCreatedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -25113,7 +24507,9 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -25160,7 +24556,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -25234,7 +24630,7 @@ Schema name: `BetaResponseCreatedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -25300,7 +24696,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -25404,7 +24800,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -25509,13 +24905,13 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -25595,7 +24991,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -25643,7 +25039,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -25717,7 +25113,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -25815,7 +25211,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -25901,7 +25297,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -25963,7 +25359,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -26020,76 +25416,9 @@ Schema name: `BetaResponseCreatedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -26205,7 +25534,9 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -26252,7 +25583,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -26326,7 +25657,7 @@ Schema name: `BetaResponseCreatedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -26392,7 +25723,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -26496,7 +25827,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -26601,13 +25932,13 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -26687,7 +26018,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -26735,7 +26066,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -26809,7 +26140,7 @@ Schema name: `BetaResponseCreatedEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -26907,7 +26238,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -27113,7 +26444,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -27352,7 +26683,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -27396,7 +26727,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -27460,7 +26791,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -27496,7 +26827,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -27572,7 +26903,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -27630,7 +26961,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -27875,7 +27206,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -27959,7 +27290,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -28166,7 +27497,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -28244,7 +27575,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -28301,76 +27632,9 @@ Schema name: `BetaResponseCreatedEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -28486,7 +27750,9 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -28533,7 +27799,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -28607,7 +27873,7 @@ Schema name: `BetaResponseCreatedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -28673,7 +27939,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -28777,7 +28043,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -28882,13 +28148,13 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -28968,7 +28234,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         Optional description of the custom tool, used to provide more context.
 
-      - `format: optional object { type }  or object { definition, syntax, type }`
+      - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
         The input format for the custom tool. Default is unconstrained text.
 
@@ -29016,7 +28282,7 @@ Schema name: `BetaResponseCreatedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -29090,7 +28356,7 @@ Schema name: `BetaResponseCreatedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -29188,7 +28454,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -29269,7 +28535,7 @@ Schema name: `BetaResponseCreatedEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -29325,7 +28591,7 @@ Schema name: `BetaResponseCreatedEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -29426,7 +28692,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -29623,7 +28889,7 @@ Schema name: `BetaResponseCreatedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -29784,7 +29050,7 @@ Schema name: `BetaResponseCreatedEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -29822,7 +29088,7 @@ Schema name: `BetaResponseCreatedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -29860,6 +29126,7 @@ Schema name: `BetaResponseCreatedEvent`
   "response": {
     "id": "resp_67ccfcdd16748190a91872c75d38539e09e4d4aac714747c",
     "object": "response",
+    "access_programs": null,
     "created_at": 1741487325,
     "status": "in_progress",
     "completed_at": null,
@@ -29912,6 +29179,18 @@ Schema name: `BetaResponseInProgressEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -29970,7 +29249,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -29993,6 +29272,10 @@ Schema name: `BetaResponseInProgressEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -30021,7 +29304,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
+  - `instructions: string or array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -30034,7 +29317,7 @@ Schema name: `BetaResponseInProgressEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+    - `InputItemList = array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -30262,7 +29545,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -30280,7 +29563,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -30880,7 +30163,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -30889,7 +30172,27 @@ Schema name: `BetaResponseInProgressEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -30958,26 +30261,6 @@ Schema name: `BetaResponseInProgressEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
         - `agent: optional object { agent_name }  or null`
 
           The agent that produced this item.
@@ -31025,7 +30308,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -31200,7 +30483,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -31250,7 +30533,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The sending agent identity.
 
-        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or object { encrypted_content, type }`
+        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or EncryptedContent { encrypted_content, type }`
 
           Plaintext, image, or encrypted content sent between agents.
 
@@ -31378,7 +30661,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `"output_text"`
 
-          - `annotations: optional array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }`
+          - `annotations: optional array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }`
 
             Citations associated with the text content.
 
@@ -31520,7 +30803,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `ToolSearchOutput object { tools, type, id, 4 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -31582,7 +30865,7 @@ Schema name: `BetaResponseInProgressEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -31639,76 +30922,9 @@ Schema name: `BetaResponseInProgressEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -31824,7 +31040,9 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -31871,7 +31089,7 @@ Schema name: `BetaResponseInProgressEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -31945,7 +31163,7 @@ Schema name: `BetaResponseInProgressEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -32011,7 +31229,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -32147,7 +31365,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -32252,13 +31470,13 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -32456,7 +31674,7 @@ Schema name: `BetaResponseInProgressEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -32492,7 +31710,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -32504,13 +31722,15 @@ Schema name: `BetaResponseInProgressEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -32578,7 +31798,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -32676,7 +31896,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -32766,7 +31986,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -32828,7 +32048,7 @@ Schema name: `BetaResponseInProgressEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -32885,76 +32105,9 @@ Schema name: `BetaResponseInProgressEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -33070,7 +32223,9 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -33117,7 +32272,7 @@ Schema name: `BetaResponseInProgressEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -33191,7 +32346,7 @@ Schema name: `BetaResponseInProgressEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -33257,7 +32412,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -33361,7 +32516,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -33466,13 +32621,13 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -33552,7 +32707,7 @@ Schema name: `BetaResponseInProgressEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -33600,7 +32755,7 @@ Schema name: `BetaResponseInProgressEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -33674,7 +32829,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -33772,7 +32927,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -34101,7 +33256,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -34306,7 +33461,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -34360,7 +33515,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -34414,7 +33569,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -34460,7 +33615,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -34540,7 +33695,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -34598,7 +33753,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -34884,7 +34039,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -34946,7 +34101,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -35091,14 +34246,14 @@ Schema name: `BetaResponseInProgressEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -35106,6 +34261,8 @@ Schema name: `BetaResponseInProgressEvent`
       to browse and compare available models.
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -35459,7 +34616,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -35554,7 +34711,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -35600,7 +34757,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         The sending agent identity.
 
-      - `content: array of BetaResponseInputText or BetaResponseOutputText or object { text, type }  or 7 more`
+      - `content: array of BetaResponseInputText or BetaResponseOutputText or Text { text, type }  or 7 more`
 
         Encrypted content sent between agents.
 
@@ -35800,7 +34957,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         Text output returned by the multi-agent action.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -35828,7 +34985,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -35837,7 +34994,27 @@ Schema name: `BetaResponseInProgressEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -35905,26 +35082,6 @@ Schema name: `BetaResponseInProgressEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -36001,7 +35158,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -36281,7 +35438,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -36343,7 +35500,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -36400,76 +35557,9 @@ Schema name: `BetaResponseInProgressEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -36585,7 +35675,9 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -36632,7 +35724,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -36706,7 +35798,7 @@ Schema name: `BetaResponseInProgressEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -36772,7 +35864,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -36876,7 +35968,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -36981,13 +36073,13 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -37067,7 +36159,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -37115,7 +36207,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -37189,7 +36281,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -37287,7 +36379,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -37373,7 +36465,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -37435,7 +36527,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -37492,76 +36584,9 @@ Schema name: `BetaResponseInProgressEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -37677,7 +36702,9 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -37724,7 +36751,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -37798,7 +36825,7 @@ Schema name: `BetaResponseInProgressEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -37864,7 +36891,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -37968,7 +36995,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -38073,13 +37100,13 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -38159,7 +37186,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -38207,7 +37234,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -38281,7 +37308,7 @@ Schema name: `BetaResponseInProgressEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -38379,7 +37406,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -38585,7 +37612,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -38824,7 +37851,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -38868,7 +37895,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -38932,7 +37959,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -38968,7 +37995,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -39044,7 +38071,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -39102,7 +38129,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -39347,7 +38374,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -39431,7 +38458,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -39638,7 +38665,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -39716,7 +38743,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -39773,76 +38800,9 @@ Schema name: `BetaResponseInProgressEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -39958,7 +38918,9 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -40005,7 +38967,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -40079,7 +39041,7 @@ Schema name: `BetaResponseInProgressEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -40145,7 +39107,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -40249,7 +39211,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -40354,13 +39316,13 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -40440,7 +39402,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         Optional description of the custom tool, used to provide more context.
 
-      - `format: optional object { type }  or object { definition, syntax, type }`
+      - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
         The input format for the custom tool. Default is unconstrained text.
 
@@ -40488,7 +39450,7 @@ Schema name: `BetaResponseInProgressEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -40562,7 +39524,7 @@ Schema name: `BetaResponseInProgressEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -40660,7 +39622,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -40741,7 +39703,7 @@ Schema name: `BetaResponseInProgressEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -40797,7 +39759,7 @@ Schema name: `BetaResponseInProgressEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -40898,7 +39860,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -41095,7 +40057,7 @@ Schema name: `BetaResponseInProgressEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -41256,7 +40218,7 @@ Schema name: `BetaResponseInProgressEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -41294,7 +40256,7 @@ Schema name: `BetaResponseInProgressEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -41332,6 +40294,7 @@ Schema name: `BetaResponseInProgressEvent`
   "response": {
     "id": "resp_67ccfcdd16748190a91872c75d38539e09e4d4aac714747c",
     "object": "response",
+    "access_programs": null,
     "created_at": 1741487325,
     "status": "in_progress",
     "completed_at": null,
@@ -41384,6 +40347,18 @@ Schema name: `BetaResponseCompletedEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -41442,7 +40417,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -41465,6 +40440,10 @@ Schema name: `BetaResponseCompletedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -41493,7 +40472,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
+  - `instructions: string or array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -41506,7 +40485,7 @@ Schema name: `BetaResponseCompletedEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+    - `InputItemList = array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -41734,7 +40713,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -41752,7 +40731,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -42352,7 +41331,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -42361,7 +41340,27 @@ Schema name: `BetaResponseCompletedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -42430,26 +41429,6 @@ Schema name: `BetaResponseCompletedEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
         - `agent: optional object { agent_name }  or null`
 
           The agent that produced this item.
@@ -42497,7 +41476,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -42672,7 +41651,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -42722,7 +41701,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The sending agent identity.
 
-        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or object { encrypted_content, type }`
+        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or EncryptedContent { encrypted_content, type }`
 
           Plaintext, image, or encrypted content sent between agents.
 
@@ -42850,7 +41829,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `"output_text"`
 
-          - `annotations: optional array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }`
+          - `annotations: optional array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }`
 
             Citations associated with the text content.
 
@@ -42992,7 +41971,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `ToolSearchOutput object { tools, type, id, 4 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -43054,7 +42033,7 @@ Schema name: `BetaResponseCompletedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -43111,76 +42090,9 @@ Schema name: `BetaResponseCompletedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -43296,7 +42208,9 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -43343,7 +42257,7 @@ Schema name: `BetaResponseCompletedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -43417,7 +42331,7 @@ Schema name: `BetaResponseCompletedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -43483,7 +42397,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -43619,7 +42533,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -43724,13 +42638,13 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -43928,7 +42842,7 @@ Schema name: `BetaResponseCompletedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -43964,7 +42878,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -43976,13 +42890,15 @@ Schema name: `BetaResponseCompletedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -44050,7 +42966,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -44148,7 +43064,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -44238,7 +43154,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -44300,7 +43216,7 @@ Schema name: `BetaResponseCompletedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -44357,76 +43273,9 @@ Schema name: `BetaResponseCompletedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -44542,7 +43391,9 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -44589,7 +43440,7 @@ Schema name: `BetaResponseCompletedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -44663,7 +43514,7 @@ Schema name: `BetaResponseCompletedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -44729,7 +43580,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -44833,7 +43684,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -44938,13 +43789,13 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -45024,7 +43875,7 @@ Schema name: `BetaResponseCompletedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -45072,7 +43923,7 @@ Schema name: `BetaResponseCompletedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -45146,7 +43997,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -45244,7 +44095,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -45573,7 +44424,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -45778,7 +44629,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -45832,7 +44683,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -45886,7 +44737,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -45932,7 +44783,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -46012,7 +44863,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -46070,7 +44921,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -46356,7 +45207,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -46418,7 +45269,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -46563,14 +45414,14 @@ Schema name: `BetaResponseCompletedEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -46578,6 +45429,8 @@ Schema name: `BetaResponseCompletedEvent`
       to browse and compare available models.
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -46931,7 +45784,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -47026,7 +45879,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -47072,7 +45925,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         The sending agent identity.
 
-      - `content: array of BetaResponseInputText or BetaResponseOutputText or object { text, type }  or 7 more`
+      - `content: array of BetaResponseInputText or BetaResponseOutputText or Text { text, type }  or 7 more`
 
         Encrypted content sent between agents.
 
@@ -47272,7 +46125,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         Text output returned by the multi-agent action.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -47300,7 +46153,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -47309,7 +46162,27 @@ Schema name: `BetaResponseCompletedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -47377,26 +46250,6 @@ Schema name: `BetaResponseCompletedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -47473,7 +46326,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -47753,7 +46606,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -47815,7 +46668,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -47872,76 +46725,9 @@ Schema name: `BetaResponseCompletedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -48057,7 +46843,9 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -48104,7 +46892,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -48178,7 +46966,7 @@ Schema name: `BetaResponseCompletedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -48244,7 +47032,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -48348,7 +47136,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -48453,13 +47241,13 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -48539,7 +47327,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -48587,7 +47375,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -48661,7 +47449,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -48759,7 +47547,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -48845,7 +47633,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -48907,7 +47695,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -48964,76 +47752,9 @@ Schema name: `BetaResponseCompletedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -49149,7 +47870,9 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -49196,7 +47919,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -49270,7 +47993,7 @@ Schema name: `BetaResponseCompletedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -49336,7 +48059,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -49440,7 +48163,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -49545,13 +48268,13 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -49631,7 +48354,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -49679,7 +48402,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -49753,7 +48476,7 @@ Schema name: `BetaResponseCompletedEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -49851,7 +48574,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -50057,7 +48780,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -50296,7 +49019,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -50340,7 +49063,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -50404,7 +49127,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -50440,7 +49163,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -50516,7 +49239,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -50574,7 +49297,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -50819,7 +49542,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -50903,7 +49626,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -51110,7 +49833,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -51188,7 +49911,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -51245,76 +49968,9 @@ Schema name: `BetaResponseCompletedEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -51430,7 +50086,9 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -51477,7 +50135,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -51551,7 +50209,7 @@ Schema name: `BetaResponseCompletedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -51617,7 +50275,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -51721,7 +50379,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -51826,13 +50484,13 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -51912,7 +50570,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         Optional description of the custom tool, used to provide more context.
 
-      - `format: optional object { type }  or object { definition, syntax, type }`
+      - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
         The input format for the custom tool. Default is unconstrained text.
 
@@ -51960,7 +50618,7 @@ Schema name: `BetaResponseCompletedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -52034,7 +50692,7 @@ Schema name: `BetaResponseCompletedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -52132,7 +50790,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -52213,7 +50871,7 @@ Schema name: `BetaResponseCompletedEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -52269,7 +50927,7 @@ Schema name: `BetaResponseCompletedEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -52370,7 +51028,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -52567,7 +51225,7 @@ Schema name: `BetaResponseCompletedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -52728,7 +51386,7 @@ Schema name: `BetaResponseCompletedEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -52766,7 +51424,7 @@ Schema name: `BetaResponseCompletedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -52804,6 +51462,7 @@ Schema name: `BetaResponseCompletedEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "completed",
     "completed_at": 1740855870,
@@ -52822,9 +51481,11 @@ Schema name: `BetaResponseCompletedEvent`
           {
             "type": "output_text",
             "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-            "annotations": []
+            "annotations": [],
+            "logprobs": []
           }
-        ]
+        ],
+        "status": "completed"
       }
     ],
     "previous_response_id": null,
@@ -52846,10 +51507,15 @@ Schema name: `BetaResponseCompletedEvent`
       "output_tokens_details": {
         "reasoning_tokens": 0
       },
-      "total_tokens": 0
+      "total_tokens": 0,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      }
     },
     "user": null,
-    "metadata": {}
+    "metadata": {},
+    "parallel_tool_calls": true
   },
   "sequence_number": 1
 }
@@ -52872,6 +51538,18 @@ Schema name: `BetaResponseFailedEvent`
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -52931,7 +51609,7 @@ Schema name: `BetaResponseFailedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -52954,6 +51632,10 @@ Schema name: `BetaResponseFailedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -52982,7 +51664,7 @@ Schema name: `BetaResponseFailedEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
+  - `instructions: string or array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -52995,7 +51677,7 @@ Schema name: `BetaResponseFailedEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+    - `InputItemList = array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -53223,7 +51905,7 @@ Schema name: `BetaResponseFailedEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -53241,7 +51923,7 @@ Schema name: `BetaResponseFailedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -53841,7 +52523,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -53850,7 +52532,27 @@ Schema name: `BetaResponseFailedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -53919,26 +52621,6 @@ Schema name: `BetaResponseFailedEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
         - `agent: optional object { agent_name }  or null`
 
           The agent that produced this item.
@@ -53986,7 +52668,7 @@ Schema name: `BetaResponseFailedEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -54161,7 +52843,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -54211,7 +52893,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The sending agent identity.
 
-        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or object { encrypted_content, type }`
+        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or EncryptedContent { encrypted_content, type }`
 
           Plaintext, image, or encrypted content sent between agents.
 
@@ -54339,7 +53021,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `"output_text"`
 
-          - `annotations: optional array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }`
+          - `annotations: optional array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }`
 
             Citations associated with the text content.
 
@@ -54481,7 +53163,7 @@ Schema name: `BetaResponseFailedEvent`
 
       - `ToolSearchOutput object { tools, type, id, 4 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -54543,7 +53225,7 @@ Schema name: `BetaResponseFailedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -54600,76 +53282,9 @@ Schema name: `BetaResponseFailedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -54785,7 +53400,9 @@ Schema name: `BetaResponseFailedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -54832,7 +53449,7 @@ Schema name: `BetaResponseFailedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -54906,7 +53523,7 @@ Schema name: `BetaResponseFailedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -54972,7 +53589,7 @@ Schema name: `BetaResponseFailedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -55108,7 +53725,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -55213,13 +53830,13 @@ Schema name: `BetaResponseFailedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -55417,7 +54034,7 @@ Schema name: `BetaResponseFailedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -55453,7 +54070,7 @@ Schema name: `BetaResponseFailedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -55465,13 +54082,15 @@ Schema name: `BetaResponseFailedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -55539,7 +54158,7 @@ Schema name: `BetaResponseFailedEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -55637,7 +54256,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -55727,7 +54346,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -55789,7 +54408,7 @@ Schema name: `BetaResponseFailedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -55846,76 +54465,9 @@ Schema name: `BetaResponseFailedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -56031,7 +54583,9 @@ Schema name: `BetaResponseFailedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -56078,7 +54632,7 @@ Schema name: `BetaResponseFailedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -56152,7 +54706,7 @@ Schema name: `BetaResponseFailedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -56218,7 +54772,7 @@ Schema name: `BetaResponseFailedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -56322,7 +54876,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -56427,13 +54981,13 @@ Schema name: `BetaResponseFailedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -56513,7 +55067,7 @@ Schema name: `BetaResponseFailedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -56561,7 +55115,7 @@ Schema name: `BetaResponseFailedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -56635,7 +55189,7 @@ Schema name: `BetaResponseFailedEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -56733,7 +55287,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -57062,7 +55616,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -57267,7 +55821,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -57321,7 +55875,7 @@ Schema name: `BetaResponseFailedEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -57375,7 +55929,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -57421,7 +55975,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -57501,7 +56055,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -57559,7 +56113,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -57845,7 +56399,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -57907,7 +56461,7 @@ Schema name: `BetaResponseFailedEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -58052,14 +56606,14 @@ Schema name: `BetaResponseFailedEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -58067,6 +56621,8 @@ Schema name: `BetaResponseFailedEvent`
       to browse and compare available models.
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -58420,7 +56976,7 @@ Schema name: `BetaResponseFailedEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -58515,7 +57071,7 @@ Schema name: `BetaResponseFailedEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -58561,7 +57117,7 @@ Schema name: `BetaResponseFailedEvent`
 
         The sending agent identity.
 
-      - `content: array of BetaResponseInputText or BetaResponseOutputText or object { text, type }  or 7 more`
+      - `content: array of BetaResponseInputText or BetaResponseOutputText or Text { text, type }  or 7 more`
 
         Encrypted content sent between agents.
 
@@ -58761,7 +57317,7 @@ Schema name: `BetaResponseFailedEvent`
 
         Text output returned by the multi-agent action.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -58789,7 +57345,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -58798,7 +57354,27 @@ Schema name: `BetaResponseFailedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -58866,26 +57442,6 @@ Schema name: `BetaResponseFailedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -58962,7 +57518,7 @@ Schema name: `BetaResponseFailedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -59242,7 +57798,7 @@ Schema name: `BetaResponseFailedEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -59304,7 +57860,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -59361,76 +57917,9 @@ Schema name: `BetaResponseFailedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -59546,7 +58035,9 @@ Schema name: `BetaResponseFailedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -59593,7 +58084,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -59667,7 +58158,7 @@ Schema name: `BetaResponseFailedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -59733,7 +58224,7 @@ Schema name: `BetaResponseFailedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -59837,7 +58328,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -59942,13 +58433,13 @@ Schema name: `BetaResponseFailedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -60028,7 +58519,7 @@ Schema name: `BetaResponseFailedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -60076,7 +58567,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -60150,7 +58641,7 @@ Schema name: `BetaResponseFailedEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -60248,7 +58739,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -60334,7 +58825,7 @@ Schema name: `BetaResponseFailedEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -60396,7 +58887,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -60453,76 +58944,9 @@ Schema name: `BetaResponseFailedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -60638,7 +59062,9 @@ Schema name: `BetaResponseFailedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -60685,7 +59111,7 @@ Schema name: `BetaResponseFailedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -60759,7 +59185,7 @@ Schema name: `BetaResponseFailedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -60825,7 +59251,7 @@ Schema name: `BetaResponseFailedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -60929,7 +59355,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -61034,13 +59460,13 @@ Schema name: `BetaResponseFailedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -61120,7 +59546,7 @@ Schema name: `BetaResponseFailedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -61168,7 +59594,7 @@ Schema name: `BetaResponseFailedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -61242,7 +59668,7 @@ Schema name: `BetaResponseFailedEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -61340,7 +59766,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -61546,7 +59972,7 @@ Schema name: `BetaResponseFailedEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -61785,7 +60211,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -61829,7 +60255,7 @@ Schema name: `BetaResponseFailedEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -61893,7 +60319,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -61929,7 +60355,7 @@ Schema name: `BetaResponseFailedEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -62005,7 +60431,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -62063,7 +60489,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -62308,7 +60734,7 @@ Schema name: `BetaResponseFailedEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -62392,7 +60818,7 @@ Schema name: `BetaResponseFailedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -62599,7 +61025,7 @@ Schema name: `BetaResponseFailedEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -62677,7 +61103,7 @@ Schema name: `BetaResponseFailedEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -62734,76 +61160,9 @@ Schema name: `BetaResponseFailedEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -62919,7 +61278,9 @@ Schema name: `BetaResponseFailedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -62966,7 +61327,7 @@ Schema name: `BetaResponseFailedEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -63040,7 +61401,7 @@ Schema name: `BetaResponseFailedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -63106,7 +61467,7 @@ Schema name: `BetaResponseFailedEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -63210,7 +61571,7 @@ Schema name: `BetaResponseFailedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -63315,13 +61676,13 @@ Schema name: `BetaResponseFailedEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -63401,7 +61762,7 @@ Schema name: `BetaResponseFailedEvent`
 
         Optional description of the custom tool, used to provide more context.
 
-      - `format: optional object { type }  or object { definition, syntax, type }`
+      - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
         The input format for the custom tool. Default is unconstrained text.
 
@@ -63449,7 +61810,7 @@ Schema name: `BetaResponseFailedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -63523,7 +61884,7 @@ Schema name: `BetaResponseFailedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -63621,7 +61982,7 @@ Schema name: `BetaResponseFailedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -63702,7 +62063,7 @@ Schema name: `BetaResponseFailedEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -63758,7 +62119,7 @@ Schema name: `BetaResponseFailedEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -63859,7 +62220,7 @@ Schema name: `BetaResponseFailedEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -64056,7 +62417,7 @@ Schema name: `BetaResponseFailedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -64217,7 +62578,7 @@ Schema name: `BetaResponseFailedEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -64255,7 +62616,7 @@ Schema name: `BetaResponseFailedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -64293,6 +62654,7 @@ Schema name: `BetaResponseFailedEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "failed",
     "completed_at": null,
@@ -64320,8 +62682,10 @@ Schema name: `BetaResponseFailedEvent`
     "truncation": "disabled",
     "usage": null,
     "user": null,
-    "metadata": {}
-  }
+    "metadata": {},
+    "parallel_tool_calls": true
+  },
+  "sequence_number": 1
 }
 ```
 
@@ -64346,6 +62710,18 @@ Schema name: `BetaResponseIncompleteEvent`
   - `id: string`
 
     Unique identifier for this Response.
+
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
 
   - `created_at: number`
 
@@ -64405,7 +62781,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -64428,6 +62804,10 @@ Schema name: `BetaResponseIncompleteEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -64456,7 +62836,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
+  - `instructions: string or array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -64469,7 +62849,7 @@ Schema name: `BetaResponseIncompleteEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+    - `InputItemList = array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -64697,7 +63077,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -64715,7 +63095,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -65315,7 +63695,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -65324,7 +63704,27 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -65393,26 +63793,6 @@ Schema name: `BetaResponseIncompleteEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
         - `agent: optional object { agent_name }  or null`
 
           The agent that produced this item.
@@ -65460,7 +63840,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -65635,7 +64015,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -65685,7 +64065,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The sending agent identity.
 
-        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or object { encrypted_content, type }`
+        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or EncryptedContent { encrypted_content, type }`
 
           Plaintext, image, or encrypted content sent between agents.
 
@@ -65813,7 +64193,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `"output_text"`
 
-          - `annotations: optional array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }`
+          - `annotations: optional array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }`
 
             Citations associated with the text content.
 
@@ -65955,7 +64335,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `ToolSearchOutput object { tools, type, id, 4 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -66017,7 +64397,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -66074,76 +64454,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -66259,7 +64572,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -66306,7 +64621,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -66380,7 +64695,7 @@ Schema name: `BetaResponseIncompleteEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -66446,7 +64761,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -66582,7 +64897,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -66687,13 +65002,13 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -66891,7 +65206,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -66927,7 +65242,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -66939,13 +65254,15 @@ Schema name: `BetaResponseIncompleteEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -67013,7 +65330,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -67111,7 +65428,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -67201,7 +65518,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -67263,7 +65580,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -67320,76 +65637,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -67505,7 +65755,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -67552,7 +65804,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -67626,7 +65878,7 @@ Schema name: `BetaResponseIncompleteEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -67692,7 +65944,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -67796,7 +66048,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -67901,13 +66153,13 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -67987,7 +66239,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -68035,7 +66287,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -68109,7 +66361,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -68207,7 +66459,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -68536,7 +66788,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -68741,7 +66993,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -68795,7 +67047,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -68849,7 +67101,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -68895,7 +67147,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -68975,7 +67227,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -69033,7 +67285,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -69319,7 +67571,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -69381,7 +67633,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -69526,14 +67778,14 @@ Schema name: `BetaResponseIncompleteEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -69541,6 +67793,8 @@ Schema name: `BetaResponseIncompleteEvent`
       to browse and compare available models.
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -69894,7 +68148,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -69989,7 +68243,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -70035,7 +68289,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The sending agent identity.
 
-      - `content: array of BetaResponseInputText or BetaResponseOutputText or object { text, type }  or 7 more`
+      - `content: array of BetaResponseInputText or BetaResponseOutputText or Text { text, type }  or 7 more`
 
         Encrypted content sent between agents.
 
@@ -70235,7 +68489,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         Text output returned by the multi-agent action.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -70263,7 +68517,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -70272,7 +68526,27 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -70340,26 +68614,6 @@ Schema name: `BetaResponseIncompleteEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -70436,7 +68690,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -70716,7 +68970,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -70778,7 +69032,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -70835,76 +69089,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -71020,7 +69207,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -71067,7 +69256,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -71141,7 +69330,7 @@ Schema name: `BetaResponseIncompleteEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -71207,7 +69396,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -71311,7 +69500,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -71416,13 +69605,13 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -71502,7 +69691,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -71550,7 +69739,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -71624,7 +69813,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -71722,7 +69911,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -71808,7 +69997,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -71870,7 +70059,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -71927,76 +70116,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -72112,7 +70234,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -72159,7 +70283,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -72233,7 +70357,7 @@ Schema name: `BetaResponseIncompleteEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -72299,7 +70423,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -72403,7 +70527,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -72508,13 +70632,13 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -72594,7 +70718,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -72642,7 +70766,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -72716,7 +70840,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -72814,7 +70938,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -73020,7 +71144,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -73259,7 +71383,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -73303,7 +71427,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -73367,7 +71491,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -73403,7 +71527,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -73479,7 +71603,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -73537,7 +71661,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -73782,7 +71906,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -73866,7 +71990,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -74073,7 +72197,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -74151,7 +72275,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -74208,76 +72332,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -74393,7 +72450,9 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -74440,7 +72499,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -74514,7 +72573,7 @@ Schema name: `BetaResponseIncompleteEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -74580,7 +72639,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -74684,7 +72743,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -74789,13 +72848,13 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -74875,7 +72934,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         Optional description of the custom tool, used to provide more context.
 
-      - `format: optional object { type }  or object { definition, syntax, type }`
+      - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
         The input format for the custom tool. Default is unconstrained text.
 
@@ -74923,7 +72982,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -74997,7 +73056,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -75095,7 +73154,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -75176,7 +73235,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -75232,7 +73291,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -75333,7 +73392,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -75530,7 +73589,7 @@ Schema name: `BetaResponseIncompleteEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -75691,7 +73750,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -75729,7 +73788,7 @@ Schema name: `BetaResponseIncompleteEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -75767,12 +73826,13 @@ Schema name: `BetaResponseIncompleteEvent`
   "response": {
     "id": "resp_123",
     "object": "response",
+    "access_programs": null,
     "created_at": 1740855869,
     "status": "incomplete",
     "completed_at": null,
     "error": null,
     "incomplete_details": {
-      "reason": "max_tokens"
+      "reason": "max_output_tokens"
     },
     "instructions": null,
     "max_output_tokens": null,
@@ -75793,7 +73853,8 @@ Schema name: `BetaResponseIncompleteEvent`
     "truncation": "disabled",
     "usage": null,
     "user": null,
-    "metadata": {}
+    "metadata": {},
+    "parallel_tool_calls": true
   },
   "sequence_number": 1
 }
@@ -75832,7 +73893,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         A text output from the model.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -75850,7 +73911,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -76128,7 +74189,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       Whether the function tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -76321,7 +74382,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       The unique ID of the function tool call generated by the model.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -76367,7 +74428,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       The sending agent identity.
 
-    - `content: array of BetaResponseInputText or BetaResponseOutputText or object { text, type }  or 7 more`
+    - `content: array of BetaResponseInputText or BetaResponseOutputText or Text { text, type }  or 7 more`
 
       Encrypted content sent between agents.
 
@@ -76567,7 +74628,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       Text output returned by the multi-agent action.
 
-      - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+      - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
         The annotations of the text output.
 
@@ -76595,7 +74656,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         The canonical name of the agent that produced this item.
 
-  - `WebSearchCall object { id, action, status, 2 more }`
+  - `WebSearchCall object { id, status, type, 2 more }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -76604,7 +74665,27 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -76672,26 +74753,6 @@ Schema name: `BetaResponseOutputItemAddedEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
     - `agent: optional object { agent_name }  or null`
 
@@ -76995,7 +75056,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -77290,7 +75351,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       - `"incomplete"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The loaded tool definitions returned by tool search.
 
@@ -77352,7 +75413,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -77409,76 +75470,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -77594,7 +75588,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -77641,7 +75637,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -77715,7 +75711,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -77781,7 +75777,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -77917,7 +75913,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -78022,13 +76018,13 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -78226,7 +76222,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           Optional description of the custom tool, used to provide more context.
 
-        - `format: optional object { type }  or object { definition, syntax, type }`
+        - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
           The input format for the custom tool. Default is unconstrained text.
 
@@ -78274,7 +76270,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -78348,7 +76344,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -78446,7 +76442,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -78532,7 +76528,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       - `"tool"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The additional tool definitions made available at this item.
 
@@ -78594,7 +76590,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -78651,76 +76647,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -78836,7 +76765,9 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -78883,7 +76814,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -78957,7 +76888,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -79023,7 +76954,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -79127,7 +77058,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -79232,13 +77163,13 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -79318,7 +77249,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           Optional description of the custom tool, used to provide more context.
 
-        - `format: optional object { type }  or object { definition, syntax, type }`
+        - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
           The input format for the custom tool. Default is unconstrained text.
 
@@ -79366,7 +77297,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -79440,7 +77371,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -79538,7 +77469,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -79744,7 +77675,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       The ID of the container used to run the code.
 
-    - `outputs: array of object { logs, type }  or object { type, url }  or null`
+    - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
       The outputs generated by the code interpreter, such as logs or images.
       Can be null if no outputs are available.
@@ -79983,7 +77914,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -80027,7 +77958,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       An array of shell call output contents
 
-      - `outcome: object { type }  or object { exit_code, type }`
+      - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
         Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -80091,7 +78022,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -80127,7 +78058,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       The unique ID of the apply patch tool call generated by the model.
 
-    - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+    - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -80203,7 +78134,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -80261,7 +78192,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -80534,7 +78465,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
       Whether the custom tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -80618,7 +78549,7 @@ Schema name: `BetaResponseOutputItemAddedEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -80721,7 +78652,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         A text output from the model.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -80739,7 +78670,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
             - `index: number`
 
-              The index of the file in the list of files.
+              The index in the output text at which to insert the file citation.
 
             - `type: "file_citation"`
 
@@ -81017,7 +78948,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       Whether the function tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -81210,7 +79141,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       The unique ID of the function tool call generated by the model.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -81256,7 +79187,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       The sending agent identity.
 
-    - `content: array of BetaResponseInputText or BetaResponseOutputText or object { text, type }  or 7 more`
+    - `content: array of BetaResponseInputText or BetaResponseOutputText or Text { text, type }  or 7 more`
 
       Encrypted content sent between agents.
 
@@ -81456,7 +79387,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       Text output returned by the multi-agent action.
 
-      - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+      - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
         The annotations of the text output.
 
@@ -81484,7 +79415,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         The canonical name of the agent that produced this item.
 
-  - `WebSearchCall object { id, action, status, 2 more }`
+  - `WebSearchCall object { id, status, type, 2 more }`
 
     The results of a web search tool call. See the
     [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -81493,7 +79424,27 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       The unique ID of the web search tool call.
 
-    - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+    - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+      The status of the web search tool call.
+
+      - `"in_progress"`
+
+      - `"searching"`
+
+      - `"completed"`
+
+      - `"failed"`
+
+      - `"incomplete"`
+
+    - `type: "web_search_call"`
+
+      The type of the web search tool call. Always `web_search_call`.
+
+      - `"web_search_call"`
+
+    - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
       An object describing the specific action taken in this web search call.
       Includes details on how the model used the web (search, open_page, find_in_page).
@@ -81561,26 +79512,6 @@ Schema name: `BetaResponseOutputItemDoneEvent`
         - `url: string`
 
           The URL of the page searched for the pattern.
-
-    - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-      The status of the web search tool call.
-
-      - `"in_progress"`
-
-      - `"searching"`
-
-      - `"completed"`
-
-      - `"failed"`
-
-      - `"incomplete"`
-
-    - `type: "web_search_call"`
-
-      The type of the web search tool call. Always `web_search_call`.
-
-      - `"web_search_call"`
 
     - `agent: optional object { agent_name }  or null`
 
@@ -81884,7 +79815,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
     - `id: string`
 
-      The unique ID of the computer call tool output.
+      The ID of the computer tool call output.
 
     - `call_id: string`
 
@@ -82179,7 +80110,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       - `"incomplete"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The loaded tool definitions returned by tool search.
 
@@ -82241,7 +80172,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -82298,76 +80229,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -82483,7 +80347,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -82530,7 +80396,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -82604,7 +80470,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -82670,7 +80536,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -82806,7 +80672,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -82911,13 +80777,13 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -83115,7 +80981,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           Optional description of the custom tool, used to provide more context.
 
-        - `format: optional object { type }  or object { definition, syntax, type }`
+        - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
           The input format for the custom tool. Default is unconstrained text.
 
@@ -83163,7 +81029,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -83237,7 +81103,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -83335,7 +81201,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -83421,7 +81287,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       - `"tool"`
 
-    - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+    - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
       The additional tool definitions made available at this item.
 
@@ -83483,7 +81349,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           The IDs of the vector stores to search.
 
-        - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+        - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
           A filter to apply.
 
@@ -83540,76 +81406,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
                 - `number`
 
-          - `CompoundFilter object { filters, type }`
+          - `BetaCompoundFilter = unknown`
 
             Combine multiple filters using `and` or `or`.
-
-            - `filters: array of object { key, type, value }  or unknown`
-
-              Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-              - `ComparisonFilter object { key, type, value }`
-
-                A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                - `key: string`
-
-                  The key to compare against the value.
-
-                - `type: "eq" or "ne" or "gt" or 5 more`
-
-                  Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                  - `eq`: equals
-                  - `ne`: not equal
-                  - `gt`: greater than
-                  - `gte`: greater than or equal
-                  - `lt`: less than
-                  - `lte`: less than or equal
-                  - `in`: in
-                  - `nin`: not in
-
-                  - `"eq"`
-
-                  - `"ne"`
-
-                  - `"gt"`
-
-                  - `"gte"`
-
-                  - `"lt"`
-
-                  - `"lte"`
-
-                  - `"in"`
-
-                  - `"nin"`
-
-                - `value: string or number or boolean or array of string or number`
-
-                  The value to compare against the attribute key; supports string, number, or boolean types.
-
-                  - `string`
-
-                  - `number`
-
-                  - `boolean`
-
-                  - `array of string or number`
-
-                    - `string`
-
-                    - `number`
-
-              - `unknown`
-
-            - `type: "and" or "or"`
-
-              Type of operation: `and` or `or`.
-
-              - `"and"`
-
-              - `"or"`
 
         - `max_num_results: optional number`
 
@@ -83725,7 +81524,9 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `user_location: optional object { city, country, region, 2 more }  or null`
 
-          The approximate location of the user.
+          The approximate location of the user. If omitted or null, defaults to the
+          United States. To avoid this fallback, pass `{"type": "approximate"}` without
+          location fields. To localize results, provide the relevant location fields.
 
           - `city: optional string or null`
 
@@ -83772,7 +81573,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           - `"programmatic"`
 
-        - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+        - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
           List of allowed tool names or a filter object.
 
@@ -83846,7 +81647,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
           Optional HTTP headers to send to the MCP server. Use for authentication
           or other purposes.
 
-        - `require_approval: optional object { always, never }  or "always" or "never" or null`
+        - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
           Specify which of the MCP server's tools require approval.
 
@@ -83912,7 +81713,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         A tool that runs Python code to help generate a response to a prompt.
 
-        - `container: string or object { type, file_ids, memory_limit, network_policy }`
+        - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
           The code interpreter container. Can be a container ID or an object that
           specifies uploaded file IDs to make available to your code, along with an
@@ -84016,7 +81817,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `input_fidelity: optional "high" or "low" or null`
 
-          Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+          Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
           - `"high"`
 
@@ -84121,13 +81922,13 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `string`
 
           - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `"1024x1024"`
 
@@ -84207,7 +82008,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           Optional description of the custom tool, used to provide more context.
 
-        - `format: optional object { type }  or object { definition, syntax, type }`
+        - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
           The input format for the custom tool. Default is unconstrained text.
 
@@ -84255,7 +82056,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
           The namespace name used in tool calls (for example, `crm`).
 
-        - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+        - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
           The function/custom tools available inside this namespace.
 
@@ -84329,7 +82130,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -84427,7 +82228,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         - `user_location: optional object { type, city, country, 2 more }  or null`
 
-          The user's location.
+          The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
           - `type: "approximate"`
 
@@ -84633,7 +82434,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       The ID of the container used to run the code.
 
-    - `outputs: array of object { logs, type }  or object { type, url }  or null`
+    - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
       The outputs generated by the code interpreter, such as logs or images.
       Can be null if no outputs are available.
@@ -84872,7 +82673,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -84916,7 +82717,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       An array of shell call output contents
 
-      - `outcome: object { type }  or object { exit_code, type }`
+      - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
         Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -84980,7 +82781,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -85016,7 +82817,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       The unique ID of the apply patch tool call generated by the model.
 
-    - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+    - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
       One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -85092,7 +82893,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -85150,7 +82951,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -85423,7 +83224,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
       Whether the custom tool call runs asynchronously.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -85507,7 +83308,7 @@ Schema name: `BetaResponseOutputItemDoneEvent`
 
         The canonical name of the agent that produced this item.
 
-    - `caller: optional object { type }  or object { caller_id, type }  or null`
+    - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
       The execution context that produced this tool call.
 
@@ -85578,7 +83379,8 @@ Schema name: `BetaResponseOutputItemDoneEvent`
       {
         "type": "output_text",
         "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-        "annotations": []
+        "annotations": [],
+        "logprobs": []
       }
     ]
   },
@@ -85608,7 +83410,7 @@ Schema name: `BetaResponseContentPartAddedEvent`
 
   The index of the output item that the content part was added to.
 
-- `part: BetaResponseOutputText or BetaResponseOutputRefusal or object { text, type }`
+- `part: BetaResponseOutputText or BetaResponseOutputRefusal or ReasoningText { text, type }`
 
   The content part that was added.
 
@@ -85616,7 +83418,7 @@ Schema name: `BetaResponseContentPartAddedEvent`
 
     A text output from the model.
 
-    - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+    - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
       The annotations of the text output.
 
@@ -85634,7 +83436,7 @@ Schema name: `BetaResponseContentPartAddedEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -85805,7 +83607,8 @@ Schema name: `BetaResponseContentPartAddedEvent`
   "part": {
     "type": "output_text",
     "text": "",
-    "annotations": []
+    "annotations": [],
+    "logprobs": []
   },
   "sequence_number": 1
 }
@@ -85833,7 +83636,7 @@ Schema name: `BetaResponseContentPartDoneEvent`
 
   The index of the output item that the content part was added to.
 
-- `part: BetaResponseOutputText or BetaResponseOutputRefusal or object { text, type }`
+- `part: BetaResponseOutputText or BetaResponseOutputRefusal or ReasoningText { text, type }`
 
   The content part that is done.
 
@@ -85841,7 +83644,7 @@ Schema name: `BetaResponseContentPartDoneEvent`
 
     A text output from the model.
 
-    - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+    - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
       The annotations of the text output.
 
@@ -85859,7 +83662,7 @@ Schema name: `BetaResponseContentPartDoneEvent`
 
         - `index: number`
 
-          The index of the file in the list of files.
+          The index in the output text at which to insert the file citation.
 
         - `type: "file_citation"`
 
@@ -86031,7 +83834,8 @@ Schema name: `BetaResponseContentPartDoneEvent`
   "part": {
     "type": "output_text",
     "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-    "annotations": []
+    "annotations": [],
+    "logprobs": []
   }
 }
 ```
@@ -86119,7 +83923,8 @@ Schema name: `BetaResponseTextDeltaEvent`
   "output_index": 0,
   "content_index": 0,
   "delta": "In",
-  "sequence_number": 1
+  "sequence_number": 1,
+  "logprobs": []
 }
 ```
 
@@ -86206,7 +84011,8 @@ Schema name: `BetaResponseTextDoneEvent`
   "output_index": 0,
   "content_index": 0,
   "text": "In a shimmering forest under a sky full of stars, a lonely unicorn named Lila discovered a hidden pond that glowed with moonlight. Every night, she would leave sparkling, magical flowers by the water's edge, hoping to share her beauty with others. One enchanting evening, she woke to find a group of friendly animals gathered around, eager to be friends and share in her magic.",
-  "sequence_number": 1
+  "sequence_number": 1,
+  "logprobs": []
 }
 ```
 
@@ -86389,7 +84195,7 @@ Schema name: `BetaResponseFunctionCallArgumentsDeltaEvent`
   "type": "response.function_call_arguments.delta",
   "item_id": "item-abc",
   "output_index": 0,
-  "delta": "{ \"arg\":"
+  "delta": "{ \"arg\":",
   "sequence_number": 1
 }
 ```
@@ -88136,7 +85942,7 @@ Emitted when an annotation is added to output text content.
 
 Schema name: `BetaResponseOutputTextAnnotationAddedEvent`
 
-- `annotation: object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }  or null`
+- `annotation: FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }  or null`
 
   The annotation object being added. (See annotation schema for details.)
 
@@ -88154,7 +85960,7 @@ Schema name: `BetaResponseOutputTextAnnotationAddedEvent`
 
     - `index: number`
 
-      The index of the file in the list of files.
+      The index in the output text at which to insert the file citation.
 
     - `type: "file_citation"`
 
@@ -88313,6 +86119,18 @@ Schema name: `BetaResponseQueuedEvent`
 
     Unique identifier for this Response.
 
+  - `access_programs: object { cyber }  or null`
+
+    - `cyber: "standard" or "daybreak_blue" or "daybreak_red"`
+
+      The effective Cyber access program used for this response.
+
+      - `"standard"`
+
+      - `"daybreak_blue"`
+
+      - `"daybreak_red"`
+
   - `created_at: number`
 
     Unix timestamp (in seconds) of when this Response was created.
@@ -88371,7 +86189,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       A human-readable description of the error.
 
-    - `misalignment: optional object { detailed_explanation, error_type, steer }`
+    - `misalignment: optional object { detailed_explanation, error_type, review_target, steer }`
 
       - `detailed_explanation: optional string`
 
@@ -88394,6 +86212,10 @@ Schema name: `BetaResponseQueuedEvent`
           - `"potentially_unintended_destructive_activity"`
 
           - `"other"`
+
+      - `review_target: optional string or null`
+
+        An opaque target for explicitly continuing this review, or null when unavailable.
 
       - `steer: optional object { message }`
 
@@ -88422,7 +86244,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `"steered"`
 
-  - `instructions: string or array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
+  - `instructions: string or array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more or null`
 
     A system (or developer) message inserted into the model's context.
 
@@ -88435,7 +86257,7 @@ Schema name: `BetaResponseQueuedEvent`
       A text input to the model, equivalent to a text input with the
       `developer` role.
 
-    - `InputItemList = array of BetaEasyInputMessage or object { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
+    - `InputItemList = array of BetaEasyInputMessage or Message { content, role, agent, 2 more }  or BetaResponseOutputMessage or 33 more`
 
       A list of one or many input items to the model, containing
       different content types.
@@ -88663,7 +86485,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             A text output from the model.
 
-            - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+            - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
               The annotations of the text output.
 
@@ -88681,7 +86503,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                 - `index: number`
 
-                  The index of the file in the list of files.
+                  The index in the output text at which to insert the file citation.
 
                 - `type: "file_citation"`
 
@@ -89281,7 +87103,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `"incomplete"`
 
-      - `WebSearchCall object { id, action, status, 2 more }`
+      - `WebSearchCall object { id, status, type, 2 more }`
 
         The results of a web search tool call. See the
         [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -89290,7 +87112,27 @@ Schema name: `BetaResponseQueuedEvent`
 
           The unique ID of the web search tool call.
 
-        - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+        - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+          The status of the web search tool call.
+
+          - `"in_progress"`
+
+          - `"searching"`
+
+          - `"completed"`
+
+          - `"failed"`
+
+          - `"incomplete"`
+
+        - `type: "web_search_call"`
+
+          The type of the web search tool call. Always `web_search_call`.
+
+          - `"web_search_call"`
+
+        - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
           An object describing the specific action taken in this web search call.
           Includes details on how the model used the web (search, open_page, find_in_page).
@@ -89359,26 +87201,6 @@ Schema name: `BetaResponseQueuedEvent`
 
               The URL of the page searched for the pattern.
 
-        - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-          The status of the web search tool call.
-
-          - `"in_progress"`
-
-          - `"searching"`
-
-          - `"completed"`
-
-          - `"failed"`
-
-          - `"incomplete"`
-
-        - `type: "web_search_call"`
-
-          The type of the web search tool call. Always `web_search_call`.
-
-          - `"web_search_call"`
-
         - `agent: optional object { agent_name }  or null`
 
           The agent that produced this item.
@@ -89426,7 +87248,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           Whether the function tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -89601,7 +87423,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The unique ID of the function tool call generated by the model.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -89651,7 +87473,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The sending agent identity.
 
-        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or object { encrypted_content, type }`
+        - `content: array of BetaResponseInputTextContent or BetaResponseInputImageContent or EncryptedContent { encrypted_content, type }`
 
           Plaintext, image, or encrypted content sent between agents.
 
@@ -89779,7 +87601,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `"output_text"`
 
-          - `annotations: optional array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }`
+          - `annotations: optional array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }`
 
             Citations associated with the text content.
 
@@ -89921,7 +87743,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `ToolSearchOutput object { tools, type, id, 4 more }`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           The loaded tool definitions returned by the tool search output.
 
@@ -89983,7 +87805,7 @@ Schema name: `BetaResponseQueuedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -90040,76 +87862,9 @@ Schema name: `BetaResponseQueuedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -90225,7 +87980,9 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -90272,7 +88029,7 @@ Schema name: `BetaResponseQueuedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -90346,7 +88103,7 @@ Schema name: `BetaResponseQueuedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -90412,7 +88169,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -90548,7 +88305,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -90653,13 +88410,13 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -90857,7 +88614,7 @@ Schema name: `BetaResponseQueuedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -90893,7 +88650,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                   - `"grammar"`
 
-          - `Namespace object { description, name, tools, type }`
+          - `BetaToolSearchOutputNamespaceTool object { description, name, tools, type }`
 
             Groups function/custom tools under a shared namespace.
 
@@ -90905,13 +88662,15 @@ Schema name: `BetaResponseQueuedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
-              The function/custom tools available inside this namespace.
+              The function/custom tools loaded inside this namespace.
 
               - `Function object { name, type, allowed_callers, 6 more }`
 
                 - `name: string`
+
+                  The name of the loaded function tool.
 
                 - `type: "function"`
 
@@ -90979,7 +88738,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -91077,7 +88836,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -91167,7 +88926,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `"developer"`
 
-        - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+        - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
           A list of additional tools made available at this item.
 
@@ -91229,7 +88988,7 @@ Schema name: `BetaResponseQueuedEvent`
 
               The IDs of the vector stores to search.
 
-            - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+            - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
               A filter to apply.
 
@@ -91286,76 +89045,9 @@ Schema name: `BetaResponseQueuedEvent`
 
                     - `number`
 
-              - `CompoundFilter object { filters, type }`
+              - `BetaCompoundFilter = unknown`
 
                 Combine multiple filters using `and` or `or`.
-
-                - `filters: array of object { key, type, value }  or unknown`
-
-                  Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                  - `ComparisonFilter object { key, type, value }`
-
-                    A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                    - `key: string`
-
-                      The key to compare against the value.
-
-                    - `type: "eq" or "ne" or "gt" or 5 more`
-
-                      Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                      - `eq`: equals
-                      - `ne`: not equal
-                      - `gt`: greater than
-                      - `gte`: greater than or equal
-                      - `lt`: less than
-                      - `lte`: less than or equal
-                      - `in`: in
-                      - `nin`: not in
-
-                      - `"eq"`
-
-                      - `"ne"`
-
-                      - `"gt"`
-
-                      - `"gte"`
-
-                      - `"lt"`
-
-                      - `"lte"`
-
-                      - `"in"`
-
-                      - `"nin"`
-
-                    - `value: string or number or boolean or array of string or number`
-
-                      The value to compare against the attribute key; supports string, number, or boolean types.
-
-                      - `string`
-
-                      - `number`
-
-                      - `boolean`
-
-                      - `array of string or number`
-
-                        - `string`
-
-                        - `number`
-
-                  - `unknown`
-
-                - `type: "and" or "or"`
-
-                  Type of operation: `and` or `or`.
-
-                  - `"and"`
-
-                  - `"or"`
 
             - `max_num_results: optional number`
 
@@ -91471,7 +89163,9 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `user_location: optional object { city, country, region, 2 more }  or null`
 
-              The approximate location of the user.
+              The approximate location of the user. If omitted or null, defaults to the
+              United States. To avoid this fallback, pass `{"type": "approximate"}` without
+              location fields. To localize results, provide the relevant location fields.
 
               - `city: optional string or null`
 
@@ -91518,7 +89212,7 @@ Schema name: `BetaResponseQueuedEvent`
 
               - `"programmatic"`
 
-            - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+            - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
               List of allowed tool names or a filter object.
 
@@ -91592,7 +89286,7 @@ Schema name: `BetaResponseQueuedEvent`
               Optional HTTP headers to send to the MCP server. Use for authentication
               or other purposes.
 
-            - `require_approval: optional object { always, never }  or "always" or "never" or null`
+            - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
               Specify which of the MCP server's tools require approval.
 
@@ -91658,7 +89352,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             A tool that runs Python code to help generate a response to a prompt.
 
-            - `container: string or object { type, file_ids, memory_limit, network_policy }`
+            - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
               The code interpreter container. Can be a container ID or an object that
               specifies uploaded file IDs to make available to your code, along with an
@@ -91762,7 +89456,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `input_fidelity: optional "high" or "low" or null`
 
-              Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+              Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
               - `"high"`
 
@@ -91867,13 +89561,13 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `string`
 
               - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+                The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
                 - `"1024x1024"`
 
@@ -91953,7 +89647,7 @@ Schema name: `BetaResponseQueuedEvent`
 
               Optional description of the custom tool, used to provide more context.
 
-            - `format: optional object { type }  or object { definition, syntax, type }`
+            - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
               The input format for the custom tool. Default is unconstrained text.
 
@@ -92001,7 +89695,7 @@ Schema name: `BetaResponseQueuedEvent`
 
               The namespace name used in tool calls (for example, `crm`).
 
-            - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+            - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
               The function/custom tools available inside this namespace.
 
@@ -92075,7 +89769,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                   Optional description of the custom tool, used to provide more context.
 
-                - `format: optional object { type }  or object { definition, syntax, type }`
+                - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                   The input format for the custom tool. Default is unconstrained text.
 
@@ -92173,7 +89867,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `user_location: optional object { type, city, country, 2 more }  or null`
 
-              The user's location.
+              The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
               - `type: "approximate"`
 
@@ -92502,7 +90196,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The ID of the container used to run the code.
 
-        - `outputs: array of object { logs, type }  or object { type, url }  or null`
+        - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
           The outputs generated by the code interpreter, such as logs or images.
           Can be null if no outputs are available.
@@ -92707,7 +90401,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -92761,7 +90455,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           Captured chunks of stdout and stderr output, along with their associated outcomes.
 
-          - `outcome: object { type }  or object { exit_code, type }`
+          - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
             The exit or timeout outcome associated with this shell call.
 
@@ -92815,7 +90509,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -92861,7 +90555,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The unique ID of the apply patch tool call generated by the model.
 
-        - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+        - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
           The specific create, delete, or update instruction for the apply_patch tool call.
 
@@ -92941,7 +90635,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -92999,7 +90693,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -93285,7 +90979,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The canonical name of the agent that produced this item.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -93347,7 +91041,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           Whether the custom tool call runs asynchronously.
 
-        - `caller: optional object { type }  or object { caller_id, type }  or null`
+        - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
           The execution context that produced this tool call.
 
@@ -93492,14 +91186,14 @@ Schema name: `BetaResponseQueuedEvent`
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `model: "gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more or string`
+  - `model: "gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more or string`
 
     Model ID used to generate the response, like `gpt-6-astra`. OpenAI
     offers a wide range of models with different capabilities, performance
     characteristics, and price points. Refer to the [model guide](https://developers.openai.com/api/docs/models)
     to browse and compare available models.
 
-    - `"gpt-6-astra" or "gpt-6-sol" or "gpt-6-luna" or 105 more`
+    - `"gpt-6-astra" or "gpt-6.1-sol" or "gpt-6-sol" or 106 more`
 
       Model ID used to generate the response, like `gpt-6-astra`. OpenAI
       offers a wide range of models with different capabilities, performance
@@ -93507,6 +91201,8 @@ Schema name: `BetaResponseQueuedEvent`
       to browse and compare available models.
 
       - `"gpt-6-astra"`
+
+      - `"gpt-6.1-sol"`
 
       - `"gpt-6-sol"`
 
@@ -93860,7 +91556,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         Whether the function tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -93955,7 +91651,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         The unique ID of the function tool call generated by the model.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -94001,7 +91697,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         The sending agent identity.
 
-      - `content: array of BetaResponseInputText or BetaResponseOutputText or object { text, type }  or 7 more`
+      - `content: array of BetaResponseInputText or BetaResponseOutputText or Text { text, type }  or 7 more`
 
         Encrypted content sent between agents.
 
@@ -94201,7 +91897,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         Text output returned by the multi-agent action.
 
-        - `annotations: array of object { file_id, filename, index, type }  or object { end_index, start_index, title, 2 more }  or object { container_id, end_index, file_id, 3 more }  or object { file_id, index, type }`
+        - `annotations: array of FileCitation { file_id, filename, index, type }  or URLCitation { end_index, start_index, title, 2 more }  or ContainerFileCitation { container_id, end_index, file_id, 3 more }  or FilePath { file_id, index, type }`
 
           The annotations of the text output.
 
@@ -94229,7 +91925,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The canonical name of the agent that produced this item.
 
-    - `WebSearchCall object { id, action, status, 2 more }`
+    - `WebSearchCall object { id, status, type, 2 more }`
 
       The results of a web search tool call. See the
       [web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for more information.
@@ -94238,7 +91934,27 @@ Schema name: `BetaResponseQueuedEvent`
 
         The unique ID of the web search tool call.
 
-      - `action: object { type, queries, query, sources }  or object { type, url }  or object { pattern, type, url }`
+      - `status: "in_progress" or "searching" or "completed" or 2 more`
+
+        The status of the web search tool call.
+
+        - `"in_progress"`
+
+        - `"searching"`
+
+        - `"completed"`
+
+        - `"failed"`
+
+        - `"incomplete"`
+
+      - `type: "web_search_call"`
+
+        The type of the web search tool call. Always `web_search_call`.
+
+        - `"web_search_call"`
+
+      - `action: optional Search { type, queries, query, sources }  or OpenPage { type, url }  or FindInPage { pattern, type, url }`
 
         An object describing the specific action taken in this web search call.
         Includes details on how the model used the web (search, open_page, find_in_page).
@@ -94306,26 +92022,6 @@ Schema name: `BetaResponseQueuedEvent`
           - `url: string`
 
             The URL of the page searched for the pattern.
-
-      - `status: "in_progress" or "searching" or "completed" or 2 more`
-
-        The status of the web search tool call.
-
-        - `"in_progress"`
-
-        - `"searching"`
-
-        - `"completed"`
-
-        - `"failed"`
-
-        - `"incomplete"`
-
-      - `type: "web_search_call"`
-
-        The type of the web search tool call. Always `web_search_call`.
-
-        - `"web_search_call"`
 
       - `agent: optional object { agent_name }  or null`
 
@@ -94402,7 +92098,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `id: string`
 
-        The unique ID of the computer call tool output.
+        The ID of the computer tool call output.
 
       - `call_id: string`
 
@@ -94682,7 +92378,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         - `"incomplete"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The loaded tool definitions returned by tool search.
 
@@ -94744,7 +92440,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -94801,76 +92497,9 @@ Schema name: `BetaResponseQueuedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -94986,7 +92615,9 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -95033,7 +92664,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -95107,7 +92738,7 @@ Schema name: `BetaResponseQueuedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -95173,7 +92804,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -95277,7 +92908,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -95382,13 +93013,13 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -95468,7 +93099,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -95516,7 +93147,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -95590,7 +93221,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -95688,7 +93319,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -95774,7 +93405,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         - `"tool"`
 
-      - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+      - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
         The additional tool definitions made available at this item.
 
@@ -95836,7 +93467,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The IDs of the vector stores to search.
 
-          - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+          - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
             A filter to apply.
 
@@ -95893,76 +93524,9 @@ Schema name: `BetaResponseQueuedEvent`
 
                   - `number`
 
-            - `CompoundFilter object { filters, type }`
+            - `BetaCompoundFilter = unknown`
 
               Combine multiple filters using `and` or `or`.
-
-              - `filters: array of object { key, type, value }  or unknown`
-
-                Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-                - `ComparisonFilter object { key, type, value }`
-
-                  A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-                  - `key: string`
-
-                    The key to compare against the value.
-
-                  - `type: "eq" or "ne" or "gt" or 5 more`
-
-                    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                    - `eq`: equals
-                    - `ne`: not equal
-                    - `gt`: greater than
-                    - `gte`: greater than or equal
-                    - `lt`: less than
-                    - `lte`: less than or equal
-                    - `in`: in
-                    - `nin`: not in
-
-                    - `"eq"`
-
-                    - `"ne"`
-
-                    - `"gt"`
-
-                    - `"gte"`
-
-                    - `"lt"`
-
-                    - `"lte"`
-
-                    - `"in"`
-
-                    - `"nin"`
-
-                  - `value: string or number or boolean or array of string or number`
-
-                    The value to compare against the attribute key; supports string, number, or boolean types.
-
-                    - `string`
-
-                    - `number`
-
-                    - `boolean`
-
-                    - `array of string or number`
-
-                      - `string`
-
-                      - `number`
-
-                - `unknown`
-
-              - `type: "and" or "or"`
-
-                Type of operation: `and` or `or`.
-
-                - `"and"`
-
-                - `"or"`
 
           - `max_num_results: optional number`
 
@@ -96078,7 +93642,9 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `user_location: optional object { city, country, region, 2 more }  or null`
 
-            The approximate location of the user.
+            The approximate location of the user. If omitted or null, defaults to the
+            United States. To avoid this fallback, pass `{"type": "approximate"}` without
+            location fields. To localize results, provide the relevant location fields.
 
             - `city: optional string or null`
 
@@ -96125,7 +93691,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             - `"programmatic"`
 
-          - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+          - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
             List of allowed tool names or a filter object.
 
@@ -96199,7 +93765,7 @@ Schema name: `BetaResponseQueuedEvent`
             Optional HTTP headers to send to the MCP server. Use for authentication
             or other purposes.
 
-          - `require_approval: optional object { always, never }  or "always" or "never" or null`
+          - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
             Specify which of the MCP server's tools require approval.
 
@@ -96265,7 +93831,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           A tool that runs Python code to help generate a response to a prompt.
 
-          - `container: string or object { type, file_ids, memory_limit, network_policy }`
+          - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
             The code interpreter container. Can be a container ID or an object that
             specifies uploaded file IDs to make available to your code, along with an
@@ -96369,7 +93935,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `input_fidelity: optional "high" or "low" or null`
 
-            Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+            Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
             - `"high"`
 
@@ -96474,13 +94040,13 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+            The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
             - `string`
 
             - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+              The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
               - `"1024x1024"`
 
@@ -96560,7 +94126,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -96608,7 +94174,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             The namespace name used in tool calls (for example, `crm`).
 
-          - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+          - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
             The function/custom tools available inside this namespace.
 
@@ -96682,7 +94248,7 @@ Schema name: `BetaResponseQueuedEvent`
 
                 Optional description of the custom tool, used to provide more context.
 
-              - `format: optional object { type }  or object { definition, syntax, type }`
+              - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
                 The input format for the custom tool. Default is unconstrained text.
 
@@ -96780,7 +94346,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `user_location: optional object { type, city, country, 2 more }  or null`
 
-            The user's location.
+            The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
             - `type: "approximate"`
 
@@ -96986,7 +94552,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         The ID of the container used to run the code.
 
-      - `outputs: array of object { logs, type }  or object { type, url }  or null`
+      - `outputs: array of Logs { logs, type }  or Image { type, url }  or null`
 
         The outputs generated by the code interpreter, such as logs or images.
         Can be null if no outputs are available.
@@ -97225,7 +94791,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -97269,7 +94835,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         An array of shell call output contents
 
-        - `outcome: object { type }  or object { exit_code, type }`
+        - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
           Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 
@@ -97333,7 +94899,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -97369,7 +94935,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         The unique ID of the apply patch tool call generated by the model.
 
-      - `operation: object { diff, path, type }  or object { path, type }  or object { diff, path, type }`
+      - `operation: CreateFile { diff, path, type }  or DeleteFile { path, type }  or UpdateFile { diff, path, type }`
 
         One of the create_file, delete_file, or update_file operations applied via apply_patch.
 
@@ -97445,7 +95011,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -97503,7 +95069,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -97748,7 +95314,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         Whether the custom tool call runs asynchronously.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -97832,7 +95398,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           The canonical name of the agent that produced this item.
 
-      - `caller: optional object { type }  or object { caller_id, type }  or null`
+      - `caller: optional Direct { type }  or Program { caller_id, type }  or null`
 
         The execution context that produced this tool call.
 
@@ -98039,7 +95605,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         - `"shell"`
 
-  - `tools: array of object { name, parameters, strict, 6 more }  or object { type, vector_store_ids, filters, 2 more }  or object { type }  or 13 more`
+  - `tools: array of Function { name, parameters, strict, 6 more }  or FileSearch { type, vector_store_ids, filters, 2 more }  or Computer { type }  or 13 more`
 
     An array of tools the model may call while generating a response. You
     can specify which tool to use by setting the `tool_choice` parameter.
@@ -98117,7 +95683,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         The IDs of the vector stores to search.
 
-      - `filters: optional object { key, type, value }  or object { filters, type }  or null`
+      - `filters: optional ComparisonFilter { key, type, value }  or unknown or null`
 
         A filter to apply.
 
@@ -98174,76 +95740,9 @@ Schema name: `BetaResponseQueuedEvent`
 
               - `number`
 
-        - `CompoundFilter object { filters, type }`
+        - `BetaCompoundFilter = unknown`
 
           Combine multiple filters using `and` or `or`.
-
-          - `filters: array of object { key, type, value }  or unknown`
-
-            Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
-
-            - `ComparisonFilter object { key, type, value }`
-
-              A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-              - `key: string`
-
-                The key to compare against the value.
-
-              - `type: "eq" or "ne" or "gt" or 5 more`
-
-                Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-                - `eq`: equals
-                - `ne`: not equal
-                - `gt`: greater than
-                - `gte`: greater than or equal
-                - `lt`: less than
-                - `lte`: less than or equal
-                - `in`: in
-                - `nin`: not in
-
-                - `"eq"`
-
-                - `"ne"`
-
-                - `"gt"`
-
-                - `"gte"`
-
-                - `"lt"`
-
-                - `"lte"`
-
-                - `"in"`
-
-                - `"nin"`
-
-              - `value: string or number or boolean or array of string or number`
-
-                The value to compare against the attribute key; supports string, number, or boolean types.
-
-                - `string`
-
-                - `number`
-
-                - `boolean`
-
-                - `array of string or number`
-
-                  - `string`
-
-                  - `number`
-
-            - `unknown`
-
-          - `type: "and" or "or"`
-
-            Type of operation: `and` or `or`.
-
-            - `"and"`
-
-            - `"or"`
 
       - `max_num_results: optional number`
 
@@ -98359,7 +95858,9 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `user_location: optional object { city, country, region, 2 more }  or null`
 
-        The approximate location of the user.
+        The approximate location of the user. If omitted or null, defaults to the
+        United States. To avoid this fallback, pass `{"type": "approximate"}` without
+        location fields. To localize results, provide the relevant location fields.
 
         - `city: optional string or null`
 
@@ -98406,7 +95907,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         - `"programmatic"`
 
-      - `allowed_tools: optional array of string or object { read_only, tool_names }  or null`
+      - `allowed_tools: optional array of string or McpToolFilter { read_only, tool_names }  or null`
 
         List of allowed tool names or a filter object.
 
@@ -98480,7 +95981,7 @@ Schema name: `BetaResponseQueuedEvent`
         Optional HTTP headers to send to the MCP server. Use for authentication
         or other purposes.
 
-      - `require_approval: optional object { always, never }  or "always" or "never" or null`
+      - `require_approval: optional McpToolApprovalFilter { always, never }  or "always" or "never" or null`
 
         Specify which of the MCP server's tools require approval.
 
@@ -98546,7 +96047,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       A tool that runs Python code to help generate a response to a prompt.
 
-      - `container: string or object { type, file_ids, memory_limit, network_policy }`
+      - `container: string or CodeInterpreterToolAuto { type, file_ids, memory_limit, network_policy }`
 
         The code interpreter container. Can be a container ID or an object that
         specifies uploaded file IDs to make available to your code, along with an
@@ -98650,7 +96151,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `input_fidelity: optional "high" or "low" or null`
 
-        Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+        Control how much effort the model will exert to match the style and features, especially facial features, of input images. Supports `high` and `low` on `gpt-image-1` and `gpt-image-1.5`; `gpt-image-1-mini` supports only `low`. For `gpt-image-2`, omit this parameter. Defaults to `low` on supported models.
 
         - `"high"`
 
@@ -98755,13 +96256,13 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `size: optional string or "1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+        The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
         - `string`
 
         - `"1024x1024" or "1024x1536" or "1536x1024" or "auto"`
 
-          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing. For `dall-e-2`, use one of `256x256`, `512x512`, or `1024x1024`. For `dall-e-3`, use one of `1024x1024`, `1792x1024`, or `1024x1792`.
+          The size of the generated images. For `gpt-image-2`, `gpt-image-2-2026-04-21`, `gpt-image-2.5-sunburst`, `gpt-image-2.5-sunburst-2026-09-08`, `gpt-image-2.5-flare`, and `gpt-image-2.5-flare-2026-09-08`, arbitrary resolutions are supported as `WIDTHxHEIGHT` strings, for example `1536x864`. Width and height must both be divisible by 16 and the requested aspect ratio must be between 1:3 and 3:1. Resolutions above `2560x1440` are experimental, and the maximum supported resolution is `3840x2160`. The requested size must also satisfy the model's current pixel and edge limits. The standard sizes `1024x1024`, `1536x1024`, and `1024x1536` are supported by the GPT image models; `auto` is supported for models that allow automatic sizing.
 
           - `"1024x1024"`
 
@@ -98841,7 +96342,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         Optional description of the custom tool, used to provide more context.
 
-      - `format: optional object { type }  or object { definition, syntax, type }`
+      - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
         The input format for the custom tool. Default is unconstrained text.
 
@@ -98889,7 +96390,7 @@ Schema name: `BetaResponseQueuedEvent`
 
         The namespace name used in tool calls (for example, `crm`).
 
-      - `tools: array of object { name, type, allowed_callers, 6 more }  or object { name, type, allowed_callers, 4 more }`
+      - `tools: array of Function { name, type, allowed_callers, 6 more }  or Custom { name, type, allowed_callers, 4 more }`
 
         The function/custom tools available inside this namespace.
 
@@ -98963,7 +96464,7 @@ Schema name: `BetaResponseQueuedEvent`
 
             Optional description of the custom tool, used to provide more context.
 
-          - `format: optional object { type }  or object { definition, syntax, type }`
+          - `format: optional Text { type }  or Grammar { definition, syntax, type }`
 
             The input format for the custom tool. Default is unconstrained text.
 
@@ -99061,7 +96562,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       - `user_location: optional object { type, city, country, 2 more }  or null`
 
-        The user's location.
+        The approximate location of the user. If omitted or null, defaults to the United States. To avoid this fallback, pass `{"type": "approximate"}` without location fields. To localize results, provide the relevant location fields.
 
         - `type: "approximate"`
 
@@ -99142,7 +96643,7 @@ Schema name: `BetaResponseQueuedEvent`
 
     Moderation results for the response input and output, if moderated completions were requested.
 
-    - `input: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `input: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response input.
 
@@ -99198,7 +96699,7 @@ Schema name: `BetaResponseQueuedEvent`
 
           - `"error"`
 
-    - `output: object { categories, category_applied_input_types, category_scores, 3 more }  or object { code, message, type }`
+    - `output: ModerationResult { categories, category_applied_input_types, category_scores, 3 more }  or Error { code, message, type }`
 
       Moderation for the response output.
 
@@ -99299,7 +96800,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       Optional version of the prompt template.
 
-  - `prompt_cache_diagnostics: optional object { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or object { type }  or object { type }  or object { type }`
+  - `prompt_cache_diagnostics: optional CacheMiss { cache_missed_tokens, reason, type, comparison_reusable_tokens }  or CacheHit { type }  or ComparisonResponseNotFound { type }  or Unavailable { type }`
 
     Prompt cache diagnostics requested for this response.
 
@@ -99496,7 +96997,7 @@ Schema name: `BetaResponseQueuedEvent`
   - `safety_identifier: optional string or null`
 
     A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
-    The IDs should be a string that uniquely identifies each user, with a maximum length of 64 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+    The IDs should be a string that uniquely identifies each user, with a maximum length of 128 characters. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
 
   - `service_tier: optional BetaServiceTier or null`
 
@@ -99657,7 +97158,7 @@ Schema name: `BetaResponseQueuedEvent`
 
     - `"disabled"`
 
-  - `usage: optional BetaResponseUsage`
+  - `usage: optional BetaResponseUsage or null`
 
     Represents token usage details including input tokens, output tokens,
     a breakdown of output tokens, and the total tokens used.
@@ -99695,7 +97196,7 @@ Schema name: `BetaResponseQueuedEvent`
 
       The total number of tokens used.
 
-  - `user: optional string`
+  - `user: optional string or null`
 
     This field is being replaced by `safety_identifier` and `prompt_cache_key`. Use `prompt_cache_key` instead to maintain caching optimizations.
     A stable identifier for your end-users.
@@ -99731,10 +97232,22 @@ Schema name: `BetaResponseQueuedEvent`
 {
   "type": "response.queued",
   "response": {
-    "id": "res_123",
+    "id": "resp_123",
+    "object": "response",
+    "access_programs": null,
+    "created_at": 1609459200,
     "status": "queued",
-    "created_at": "2021-01-01T00:00:00Z",
-    "updated_at": "2021-01-01T00:00:00Z"
+    "error": null,
+    "incomplete_details": null,
+    "instructions": null,
+    "model": "gpt-6-astra",
+    "output": [],
+    "parallel_tool_calls": true,
+    "temperature": 1,
+    "tool_choice": "auto",
+    "tools": [],
+    "top_p": 1,
+    "metadata": {}
   },
   "sequence_number": 1
 }
@@ -99791,6 +97304,7 @@ Schema name: `BetaResponseCustomToolCallInputDeltaEvent`
 ```json
 {
   "type": "response.custom_tool_call_input.delta",
+  "sequence_number": 1,
   "output_index": 0,
   "item_id": "ctc_1234567890abcdef",
   "delta": "partial input text"
@@ -99848,6 +97362,7 @@ Schema name: `BetaResponseCustomToolCallInputDoneEvent`
 ```json
 {
   "type": "response.custom_tool_call_input.done",
+  "sequence_number": 1,
   "output_index": 0,
   "item_id": "ctc_1234567890abcdef",
   "input": "final complete input text"
@@ -100383,7 +97898,7 @@ Schema name: `BetaResponseShellCallOutputContentDoneStreamingEvent`
 
   The output contents emitted for the shell command.
 
-  - `outcome: object { type }  or object { exit_code, type }`
+  - `outcome: Timeout { type }  or Exit { exit_code, type }`
 
     Represents either an exit outcome (with an exit code) or a timeout outcome for a shell call output chunk.
 

@@ -1,12 +1,12 @@
-> 如需查看完整的文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾添加 `.md` 来获取文档页面的 Markdown 版本。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。可通过在页面 URL 末尾追加 `.md` 来获取文档页面的 Markdown 版本。
 
 ## 取消 ChatKit 会话
 
 **post** `/chatkit/sessions/{session_id}/cancel`
 
-取消一个活跃的 ChatKit 会话，并返回其最新的元数据。
+取消一个处于活动状态的 ChatKit 会话，并返回其最新的元数据。
 
-取消后可以阻止新请求使用已颁发的客户端密钥。
+取消操作可以阻止新的请求使用已颁发的客户端密钥。
 
 ### 路径参数
 
@@ -24,7 +24,7 @@
 
   - `chatkit_configuration: ChatSessionChatKitConfiguration`
 
-    会话的已解析 ChatKit 功能配置。
+    为该会话解析的 ChatKit 功能配置。
 
     - `automatic_thread_titling: ChatSessionAutomaticThreadTitling`
 
@@ -32,7 +32,7 @@
 
       - `enabled: boolean`
 
-        是否启用自动会话标题。
+        是否启用了自动会话标题。
 
     - `file_upload: ChatSessionFileUpload`
 
@@ -40,7 +40,7 @@
 
       - `enabled: boolean`
 
-        指示会话是否允许上传。
+        指示该会话是否启用了上传功能。
 
       - `max_file_size: number or null`
 
@@ -48,7 +48,7 @@
 
       - `max_files: number or null`
 
-        会话期间允许的最大上传次数。
+        会话期间允许的最大上传数量。
 
     - `history: ChatSessionHistory`
 
@@ -56,15 +56,15 @@
 
       - `enabled: boolean`
 
-        指示是否为会话持久化聊天历史记录。
+        指示该会话是否持久化聊天历史记录。
 
       - `recent_threads: number or null`
 
-        在历史记录视图中展示的先前会话数量。保留全部历史记录时默认为 null。
+        历史视图中所展示的先前会话数量。当保留全部历史记录时，默认值为 null。
 
   - `client_secret: string`
 
-    用于认证会话请求的临时客户端密钥。
+    用于对会话请求进行身份验证的临时客户端密钥。
 
   - `expires_at: number`
 
@@ -76,7 +76,7 @@
 
   - `object: "chatkit.session"`
 
-    始终为 `chatkit.session`.
+    类型判别字段，始终为 `chatkit.session`.
 
     - `"chatkit.session"`
 
@@ -90,7 +90,7 @@
 
   - `status: ChatSessionStatus`
 
-    会话的当前生命周期状态。
+    会话当前的 lifecycle 状态。
 
     - `"active"`
 
@@ -108,11 +108,11 @@
 
     - `id: string`
 
-      支持该会话的 工作流 的标识符。
+      支撑该会话的工作流标识符。
 
     - `state_variables: map[string or boolean or number] or null`
 
-      调用 工作流 时应用的状态变量键值对。未提供覆盖时默认为 null。
+      调用工作流时应用的状态变量键值对。未提供覆盖值时默认为 null。
 
       - `string`
 
@@ -122,15 +122,15 @@
 
     - `tracing: object { enabled }`
 
-      应用于 工作流 的追踪设置。
+      应用于工作流的追踪设置。
 
       - `enabled: boolean`
 
-        指示是否已启用 追踪。
+        指示追踪是否已启用。
 
     - `version: string or null`
 
-      会话使用的特定 工作流 版本。使用最新部署时默认为 null。
+      会话使用的特定工作流版本。使用最新部署时默认为 null。
 
 ### 示例
 
@@ -145,39 +145,39 @@ curl https://api.openai.com/v1/chatkit/sessions/$SESSION_ID/cancel \
 
 ```json
 {
-  "id": "id",
+  "id": "cksess_123",
+  "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1712349876,
+  "workflow": {
+    "id": "workflow_alpha",
+    "version": "2024-10-01",
+    "state_variables": {
+      "message": "hello"
+    },
+    "tracing": {
+      "enabled": true
+    }
+  },
+  "user": "user_789",
+  "rate_limits": {
+    "max_requests_per_1_minute": 60
+  },
+  "max_requests_per_1_minute": 60,
+  "status": "cancelled",
   "chatkit_configuration": {
     "automatic_thread_titling": {
       "enabled": true
     },
     "file_upload": {
       "enabled": true,
-      "max_file_size": 0,
-      "max_files": 0
+      "max_file_size": 16,
+      "max_files": 20
     },
     "history": {
       "enabled": true,
-      "recent_threads": 0
+      "recent_threads": 10
     }
-  },
-  "client_secret": "client_secret",
-  "expires_at": 0,
-  "max_requests_per_1_minute": 0,
-  "object": "chatkit.session",
-  "rate_limits": {
-    "max_requests_per_1_minute": 0
-  },
-  "status": "active",
-  "user": "user",
-  "workflow": {
-    "id": "id",
-    "state_variables": {
-      "foo": "string"
-    },
-    "tracing": {
-      "enabled": true
-    },
-    "version": "version"
   }
 }
 ```
@@ -197,16 +197,35 @@ curl -X POST \
 {
   "id": "cksess_123",
   "object": "chatkit.session",
+  "client_secret": "",
+  "expires_at": 1735689600,
   "workflow": {
     "id": "workflow_alpha",
-    "version": "1"
+    "version": null,
+    "state_variables": null,
+    "tracing": {
+      "enabled": true
+    }
   },
-  "scope": {
-    "customer_id": "cust_456"
+  "user": "user_123",
+  "rate_limits": {
+    "max_requests_per_1_minute": 10
   },
-  "max_requests_per_1_minute": 30,
-  "ttl_seconds": 900,
+  "max_requests_per_1_minute": 10,
   "status": "cancelled",
-  "cancelled_at": 1712345678
+  "chatkit_configuration": {
+    "automatic_thread_titling": {
+      "enabled": true
+    },
+    "file_upload": {
+      "enabled": false,
+      "max_file_size": 512,
+      "max_files": 10
+    },
+    "history": {
+      "enabled": true,
+      "recent_threads": null
+    }
+  }
 }
 ```

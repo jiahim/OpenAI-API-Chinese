@@ -18,7 +18,8 @@ List your organization's fine-tuning jobs
 
 - `metadata: optional map[string] or null`
 
-  Optional metadata filter. To filter, use the syntax `metadata[k]=v`. Alternatively, set `metadata=null` to indicate no metadata.
+  Optional metadata filter. To filter, use the syntax `metadata[k]=v`. Omitting the parameter or passing an empty object applies no metadata filter. An empty value, such as `metadata[k]=`, filters for that key with an empty string value.
+  To select jobs with null metadata, send the literal query string `metadata=null`. Nullable caller types do not specify how a client serializes null for a deep-object parameter. Use a raw query parameter if the client omits null. Do not combine the two query forms.
 
 ### Returns
 
@@ -32,21 +33,27 @@ List your organization's fine-tuning jobs
 
     The Unix timestamp (in seconds) for when the fine-tuning job was created.
 
-  - `error: object { code, message, param }  or null`
+  - `error: object { code, message, param }  or unknown or null`
 
     For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 
-    - `code: string`
+    - `object { code, message, param }`
 
-      A machine-readable error code.
+      For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
 
-    - `message: string`
+      - `code: string`
 
-      A human-readable error message.
+        A machine-readable error code.
 
-    - `param: string or null`
+      - `message: string`
 
-      The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
+        A human-readable error message.
+
+      - `param: string or null`
+
+        The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
+
+    - `unknown`
 
   - `fine_tuned_model: string or null`
 
@@ -56,7 +63,65 @@ List your organization's fine-tuning jobs
 
     The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
 
-  - `hyperparameters: object { batch_size, learning_rate_multiplier, n_epochs }`
+  - `model: string`
+
+    The base model that is being fine-tuned.
+
+  - `object: "fine_tuning.job"`
+
+    The object type, which is always "fine_tuning.job".
+
+    - `"fine_tuning.job"`
+
+  - `organization_id: string`
+
+    The organization that owns the fine-tuning job.
+
+  - `result_files: array of string`
+
+    The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
+
+  - `seed: number or null`
+
+    The seed used for the fine-tuning job.
+
+  - `status: "validating_files" or "queued" or "running" or 5 more`
+
+    The current status of the fine-tuning job, which can be `validating_files`, `queued`, `running`, `pausing`, `paused`, `succeeded`, `failed`, or `cancelled`.
+
+    - `"validating_files"`
+
+    - `"queued"`
+
+    - `"running"`
+
+    - `"succeeded"`
+
+    - `"failed"`
+
+    - `"cancelled"`
+
+    - `"pausing"`
+
+    - `"paused"`
+
+  - `trained_tokens: number or null`
+
+    The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
+
+  - `training_file: string`
+
+    The file ID used for training. You can retrieve the training data with the [Files API](/api/reference/resources/files/methods/content).
+
+  - `validation_file: string or null`
+
+    The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
+
+  - `estimated_finish: optional number or null`
+
+    The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+
+  - `hyperparameters: optional object { batch_size, learning_rate_multiplier, n_epochs }  or null`
 
     The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
 
@@ -92,60 +157,6 @@ List your organization's fine-tuning jobs
         - `"auto"`
 
       - `number`
-
-  - `model: string`
-
-    The base model that is being fine-tuned.
-
-  - `object: "fine_tuning.job"`
-
-    The object type, which is always "fine_tuning.job".
-
-    - `"fine_tuning.job"`
-
-  - `organization_id: string`
-
-    The organization that owns the fine-tuning job.
-
-  - `result_files: array of string`
-
-    The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/api/reference/resources/files/methods/content).
-
-  - `seed: number`
-
-    The seed used for the fine-tuning job.
-
-  - `status: "validating_files" or "queued" or "running" or 3 more`
-
-    The current status of the fine-tuning job, which can be either `validating_files`, `queued`, `running`, `succeeded`, `failed`, or `cancelled`.
-
-    - `"validating_files"`
-
-    - `"queued"`
-
-    - `"running"`
-
-    - `"succeeded"`
-
-    - `"failed"`
-
-    - `"cancelled"`
-
-  - `trained_tokens: number or null`
-
-    The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
-
-  - `training_file: string`
-
-    The file ID used for training. You can retrieve the training data with the [Files API](/api/reference/resources/files/methods/content).
-
-  - `validation_file: string or null`
-
-    The file ID used for validation. You can retrieve the validation results with the [Files API](/api/reference/resources/files/methods/content).
-
-  - `estimated_finish: optional number or null`
-
-    The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
 
   - `integrations: optional array of FineTuningJobWandbIntegrationObject or null`
 
@@ -190,7 +201,7 @@ List your organization's fine-tuning jobs
     Keys are strings with a maximum length of 64 characters. Values are strings
     with a maximum length of 512 characters.
 
-  - `method: optional object { type, dpo, reinforcement, supervised }`
+  - `method: optional object { type, dpo, reinforcement, supervised }  or null`
 
     The method used for fine-tuning.
 
@@ -374,7 +385,7 @@ List your organization's fine-tuning jobs
 
             The input messages evaluated by the grader. Supports text, output text, input image, and input audio content blocks, and may include template strings.
 
-            - `content: string or ResponseInputText or object { text, type }  or 3 more`
+            - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
               Inputs to the model - can contain template strings. Supports text, output text, input images, and input audio, either as a single item or an array of items.
 
@@ -463,7 +474,7 @@ List your organization's fine-tuning jobs
 
                   - `"input_audio"`
 
-              - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+              - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                 A list of inputs, each of which may be either an input text, output text, input
                 image, or input audio object.
@@ -547,7 +558,7 @@ List your organization's fine-tuning jobs
 
           - `range: optional array of number`
 
-            The range of the score. Defaults to `[0, 1]`.
+            The service requires two numbers for the score range. Defaults to `[0, 1]`.
 
           - `sampling_params: optional object { max_completions_tokens, reasoning_effort, seed, 2 more }`
 
@@ -601,9 +612,7 @@ List your organization's fine-tuning jobs
 
             A formula to calculate the output based on grader results.
 
-          - `graders: StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more`
-
-            A StringCheckGrader object that performs a string comparison between input and reference using a specified operation.
+          - `graders: map[StringCheckGrader or TextSimilarityGrader or PythonGrader or 2 more]`
 
             - `StringCheckGrader object { input, name, operation, 2 more }`
 
@@ -628,7 +637,7 @@ List your organization's fine-tuning jobs
 
               - `input: array of object { content, role, type }`
 
-                - `content: string or ResponseInputText or object { text, type }  or 3 more`
+                - `content: string or ResponseInputText or OutputText { text, type }  or 3 more`
 
                   Inputs to the model - can contain template strings. Supports text, output text, input images, and input audio, either as a single item or an array of items.
 
@@ -676,7 +685,7 @@ List your organization's fine-tuning jobs
 
                     An audio input to the model.
 
-                  - `GraderInputs = array of string or ResponseInputText or object { text, type }  or 2 more`
+                  - `GraderInputs = array of string or ResponseInputText or OutputText { text, type }  or 2 more`
 
                     A list of inputs, each of which may be either an input text, output text, input
                     image, or input audio object.
@@ -874,11 +883,6 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
       },
       "fine_tuned_model": "fine_tuned_model",
       "finished_at": 0,
-      "hyperparameters": {
-        "batch_size": "auto",
-        "learning_rate_multiplier": "auto",
-        "n_epochs": "auto"
-      },
       "model": "model",
       "object": "fine_tuning.job",
       "organization_id": "organization_id",
@@ -891,6 +895,11 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
       "training_file": "training_file",
       "validation_file": "validation_file",
       "estimated_finish": 0,
+      "hyperparameters": {
+        "batch_size": "auto",
+        "learning_rate_multiplier": "auto",
+        "n_epochs": "auto"
+      },
       "integrations": [
         {
           "type": "wandb",
@@ -953,7 +962,7 @@ curl https://api.openai.com/v1/fine_tuning/jobs \
 ### Example
 
 ```http
-curl https://api.openai.com/v1/fine_tuning/jobs?limit=2&metadata[key]=value \
+curl "https://api.openai.com/v1/fine_tuning/jobs?limit=2&metadata[key]=value" \
   -H "Authorization: Bearer $OPENAI_API_KEY"
 ```
 
@@ -974,12 +983,30 @@ curl https://api.openai.com/v1/fine_tuning/jobs?limit=2&metadata[key]=value \
       "status": "queued",
       "validation_file": null,
       "training_file": "file-abc123",
+      "error": null,
+      "finished_at": null,
+      "trained_tokens": null,
+      "seed": 42,
+      "hyperparameters": {
+        "batch_size": "auto",
+        "learning_rate_multiplier": "auto",
+        "n_epochs": "auto"
+      },
+      "method": {
+        "type": "supervised",
+        "supervised": {
+          "hyperparameters": {
+            "batch_size": "auto",
+            "learning_rate_multiplier": "auto",
+            "n_epochs": "auto"
+          }
+        }
+      },
       "metadata": {
         "key": "value"
       }
-    },
-    { ... },
-    { ... }
-  ], "has_more": true
+    }
+  ],
+  "has_more": false
 }
 ```

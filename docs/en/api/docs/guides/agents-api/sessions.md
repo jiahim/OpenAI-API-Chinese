@@ -38,10 +38,14 @@ const events = await client.beta.agents.sessions.create({
     "Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output.",
   stream: true,
 });
+events.withResultCollection();
 try {
   for await (const event of events) {
     console.log(JSON.stringify(event));
   }
+  const result = await events.finalResult();
+  console.log(result.output_text);
+  console.log("Session:", result.session_id);
 } finally {
   events.controller.abort();
 }
@@ -59,9 +63,12 @@ with OpenAI() as client:
         environment={"type": "openai_hosted"},
         input="Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output.",
         stream=True,
-    ) as events:
-        for event in events:
+    ).with_result_collection() as stream:
+        for event in stream:
             print(event.to_json(indent=None), flush=True)
+        result = stream.get_final_result()
+    print(result.output_text)
+    session_id = result.session_id
 ```
 
 ```go
@@ -85,6 +92,7 @@ events := client.Beta.Agents.Sessions.NewStreaming(ctx, openai.BetaAgentSessionN
 	},
 })
 defer events.Close()
+openai.BetaAgentSessionWithResultCollection(events)
 if events.Err() != nil {
 	panic(events.Err())
 }
@@ -92,9 +100,13 @@ for events.Next() {
 	event := events.Current()
 	fmt.Println(event.RawJSON())
 }
-if err := events.Err(); err != nil {
+result, err := openai.BetaAgentSessionFinalResult(events)
+if err != nil {
 	panic(err)
 }
+fmt.Println(result.OutputText())
+sessionID := result.SessionID()
+fmt.Println("Session:", sessionID)
 ```
 
 ```java
@@ -105,6 +117,7 @@ import com.openai.core.http.StreamResponse;
 import com.openai.models.beta.agents.AgentSessionEvent;
 import com.openai.models.beta.agents.EnvironmentParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import com.openai.services.beta.agents.AgentTurnResults;
 
 OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 var json = new JsonMapper();
@@ -125,11 +138,16 @@ try (StreamResponse<AgentSessionEvent> events =
                     "Create tree.py, a Python script that prints a readable tree of the files"
                         + " in the current directory. Run it and show me the output.")
                 .build())) {
+  AgentTurnResults.withResultCollection(events);
   var iterator = events.stream().iterator();
   while (iterator.hasNext()) {
     var event = iterator.next();
     System.out.println(json.writeValueAsString(event));
   }
+  var result = AgentTurnResults.getFinalResult(events);
+  System.out.println(result.outputText());
+  String sessionId = result.sessionId();
+  System.out.println(sessionId);
 }
 ```
 
@@ -147,9 +165,14 @@ events = client.beta.agents.sessions.create_streaming(
   input: "Create tree.py, a Python script that prints a readable tree of the files in the current directory. Run it and show me the output."
 )
 begin
+  events.with_result_collection
   events.each do |event|
     puts JSON.generate(event.to_h)
   end
+  result = events.get_final_result
+  puts result.output_text
+  session_id = result.session_id
+  puts "Session: #{session_id}"
 ensure
   events.close
 end
@@ -163,6 +186,14 @@ curl --no-buffer --fail-with-body https://api.openai.com/v1/agents/sessions \\\n
 Store the `session_id` with your application's conversation state. Use it to send follow-up messages and retrieve saved work for that conversation.
 
 See [Configuring Agents](https://developers.openai.com/api/docs/guides/agents-api/configuration) for reusable agent settings and [Architecture](https://developers.openai.com/api/docs/guides/agents-api/architecture) for environment choices. Sessions with `environment.type: "none"` require initial input. The [Create session reference](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/methods/create) lists the request fields.
+
+If the session uses Files API attachments, file checks can return HTTP 429 with
+`files_api_rate_limit_exceeded`. See [Files API rate limits](https://developers.openai.com/api/docs/guides/agents-api/errors#files-api-rate-limits)
+for recovery steps.
+
+### Input size
+
+The agent runtime accepts requests up to 4 MiB (4,194,304 bytes). Keep the combined size of your `input` and output schema (`agent.text.format.schema`) below this limit. Leave some space for metadata added by the Agents API. Files uploaded to the environment follow separate [file limits](https://developers.openai.com/api/docs/guides/agents-api/environments/files#file-limits).
 
 
 
@@ -186,18 +217,21 @@ See [Events and Items](https://developers.openai.com/api/docs/guides/agents-api/
 
 Send another `agent.session.input.message` to the same session. If the agent is working, the message steers the active turn. If the session is idle, it starts a new turn with the existing conversation.
 
+The same [input size limit](#input-size) applies to follow-up messages.
+
 Saved-agent updates apply only to new sessions. To change the model, reasoning effort, or service tier for later turns in this session, [update its settings](https://developers.openai.com/api/docs/guides/agents-api/configuration#update-settings-for-an-existing-session).
 
 Use the conversation's session ID to send input. Subscribe to its [event stream](https://developers.openai.com/api/reference/resources/beta/subresources/agents/subresources/sessions/subresources/events/methods/stream) before sending the message so your application receives the turn's early events.
 
-Pass your API client, session ID, and message to a function in your application:
+Create one idempotency key for each logical message submission. Save it with the message before sending input. Use the saved key when submitting the message:
 
 Send a follow-up message
 
 ```javascript
-// Pass your saved session ID and message to this helper.
-async function sendMessage(client, sessionId, text) {
+// Reuse the same submission key when retrying this message.
+async function sendMessage(client, sessionId, text, submissionKey) {
   await client.beta.agents.sessions.events.create(sessionId, {
+    "Idempotency-Key": submissionKey,
     events: [
       {
         type: "agent.session.input.message",
@@ -219,10 +253,16 @@ async function sendMessage(client, sessionId, text) {
 ```
 
 ```python
-# Pass your saved session ID and message to this helper.
-def send_message(client: OpenAI, session_id: str, text: str) -> None:
+from uuid import uuid4
+
+
+# Reuse the same submission key when retrying this message.
+def send_message(
+    client: OpenAI, session_id: str, text: str, submission_key: str
+) -> None:
     client.beta.agents.sessions.events.create(
         session_id,
+        idempotency_key=submission_key,
         events=[
             {
                 "type": "agent.session.input.message",
@@ -240,14 +280,19 @@ def send_message(client: OpenAI, session_id: str, text: str) -> None:
             }
         ],
     )
+
+
+submission_key = str(uuid4())
+# Save this key with the message before submitting it.
 ```
 
 ```go
-// Pass your saved session ID and message to this helper.
-func sendMessage(ctx context.Context, client *openai.Client, sessionID, text string) error {
+// Reuse the same submission key when retrying this message.
+func sendMessage(ctx context.Context, client *openai.Client, sessionID, text, submissionKey string) error {
 	return client.Beta.Agents.Sessions.Events.New(ctx,
 		sessionID,
 		openai.BetaAgentSessionEventNewParams{
+			IdempotencyKey: openai.String(submissionKey),
 			Events: []openai.AgentSessionInputParamUnion{
 				{
 					OfParamAgentSessionInputMessage: &openai.AgentSessionInputParamAgentSessionInputMessage{
@@ -268,8 +313,9 @@ func sendMessage(ctx context.Context, client *openai.Client, sessionID, text str
 ```
 
 ```java
-// Pass your saved session ID and message to this helper.
-public static void sendMessage(OpenAIClient client, String sessionId, String text) {
+// Reuse the same submission key when retrying this message.
+public static void sendMessage(
+    OpenAIClient client, String sessionId, String text, String submissionKey) {
   client
       .beta()
       .agents()
@@ -278,6 +324,7 @@ public static void sendMessage(OpenAIClient client, String sessionId, String tex
       .create(
           EventCreateParams.builder()
               .sessionId(sessionId)
+              .idempotencyKey(submissionKey)
               .addEvent(
                   AgentSessionInputParam.AgentSessionInputMessage.builder()
                       .addInput(
@@ -290,10 +337,11 @@ public static void sendMessage(OpenAIClient client, String sessionId, String tex
 ```
 
 ```ruby
-# Pass your saved session ID and message to this helper.
-def send_message(client, session_id, text)
+# Reuse the same submission key when retrying this message.
+def send_message(client, session_id, text, submission_key)
   client.beta.agents.sessions.events.create(
     session_id,
+    idempotency_key: submission_key,
     events: [
       {
         type: "agent.session.input.message",
@@ -319,6 +367,7 @@ curl \
   "https://api.openai.com/v1/agents/sessions/$session_id/events" \
   -H "OpenAI-Beta: agents=v1" \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -H "Idempotency-Key: $submission_key" \
   -H "Content-Type: application/json" \
   -d '{
     "events": [
@@ -340,6 +389,8 @@ curl \
   }'
 ```
 
+
+Send the key in the `Idempotency-Key` header, and reuse it for automatic retries. If your application retries after a timeout or lost response, reuse the same key, session ID, and message. Generate a different key for each distinct submission, even when the message text is identical.
 
 For a combined send-and-stream example, see [Events and Items](https://developers.openai.com/api/docs/guides/agents-api/sessions/events#send-and-stream-a-task).
 

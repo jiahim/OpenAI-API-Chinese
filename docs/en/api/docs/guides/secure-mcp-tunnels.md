@@ -4,12 +4,12 @@
 
 Secure MCP Tunnel lets you connect private MCP servers to supported OpenAI products without opening inbound firewall ports or exposing those servers to the public internet. Run `tunnel-client` inside the network that can already reach your MCP server; it opens an outbound HTTPS path to OpenAI, pulls queued MCP work, forwards requests locally, and returns responses through the same tunnel.
 
-Secure MCP Tunnel supports private MCP connections, including developer-mode
-  testing. It does not support public plugin submission or distribution. Public
-  plugins require a stable, publicly reachable HTTPS MCP endpoint. If the MCP
-  server must stay private, expose a public HTTPS proxy that forwards requests
-  to it. See [public plugin submission](https://developers.openai.com/plugins/deploy/submission) for endpoint
-  and authentication requirements.
+Secure MCP Tunnel supports private MCP connections, including custom MCP
+  server testing. It does not support public plugin submission or distribution.
+  Public plugins require a stable, publicly reachable HTTPS MCP endpoint. If the
+  MCP server must stay private, expose a public HTTPS proxy that forwards
+  requests to it. See [public plugin submission](https://developers.openai.com/plugins/deploy/submission) for
+  endpoint and authentication requirements.
 
 ## What is an MCP tunnel?
 
@@ -57,14 +57,14 @@ You need:
 
 ## Permissions and access
 
-[Platform tunnel permissions](https://developers.openai.com/api/docs/guides/rbac) and ChatGPT developer-mode access are separate:
+[Platform tunnel permissions](https://developers.openai.com/api/docs/guides/rbac) and ChatGPT custom MCP server access are separate:
 
 - Creating or editing a tunnel requires Tunnels **Read** + **Manage**.
 - Running `tunnel-client` or selecting the tunnel while creating an app requires Tunnels **Read** + **Use**.
 - Tunnel permissions apply to a Platform organization. A Platform organization owner or RBAC administrator grants the tunnel role.
-- ChatGPT developer mode is a separate workspace permission. For Enterprise/Edu, a workspace admin grants developer-mode access; the user then enables it in **Settings → Security and login**. See the [developer-mode Help Center article](https://help.openai.com/en/articles/12584461-developer-mode-apps-and-full-mcp-connectors-in-chatgpt-beta) for plan-specific policy.
+- Adding and using custom MCP servers in ChatGPT remains subject to workspace permissions and security restrictions. See [Add custom MCP server](https://developers.openai.com/api/docs/guides/custom-mcp-server).
 
-Ask the target ChatGPT workspace admin for developer-mode access, and ask the target Platform organization owner/RBAC admin for tunnel permissions.
+Ask the target ChatGPT workspace admin for permission to add and use custom MCP servers, and ask the target Platform organization owner/RBAC admin for tunnel permissions.
 
 ## Associate tunnels with the right organizations and workspaces
 
@@ -135,7 +135,7 @@ Run `tunnel-client` in the same trust boundary that can already reach the privat
 
 ## Connect from ChatGPT
 
-Go to [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button to create a developer-mode app, and choose **Tunnel** under **Connection**. Select an available tunnel when ChatGPT lists it, or paste a valid `tunnel_id` if you already have one.
+Go to [ChatGPT Plugins](https://chatgpt.com/plugins), select the plus button, then **Add custom MCP server**, and choose **Tunnel** under **Connection**. Select an available tunnel when ChatGPT lists it, or paste a valid `tunnel_id` if you already have one. Configure authentication, review the risk warning, and select **I understand and want to continue**, then **Create as a plugin**.
 
 If the tunnel does not appear in ChatGPT, verify that the tunnel is associated with the target ChatGPT workspace, not only with a Platform organization, and that the app creator has Tunnels **Read** + **Use**.
 
@@ -218,7 +218,7 @@ Use this when you need to reach a small set of private REST endpoints without ex
 ## Where to configure it
 
 - Manage OpenAI-hosted MCP tunnel endpoints in [Platform tunnel settings](https://platform.openai.com/settings/organization/tunnels).
-- Use a tunnel when creating a developer-mode app at [ChatGPT Plugins](https://chatgpt.com/plugins).
+- Use a tunnel when [adding a custom MCP server](https://developers.openai.com/api/docs/guides/custom-mcp-server) at [ChatGPT Plugins](https://chatgpt.com/plugins).
 - For Codex or API flows, use the tunnel-backed MCP target exposed by the supported product surface.
 
 ## Next steps
@@ -238,16 +238,5 @@ Use this when you need to reach a small set of private REST endpoints without ex
     <figcaption class="mt-3 text-sm text-gray-600 dark:text-gray-400">
       Create and manage OpenAI-hosted MCP tunnel endpoints from Platform tunnel
       settings.
-    </figcaption>
-  </figure>
-  <figure>
-    [<img src="https://developers.openai.com/images/platform/guides/secure-mcp-tunnels/chatgpt-connectors-tunnel.png"
-        alt="Sanitized ChatGPT app creation screenshot with Tunnel selected."
-        loading="lazy"
-        class="w-full rounded-md border border-gray-200 dark:border-gray-800"
-      />](https://chatgpt.com/plugins)
-    <figcaption class="mt-3 text-sm text-gray-600 dark:text-gray-400">
-      Select Tunnel when connecting a ChatGPT developer-mode app to a private
-      MCP server.
     </figcaption>
   </figure>

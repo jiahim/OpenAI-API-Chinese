@@ -474,7 +474,7 @@ curl https://api.openai.com/v1/responses \
 
 ### Use checkpoints if needed
 
-Checkpoints are models you can use. We create a full model checkpoint for you at the end of each training epoch. They're useful in cases where your fine-tuned model improves early on but then memorizes the dataset instead of learning generalizable knowledge—called \_overfitting. Checkpoints provide versions of your customized model from various moments in the process.
+Checkpoints are models you can use. We create a full model checkpoint for you at the end of each training epoch. They're useful in cases where your fine-tuned model improves early on but then memorizes the dataset instead of learning generalizable knowledge—called overfitting. Checkpoints provide versions of your customized model from various moments in the process.
 
 
 

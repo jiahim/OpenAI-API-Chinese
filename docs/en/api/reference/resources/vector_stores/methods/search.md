@@ -81,7 +81,7 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
     Combine multiple filters using `and` or `or`.
 
-    - `filters: array of ComparisonFilter or unknown`
+    - `filters: array of ComparisonFilter or CompoundFilter`
 
       Array of filters to combine. Items can be `ComparisonFilter` or `CompoundFilter`.
 
@@ -89,7 +89,9 @@ Search a vector store for relevant chunks based on a query and file attributes f
 
         A filter used to compare a specified attribute key to a given value using a defined comparison operation.
 
-      - `unknown`
+      - `CompoundFilter object { filters, type }`
+
+        Combine multiple filters using `and` or `or`.
 
     - `type: "and" or "or"`
 
@@ -241,7 +243,7 @@ https://api.openai.com/v1/vector_stores/vs_abc123/search \
 ```json
 {
   "object": "vector_store.search_results.page",
-  "search_query": "What is the return policy?",
+  "search_query": ["What is the return policy?"],
   "data": [
     {
       "file_id": "file_123",

@@ -493,6 +493,7 @@ func main() {
 			OfString: openai.String("Write a very long novel about otters in space."),
 		},
 	})
+	defer stream.Close()
 	var cursor int64
 	var responseID string
 	for stream.Next() {

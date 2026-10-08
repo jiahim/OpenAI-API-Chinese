@@ -7,21 +7,70 @@ and command-line tools. OpenAI provisions and connects it; your application supp
 the task and retrieves the results. Choose a [self-hosted sandbox](https://developers.openai.com/api/docs/guides/agents-api/environments/self-hosted)
 when you need your own image, compute, or private network.
 
+For tasks that interact with websites through a browser, see
+[Computer use](https://developers.openai.com/api/docs/guides/agents-api/tools/computer-use).
+
 ## Configure the sandbox
 
-Set `environment.type` to `openai_hosted` and add only the settings your workload
-needs. The working directory is `/workspace`.
+Set `environment.type` to `openai_hosted` in your create-session request. Add
+only the settings your workload needs. The sandbox's working directory is
+`/workspace`.
+
+Choose the resources and network access your task needs with `container_size`
+and `network`. If you use an environment template, omitted settings inherit the
+template.
+
+### Prepare packages and files
+
+Use these settings to make dependencies and inputs available in the sandbox:
 
 - `packages`: Install Python, system, or global `npm` packages with `python`, `system`, or `npm` lists. Pin versions when needed, such as `pandas==2.2.3`.
-- `setup_commands`: Run ordered shell commands before the agent starts, such as `[{ "command": "mkdir -p reports" }]`. Each command has its own optional `cwd`, defaulting to `/workspace`.
 - `files`: [Supply input files](https://developers.openai.com/api/docs/guides/agents-api/environments/files#upload-files) by Files API ID or inline base64 content.
-- `env`: Set string-valued environment variables. Agent-generated code can read these values. IMPORTANT: For secrets, use [vault credentials](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults#use-vault-secrets-for-api-requests-from-a-sandbox) to keep the real values outside the sandbox. Runtime-reserved names, including `PATH`, `CODEX_*`, and `OPENAI_API_KEY`, are rejected.
-- `skills`, `plugins`, `capability_directories`: Add [skills](https://developers.openai.com/api/docs/guides/tools-skills#agents-api) and [plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins).
-- `environment_template_id`: [Reuse saved configuration](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins#reuse-a-hosted-plugin-setup) across sessions. Omitted settings inherit the template; network overrides cannot broaden its policy.
 
-Packages and input files are prepared before setup commands run. A nonzero setup
-exit status prevents the agent from starting. Use a setup command to check required
-dependencies or files. Templates save configuration, not a running workspace.
+### Run setup commands
+
+Use `setup_commands` to run shell commands in order before the agent starts. For
+example, `[{ "command": "mkdir -p reports" }]` creates a directory. Each command
+can set its own `cwd`; the default is `/workspace`.
+
+Packages and input files are prepared before setup commands run. Use a setup
+command to check required dependencies or files. A nonzero setup exit status
+prevents the agent from starting.
+
+### Set environment variables
+
+Use `env` to set string-valued environment variables. Agent-generated code can
+read these values.
+
+For secrets, use [vault credentials](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults#use-vault-secrets-for-api-requests-from-a-sandbox)
+to keep the real values outside the sandbox. Runtime-reserved names, including
+`PATH`, `CODEX_*`, and `OPENAI_API_KEY`, are rejected.
+
+### Choose a container size
+
+Set `environment.container_size` when creating a session to choose the CPU and
+memory available to your sandbox. Defaults to `medium`.
+
+| Size     | vCPU | Memory |
+| -------- | ---- | ------ |
+| `small`  | 1    | 1 GB   |
+| `medium` | 2    | 4 GB   |
+| `large`  | 4    | 16 GB  |
+
+For example, include this environment in your
+`POST /v1/agents/sessions` request to select `small`:
+
+```json
+{
+  "environment": {
+    "type": "openai_hosted",
+    "container_size": "small"
+  }
+}
+```
+
+The returned session reports the selected size in `environment.container_size`.
+This setting applies only to OpenAI-hosted sandboxes.
 
 ### Control network access
 
@@ -36,13 +85,30 @@ Do not include wildcards, protocols, paths, or ports. Subdomains and redirect
 destinations need their own entries. Hosted stdio MCP servers currently require
 `enabled` access; see [stdio MCP requirements](https://developers.openai.com/api/docs/guides/agents-api/tools/mcp#start-a-server-over-stdio).
 
+### Add skills and plugins
+
+Use `skills`, `plugins`, and `capability_directories` to add
+[skills](https://developers.openai.com/api/docs/guides/tools-skills#agents-api) and
+[plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins).
+
+### Reuse configuration across sessions
+
+Set `environment_template_id` to [reuse saved configuration](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins#reuse-a-hosted-plugin-setup).
+Omitted settings inherit the template. Network overrides cannot broaden its policy.
+Templates save configuration, not a running workspace.
+
 ### Check that setup succeeded
 
-The create-session response means setup has started. Retrieve
-`GET /v1/agents/environments/{environment_id}` using the session's `environment.id`:
-`provisioning` means setup is running; `connected` means setup succeeded.
-For `failed`, read `environment.error` in the `agent.session.environment.failed`
-event. Wait for `connected` before adding or listing live files.
+The create-session response means setup has started. To check its status, retrieve
+`GET /v1/agents/environments/{environment_id}` using the session's `environment.id`.
+
+| Status         | What to do                                                                |
+| -------------- | ------------------------------------------------------------------------- |
+| `provisioning` | Wait while setup runs.                                                    |
+| `connected`    | Setup succeeded. You can add or list live files.                          |
+| `failed`       | Read `environment.error` in the `agent.session.environment.failed` event. |
+
+Wait for `connected` before adding or listing live files.
 
 ## Files and lifetime
 
@@ -84,6 +150,7 @@ Create summary.json
 
 ```javascript
 import OpenAI from "openai";
+import { agentFileDestination } from "openai/helpers/beta/agents/filesystem";
 
 const client = new OpenAI();
 const stream = await client.beta.agents.sessions.create({
@@ -104,8 +171,18 @@ const stream = await client.beta.agents.sessions.create({
   stream: true,
 });
 
-for await (const event of stream) {
-  console.log(event);
+stream.withResultCollection();
+try {
+  for await (const event of stream) {
+    console.log(event);
+  }
+  const result = await stream.finalResult();
+  await client.beta.agents.sessions.artifacts.forResult(result).download({
+    path: "/workspace/outputs/summary.json",
+    to: agentFileDestination("summary.json"),
+  });
+} finally {
+  stream.controller.abort();
 }
 ```
 
@@ -130,9 +207,14 @@ stream = client.beta.agents.sessions.create(
     stream=True,
 )
 
-with stream:
+with stream.with_result_collection():
     for event in stream:
         print(event.model_dump_json())
+    result = stream.get_final_result()
+
+client.beta.agents.sessions.artifacts.for_result(result).download(
+    "/workspace/outputs/summary.json", to="summary.json"
+)
 ```
 
 ```go
@@ -141,6 +223,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/openai/openai-go/v3"
 )
@@ -160,11 +243,25 @@ func main() {
 		Input: openai.BetaAgentSessionNewParamsInputUnion{OfString: openai.String("Use Python to sum the amount column in /workspace/amounts.csv. Write a JSON object with the total to /workspace/outputs/summary.json, then read it back to verify it.")},
 	})
 	defer stream.Close()
-
+	openai.BetaAgentSessionWithResultCollection(stream)
 	for stream.Next() {
 		fmt.Println(stream.Current().RawJSON())
 	}
-	if err := stream.Err(); err != nil {
+
+	result, err := openai.BetaAgentSessionFinalResult(stream)
+	if err != nil {
+		panic(err)
+	}
+	destination, err := os.Create("summary.json")
+	if err != nil {
+		panic(err)
+	}
+	defer destination.Close()
+	_, err = client.Beta.Agents.Sessions.Artifacts.ForResult(result).Download(ctx, "/workspace/outputs/summary.json", destination)
+	if err != nil {
+		panic(err)
+	}
+	if err := destination.Close(); err != nil {
 		panic(err)
 	}
 }
@@ -172,9 +269,12 @@ func main() {
 
 ```java
 import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.helpers.beta.agents.AgentArtifactDownloads;
 import com.openai.models.beta.agents.EnvironmentParam;
 import com.openai.models.beta.agents.HostedEnvironmentFileParam;
 import com.openai.models.beta.agents.sessions.SessionCreateParams;
+import com.openai.services.beta.agents.AgentTurnResults;
+import java.nio.file.Path;
 
 public class HostedReport {
   public static void main(String[] args) throws Exception {
@@ -201,7 +301,11 @@ public class HostedReport {
             .build();
 
     try (var stream = client.beta().agents().sessions().createStreaming(params)) {
+      AgentTurnResults.withResultCollection(stream);
       stream.stream().forEach(System.out::println);
+      var result = AgentTurnResults.getFinalResult(stream);
+      AgentArtifactDownloads.forResult(client.beta().agents().sessions().artifacts(), result)
+          .download("/workspace/outputs/summary.json", Path.of("summary.json"));
     }
   }
 }
@@ -210,6 +314,7 @@ public class HostedReport {
 ```ruby
 require "openai"
 require "json"
+require "pathname"
 
 client = OpenAI::Client.new
 stream = client.beta.agents.sessions.create_streaming(
@@ -229,7 +334,14 @@ stream = client.beta.agents.sessions.create_streaming(
 )
 
 begin
+  stream.with_result_collection
   stream.each { |event| puts event.to_json }
+  result = stream.get_final_result
+  puts result.output_text
+  client.beta.agents.sessions.artifacts.for_result(result).download(
+    path: "/workspace/outputs/summary.json",
+    to: Pathname("summary.json")
+  )
 ensure
   stream.close
 end

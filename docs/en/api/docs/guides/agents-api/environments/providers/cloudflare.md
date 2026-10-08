@@ -4,7 +4,7 @@
 
 This guide uses **webhook-managed provisioning** with Cloudflare's reference Worker.
 
-See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/application_managed/cloudflare) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/webhook_managed/cloudflare) examples in the OpenAI Cookbook.
+See the [application-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/cloudflare/application_managed) and [webhook-managed](https://github.com/openai/openai-cookbook/tree/main/examples/agents_api/sandboxes/cloudflare/webhook_managed) examples in the OpenAI Cookbook.
 
 ## How it works
 

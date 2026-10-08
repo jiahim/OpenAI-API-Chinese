@@ -85,6 +85,68 @@ event = {
 ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+import java.util.Map;
+
+connection.send(
+    RealtimeClientEvent.ofSessionUpdate(
+        SessionUpdateEvent.builder()
+            .session(
+                RealtimeSessionCreateRequest.builder()
+                    .model("gpt-realtime-2.1")
+                    .addTool(
+                        RealtimeFunctionTool.builder()
+                            .type(RealtimeFunctionTool.Type.FUNCTION)
+                            .name("lookup_order")
+                            .description("Look up an order by its order number.")
+                            .parameters(
+                                JsonValue.from(
+                                    Map.of(
+                                        "type",
+                                        "object",
+                                        "properties",
+                                        Map.of(
+                                            "order_number",
+                                            Map.of(
+                                                "type",
+                                                "string",
+                                                "description",
+                                                "The customer-facing order number.")),
+                                        "required",
+                                        List.of("order_number"))))
+                            .build())
+                    .toolChoice(com.openai.models.responses.ToolChoiceOptions.AUTO)
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandSessionUpdate(new RealtimeConversationSessionOptions
+{
+    Model = "gpt-realtime-2.1",
+    Tools =
+    {
+        new RealtimeFunctionTool("lookup_order")
+        {
+            FunctionDescription = "Look up an order by its order number.",
+            FunctionParameters = BinaryData.FromObjectAsJson(new { type = "object", properties = new { order_number = new { type = "string", description = "The customer-facing order number." } }, required = (string[])["order_number"] })
+        }
+    },
+    ToolChoice = RealtimeDefaultToolChoice.Auto
+}), timeout.Token);
+```
+
 ```ruby
 connection.session.update(
   type: :realtime,
@@ -149,6 +211,81 @@ event = {
 
 ws.send(json.dumps(event))
 ws.send(json.dumps({"type": "response.create"}))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.core.JsonValue;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import com.openai.models.responses.ToolChoiceFunction;
+import com.openai.models.responses.ToolChoiceOptions;
+import java.util.Map;
+
+static void sendFunctionCallOutput(RealtimeConnection connection, String callId)
+    throws Exception {
+  send(
+      connection,
+      RealtimeClientEvent.ofConversationItemCreate(
+          ConversationItemCreateEvent.builder()
+              .item(
+                  RealtimeConversationItemFunctionCallOutput.builder()
+                      .callId(callId)
+                      .output("{\"status\":\"shipped\",\"delivery_date\":\"2026-05-09\"}")
+                      .build())
+              .build()));
+  send(
+      connection,
+      RealtimeClientEvent.ofResponseCreate(
+          ResponseCreateEvent.builder()
+              .response(
+                  RealtimeResponseCreateParams.builder()
+                      .metadata(
+                          RealtimeResponseCreateParams.Metadata.builder()
+                              .putAdditionalProperty(
+                                  "topic", JsonValue.from("lookup_order_followup"))
+                              .build())
+                      .toolChoice(ToolChoiceOptions.NONE)
+                      .build())
+              .build()));
+}
+
+// Retry only explicit admission rejections; these guarantee nothing was sent.
+private static void send(RealtimeConnection connection, RealtimeClientEvent event)
+    throws Exception {
+  long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+  while (true) {
+    try {
+      connection.send(event);
+      return;
+    } catch (com.openai.core.http.WebSocketWriteNotAttempted.Busy busy) {
+      if (System.nanoTime() >= deadline) throw busy;
+      Thread.sleep(10);
+    }
+  }
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+internal static async Task SendFunctionCallOutputAsync(RealtimeSessionClient session, string callId, CancellationToken cancellationToken)
+{
+    string output = System.Text.Json.JsonSerializer.Serialize(new { status = "shipped", delivery_date = "2026-05-09" });
+    await session.SendCommandAsync(new RealtimeClientCommandConversationItemCreate(new RealtimeFunctionCallOutputItem(callId, output)), cancellationToken);
+    await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+    {
+        ResponseOptions = new()
+        {
+            Metadata = new Dictionary<string, BinaryData> { ["topic"] = BinaryData.FromObjectAsJson("lookup_order_followup") },
+            ToolChoice = RealtimeDefaultToolChoice.None
+        }
+    }, cancellationToken);
+}
 ```
 
 ```ruby
@@ -223,6 +360,65 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+connection.send(
+    RealtimeClientEvent.ofSessionUpdate(
+        SessionUpdateEvent.builder()
+            .session(
+                RealtimeSessionCreateRequest.builder()
+                    .model("gpt-realtime-2.1")
+                    .addOutputModality(RealtimeSessionCreateRequest.OutputModality.TEXT)
+                    .addTool(
+                        RealtimeToolsConfigUnion.Mcp.builder()
+                            .serverLabel("openai_docs")
+                            .serverUrl("https://developers.openai.com/mcp")
+                            .allowedToolsOfMcp(
+                                List.of("search_openai_docs", "fetch_openai_doc"))
+                            .requireApproval(
+                                RealtimeToolsConfigUnion.Mcp.RequireApproval
+                                    .McpToolApprovalSetting.NEVER)
+                            .build())
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandSessionUpdate(new RealtimeConversationSessionOptions
+{
+    Model = "gpt-realtime-2.1",
+    OutputModalities =
+    {
+        RealtimeOutputModality.Text
+    },
+    Tools =
+    {
+        new RealtimeMcpTool("openai_docs", new Uri("https://developers.openai.com/mcp"))
+        {
+            AllowedTools = new()
+            {
+                ToolNames =
+                {
+                    "search_openai_docs",
+                    "fetch_openai_doc"
+                }
+            },
+            ToolCallApprovalPolicy = RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval
+        }
+    }
+}), timeout.Token);
 ```
 
 ```ruby
@@ -309,6 +505,68 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+connection.send(
+    RealtimeClientEvent.ofSessionUpdate(
+        SessionUpdateEvent.builder()
+            .session(
+                RealtimeSessionCreateRequest.builder()
+                    .model("gpt-realtime-1.5")
+                    .addOutputModality(RealtimeSessionCreateRequest.OutputModality.TEXT)
+                    .addTool(
+                        RealtimeToolsConfigUnion.Mcp.builder()
+                            .serverLabel("google_calendar")
+                            .connectorId(
+                                RealtimeToolsConfigUnion.Mcp.ConnectorId
+                                    .CONNECTOR_GOOGLECALENDAR)
+                            .authorization(System.getenv("OPENAI_CONNECTOR_AUTHORIZATION"))
+                            .allowedToolsOfMcp(List.of("search_events", "read_event"))
+                            .requireApproval(
+                                RealtimeToolsConfigUnion.Mcp.RequireApproval
+                                    .McpToolApprovalSetting.NEVER)
+                            .build())
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandSessionUpdate(new RealtimeConversationSessionOptions
+{
+    Model = "gpt-realtime-1.5",
+    OutputModalities =
+    {
+        RealtimeOutputModality.Text
+    },
+    Tools =
+    {
+        new RealtimeMcpTool("google_calendar", RealtimeMcpToolConnectorId.GoogleCalendar)
+        {
+            AuthorizationToken = Environment.GetEnvironmentVariable("OPENAI_CONNECTOR_AUTHORIZATION")!,
+            AllowedTools = new()
+            {
+                ToolNames =
+                {
+                    "search_events",
+                    "read_event"
+                }
+            },
+            ToolCallApprovalPolicy = RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval
+        }
+    }
+}), timeout.Token);
 ```
 
 ```ruby
@@ -619,6 +877,62 @@ def approve_mcp_request(ws, approval_request_id):
     ws.send(json.dumps(event))
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import com.openai.models.responses.ToolChoiceOptions;
+
+// Replace https://mcp.example.com/mcp with your company's MCP server URL.
+
+static void approveMcpRequest(RealtimeConnection connection, String approvalRequestId)
+    throws Exception {
+  send(
+      connection,
+      RealtimeClientEvent.ofConversationItemCreate(
+          ConversationItemCreateEvent.builder()
+              .item(
+                  RealtimeMcpApprovalResponse.builder()
+                      .id("mcp_approval_" + approvalRequestId)
+                      .approvalRequestId(approvalRequestId)
+                      .approve(true)
+                      .build())
+              .build()));
+}
+
+// Retry only explicit admission rejections; these guarantee nothing was sent.
+private static void send(RealtimeConnection connection, RealtimeClientEvent event)
+    throws Exception {
+  long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+  while (true) {
+    try {
+      connection.send(event);
+      return;
+    } catch (com.openai.core.http.WebSocketWriteNotAttempted.Busy busy) {
+      if (System.nanoTime() >= deadline) throw busy;
+      Thread.sleep(10);
+    }
+  }
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+// Replace https://mcp.example.com/mcp with your company's MCP server URL.
+
+internal static async Task ApproveMcpRequestAsync(RealtimeSessionClient session, string approvalRequestId, CancellationToken cancellationToken)
+{
+    await session.SendCommandAsync(new RealtimeClientCommandConversationItemCreate(new RealtimeMcpToolCallApprovalResponseItem(approvalRequestId, true)
+    {
+        Id = $"mcp_approval_{approvalRequestId}"
+    }), cancellationToken);
+}
+```
+
 ```ruby
 # Use the ID from the received MCP approval-request item.
 approval_request_id = item.id
@@ -702,6 +1016,87 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+connection.send(
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .metadata(
+                        RealtimeResponseCreateParams.Metadata.builder()
+                            .putAdditionalProperty(
+                                "topic", com.openai.core.JsonValue.from("mcp_initial"))
+                            .build())
+                    .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
+                    .addInput(
+                        RealtimeConversationItemUserMessage.builder()
+                            .addContent(
+                                RealtimeConversationItemUserMessage.Content.builder()
+                                    .type(
+                                        RealtimeConversationItemUserMessage.Content.Type
+                                            .INPUT_TEXT)
+                                    .text(
+                                        "Which transport should I use for browser clients in the Realtime API?")
+                                    .build())
+                            .build())
+                    .addTool(
+                        RealtimeResponseCreateMcpTool.builder()
+                            .serverLabel("openai_docs")
+                            .serverUrl("https://developers.openai.com/mcp")
+                            .allowedToolsOfMcp(
+                                List.of("search_openai_docs", "fetch_openai_doc"))
+                            .requireApproval(
+                                RealtimeResponseCreateMcpTool.RequireApproval
+                                    .McpToolApprovalSetting.NEVER)
+                            .build())
+                    .build())
+            .build()));
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = new()
+    {
+        Metadata = new Dictionary<string, BinaryData> { ["topic"] = BinaryData.FromObjectAsJson("mcp_initial") },
+        OutputModalities =
+        {
+            RealtimeOutputModality.Text
+        },
+        InputItems =
+        {
+            RealtimeItem.CreateUserMessageItem("Which transport should I use for browser clients in the Realtime API?")
+        },
+        Tools =
+        {
+            new RealtimeMcpTool("openai_docs", new Uri("https://developers.openai.com/mcp"))
+            {
+                AllowedTools = new()
+                {
+                    ToolNames =
+                    {
+                        "search_openai_docs",
+                        "fetch_openai_doc"
+                    }
+                },
+                ToolCallApprovalPolicy = RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval
+            }
+        }
+    }
+}, timeout.Token);
 ```
 
 ```ruby
@@ -803,6 +1198,88 @@ event = {
 }
 
 ws.send(json.dumps(event))
+```
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.List;
+
+send(
+    connection,
+    RealtimeClientEvent.ofResponseCreate(
+        ResponseCreateEvent.builder()
+            .response(
+                RealtimeResponseCreateParams.builder()
+                    .metadata(
+                        RealtimeResponseCreateParams.Metadata.builder()
+                            .putAdditionalProperty(
+                                "topic", com.openai.core.JsonValue.from("mcp_initial"))
+                            .build())
+                    .addOutputModality(RealtimeResponseCreateParams.OutputModality.TEXT)
+                    .addInput(
+                        RealtimeConversationItemUserMessage.builder()
+                            .addContent(
+                                RealtimeConversationItemUserMessage.Content.builder()
+                                    .type(
+                                        RealtimeConversationItemUserMessage.Content.Type
+                                            .INPUT_TEXT)
+                                    .text("Check my schedule for this afternoon.")
+                                    .build())
+                            .build())
+                    .addTool(
+                        RealtimeResponseCreateMcpTool.builder()
+                            .serverLabel("google_calendar")
+                            .build())
+                    .build())
+            .build()));
+
+// Retry only explicit admission rejections; these guarantee nothing was sent.
+private static void send(RealtimeConnection connection, RealtimeClientEvent event)
+    throws Exception {
+  long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
+  while (true) {
+    try {
+      connection.send(event);
+      return;
+    } catch (com.openai.core.http.WebSocketWriteNotAttempted.Busy busy) {
+      if (System.nanoTime() >= deadline) throw busy;
+      Thread.sleep(10);
+    }
+  }
+}
+```
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+await session.SendCommandAsync(new RealtimeClientCommandResponseCreate
+{
+    ResponseOptions = new()
+    {
+        Metadata = new Dictionary<string, BinaryData> { ["topic"] = BinaryData.FromObjectAsJson("mcp_initial") },
+        OutputModalities =
+        {
+            RealtimeOutputModality.Text
+        },
+        InputItems =
+        {
+            RealtimeItem.CreateUserMessageItem("Check my schedule for this afternoon.")
+        },
+        Tools =
+        {
+            new RealtimeMcpTool
+            {
+                ServerLabel = "google_calendar"
+            }
+        }
+    }
+}, timeout.Token);
 ```
 
 ```ruby

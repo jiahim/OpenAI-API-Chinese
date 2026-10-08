@@ -303,6 +303,8 @@ It is possible to use WebSocket in browsers with an ephemeral API token as shown
     { value: "ws", label: "ws module (Node.js)" },
     { value: "python", label: "websocket-client (Python)" },
     { value: "ruby", label: "OpenAI SDK (Ruby)" },
+    { value: "java", label: "OpenAI SDK (Java)" },
+    { value: "csharp", label: "OpenAI SDK (.NET)" },
     { value: "websocket", label: "WebSocket (browsers)" },
   ]}
 >
@@ -404,6 +406,95 @@ client.realtime.connect(model: "gpt-realtime-2.1") do |connection|
   puts("Connected to the Realtime API: #{connection.url.host}")
   connection.each { |event| puts("Received event: #{event.type}") }
 end
+```
+
+  
+
+  
+
+    
+OpenAI SDK (Java)
+
+    
+
+      Use Java 17 or later with `com.openai:openai-java:4.75.1`.
+    
+
+    Connect with the OpenAI SDK (Java)
+
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.RealtimeConnection;
+import com.openai.helpers.RealtimeWebSocketOptions;
+import com.openai.models.realtime.*;
+
+var http = OkHttpClient.builder().build();
+var options =
+    ClientOptions.builder()
+        .fromEnv()
+        .httpClient(http)
+        .putHeader("OpenAI-Safety-Identifier", "hashed-user-id")
+        .build();
+try (http;
+    var connection =
+        RealtimeConnection.connect(
+            options,
+            RealtimeWebSocketOptions.builder().model("gpt-realtime-2.1").build())) {
+  while (true) {
+    var event = connection.receive();
+    if (event.error().isPresent())
+      throw new IllegalStateException(event.error().orElseThrow().toString());
+    if (event.sessionCreated().isPresent()) {
+      System.out.println("Connected to server.");
+      System.out.println(event);
+      break;
+    }
+  }
+}
+```
+
+  
+
+  
+
+    
+OpenAI SDK (.NET)
+
+    
+
+      Install the SDK with 
+      `dotnet add package OpenAI --version 2.14.0`. The Realtime API
+      uses experimental SDK types; the example includes the required warning
+      directive.
+    
+
+    Connect with the OpenAI SDK (.NET)
+
+```csharp
+using OpenAI.Realtime;
+
+#pragma warning disable OPENAI002
+
+string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+RealtimeClient client = new(key);
+
+RealtimeSessionClientOptions options = new();
+options.Headers["OpenAI-Safety-Identifier"] = "hashed-user-id";
+using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(30));
+using RealtimeSessionClient session = await client.StartConversationSessionAsync("gpt-realtime-2.1", options, cancellationToken: timeout.Token);
+await foreach (RealtimeServerUpdate update in session.ReceiveUpdatesAsync(timeout.Token))
+{
+    if (update is RealtimeServerUpdateError error)
+        throw new InvalidOperationException(error.Error.Message);
+    if (update is RealtimeServerUpdateSessionCreated)
+    {
+        Console.WriteLine("Connected to server.");
+        Console.WriteLine(System.ClientModel.Primitives.ModelReaderWriter.Write(update));
+        return;
+    }
+}
+throw new InvalidOperationException("Connection closed before session creation.");
 ```
 
   

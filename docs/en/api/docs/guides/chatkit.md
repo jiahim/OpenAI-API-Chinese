@@ -188,7 +188,9 @@ server.start
 
    See the [chatkit-js repo](https://github.com/openai/chatkit-js) on GitHub.
 
-   chatkit.js
+   For Go, run `go get github.com/openai/openai-go/v3@v3.70.0`. For Java, add the Maven dependency `com.openai:openai-java:4.75.1`.
+
+   Create a ChatKit session token
 
 ```javascript
 export default async function getChatKitSessionToken(deviceId) {
@@ -223,6 +225,50 @@ export default async function getChatKitSessionToken(deviceId) {
   }
 
   return client_secret;
+}
+```
+
+```go
+// Call after authenticating the request. Pass the user's stable ID from your
+// server-side authentication context, never a client-supplied device ID.
+func getChatKitSessionToken(ctx context.Context, client openai.Client, authenticatedUserID string) (string, error) {
+	// Replace this illustrative workflow ID with your published workflow.
+	session, err := client.Beta.ChatKit.Sessions.New(ctx, openai.BetaChatKitSessionNewParams{
+		User: authenticatedUserID,
+		Workflow: openai.ChatSessionWorkflowParam{
+			ID: "wf_68df4b13b3588190a09d19288d4610ec0df388c3983f58d1",
+		},
+	})
+	if err != nil {
+		return "", err
+	}
+	return session.ClientSecret, nil
+}
+```
+
+```java
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.beta.chatkit.sessions.*;
+import com.openai.models.beta.chatkit.threads.ChatSessionWorkflowParam;
+
+// Call after authenticating the request. Pass the user's stable ID from your
+// server-side authentication context, never a client-supplied device ID.
+static String getChatKitSessionToken(OpenAIClient client, String authenticatedUserId) {
+  // Replace this illustrative workflow ID with your published workflow.
+  return client
+      .beta()
+      .chatkit()
+      .sessions()
+      .create(
+          SessionCreateParams.builder()
+              .user(authenticatedUserId)
+              .workflow(
+                  ChatSessionWorkflowParam.builder()
+                      .id("wf_68df4b13b3588190a09d19288d4610ec0df388c3983f58d1")
+                      .build())
+              .build())
+      .clientSecret();
 }
 ```
 

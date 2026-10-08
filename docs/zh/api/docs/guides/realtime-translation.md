@@ -1,36 +1,36 @@
-# Realtime 翻译
+# Realtime translation
 
-> 完整的文档索引请参阅 [llms.txt](/llms.txt). 各文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 来获取。
+> 如需查看完整文档索引，请参阅 [llms.txt](/llms.txt)。文档页面的 Markdown 版本可通过在页面 URL 末尾追加 `.md` 获取。
 
-实时翻译可让你将源音频流式传入专门的翻译会话，并在说话者仍在讲话时接收翻译后的音频以及转录增量。可将其用于实时口译、多语言通话、广播、会议、课程和视频会议室。
+实时翻译可让你将源音频流式传输到专用的翻译会话中，并在说话人仍在讲话时接收翻译后的音频和转录增量。适用于现场口译、多语言通话、广播、会议、课程和视频会议场景。
 
-使用 [`gpt-realtime-translate`](https://developers.openai.com/api/docs/models/gpt-realtime-translate) 当你的应用需要翻译人类所说内容时，请使用。如果你需要一个能回答问题、调用工具并管理对话的助手，请使用 [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1) 配合标准的 Realtime 会话。
+当你的应用需要翻译人类说话内容时， [`gpt-realtime-translate`](https://developers.openai.com/api/docs/models/gpt-realtime-translate) 使用。如果你的需求是一个能回答问题、调用工具并管理对话的助手，请改用 [`gpt-realtime-2.1`](https://developers.openai.com/api/docs/models/gpt-realtime-2.1) 搭配标准的 Realtime 会话。
 
-## 翻译会话的差异
+## 翻译会话的差异之处
 
-实时翻译会话使用的架构与语音智能体会话不同：
+实时翻译会话使用的是与语音智能体会话不同的架构：
 
 | Voice-智能体 会话                         | 翻译会话                              |
 | ------------------------------------------- | ------------------------------------------------ |
 | 连接到 `/v1/realtime`.                 | 连接到 `/v1/realtime/translations`.         |
 | 模型充当助手。             | 模型充当口译员。                |
-| 使用对话与响应生命周期。 | 从输入音频持续流式传输。        |
-| 可以调用工具并生成助手轮次。 | 输出翻译后的音频和转录增量。 |
-| 你可以调用 `response.create`.             | 你不能调用 `response.create`.                |
+| 使用对话和响应生命周期。 | 持续从传入音频流式传输。        |
+| 可以调用工具并生成助手轮次。 | 生成翻译后的音频和转录增量。 |
+| 你可以调用 `response.create`.             | 你不调用 `response.create`.                |
 
-翻译从音频流本身开始。持续追加音频，包括短语之间的静音部分，并即时处理到达的输出事件。
+翻译从音频流本身开始。持续追加音频，包括短语之间的静音，并在输出事件到达时进行处理。
 
 ## Choose a transport
 
-当浏览器采集或播放音频时使用 WebRTC。WebRTC 会将源音频作为媒体轨道发送，并将译后语音作为远端音频轨道接收，因此你无需手动重采样或播放 PCM 片段。
+当浏览器采集或播放音频时使用 WebRTC。WebRTC 将源音频作为媒体轨道发送，并将翻译后的语音作为远端音频轨道接收，因此你无需手动重采样或播放 PCM 数据块。
 
-当你的服务器已经接收到原始音频时使用 WebSockets，例如 Twilio Media Streams、SIP 媒体、广播接入或媒体 worker。使用 WebSockets 时，发送 base64 编码的 24 kHz PCM16 音频，并自行播放返回的音频增量。
+当你的服务器已经接收原始音频时（例如 Twilio Media Streams、SIP 媒体、广播接入或媒体工作节点），可使用 WebSockets。使用 WebSockets 时，发送 base64 编码的 24 kHz PCM16 音频，并自行播放返回的音频增量。
 
-## 创建浏览器 WebRTC 会话
+## 创建一个浏览器 WebRTC 会话
 
-对于浏览器应用，请在你的服务器上创建一个短时效的客户端密钥。不要在浏览器中暴露你的标准 API 密钥。
+对于浏览器应用，请在你的服务端创建一个短时效的客户端密钥。不要在浏览器中暴露你的标准 API 密钥。
 
-创建翻译客户端密钥
+创建一个翻译客户端密钥
 
 ```javascript
 app.post("/session", async (req, res) => {
@@ -61,7 +61,7 @@ app.post("/session", async (req, res) => {
 ```
 
 
-在浏览器中，采集音频、创建对等连接，并将 SDP offer 发送到翻译通话接口：
+在浏览器中，采集音频、建立对等连接，并将 SDP offer 发送到翻译通话接口：
 
 连接浏览器翻译通话
 
@@ -121,9 +121,11 @@ await pc.setRemoteDescription({
 
 ## 创建 WebSocket 会话
 
-连接到专用翻译端点，并在 URL 中选择模型：
+连接到专用翻译端点并在 URL 中选择模型：
 
-运行此示例前，请先安装 `ws` 的 Node.js 版本， `websocket-client` 的 Python 版本，或 `async-websocket` 的 Ruby 版本（`gem install async-websocket`).
+运行此示例前，请先安装 `ws` （Node.js）、 `websocket-client` （Python）或 `async-websocket` （Ruby）（`gem install async-websocket`）。对于 Java，请添加 Maven 依赖 `com.openai:openai-java:4.75.1`.
+
+Java 示例分别介绍了连接设置、语言配置和音频输入。它们并未展示完整的翻译工作流：Java SDK 支持接收事件和结束会话，但本指南并未包含这些步骤的 Java 示例。请参考下方的 Node.js 或 Python 示例以了解完整的工作流。
 
 连接到翻译会话
 
@@ -155,6 +157,41 @@ ws.connect(
 )
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.TranslationConnection;
+import com.openai.helpers.TranslationWebSocketOptions;
+import com.openai.models.realtime.*;
+
+var http = OkHttpClient.builder().build();
+var options =
+    ClientOptions.builder()
+        .fromEnv()
+        .httpClient(http)
+        .putHeader("OpenAI-Safety-Identifier", "hashed-user-id")
+        .build();
+try (http;
+    var connection =
+        TranslationConnection.connect(
+            options,
+            TranslationWebSocketOptions.builder()
+                .model("gpt-realtime-translate")
+                .sendTimeout(java.time.Duration.ofSeconds(30))
+                .build())) {
+  while (true) {
+    var event = connection.receive();
+    if (event.error().isPresent())
+      throw new IllegalStateException(event.error().orElseThrow().toString());
+    if (event.sessionCreated().isPresent()) {
+      System.out.println("Connected to translation session.");
+      System.out.println(event);
+      break;
+    }
+  }
+}
+```
+
 ```ruby
 require "async"
 require "async/http/endpoint"
@@ -180,7 +217,9 @@ end
 ```
 
 
-对于 Ruby，请将以下配置和 audio-append 代码片段插入 `Async::WebSocket::Client.connect` 块内，位置在会话创建检查之后、该块结束之前。在发送音频和接收翻译事件期间保持连接处于打开状态。
+对于 Ruby，请在 `Async::WebSocket::Client.connect` 块内、session-created 检查之后、块结束之前插入以下配置和音频追加代码片段。发送音频和接收翻译事件期间请保持连接处于打开状态。
+
+Java 连接示例在其 `try` 块结束时关闭套接字。Java 配置和音频输入示例需要一个保持打开的 `TranslationConnection`；在发送音频和接收输出期间请保持其打开。在离开该块之前，请按 `session.closed` 中所述通过 [关闭 WebSocket 会话](#close-a-websocket-session).
 
 在套接字打开后配置目标语言：
 
@@ -222,6 +261,29 @@ ws.send(
 )
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.TranslationConnection;
+import com.openai.helpers.TranslationWebSocketOptions;
+import com.openai.models.realtime.*;
+
+connection.send(
+    RealtimeTranslationClientEvent.ofSessionUpdate(
+        RealtimeTranslationSessionUpdateEvent.builder()
+            .session(
+                RealtimeTranslationSessionUpdateRequest.builder()
+                    .audio(
+                        RealtimeTranslationSessionUpdateRequest.Audio.builder()
+                            .output(
+                                RealtimeTranslationSessionUpdateRequest.Audio.Output.builder()
+                                    .language("es")
+                                    .build())
+                            .build())
+                    .build())
+            .build()));
+```
+
 ```ruby
 connection.write(JSON.generate(type: "session.update", session: { audio: { output: { language: "es" } } }))
 connection.flush
@@ -252,6 +314,23 @@ ws.send(
 )
 ```
 
+```java
+import com.openai.client.okhttp.OkHttpClient;
+import com.openai.core.ClientOptions;
+import com.openai.helpers.TranslationConnection;
+import com.openai.helpers.TranslationWebSocketOptions;
+import com.openai.models.realtime.*;
+import java.util.Base64;
+
+// Call for each PCM16, 24 kHz, mono chunk supplied by your audio source.
+static void appendAudio(TranslationConnection connection, byte[] pcmAudio) {
+  String base64Pcm16 = Base64.getEncoder().encodeToString(pcmAudio);
+  connection.send(
+      RealtimeTranslationClientEvent.ofSessionInputAudioBufferAppend(
+          RealtimeTranslationInputAudioBufferAppendEvent.builder().audio(base64Pcm16).build()));
+}
+```
+
 ```ruby
 require "base64"
 
@@ -266,7 +345,7 @@ end
 
 监听翻译后的音频和转录文本：
 
-监听翻译后的音频和转录文本
+监听翻译后的音频和转写
 
 ```javascript
 ws.on("message", (data) => {
@@ -303,9 +382,9 @@ while True:
 
 ## 关闭 WebSocket 会话
 
-当你的源音频流结束时，在关闭 WebSocket 之前发送一个 [`session.close`](https://developers.openai.com/api/reference/resources/realtime/translation-client-events#session-close) 事件。该事件会通知服务端刷新待处理的输入音频、发出剩余的翻译音频与转录输出，然后发送一个 `session.closed` 事件。 `session.close` 事件仅在翻译会话中受支持。
+当你的源流结束时，在关闭 WebSocket 之前发送一个 [`session.close`](https://developers.openai.com/api/reference/resources/realtime/translation-client-events#session-close) 事件。该事件会指示服务刷新待处理的输入音频，发出所有剩余的翻译音频和转录输出，然后发送一个 `session.closed` 事件。 `session.close` 事件仅在翻译会话中受支持。
 
-在你发送 `session.close`，之后，停止追加音频，并照常在接收循环中继续读取事件，直到你收到 `session.closed`。立即关闭套接字会导致会话中仍在排出的翻译输出丢失。
+在你发送 `session.close`，之后，停止追加音频，并在常规接收循环中继续读取事件，直到收到 `session.closed`。立即关闭套接字可能会丢弃会话中仍在排出的翻译输出。
 
 关闭翻译会话
 
@@ -383,51 +462,51 @@ while True:
 ```
 
 
-## 构建边听边译翻译
+## 构建跟唱翻译
 
-当某个源说话者或音频流需要为受众提供翻译后的音频时，可使用“边听边译”（listen-along）翻译。示例场景包括直播流、会议演讲、网络研讨会、财报电话会议、讲座以及视频。
+当某个源说话者或音频流需要为受众提供翻译音频时，使用边听边译。例如直播、会议演讲、网络研讨会、财报电话会议、讲座和视频。
 
-典型架构如下：
+典型的架构是：
 
 ```text
 source audio -> translation session -> translated audio + subtitles
 ```
 
-为每个目标语言创建一个翻译会话。如果同一段英语源内容需要同时输出西班牙语和法语，则需分别创建一个英译西会话和一个英译法会话。
+为每种目标语言创建一个翻译会话。如果同一段英文源需要西班牙语和法语输出，则分别创建一个英语到西班牙语的会话和一个英语到法语的会话。
 
-对于浏览器端的“边听边译”应用，使用 `getDisplayMedia()`，捕获标签页音频，通过 WebRTC 将其发送出去，并播放远端的翻译音频轨道。对于生产级广播，可将翻译运行在服务端媒体工作线程中，并向听众发布翻译后的音频轨道或字幕。
+对于浏览器端的边听边译应用，使用 `getDisplayMedia()`，捕获标签页音频，通过 WebRTC 发送，并播放远端的翻译音频轨道。对于生产级广播，在服务端媒体工作进程中运行翻译，并将翻译后的音频轨道或字幕发布给听众。
 
 ## 构建对话式翻译
 
-当两位或多位参与者跨语言交流时使用对话翻译。示例包括支持通话、销售通话、辅导和视频会议。
+当两个或更多参与者跨语言交谈时，使用会话翻译。示例包括客服通话、销售通话、辅导和视频会议室。
 
-保持各参与者的音轨相互独立。将多个说话者混合为单一流会加大处理说话人身份、说话人字幕以及重叠语音的难度。
+保持各参与者的音轨相互独立。将多个说话者混合到一条流中，会增加处理说话者身份、说话者字幕以及重叠语音的难度。
 
-对于双人通话，为每个方向各创建一个翻译会话：
+对于两人通话，每个方向创建一个翻译会话：
 
 ```text
 Caller A audio -> translate into Caller B language -> play to Caller B
 Caller B audio -> translate into Caller A language -> play to Caller A
 ```
 
-对于群组房间，会话数量取决于活跃说话者和目标语言数量：
+对于群组会议室，会话数量取决于活跃说话者和目标语言：
 
 ```text
 translation sessions ~= active source speaker tracks x distinct target languages
 ```
 
-对于小型房间，每个听众可以在浏览器侧为其希望翻译的远端说话者创建翻译附属进程。对于较大的房间，请使用 服务端 参与者或媒体工作者，该参与者或工作者只需订阅每个源说话者一次，并为每个目标语言创建一个翻译会话，然后重新发布翻译后的音轨。
+对于小型会议室，每个听众可以为其希望翻译的远端说话者在浏览器端创建翻译附属进程。对于更大的会议室，请使用订阅每个源说话者一次、为每种目标语言创建一个翻译会话，并重新发布翻译后音轨的服务端参与者或媒体工作进程。
 
-## Test quality and latency
+## 测试质量与延迟
 
-使用真实音频和双语审校来测试翻译效果。自动化指标可以提供帮助，但无法捕捉用户注意到的每一个错误。
+使用真实音频和双语审阅进行翻译测试。自动化指标可以提供帮助，但无法捕捉用户注意到的每一个错误。
 
 测试：
 
 - 语言对质量；
 - 姓名、数字、日期、货币和电话号码；
-- 领域专业术语；
-- 语码转换和多语言混合对话；
+- 特定领域术语；
+- 语码转换和多语言对话；
 - 口音、快速语速和重叠语音；
 - 首次翻译音频延迟；
 - 语句结束延迟；
@@ -435,24 +514,24 @@ translation sessions ~= active source speaker tracks x distinct target languages
 - 声音一致性；
 - 重连行为。
 
-如果你的用例依赖于确切的名称或领域术语，请在发布前构建一个标准答案集，并人工复核失败案例。
+如果你的用例依赖确切的名称或领域术语，请在发布前构建一个黄金集，并手动检查失败案例。
 
-## 生产检查清单
+## 生产环境检查清单
 
-- 浏览器端媒体选择 WebRTC，服务端媒体选择 WebSockets。
+- 为浏览器媒体选择 WebRTC，为服务端媒体选择 WebSockets。
 - 使用专用 `/v1/realtime/translations` 端点。
-- 持续流式传输音频，包括短语之间的静音部分。
+- 持续流式传输音频，包括短语之间的静音。
 - 使用 `session.close` 并等待 `session.closed` 后再关闭 WebSocket 会话。
-- 为对话式翻译保留独立的说话人音轨。
-- 每种输出语言使用一个会话。
-- 在需要时同时渲染源语言和目标语言转录。
-- 提供原始音频、翻译音频、字幕、静音和音量的控制。
-- 展示重连中、延迟和不可用状态。
+- 为对话式翻译保持扬声器声道独立。
+- 每个输出语言使用一个会话。
+- 在有用时同时渲染源语言和目标语言转录。
+- 提供原始音频、翻译后音频、字幕、静音和音量控制。
+- 呈现重连中、延迟和不可用的状态。
 - 将延迟与翻译质量分开追踪。
 
 ## 相关指南
 
-[实时与音频概述
+[实时和音频概述
 
 
 
@@ -470,7 +549,7 @@ translation sessions ~= active source speaker tracks x distinct target languages
 
       Stream raw audio through a server-side media pipeline.](https://developers.openai.com/api/docs/guides/voice-websockets?api=realtime)
 
-[实时转录
+[实时转写
 
 
 

@@ -4,27 +4,41 @@
 
 **post** `/audio/voices`
 
-Creates a custom voice.
+Create a custom voice you can use for audio output (for example, in Text-to-Speech and the Realtime API). This requires an audio sample and a previously uploaded consent recording.
+
+Send `name`, `audio_sample`, and the `consent` recording ID as multipart form data. The optional `type` defaults to `audio_sample`.
+
+Returns the saved voice's metadata. See the [custom voices guide](/api/docs/guides/text-to-speech#custom-voices) for requirements and best practices. Custom voices are limited to eligible customers.
 
 ### Returns
 
-- `id: string`
+- `Voice object { id, created_at, name, 2 more }`
 
-  The voice identifier, which can be referenced in API endpoints.
+  A custom voice that can be used for audio output.
 
-- `created_at: number`
+  - `id: string`
 
-  The Unix timestamp (in seconds) for when the voice was created.
+    The voice identifier, which can be referenced in API endpoints.
 
-- `name: string`
+  - `created_at: number`
 
-  The name of the voice.
+    The Unix timestamp (in seconds) for when the voice was created.
 
-- `object: "audio.voice"`
+  - `name: string`
 
-  The object type, which is always `audio.voice`.
+    The name of the voice.
 
-  - `"audio.voice"`
+  - `object: "audio.voice"`
+
+    The object type, which is always `audio.voice`.
+
+    - `"audio.voice"`
+
+  - `type: "audio_sample"`
+
+    How the voice was created.
+
+    - `"audio_sample"`
 
 ### Example
 
@@ -34,7 +48,7 @@ curl https://api.openai.com/v1/audio/voices \
     -H "Authorization: Bearer $OPENAI_API_KEY" \
     -F 'audio_sample=@/path/to/audio_sample' \
     -F consent=consent \
-    -F name=name
+    -F name=x
 ```
 
 #### Response
@@ -44,7 +58,8 @@ curl https://api.openai.com/v1/audio/voices \
   "id": "id",
   "created_at": 0,
   "name": "name",
-  "object": "audio.voice"
+  "object": "audio.voice",
+  "type": "audio_sample"
 }
 ```
 
@@ -56,5 +71,5 @@ curl https://api.openai.com/v1/audio/voices \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -F "name=My new voice" \
   -F "consent=cons_1234" \
-  -F "audio_sample=@$HOME/audio_sample.wav;type=audio/x-wav"
+  -F "audio_sample=@audio_sample.wav;type=audio/x-wav"
 ```
